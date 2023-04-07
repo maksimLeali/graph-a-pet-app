@@ -1,0 +1,7 @@
+{
+  "name": "graph-a-pet-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
