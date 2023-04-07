@@ -1,0 +1,40 @@
+{
+  "it": {
+    "graph_a_pet_app": {
+      "auth": {
+        "insert_email": "Inserisci email",
+        "password": "Inserisci password",
+        "insert_password": "Inserisci password",
+        "insert_new_password": "Inserisci new password",
+        "insert_code": "Inserisci code",
+        "forgot_password_link": "Forgot password?",
+        "login": "Login",
+        "password_recovery": "Recupera password",
+        "password_recovery_text": "Inserisci la tua email per impostare una nuova password",
+        "password_recovery_email_text": "Inserisci il codice ricevuto nella tua email",
+        "password_recovery_password_text": "Seleziona una nuova password",
+        "back_to_login": "Ritorna alla login",
+        "next": "Prossimo",
+        "at_least_8_chars": "Almeno 8 caratteri",
+        "at_least_both_cases": "Entrambe maiuscole e minuscole",
+        "at_least_a_number": "Almeno un numero",
+        "logout": "Logout"
+      },
+      "message": {
+        "done": "Finito con successo",
+        "success": {
+          "pet_updated": "Dati Pet aggiornati con successo"
+        },
+        "errors": {
+          "not_authorized": "Utente non autorizzato"
+        }
+      },
+      "errors":{
+        "login":"errore di autenticazione",
+        "me": "Errore nel recupero propri dati",
+        "user": "Errore nel caricamento utente",
+        "fetch": "Errore nel reperimento dati"
+      }
+    }
+  }
+}
