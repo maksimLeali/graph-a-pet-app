@@ -24,7 +24,7 @@ export type I18NKey = Paths<typeof translations.it.graph_a_pet_app>
 i18n.use(initReactI18next).init({
   fallbackLng: config.defaultLanguage,
   debug: config.environment !== 'production',
-  resources: _.mapValues(translations, (values) => ({ translation: values.graph_a_pet_backoffice })),
+  resources: _.mapValues(translations, (values) => ({ translation: values.graph_a_pet_app })),
   lng,
   interpolation: {
     escapeValue: false,
