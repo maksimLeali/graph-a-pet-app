@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { TextInput } from "../../../components";
 import { apolloClient } from "../../../main";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
 
@@ -45,7 +46,7 @@ export const Login = () => {
                 })}
             >
                 {/* register your input into the hook by invoking the "register" function */}
-                <input type="email" {...register("email")} />
+                <TextInput name="email" innerRef={register} />
                 <input type="password" {...register("password")} />
 
                 <input type="submit" />
@@ -56,4 +57,6 @@ export const Login = () => {
 
 const Container = styled.div``;
 
-const Form = styled.form``;
+const Form = styled.form`
+padding: 20px;
+`;
