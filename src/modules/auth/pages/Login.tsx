@@ -1,3 +1,4 @@
+import { IonButton } from "@ionic/react";
 import { useCookies } from "react-cookie";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -19,7 +20,6 @@ export const Login = () => {
     const { t } = useTranslation();
 
     const [login, { loading }] = useLoginMutation({
-        
         onCompleted: ({ login }) => {
             console.log("completed");
             if (login.error) {
@@ -41,22 +41,37 @@ export const Login = () => {
             <Form
                 onSubmit={handleSubmit((variables) => {
                     console.log("vars", variables);
-                    console.log(apolloClient)
+                    console.log(apolloClient);
                     return login({ variables } as any);
                 })}
             >
                 {/* register your input into the hook by invoking the "register" function */}
-                <TextInput name="email" innerRef={register} />
-                <input type="password" {...register("password")} />
+                <TextInput
+                    name="email"
+                    innerRef={register}
+                    ntTextLabel="Email"
+                />
 
-                <input type="submit" />
+                <TextInput name="password" innerRef={register} ntTextLabel="Password"/>
+
+                <IonButton type="submit" >{"Login"} </IonButton>
             </Form>
         </Container>
     );
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+`;
 
 const Form = styled.form`
-padding: 20px;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    padding-top: 30px;
 `;

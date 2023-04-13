@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RegisterOptions, UseFormRegister } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -30,93 +30,132 @@ export const TextInput: React.FC<props> = ({
     focusColor = "primary",
     disabledColor = "lightGray",
     errorColor = "danger",
-
     innerRef,
     name,
 }: props) => {
     const { t } = useTranslation();
-    const [focused, setFocused] = useState(true)
+    const [focused, setFocused] = useState(false);
+    const [compiled, setCompiled] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    
+
     useOnClickOutside(ref, () => {
-        setFocused(false)
-        const hide = ref.current?.children[0]
-        if(!hide ) return
-        hide.classList.remove('hide')
+        setFocused(false);
+        const hide = ref.current?.children[0];
+        if (!hide) return;
+        hide.classList.remove("hide");
     });
 
-
     return (
-        <Wrapper ref={ref} color={color} className={focused ? 'ripple' : ''}  >
-            
-            <label>{textLabel ? t(textLabel) : ntTextLabel}</label>
-            
-            <StyledInput
-                onFocus={()=>setFocused(true)}
-                type="text"
-                {...(innerRef
-                    ? innerRef(name, { required, ...registerOptions })
-                    : null)}
-            />
-            {/* <FocusCircle color={color} /> */}
-            
+        <Wrapper>
+            <InputLabel
+                color={color}
+                focusColor={focusColor}
+                className={`${focused ? "focused" : ""} ${
+                    compiled ? "compiled" : ""
+                }`}
+            >
+                {textLabel ? t(textLabel) : ntTextLabel}
+            </InputLabel>
+            <InputWrapper ref={ref} color={color}>
+                <StyledInput
+                    onFocus={() => setFocused(true)}
+                    type="text"
+                    {...(innerRef
+                        ? innerRef(name, {
+                              onChange: (v) => {
+                                  setCompiled(v.target.value.length > 0);
+                              },
+                              required,
+                              ...registerOptions,
+                          })
+                        : null)}
+                />
+                <FocusCircle
+                    color={color}
+                    focusColor={focusColor}
+                    className={`${focused ? "focused" : ""} ${
+                        compiled ? "compiled" : ""
+                    }`}
+                />
+            </InputWrapper>
         </Wrapper>
     );
 };
 
 type wrapperProps = {
-    color: string,
-    
-}
+    color: string;
+};
 
 type focusCircleProps = {
-    color: string,
-    
-}
+    color: string;
+    focusColor: string;
+};
+type labelProps = {
+    color: string;
+    focusColor: string;
+};
 
-const Wrapper = styled.div<wrapperProps>`
-    background-color: var(--ion-color-${({color})=>color });
-    display: flex;
-    position:relative;
+const Wrapper = styled.div`
+    width: 100%;
+    position: relative;
+`;
+
+const InputLabel = styled.label<labelProps>`
+    z-index: 2;
+    position: absolute;
+    left: 20px;
+    top: 2px;
+    font-size: 1.3rem;
+    color: var(--ion-color-${({ color }) => color});
+    transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
+        font-size 0.5s ease-in;
+    &.focused {
+        font-size: 0.8rem;
+        top: -25px;
+        left: 0px;
+        color: var(--ion-color-${({ focusColor }) => focusColor});
+    }
+    &.compiled {
+        font-size: 0.8rem;
+        top: -25px;
+        left: 0px;
+        color: var(--ion-color-${({ focusColor }) => focusColor});
+    }
+`;
+
+const InputWrapper = styled.div<wrapperProps>`
+    background-color: var(--ion-color-${({ color }) => color});
+    position: relative;
     padding: 0 0 2px 2px;
-    flex-direction: column;
-    height: 30px;
+    border-radius: 2px;
+    height: 38px;
     overflow: hidden;
-    box-sizing: border-box;
-    &.ripple:after {
-        content: "";
-        display: block;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        background-image: radial-gradient(circle, #f00 10%, transparent 10.01%);
-        background-repeat: no-repeat;
-        background-position: 50%;
-        transform: scale(10, 10);
-        opacity: 0;
-        transition: transform .5s, opacity 1s;
-    }
-
-    &.ripple:active:after {
-        transform: scale(0,0);
-        opacity: 1;
-        transition: 0s;
-    }
-`
+    z-index: 1;
+`;
 
 const FocusCircle = styled.span<focusCircleProps>`
-    background-color: var(--ion-color-${({color})=>color });
-    position: relative;
-    z-index:1;
+    background-color: var(--ion-color-medium);
+    position: absolute;
+    display: block;
+    z-index: 1;
     width: 0;
+    left: -50%;
+    top: -50vw;
     border-radius: 9999px;
-    aspect-ratio: 1;
-    transition: all 1s ease-out;
-
-`
+    aspect-ratio: 1 / 1;
+    transition: background-color 2s cubic-bezier(1, 0.07, 1, 0.12) 0s,
+        width 1s ease-out;
+    &.focused {
+        background-color: var(--ion-color-${({ focusColor }) => focusColor});
+        width: 200%;
+        transition: background-color 2s cubic-bezier(0.02, 1.17, 0, 0.97) 0s,
+            width 1s ease-out;
+    }
+    &.compiled {
+        background-color: var(--ion-color-${({ focusColor }) => focusColor});
+        width: 200%;
+    }
+`;
 
 const StyledInput = styled.input`
     outline: none;
@@ -127,7 +166,11 @@ const StyledInput = styled.input`
     background-color: var(--ion-background-color);
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
+    font-size: 1.2rem;
     box-shadow: none;
-    height: 30px;
+    height: 100%;
     width: 100%;
+    box-sizing: border-box;
+    padding-left: 20px;
+    padding-bottom: 10px;
 `;
