@@ -1,6 +1,8 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
+
+
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
@@ -197,6 +199,7 @@ http://ionicframework.com/docs/theming/ */
    */
 
   .md body {
+    background-color:#121212; ;
     --ion-background-color: #121212;
     --ion-background-color-rgb: 18,18,18;
 
@@ -234,3 +237,4 @@ http://ionicframework.com/docs/theming/ */
     --ion-card-background: #1e1e1e;
   }
 }
+

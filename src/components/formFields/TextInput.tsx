@@ -166,7 +166,7 @@ const StyledInput = styled.input`
     position: relative;
     z-index: 2;
     background-image: none;
-    background-color: var(--ion-background-color);
+    
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     font-size: 1.2rem;
@@ -176,4 +176,7 @@ const StyledInput = styled.input`
     box-sizing: border-box;
     padding-left: 20px;
     padding-bottom: 10px;
+    @media (prefers-color-scheme: dark) {
+        background-color: var(--ion-background-color)
+    }
 `;
