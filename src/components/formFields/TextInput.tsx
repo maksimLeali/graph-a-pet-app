@@ -50,6 +50,7 @@ export const TextInput: React.FC<props> = ({
             <InputLabel
                 color={color}
                 focusColor={focusColor}
+                htmlFor={name}
                 className={`${focused ? "focused" : ""} ${
                     compiled ? "compiled" : ""
                 }`}
@@ -58,6 +59,7 @@ export const TextInput: React.FC<props> = ({
             </InputLabel>
             <InputWrapper ref={ref} color={color}>
                 <StyledInput
+                    id={name}
                     onFocus={() => setFocused(true)}
                     type="text"
                     {...(innerRef
@@ -78,6 +80,7 @@ export const TextInput: React.FC<props> = ({
                     }`}
                 />
             </InputWrapper>
+            
         </Wrapper>
     );
 };
