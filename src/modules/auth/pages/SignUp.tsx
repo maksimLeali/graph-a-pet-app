@@ -6,31 +6,31 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TextInput } from "../../../components";
 import { apolloClient } from "../../../main";
-import { MutationLoginArgs } from "../../../types";
+import { MutationSignUpArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
+import { useSignUpMutation } from "../operations/__generated__/signup.generated";
 
-export const Login = () => {
-    const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
+
+
+export const SignUp = () => {
+    const { register, handleSubmit } = useForm<MutationSignUpArgs>({ mode: "onChange" });
 
     const { t } = useTranslation();
     if (window.PublicKeyCredential) {
     
-        // do your webauthn stuff
+        
         
       } else {
-        // wah-wah, back to passwords for you
+        
       }
-    const [login, { loading }] = useLoginMutation({
-        onCompleted: ({ login }) => {
+    const [signup, { loading }] = useSignUpMutation({
+        onCompleted: ({ signUp }) => {
             console.log("completed");
-            if (login.error) {
+            if (signUp.error) {
                 toast.error(t("errors.login"));
                 return;
             }
-            if (login.user && login.token) {
-                const [cookie, setCookie] = useCookies(["jwt"]);
-                setCookie("jwt", login.token);
-            }
+            
         },
         onError: (error) => {
             toast.error(t("errors.login"));
@@ -43,9 +43,11 @@ export const Login = () => {
                 onSubmit={handleSubmit((variables) => {
                     console.log("vars", variables);
                     console.log(apolloClient);
-                    return login({ variables } as any);
+                    return signup({ variables } as any);
                 })}
             >
+                <TextInput name="firstName" innerRef={register} ntTextLabel="First name"/>
+                <TextInput name="lasrName" innerRef={register} ntTextLabel="Last name"/>
                 <TextInput
                     name="email"
                     innerRef={register}
@@ -54,7 +56,7 @@ export const Login = () => {
 
                 <TextInput name="password" innerRef={register} ntTextLabel="Password"/>
 
-                <IonButton type="submit" >{"Login"} </IonButton>
+                <IonButton type="submit" >{"Sign Up"} </IonButton>
             </Form>
         </Container>
     );

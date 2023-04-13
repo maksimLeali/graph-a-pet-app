@@ -19,11 +19,20 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { Toaster } from 'react-hot-toast';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
+    <Toaster
+          toastOptions={{
+            className: '',
+            style: {
+              fontFamily: "'Open Sans', sans-serif",
+            },
+          }}
+          />
     <AppRouter/>
   </IonApp>
 );

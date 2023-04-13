@@ -1,0 +1,16 @@
+mutation SignUp($data: UserCreate!) {
+	signUp(data: $data) {
+		user {
+			id
+			last_name
+			first_name
+            email
+            role
+		}
+        success
+        error{
+			code
+			message
+		}
+	}
+}

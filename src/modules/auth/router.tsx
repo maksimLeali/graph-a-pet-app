@@ -1,5 +1,5 @@
 import { Redirect, Route, useRouteMatch } from 'react-router-dom';
-import {Login} from '.'
+import {Login, SignUp} from '.'
 export const AuthRouter = ()=> {
     const { path } = useRouteMatch()
     return (
@@ -10,7 +10,9 @@ export const AuthRouter = ()=> {
             <Route exact path={`${path}/login`}>
                 <Login />
             </Route>
-
+            <Route exact path={`${path}/signup`}>
+                <SignUp />
+            </Route>
         </>
     )
 }

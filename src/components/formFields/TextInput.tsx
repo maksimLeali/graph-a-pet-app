@@ -21,7 +21,7 @@ type props = {
 };
 
 export const TextInput: React.FC<props> = ({
-    textColor = "primary",
+    textColor = "dark",
     ntTextLabel,
     textLabel,
     color = "medium",
@@ -62,6 +62,7 @@ export const TextInput: React.FC<props> = ({
                     id={name}
                     onFocus={() => setFocused(true)}
                     type="text"
+                    textColor={textColor}
                     {...(innerRef
                         ? innerRef(name, {
                               onChange: (v) => {
@@ -80,7 +81,6 @@ export const TextInput: React.FC<props> = ({
                     }`}
                 />
             </InputWrapper>
-            
         </Wrapper>
     );
 };
@@ -131,6 +131,7 @@ const InputWrapper = styled.div<wrapperProps>`
     position: relative;
     padding: 0 0 2px 2px;
     border-radius: 2px;
+    border-top-right-radius: 0;
     height: 38px;
     overflow: hidden;
     z-index: 1;
@@ -160,13 +161,13 @@ const FocusCircle = styled.span<focusCircleProps>`
     }
 `;
 
-const StyledInput = styled.input`
+const StyledInput = styled.input<{textColor: string}>`
     outline: none;
     border: none;
     position: relative;
     z-index: 2;
     background-image: none;
-    
+    color: var(--ion-color-${({ textColor }) => textColor});
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     font-size: 1.2rem;
