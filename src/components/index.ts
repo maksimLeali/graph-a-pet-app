@@ -1,3 +1,4 @@
-export { ExploreContainer } from './ExploreContainer'
-export { AuthenticatedRoute } from './PrivateRoute'
-export * from './formFields'
+export { ExploreContainer } from "./ExploreContainer";
+export { AuthenticatedRoute } from "./PrivateRoute";
+export { Icon } from "./Icon";
+export * from "./formFields";

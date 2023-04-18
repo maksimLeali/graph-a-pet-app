@@ -5,6 +5,9 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+
+  --max-width: 480px;
+
   /** primary **/
   --ion-color-primary: #18a065;
 	--ion-color-primary-rgb: 24,160,101;

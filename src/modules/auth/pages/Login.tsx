@@ -52,7 +52,7 @@ export const Login = () => {
                     ntTextLabel="Email"
                 />
 
-                <TextInput name="password" innerRef={register} ntTextLabel="Password"/>
+                <TextInput type='password' name="password" innerRef={register} ntTextLabel="Password"/>
 
                 <IonButton type="submit" >{"Login"} </IonButton>
             </Form>
@@ -64,6 +64,9 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
+    max-width: var(--max-width);
+    margin-left:auto; 
+    margin-right: auto;
     height: 100%;
 `;
 

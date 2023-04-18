@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useOnClickOutside } from "../../hooks";
 import { I18NKey } from "../../i18n";
+import { IonIcons } from "react-ion-icon";
+import { Icon } from '../'
 
 type props = {
     name: string;
@@ -14,7 +16,9 @@ type props = {
     focusColor?: string;
     disabledColor?: string;
     textColor?: string;
+    type?: 'text' | 'password';
     errorText?: string;
+    icon: IonIcons
     innerRef?: UseFormRegister<any>;
     registerOptions?: RegisterOptions;
     errorColor?: string;
@@ -27,6 +31,7 @@ export const TextInput: React.FC<props> = ({
     color = "medium",
     required = false,
     registerOptions,
+    type = 'text',
     focusColor = "primary",
     disabledColor = "lightGray",
     errorColor = "danger",
@@ -61,7 +66,7 @@ export const TextInput: React.FC<props> = ({
                 <StyledInput
                     id={name}
                     onFocus={() => setFocused(true)}
-                    type="text"
+                    type={type}
                     textColor={textColor}
                     {...(innerRef
                         ? innerRef(name, {
@@ -73,6 +78,7 @@ export const TextInput: React.FC<props> = ({
                           })
                         : null)}
                 />
+                {type == 'password'  ? <Icon name="eye" /> : ''}
                 <FocusCircle
                     color={color}
                     focusColor={focusColor}
