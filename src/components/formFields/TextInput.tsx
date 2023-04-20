@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useOnClickOutside } from "../../hooks";
 import { I18NKey } from "../../i18n";
-import { IonIcons } from "react-ion-icon";
-import { Icon } from '../'
+
+
+import { IconName, Icon} from "../icons";
+import { IonIcon } from "@ionic/react";
 
 type props = {
     name: string;
@@ -18,7 +20,7 @@ type props = {
     textColor?: string;
     type?: 'text' | 'password';
     errorText?: string;
-    icon: IonIcons
+    icon?: IconName
     innerRef?: UseFormRegister<any>;
     registerOptions?: RegisterOptions;
     errorColor?: string;
@@ -36,13 +38,14 @@ export const TextInput: React.FC<props> = ({
     disabledColor = "lightGray",
     errorColor = "danger",
     innerRef,
+    icon,
     name,
 }: props) => {
     const { t } = useTranslation();
     const [focused, setFocused] = useState(false);
     const [compiled, setCompiled] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-
+    const [showPsw, setShowPsw] = useState(false)
     useOnClickOutside(ref, () => {
         setFocused(false);
         const hide = ref.current?.children[0];
@@ -66,7 +69,7 @@ export const TextInput: React.FC<props> = ({
                 <StyledInput
                     id={name}
                     onFocus={() => setFocused(true)}
-                    type={type}
+                    type={type == 'password' ? (showPsw ? 'text' : 'password') : type}
                     textColor={textColor}
                     {...(innerRef
                         ? innerRef(name, {
@@ -78,7 +81,9 @@ export const TextInput: React.FC<props> = ({
                           })
                         : null)}
                 />
-                {type == 'password'  ? <Icon name="eye" /> : ''}
+                {/* {type == 'password' || icon ? <IonIcon name="alert-circle-outline" size="large" color="primary"  />: ''} */}
+                {type == 'password' ? <Icon name={ showPsw ? "eyeOff" : 'eye'} onClick={()=> setShowPsw(!showPsw) } size="14px" color={focused || compiled ? 'var(--ion-color-primary)' : 'var(--ion-color-medium)'}/> : ''}
+                {icon ? <Icon name={icon} size="14px" color={focused ? 'var(--ion-color-primary)' : 'var(--ion-color-medium)'}/> : ''}
                 <FocusCircle
                     color={color}
                     focusColor={focusColor}
@@ -141,6 +146,12 @@ const InputWrapper = styled.div<wrapperProps>`
     height: 38px;
     overflow: hidden;
     z-index: 1;
+    > .icon-wrapper {
+        position: absolute;
+        z-index: 2;
+        top: -4px;
+        right: 0;
+    }
 `;
 
 const FocusCircle = styled.span<focusCircleProps>`

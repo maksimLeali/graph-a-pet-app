@@ -1,4 +1,4 @@
-import { IonButton } from "@ionic/react";
+import { IonButton, IonIcon } from "@ionic/react";
 import { useCookies } from "react-cookie";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import { TextInput } from "../../../components";
 import { apolloClient } from "../../../main";
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
+
 
 export const Login = () => {
     const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
@@ -51,9 +52,7 @@ export const Login = () => {
                     innerRef={register}
                     ntTextLabel="Email"
                 />
-
                 <TextInput type='password' name="password" innerRef={register} ntTextLabel="Password"/>
-
                 <IonButton type="submit" >{"Login"} </IonButton>
             </Form>
         </Container>

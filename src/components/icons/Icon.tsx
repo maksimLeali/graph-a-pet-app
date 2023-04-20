@@ -1,23 +1,26 @@
 
 import { IonIcon } from "@ionic/react";
-import 'ionicons/icons'
 import styled, { CSSObject } from "styled-components";
- 
+import { IconName } from "./IconName";
+import * as Icons from 'ionicons/icons'
+
 
 
 type Props = {
-    name : string,
+    name : IconName,
     color: CSSObject['color'],
     size?: string
     className?: string,
-    reverse?: boolean
+    reverse?: boolean,
+    onClick?: ()=> void
 
 }
-export const Icon: React.FC<Props>= ({name, color, size, className, reverse= false}) => {
+export const Icon: React.FC<Props>= ({name, color, size, className, reverse= false, onClick}) => {
  
     return (
-        <Container size={size} className={className} iconColor={color} reverse={reverse}>
-            <IonIcon  name={name}  />
+        <Container onClick={onClick ? ()=> onClick() : ()=>{}}  size={size} className={`icon-wrapper ${className}`} iconColor={color} reverse={reverse}>
+           
+            <IonIcon  size="large" icon={Icons[name]}  />
         </Container>
     )
 }
@@ -34,5 +37,6 @@ const Container = styled.div<ContainerProps>`
         color: ${({iconColor})=> iconColor} !important ;
         font-size: ${({size})=> size};
         ${({reverse})=> reverse? `transform: ScaleX(-1)` : ''}
+        transition: color 1s ease-in;
     }
 `
