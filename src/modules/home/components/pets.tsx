@@ -100,7 +100,7 @@ padding: 5px 0;
     
 `
 
-const Title = styled.h4`
+const Title = styled.h1`
     padding: 4px 30px;
     border-radius: 4px ;
     width: fit-content;
