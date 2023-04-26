@@ -63,9 +63,6 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
-    max-width: var(--max-width);
-    margin-left:auto; 
-    margin-right: auto;
     height: 100%;
 `;
 

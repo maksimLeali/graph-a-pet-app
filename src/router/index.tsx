@@ -3,6 +3,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { IonRouterOutlet } from '@ionic/react';
 import { AuthenticatedRoute } from '../components';
 import { AuthRouter, HomeRouter, Login, } from '../modules';
+import { AuthLayout } from '../layouts';
 
 export const AppRouter = ()=> {
     
@@ -12,7 +13,9 @@ export const AppRouter = ()=> {
                 <Switch>
                 <AuthenticatedRoute exact path="/home" component={()=><HomeRouter />} />    
                 <Route path="/auth">
-                    <AuthRouter />
+                    <AuthLayout>
+                        <AuthRouter />
+                    </AuthLayout>
                 </Route>
                 <Route  path="/">
                     <Redirect to="/home" />
