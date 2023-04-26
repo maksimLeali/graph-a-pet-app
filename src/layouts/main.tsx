@@ -38,6 +38,9 @@ const Main = styled.div`
     position: relative;
     scroll-behavior: smooth ;
     padding-bottom: 80px;
+    &::-webkit-scrollbar {
+        display: none; /* for Chrome, Safari, and Opera */
+    }
 `
 
 const BottomMenu = styled.div`
@@ -53,6 +56,5 @@ const BottomMenu = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 20px 60px 20px 60px;
-    box-sizing: border-box
-    
+    box-sizing: border-box;
 `
