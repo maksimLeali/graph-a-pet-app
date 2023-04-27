@@ -11,16 +11,17 @@ type Props = {
     color: CSSObject['color'],
     size?: string
     className?: string,
+    mode?: 'ios' | 'md'
     reverse?: boolean,
     onClick?: ()=> void
 
 }
-export const Icon: React.FC<Props>= ({name, color, size, className, reverse= false, onClick}) => {
+export const Icon: React.FC<Props>= ({mode, name, color, size, className, reverse= false, onClick}) => {
  
     return (
         <Container onClick={onClick ? ()=> onClick() : ()=>{}}  size={size} className={`icon-wrapper ${className}`} iconColor={color} reverse={reverse}>
            
-            <IonIcon  size="large" icon={Icons[name]}  />
+            <IonIcon mode={mode} size="large" icon={Icons[name]}  />
         </Container>
     )
 }

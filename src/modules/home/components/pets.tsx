@@ -51,7 +51,7 @@ export const Pets: React.FC = () => {
                             </span>
                         </ActionChip>
                         <ActionChip className="bottom right">
-                        <Icon name="shareOutline" color='var(--ion-color-dark)' />
+                        <Icon name="shareOutline" color='var(--ion-color-dark)' mode="md"/>
                             <span>
                             {"Share"}
                             </span>
@@ -71,7 +71,7 @@ const PetsContainer = styled.div<{ mainColor?: string }>`
     box-sizing: border-box;
     position: relative;
     align-items: center;
-    padding-top: 80px;
+    padding-top: 10px;
     > * {
         
         > * {
@@ -131,69 +131,58 @@ const ActionChip = styled.span`
     z-index: 2;
     font-size: 1.2rem;
     padding: 0 12px;
-    &.left{
-        justify-content: start;
-    }
-    &.right{
-        justify-content: end;
-        flex-direction: row-reverse
-    }
-    &.top.right {
-        top: 24%;
-        right: 0;
-        @media only screen and (max-width: 420px) {
-            
-        }
-        @media only screen and (max-width: 380px) {
-            
-        }
-        @media only screen and (max-width: 350px) {
-            
-        }
-    }
-    &.top.left {
-        left: 0;
-        top: 24%;
-        @media only screen and (max-width: 420px) {
-            
-        }
-        @media only screen and (max-width: 380px) {
-            
-        }
-        @media only screen and (max-width: 350px) {
-            
-        }
-    }
-    &.bottom.right {
-        right: 0;
-        top: calc(24% + 93px);
-        @media only screen and (max-width: 420px) {
-            
-        }
-        @media only screen and (max-width: 380px) {
-            
-        }
-        @media only screen and (max-width: 350px) {
-            
-        }
-    }
-    &.bottom.left {
-        top: calc(24% + 93px);
-        left: 0;
-        @media only screen and (max-width: 420px) {
-        @media only screen and (max-width: 380px) {
-        @media only screen and (max-width: 350px) {
-    }
     @media only screen and (max-width: 420px) {
         height: 75px;
+        gap: 8px;
+        font-size: 1.1rem;
     }
     @media only screen and (max-width: 380px) {
         height: 65px;
+        font-size: 1rem;
     }
     @media only screen and (max-width: 350px) {
-    
-        width: 55px;
+        height: 55px;
+        font-size: .9rem;
     }
+    &.left{
+        justify-content: start;
+        left: 0;
+    }
+    &.right{
+        right: 0%;
+        justify-content: end;
+        flex-direction: row-reverse
+    }
+    &.top{
+        top: 24%;
+        @media only screen and (max-width: 420px) {
+            top: 28%
+        }
+        @media only screen and (max-width: 380px) {
+            top: 30%
+
+        }
+        @media only screen and (max-width: 350px) {
+            top: 32%;
+        }
+    }
+    &.bottom{
+        top: calc(24% + 93px);
+        @media only screen and (max-width: 420px) {
+            top: calc(28% + 79px);
+            
+        }
+        @media only screen and (max-width: 380px) {
+            top: calc(30% + 69px);
+            
+        }
+        @media only screen and (max-width: 350px) {
+            top: calc(32% + 59px);
+
+        }
+    }
+   
+    
 `;
 
 const Title = styled.h1`
