@@ -35,7 +35,8 @@ const Container = styled.div<ContainerProps>`
     display: flex;
     > * {
         color: ${({iconColor})=> iconColor} !important ;
-        font-size: ${({size})=> size};
+        width: ${({size})=> size ? `${size}!important` : ''};
+        aspect-ratio:1;
         ${({reverse})=> reverse? `transform: ScaleX(-1)` : ''}
         transition: color 1s ease-in;
     }
