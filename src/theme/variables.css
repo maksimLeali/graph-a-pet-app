@@ -5,7 +5,7 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
-
+  --ion-background-color: #fff;
   --max-width: 480px;
 
   /** primary **/

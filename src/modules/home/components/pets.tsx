@@ -7,13 +7,13 @@ import { config } from "../../../config";
 export const Pets: React.FC = () => {
     const [avgColor, setAvgColor] = useState<string>();
     const fac = new FastAverageColor();
-
+    const id = 'd6bddfb3-36ad-4089-8b67-0f0aab43d054'
     useEffect(() => {
         fac.getColorAsync(
             `${config.baseUrl?.replace(
                 "graphql",
                 "media"
-            )}/${"0de0273b-d389-4df7-b317-9a7675c3a4ed"}`
+            )}/${id}`
         )
             .then((res) => {
                 console.log(res);
@@ -30,28 +30,28 @@ export const Pets: React.FC = () => {
                 <>
                     <BoxContainer>
                         <PetsBox className="pet-box">
-                            <Image2x id="0de0273b-d389-4df7-b317-9a7675c3a4ed" />
+                            <Image2x id={id} />
                         </PetsBox>
                         <ActionChip className="top left">
-                            <Icon size="20px" name="bookOutline" color='var(--ion-color-dark)' />
+                            <Icon name="bookOutline" color='var(--ion-color-dark)' />
                             <span>
                                 {"Libretto"}
                             </span>
                         </ActionChip>
                         <ActionChip className="top right">
-                        <Icon size="20px" name="calendarNumberOutline" color='var(--ion-color-dark)' />
+                        <Icon name="calendarNumberOutline" color='var(--ion-color-dark)' />
                             <span>
                             {"Eventi"}
                             </span>
                         </ActionChip>
                         <ActionChip className="bottom left">
-                        <Icon size="20px" name="informationCircleOutline" color='var(--ion-color-dark)' />
+                        <Icon name="informationCircleOutline" color='var(--ion-color-dark)' />
                             <span>
                             {"Profilo"}
                             </span>
                         </ActionChip>
                         <ActionChip className="bottom right">
-                        <Icon size="20px" name="shareOutline" color='var(--ion-color-dark)' />
+                        <Icon name="shareOutline" color='var(--ion-color-dark)' />
                             <span>
                             {"Share"}
                             </span>
@@ -73,19 +73,21 @@ const PetsContainer = styled.div<{ mainColor?: string }>`
     align-items: center;
     padding-top: 80px;
     > * {
+        
         > * {
             background-color: ${({ mainColor }) =>
                 mainColor ? mainColor : "var(--ion-color-primary)"};
             &.pet-box {
-                border: 3px solid
-                    ${({ mainColor }) =>
-                        mainColor ? mainColor : "var(--ion-color-primary)"};
+                border: 3px solid var(--ion-background-color);
             }
         }
     }
     > h1 {
         background-color: ${({ mainColor }) =>
             mainColor ? mainColor : "var(--ion-color-primary)"};
+    }
+    * {
+        color: #fff!important;
     }
 `;
 const BoxContainer = styled.div`
@@ -101,6 +103,7 @@ const PetsBox = styled.div`
     width: 200px;
     margin: 40px 0 0 0;
     aspect-ratio: 1;
+    z-index:3;
     border-radius: 500px;
     @media only screen and (max-width: 420px) {
         width: 170px;
@@ -119,39 +122,77 @@ const PetsBox = styled.div`
 
 const ActionChip = styled.span`
     position: absolute;
-    width: 50px;
-    aspect-ratio: 1;
+    width: 50%;
+    height: 90px;
     display: flex;
-    border-radius: 99px;
-    
-    flex-direction:column;
+    padding-bottom: 5px;
     align-items: center;
-    font-size: .8rem;
+    gap: 12px;
+    z-index: 2;
+    font-size: 1.2rem;
+    padding: 0 12px;
+    &.left{
+        justify-content: start;
+    }
+    &.right{
+        justify-content: end;
+        flex-direction: row-reverse
+    }
     &.top.right {
-        top: 10px;
-        right: 20%;
+        top: 24%;
+        right: 0;
+        @media only screen and (max-width: 420px) {
+            
+        }
+        @media only screen and (max-width: 380px) {
+            
+        }
+        @media only screen and (max-width: 350px) {
+            
+        }
     }
     &.top.left {
-        left: 20%;
-        top: 10px;
+        left: 0;
+        top: 24%;
+        @media only screen and (max-width: 420px) {
+            
+        }
+        @media only screen and (max-width: 380px) {
+            
+        }
+        @media only screen and (max-width: 350px) {
+            
+        }
     }
     &.bottom.right {
-        right: 10px;
-        bottom: 40%;
+        right: 0;
+        top: calc(24% + 93px);
+        @media only screen and (max-width: 420px) {
+            
+        }
+        @media only screen and (max-width: 380px) {
+            
+        }
+        @media only screen and (max-width: 350px) {
+            
+        }
     }
     &.bottom.left {
-        bottom: 40%;
-        left: 10px;
+        top: calc(24% + 93px);
+        left: 0;
+        @media only screen and (max-width: 420px) {
+        @media only screen and (max-width: 380px) {
+        @media only screen and (max-width: 350px) {
     }
     @media only screen and (max-width: 420px) {
-        width: 90px;
+        height: 75px;
     }
-    @media only screen and (max-width: 390px) {
-        font-size: 0.9rem;
-        width: 75px;
+    @media only screen and (max-width: 380px) {
+        height: 65px;
     }
     @media only screen and (max-width: 350px) {
-        width: 70px;
+    
+        width: 55px;
     }
 `;
 
