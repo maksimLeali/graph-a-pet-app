@@ -5,66 +5,51 @@ import { useCallback, useEffect, useState } from "react";
 import { config } from "../../../config";
 
 export const Pets: React.FC = () => {
-    const [avgColor, setAvgColor] = useState<string>();
-    const fac = new FastAverageColor();
-    const id = 'd6bddfb3-36ad-4089-8b67-0f0aab43d054'
-    useEffect(() => {
-        fac.getColorAsync(
-            `${config.baseUrl?.replace(
-                "graphql",
-                "media"
-            )}/${id}`
-        )
-            .then((res) => {
-                console.log(res);
-                setAvgColor(res.hex);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
+    const id = 'd9e67d28-b4e9-4f91-ad8b-680d5d91a765'
+    const mainColor = {
+        "color": "#4A588F",
+        "contrast": "#FFFFFF"
+    }
+
+   
 
     return (
-        <PetsContainer mainColor={avgColor}>
-            {avgColor && (
-                <>
-                    <BoxContainer>
-                        <PetsBox className="pet-box">
-                            <Image2x id={id} />
-                        </PetsBox>
-                        <ActionChip className="top left">
-                            <Icon name="bookOutline" color='var(--ion-color-dark)' />
-                            <span>
-                                {"Libretto"}
-                            </span>
-                        </ActionChip>
-                        <ActionChip className="top right">
-                        <Icon name="calendarNumberOutline" color='var(--ion-color-dark)' />
-                            <span>
-                            {"Eventi"}
-                            </span>
-                        </ActionChip>
-                        <ActionChip className="bottom left">
-                        <Icon name="informationCircleOutline" color='var(--ion-color-dark)' />
-                            <span>
-                            {"Profilo"}
-                            </span>
-                        </ActionChip>
-                        <ActionChip className="bottom right">
-                        <Icon name="shareOutline" color='var(--ion-color-dark)' mode="md"/>
-                            <span>
-                            {"Share"}
-                            </span>
-                        </ActionChip>
-                    </BoxContainer>
-                    <Title>{"rayetta"}</Title>
-                </>
-            )}
+        <PetsContainer mainColor={mainColor.color} contrast={mainColor.contrast}> 
+            <BoxContainer>
+                <PetsBox className="pet-box">
+                    <Image2x id={id} />
+                </PetsBox>
+                <ActionChip className="top left">
+                    <Icon name="bookOutline" color='var(--ion-color-dark)' />
+                    <span>
+                        {"Libretto"}
+                    </span>
+                </ActionChip>
+                <ActionChip className="top right">
+                <Icon name="calendarNumberOutline" color='var(--ion-color-dark)' />
+                    <span>
+                    {"Eventi"}
+                    </span>
+                </ActionChip>
+                <ActionChip className="bottom left">
+                <Icon name="informationCircleOutline" color='var(--ion-color-dark)' />
+                    <span>
+                    {"Profilo"}
+                    </span>
+                </ActionChip>
+                <ActionChip className="bottom right">
+                <Icon name="shareOutline" color='var(--ion-color-dark)' mode="md"/>
+                    <span>
+                    {"Share"}
+                    </span>
+                </ActionChip>
+            </BoxContainer>
+            <Title>{"rayetta"}</Title>
         </PetsContainer>
     );
 };
 
-const PetsContainer = styled.div<{ mainColor?: string }>`
+const PetsContainer = styled.div<{ mainColor?: string, contrast?: string }>`
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -75,6 +60,8 @@ const PetsContainer = styled.div<{ mainColor?: string }>`
     > * {
         
         > * {
+            color:  ${({ contrast }) =>
+                contrast ? contrast : "var(--ion-color-primary)"};
             background-color: ${({ mainColor }) =>
                 mainColor ? mainColor : "var(--ion-color-primary)"};
             &.pet-box {
@@ -83,6 +70,8 @@ const PetsContainer = styled.div<{ mainColor?: string }>`
         }
     }
     > h1 {
+        color:  ${({ contrast }) =>
+                contrast ? contrast : "var(--ion-color-primary)"};
         background-color: ${({ mainColor }) =>
             mainColor ? mainColor : "var(--ion-color-primary)"};
     }

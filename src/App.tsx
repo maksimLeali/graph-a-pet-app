@@ -16,7 +16,6 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-
 /* Theme variables */
 import './theme/variables.css';
 import { Toaster } from 'react-hot-toast';
@@ -24,17 +23,19 @@ import { Toaster } from 'react-hot-toast';
 setupIonicReact();
 
 const App: React.FC = () => (
-  <IonApp>
-    <Toaster
-          toastOptions={{
-            className: '',
-            style: {
-              fontFamily: "'Open Sans', sans-serif",
-            },
-          }}
-          />
-    <AppRouter/>
-  </IonApp>
+
+    <IonApp>
+
+      <Toaster
+            toastOptions={{
+              className: '',
+              style: {
+                fontFamily: "'Open Sans', sans-serif",
+              },
+            }}
+            />
+      <AppRouter/>
+    </IonApp>
 );
 
 export default App;
