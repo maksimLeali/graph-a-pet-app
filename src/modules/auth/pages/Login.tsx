@@ -11,29 +11,25 @@ import { useLoginMutation } from "../operations/__generated__/login.generated";
 
 export const Login: React.FC = ()  => {
     const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
-    // const [login, { loading }] = useLoginMutation({
-    //     onCompleted: ({ login }) => {
-    //         console.log("completed");
-    //         if (login.error) {
-    //             toast.error(t("errors.login"));
-    //             return;
-    //         }
-    //         if (login.user && login.token) {
-    //             const [cookie, setCookie] = useCookies(["jwt"]);
-    //             setCookie("jwt", login.token);
-    //         }
-    //     },
-    //     onError: (error) => {
-    //         console.error('error', error)
+    const [login, { loading }] = useLoginMutation({
+        onCompleted: ({ login }) => {
+            console.log("completed");
+            if (login.error) {
+                toast.error(t("errors.login"));
+                return;
+            }
+            if (login.user && login.token) {
+                const [cookie, setCookie] = useCookies(["jwt"]);
+                setCookie("jwt", login.token);
+            }
+        },
+        onError: (error) => {
+            console.error('error', error)
             
-    //         toast.error(t("errors.login"));
-    //     },
-    // });
-    const [login, {loading}] = useLoginMutation({
-        onError:(error)=> {
-            console.error(error)
-        }
-    })
+            toast.error(t("errors.login"));
+        },
+    });
+   
     const { t } = useTranslation();
     // if (window.PublicKeyCredential) {
     
@@ -42,12 +38,14 @@ export const Login: React.FC = ()  => {
     //   } else {
     //     // wah-wah, back to passwords for you
     //   }
+    // login({variables: {email: "mario", password: 'pp'}})
     
 
     return (
         
         <Container>
-            <Form
+            <button onClick={(e)=> { e.preventDefault(); login({variables: {email: "mario", password: 'pp'}})}}></button>
+            {/* <Form
                 onSubmit={handleSubmit((variables) => { console.log(variables); return login({ variables } as any)})}
             >
                 <TextInput
@@ -58,7 +56,7 @@ export const Login: React.FC = ()  => {
                 <TextInput type='password' name="password" innerRef={register} ntTextLabel="Password"/>
                 <IonButton type="submit" >{"Login"} </IonButton>
 
-            </Form>
+            </Form> */}
       </Container>
     );
 };
@@ -68,6 +66,10 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     height: 100%;
+    > button {
+        width: 100px;
+        height: 30px;
+    }
 `;
 
 const Form = styled.form`

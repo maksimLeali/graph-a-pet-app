@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache, from} from '@apollo/client'
+import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache, from, gql} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
 import { onError } from 'apollo-link-error'
@@ -21,16 +21,16 @@ const httpLink = createHttpLink({
   uri: config.baseUrl,
 })
 
-const authLink = setContext((_, { headers }) => {
-  const [cookies] = useCookies(['jwt'])
-  const token = cookies.jwt
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  }
-})
+// const authLink = setContext((_, { headers }) => {
+//   const [cookies] = useCookies(['jwt'])
+//   const token = cookies.jwt
+//   return {
+//     headers: {
+//       ...headers,
+//       authorization: token ? `Bearer ${token}` : '',
+//     },
+//   }
+// })
 
 
 
@@ -50,12 +50,20 @@ const authLink = setContext((_, { headers }) => {
 // })
 
 export const apolloClient = new ApolloClient({
-  link: from([ authLink, httpLink]),
+  link: from([  httpLink]),
   cache: new InMemoryCache(),
 })
+
+apolloClient.query({query: gql`
+  query  ListRepotrs{
+    listReports{
+      success
+    }
+  }
+`}).then((res)=> console.log(res))
 
 root.render(
   <ApolloProvider client={apolloClient}>
     <App />
-  </ApolloProvider>,
+  </ApolloProvider>
 );
