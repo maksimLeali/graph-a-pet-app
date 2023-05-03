@@ -1,0 +1,66 @@
+query getUserDashboard( $date_from: String!, $date_to: String! ) {
+	getUserDashboard {
+		dashboard {
+			ownerships {
+				items {
+					id
+					pet {
+						name
+						id
+						health_card {
+							id
+							treatments(
+								commonSearch: {
+									filters: {
+										ranges: [
+											{
+												key: "date"
+												value: { min: $date_from, max: $date_to }
+											}
+										]
+									}
+								}
+							) {
+								items {
+									id
+									date
+									name
+									type
+								}
+								success
+								error {
+									code
+									message
+								}
+							}
+						}
+					}
+				}
+				success
+				error {
+					code
+					message
+				}
+			}
+			reports {
+				items {
+					id
+					created_at
+					place
+					latitude
+					longitude
+				}
+				success
+				error {
+					code
+					message
+				}
+			}
+		}
+		success
+		error {
+			code
+			message
+		}
+	}
+}

@@ -7,25 +7,36 @@ import styled from "styled-components";
 import { TextInput } from "../../../components";
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
+import { useHistory } from "react-router";
 
 
 export const Login: React.FC = ()  => {
     const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
+    const [cookie, setCookie] = useCookies(["jwt"]);
+    const history = useHistory()
+    let timeout: string | number | NodeJS.Timeout | null | undefined = null;
     const [login, { loading }] = useLoginMutation({
         onCompleted: ({ login }) => {
             console.log("completed");
+            console.log(login)
             if (login.error) {
                 toast.error(t("errors.login"));
                 return;
             }
+            console.log('*****')
             if (login.user && login.token) {
-                const [cookie, setCookie] = useCookies(["jwt"]);
+                
                 setCookie("jwt", login.token);
             }
+            toast.success(t("success.login"))
+            timeout = setTimeout(()=> {
+                if(timeout) clearTimeout(timeout);
+                return history.push('/home')
+            }, 500)
+
         },
         onError: (error) => {
-            console.error('error', error)
-            
+            console.log(error)
             toast.error(t("errors.login"));
         },
     });
@@ -44,9 +55,8 @@ export const Login: React.FC = ()  => {
     return (
         
         <Container>
-            <button onClick={(e)=> { e.preventDefault(); login({variables: {email: "mario", password: 'pp'}})}}></button>
-            {/* <Form
-                onSubmit={handleSubmit((variables) => { console.log(variables); return login({ variables } as any)})}
+            <Form
+                onSubmit={handleSubmit((variables) => login({ variables } as any))}
             >
                 <TextInput
                     name="email"
@@ -56,7 +66,7 @@ export const Login: React.FC = ()  => {
                 <TextInput type='password' name="password" innerRef={register} ntTextLabel="Password"/>
                 <IonButton type="submit" >{"Login"} </IonButton>
 
-            </Form> */}
+            </Form>
       </Container>
     );
 };

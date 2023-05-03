@@ -82,7 +82,7 @@ export const TextInput: React.FC<props> = ({
                         : null)}
                 />
                 {/* {type == 'password' || icon ? <IonIcon name="alert-circle-outline" size="large" color="primary"  />: ''} */}
-                {type == 'password' ? <Icon name={ showPsw ? "eyeOff" : 'eye'} onClick={()=> setShowPsw(!showPsw) } size="14px" color={focused || compiled ? 'var(--ion-color-primary)' : 'var(--ion-color-medium)'}/> : ''}
+                {type == 'password' ? <Icon name={ showPsw ? "eyeOff" : 'eye'} onClick={()=> setShowPsw(!showPsw) }  color={focused || compiled ? 'var(--ion-color-primary)' : 'var(--ion-color-medium)'}/> : ''}
                 {icon ? <Icon name={icon} size="14px" color={focused ? 'var(--ion-color-primary)' : 'var(--ion-color-medium)'}/> : ''}
                 <FocusCircle
                     color={color}

@@ -11,7 +11,7 @@ import _ from 'lodash'
 import toast from 'react-hot-toast';
 import { config } from './config';
 
-
+// const [cookies, setCookies, removeCookie] = useCookies(['jwt'])
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -22,7 +22,7 @@ const httpLink = createHttpLink({
 })
 
 // const authLink = setContext((_, { headers }) => {
-//   const [cookies] = useCookies(['jwt'])
+  
 //   const token = cookies.jwt
 //   return {
 //     headers: {
@@ -38,7 +38,7 @@ const httpLink = createHttpLink({
   
 //   console.log(received)
 //   console.log(received.graphQLErrors![0].extensions)
-//   const [cookies, setCookies, removeCookie] = useCookies(['jwt'])
+// 
 //   if (['401', '403'].includes(_.get(received, 'graphQLErrors.0.extensions.code', '') )) {
     
 //     toast.error('User not Authorized')
@@ -54,13 +54,6 @@ export const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-apolloClient.query({query: gql`
-  query  ListRepotrs{
-    listReports{
-      success
-    }
-  }
-`}).then((res)=> console.log(res))
 
 root.render(
   <ApolloProvider client={apolloClient}>
