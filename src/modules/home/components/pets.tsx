@@ -13,6 +13,8 @@ type props ={
 
 export const Pets: React.FC<props> = ({pets}) => {
     
+    const [active, setActive ]= useState(0)
+
    useEffect(()=>{
     console.log(pets)
    }, [pets])
@@ -21,8 +23,8 @@ export const Pets: React.FC<props> = ({pets}) => {
         
         <PetsContainer mainColor={'var(--ion-color-primary)'} contrast={'var(--ion-color-white)'}> 
             <BoxContainer> 
-                {pets.map((pet)=>(
-                    <PetsBox className="pet-box">
+                {pets.map((pet, i)=>(
+                    <PetsBox className={`pet-box ${i == active ? 'active' : ''}`} >
                         <Image2x id={pet.main_picture!.id} />
                     </PetsBox>
                 ))}
@@ -51,9 +53,9 @@ export const Pets: React.FC<props> = ({pets}) => {
                     </span>
                 </ActionChip>
             </BoxContainer>
-            {pets.map((pet)=>(
-                <Title>{pet.name}</Title>
-            ))}
+            
+                {pets && pets.length && <Title onClick={()=> {setActive(1)}}>{pets[active].name}</Title>}
+            
         </PetsContainer>
             
     
@@ -77,6 +79,7 @@ const PetsContainer = styled.div<{ mainColor?: string, contrast?: string }>`
                 mainColor ? mainColor : "var(--ion-color-primary)"};
             &.pet-box {
                 border: 3px solid var(--ion-background-color);
+                background-color: var(--ion-background-color);
             }
         }
     }
@@ -104,6 +107,7 @@ const PetsBox = styled.div`
     margin: 40px 0 0 0;
     aspect-ratio: 1;
     z-index:3;
+    position:relative;
     border-radius: 500px;
     @media only screen and (max-width: 420px) {
         width: 170px;
@@ -114,10 +118,24 @@ const PetsBox = styled.div`
     @media only screen and (max-width: 350px) {
         width: 120px;
     }
+    overflow: hidden;
     > .img2x {
         width: 100%;
         height: 100%;
+        position: absolute;
+        top:-100%;
+        left: -100%;
+        transition: top 1s ease-in, left 1s ease-in;
     }
+    &.active{
+        top:0;
+        left: 0;
+        > .img2x {
+            top:0;
+            left: 0;
+        }
+    }
+    
 `;
 
 const ActionChip = styled.span`
