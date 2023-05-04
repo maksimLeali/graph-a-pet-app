@@ -8,6 +8,8 @@ http://ionicframework.com/docs/theming/ */
   --ion-background-color: #fff;
   --max-width: 480px;
 
+  --ion-color-white: #FFFFFF;
+  --ion-color-black: #2B2B2B;
   /** primary **/
   --ion-color-primary: #18a065;
 	--ion-color-primary-rgb: 24,160,101;

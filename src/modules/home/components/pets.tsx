@@ -12,12 +12,7 @@ type props ={
 }
 
 export const Pets: React.FC<props> = ({pets}) => {
-    const id = 'd9e67d28-b4e9-4f91-ad8b-680d5d91a765'
-    const mainColor = {
-        "color": "#4A588F",
-        "contrast": "#FFFFFF"
-    }
-
+    
    useEffect(()=>{
     console.log(pets)
    }, [pets])
@@ -25,8 +20,8 @@ export const Pets: React.FC<props> = ({pets}) => {
     return (
         <>
         {pets.map((pet)=>(
-        <PetsContainer mainColor={pet.main_picture!.main_color!.color} contrast={pet.main_picture!.main_color!.contrast}> 
-            <BoxContainer>
+        <PetsContainer mainColor={pet.main_picture?.main_color?.color ?? 'var(--ion-color-primary)'} contrast={pet.main_picture?.main_color?.contrast ?? 'var(--ion-color-white)'}> 
+            <BoxContainer> 
                 <PetsBox className="pet-box">
                     <Image2x id={pet.main_picture!.id} />
                 </PetsBox>
