@@ -3,21 +3,32 @@ import { Icon, Image2x } from "../../../components";
 import { FastAverageColor } from "fast-average-color";
 import { useCallback, useEffect, useState } from "react";
 import { config } from "../../../config";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 
-export const Pets: React.FC = () => {
+
+type props ={
+    pets: DashboardPetFragment[]
+}
+
+export const Pets: React.FC<props> = ({pets}) => {
     const id = 'd9e67d28-b4e9-4f91-ad8b-680d5d91a765'
     const mainColor = {
         "color": "#4A588F",
         "contrast": "#FFFFFF"
     }
 
-   
+   useEffect(()=>{
+    console.log(pets)
+   }, [pets])
 
     return (
-        <PetsContainer mainColor={mainColor.color} contrast={mainColor.contrast}> 
+        <>
+        {pets.map((pet)=>(
+        <PetsContainer mainColor={pet.main_picture!.main_color!.color} contrast={pet.main_picture!.main_color!.contrast}> 
             <BoxContainer>
                 <PetsBox className="pet-box">
-                    <Image2x id={id} />
+                    <Image2x id={pet.main_picture!.id} />
                 </PetsBox>
                 <ActionChip className="top left">
                     <Icon name="bookOutline" color='var(--ion-color-dark)' />
@@ -44,8 +55,12 @@ export const Pets: React.FC = () => {
                     </span>
                 </ActionChip>
             </BoxContainer>
-            <Title>{"rayetta"}</Title>
+            <Title>{pet.name}</Title>
         </PetsContainer>
+            
+            ))
+            }
+        </>
     );
 };
 

@@ -1,0 +1,44 @@
+fragment DashboardPet on Pet {
+    name
+    id
+    main_picture{
+        id
+        main_color{
+            color
+            contrast
+        }
+        main_colors{
+            color
+            contrast
+        }
+        url
+        ref_id
+    }
+    health_card {
+        id
+        treatments(
+            commonSearch: {
+                filters: {
+                    ranges: [
+                        {
+                            key: "date"
+                            value: { min: $date_from, max: $date_to }
+                        }
+                    ]
+                }
+            }
+        ) {
+            items {
+                id
+                date
+                name
+                type
+            }
+            success
+            error {
+                code
+                message
+            }
+        }
+    }
+}

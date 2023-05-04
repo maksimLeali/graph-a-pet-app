@@ -10,7 +10,7 @@ import './i18n'
 import _ from 'lodash'
 import toast from 'react-hot-toast';
 import { config } from './config';
-
+import Cookies from 'js-cookie';
 // const [cookies, setCookies, removeCookie] = useCookies(['jwt'])
 
 const root = ReactDOM.createRoot(
@@ -21,16 +21,17 @@ const httpLink = createHttpLink({
   uri: config.baseUrl,
 })
 
-// const authLink = setContext((_, { headers }) => {
+const authLink = setContext((_, { headers }) => {
   
-//   const token = cookies.jwt
-//   return {
-//     headers: {
-//       ...headers,
-//       authorization: token ? `Bearer ${token}` : '',
-//     },
-//   }
-// })
+  const token = Cookies.get('jwt')
+  console.log('token', token)
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  }
+})
 
 
 
@@ -50,7 +51,7 @@ const httpLink = createHttpLink({
 // })
 
 export const apolloClient = new ApolloClient({
-  link: from([  httpLink]),
+  link: from([ authLink, httpLink,]),
   cache: new InMemoryCache(),
 })
 

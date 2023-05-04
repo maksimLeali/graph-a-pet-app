@@ -5,35 +5,7 @@ query getUserDashboard( $date_from: String!, $date_to: String! ) {
 				items {
 					id
 					pet {
-						name
-						id
-						health_card {
-							id
-							treatments(
-								commonSearch: {
-									filters: {
-										ranges: [
-											{
-												key: "date"
-												value: { min: $date_from, max: $date_to }
-											}
-										]
-									}
-								}
-							) {
-								items {
-									id
-									date
-									name
-									type
-								}
-								success
-								error {
-									code
-									message
-								}
-							}
-						}
+						...DashboardPet
 					}
 				}
 				success
