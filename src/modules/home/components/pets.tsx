@@ -18,13 +18,14 @@ export const Pets: React.FC<props> = ({pets}) => {
    }, [pets])
 
     return (
-        <>
-        {pets.map((pet)=>(
-        <PetsContainer mainColor={pet.main_picture?.main_color?.color ?? 'var(--ion-color-primary)'} contrast={pet.main_picture?.main_color?.contrast ?? 'var(--ion-color-white)'}> 
+        
+        <PetsContainer mainColor={'var(--ion-color-primary)'} contrast={'var(--ion-color-white)'}> 
             <BoxContainer> 
-                <PetsBox className="pet-box">
-                    <Image2x id={pet.main_picture!.id} />
-                </PetsBox>
+                {pets.map((pet)=>(
+                    <PetsBox className="pet-box">
+                        <Image2x id={pet.main_picture!.id} />
+                    </PetsBox>
+                ))}
                 <ActionChip className="top left">
                     <Icon name="bookOutline" color='var(--ion-color-dark)' />
                     <span>
@@ -50,12 +51,12 @@ export const Pets: React.FC<props> = ({pets}) => {
                     </span>
                 </ActionChip>
             </BoxContainer>
-            <Title>{pet.name}</Title>
+            {pets.map((pet)=>(
+                <Title>{pet.name}</Title>
+            ))}
         </PetsContainer>
             
-            ))
-            }
-        </>
+    
     );
 };
 
