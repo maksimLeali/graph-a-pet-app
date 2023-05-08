@@ -51,7 +51,7 @@ export const Home: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <Pets pets={pets} />
+               { pets && pets.length && <Pets pets={pets} />}
             </IonContent>
         </Container>
     );
