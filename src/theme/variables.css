@@ -242,3 +242,61 @@ http://ionicframework.com/docs/theming/ */
     --ion-card-background: #1e1e1e;
   }
 }
+
+
+@keyframes activate-left {
+  0% {
+    top: -1000px;
+    left: 0;
+  }
+  10%{
+    top: 0;
+    left: 500px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes activate-rigth {
+  0% {
+    top: -1000px;
+    right: 0;
+  }
+  10%{
+    top: 0;
+    right: 500px;
+  }
+  100% {
+    right: 0;
+  }
+}
+
+@keyframes deactivate-left {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  90%{
+    left: 500px;
+  }
+  100% {
+    top:-1000px ;
+    left: 0;
+  }
+}
+
+@keyframes deactivate-rigth {
+  0% {
+    top: 0;
+    right: 0;
+  }
+  90%{
+    right: 500px;
+  }
+  100% {
+    top:-1000px ;
+    right: 0;
+  }
+}
+
