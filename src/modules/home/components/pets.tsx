@@ -151,10 +151,10 @@ const PetsBox = styled.div<{direction?: 'clock' | 'counter' }>`
         &.deactivated {
             top:-1000px;
             left: -0;
-            animation:  deactivate-${({direction})=> direction } 1.5s linear;
+            animation:  deactivate-${({direction})=> direction } 1.5s ease-in-out;
         }
         &.active{
-                animation:activate-${({direction})=> direction } 1.5s linear;
+                animation:activate-${({direction})=> direction } 1.5s cubic-bezier(0.05, 0.4, 0, 1);
                 top:0;
                 left: 0;
             }
