@@ -244,40 +244,41 @@ http://ionicframework.com/docs/theming/ */
 }
 
 
-@keyframes activate-left {
+@keyframes activate-counter {
   0% {
     top: -1000px;
     left: 0;
   }
-  10%{
+  15%{
+    top: 0;
+    left: -500px;
+  }
+  50% {
+    left: 0;
+  }
+}
+
+@keyframes activate-clock {
+  0% {
+    top: -1000px;
+    left: 0
+  }
+  15%{
     top: 0;
     left: 500px;
   }
-  100% {
+  50% {
     left: 0;
   }
 }
 
-@keyframes activate-rigth {
+@keyframes deactivate-counter {
   0% {
-    top: -1000px;
-    right: 0;
-  }
-  10%{
-    top: 0;
-    right: 500px;
-  }
-  100% {
-    right: 0;
-  }
-}
-
-@keyframes deactivate-left {
-  0% {
-    top: 0;
+    top:0;
     left: 0;
   }
   90%{
+    top:0;
     left: 500px;
   }
   100% {
@@ -286,17 +287,18 @@ http://ionicframework.com/docs/theming/ */
   }
 }
 
-@keyframes deactivate-rigth {
+@keyframes deactivate-clock {
   0% {
-    top: 0;
-    right: 0;
+    top:0 ;
+    left: 0;
   }
   90%{
-    right: 500px;
+    top:0;
+    left: -500px;
   }
   100% {
     top:-1000px ;
-    right: 0;
+    left: 0;
   }
 }
 

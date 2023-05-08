@@ -14,20 +14,30 @@ type props ={
 export const Pets: React.FC<props> = ({pets}) => {
     
     const [active, setActive ]= useState(0)
-
+    const [prev, setprev ]= useState(0)
+    const [direction, setDirection] = useState<'clock' | 'counter'>('clock')
    useEffect(()=>{
     console.log(pets)
    }, [pets])
 
+   const changeMain = (i: number)=> {
+    if(i !== active){
+        setprev(active)
+        setDirection(i < active ? 'counter' : 'clock' )
+        setActive(i)
+        
+    }
+   }
+
     return (
         
-        <PetsContainer mainColor={'var(--ion-color-primary)'} contrast={'var(--ion-color-white)'}> 
+        <PetsContainer mainColor={pets[active]?.main_picture?.main_color?.color ?? 'var(--ion-color-primary)'} contrast={pets[active]?.main_picture?.main_color?.color ??'var(--ion-color-white)'}> 
             <BoxContainer> 
-                {pets.map((pet, i)=>(
-                    <PetsBox className={`pet-box ${i == active ? 'active' : ''}`} >
-                        <Image2x id={pet.main_picture!.id} />
+                    <PetsBox className="pet-box" direction={direction}>
+                        {pets.map((pet, i)=>(
+                        <Image2x id={pet.main_picture!.id} className={`${i==prev? 'deactivated' : ''} ${i == active ? 'active' : ''}`}/>
+                        ))}
                     </PetsBox>
-                ))}
                 <ActionChip className="top left">
                     <Icon name="bookOutline" color='var(--ion-color-dark)' />
                     <span>
@@ -54,7 +64,15 @@ export const Pets: React.FC<props> = ({pets}) => {
                 </ActionChip>
             </BoxContainer>
             
-                {pets && pets.length && <Title onClick={()=> {setActive(1)}}>{pets[active].name}</Title>}
+                {pets && pets.length && <Title>{pets[active].name}</Title>}
+
+                
+                    <DotsContainer>
+                    { pets && pets.length && pets.map((pet, i)=> (
+                        <PetDot className={`pet-dot ${i == active ?'active' : ''}`} onClick={()=> changeMain(i)}/>
+                    )) }
+                    </DotsContainer>
+                
             
         </PetsContainer>
             
@@ -71,25 +89,28 @@ const PetsContainer = styled.div<{ mainColor?: string, contrast?: string }>`
     align-items: center;
     padding-top: 10px;
     > * {
-        
         > * {
+            transition: color 1s ease-in, background-color 1s ease-in;
             color:  ${({ contrast }) =>
                 contrast ? contrast : "var(--ion-color-primary)"};
             background-color: ${({ mainColor }) =>
                 mainColor ? mainColor : "var(--ion-color-primary)"};
             &.pet-box {
+                transition: color 1s ease-in, background-color 1s ease-in;
                 border: 3px solid var(--ion-background-color);
                 background-color: var(--ion-background-color);
             }
         }
     }
     > h1 {
+        transition: color 1s ease-in, background-color 1s ease-in;
         color:  ${({ contrast }) =>
                 contrast ? contrast : "var(--ion-color-primary)"};
         background-color: ${({ mainColor }) =>
             mainColor ? mainColor : "var(--ion-color-primary)"};
     }
     * {
+        transition: color 1s ease-in, background-color 1s ease-in;
         color: #fff!important;
     }
 `;
@@ -102,13 +123,15 @@ const BoxContainer = styled.div`
     box-sizing: border-box;
     position: relative;
 `;
-const PetsBox = styled.div`
+const PetsBox = styled.div<{direction?: 'clock' | 'counter' }>`
     width: 200px;
     margin: 40px 0 0 0;
     aspect-ratio: 1;
     z-index:3;
     position:relative;
     border-radius: 500px;
+    overflow: hidden;
+    display: flex;
     @media only screen and (max-width: 420px) {
         width: 170px;
     }
@@ -123,18 +146,20 @@ const PetsBox = styled.div`
         width: 100%;
         height: 100%;
         position: absolute;
-        top:-100%;
-        left: -100%;
-        transition: top 1s ease-in, left 1s ease-in;
-    }
-    &.active{
-        top:0;
-        left: 0;
-        > .img2x {
-            top:0;
-            left: 0;
+        top:-1000px;
+        left: -0;
+        &.deactivated {
+            top:-1000px;
+            left: -0;
+            animation:  deactivate-${({direction})=> direction } 1.5s linear;
         }
-    }
+        &.active{
+                animation:activate-${({direction})=> direction } 1.5s linear;
+                top:0;
+                left: 0;
+            }
+        }
+    
     
 `;
 
@@ -207,5 +232,29 @@ const Title = styled.h1`
     padding: 4px 30px;
     border-radius: 4px;
     width: fit-content;
+    margin-bottom :80px;
     text-transform: uppercase;
 `;
+
+
+const DotsContainer = styled.div`
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    padding: 0 20%;
+    
+`
+
+const PetDot = styled.span`
+    width: 22px;
+    height: 22px;
+    border-radius: 15px;
+    
+    border: 1px solid var(--ion-color-dark);
+    &.active{
+        
+        border: 2px solid var(--ion-color-dark)
+    }
+
+
+`
