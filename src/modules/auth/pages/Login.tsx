@@ -1,51 +1,62 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { useCookies } from "react-cookie";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TextInput } from "../../../components";
-import { apolloClient } from "../../../main";
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
+import { useHistory } from "react-router";
 
 
-export const Login = () => {
+export const Login: React.FC = ()  => {
     const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
-
-    const { t } = useTranslation();
-    if (window.PublicKeyCredential) {
-    
-        // do your webauthn stuff
-        
-      } else {
-        // wah-wah, back to passwords for you
-      }
+    const [cookie, setCookie] = useCookies(["jwt"]);
+    const history = useHistory()
+    let timeout: string | number | NodeJS.Timeout | null | undefined = null;
     const [login, { loading }] = useLoginMutation({
         onCompleted: ({ login }) => {
             console.log("completed");
+            console.log(login)
             if (login.error) {
                 toast.error(t("errors.login"));
                 return;
             }
+            console.log('*****')
             if (login.user && login.token) {
-                const [cookie, setCookie] = useCookies(["jwt"]);
+                
                 setCookie("jwt", login.token);
             }
+            toast.success(t("success.login"))
+            timeout = setTimeout(()=> {
+                if(timeout) clearTimeout(timeout);
+                return history.push('/home')
+            }, 500)
+
         },
         onError: (error) => {
+            console.log(error)
             toast.error(t("errors.login"));
         },
     });
+   
+    const { t } = useTranslation();
+    // if (window.PublicKeyCredential) {
+    
+    //     // do your webauthn stuff
+        
+    //   } else {
+    //     // wah-wah, back to passwords for you
+    //   }
+    // login({variables: {email: "mario", password: 'pp'}})
+    
 
     return (
+        
         <Container>
             <Form
-                onSubmit={handleSubmit((variables) => {
-                    console.log("vars", variables);
-                    console.log(apolloClient);
-                    return login({ variables } as any);
-                })}
+                onSubmit={handleSubmit((variables) => login({ variables } as any))}
             >
                 <TextInput
                     name="email"
@@ -54,8 +65,9 @@ export const Login = () => {
                 />
                 <TextInput type='password' name="password" innerRef={register} ntTextLabel="Password"/>
                 <IonButton type="submit" >{"Login"} </IonButton>
+
             </Form>
-        </Container>
+      </Container>
     );
 };
 
@@ -64,6 +76,10 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     height: 100%;
+    > button {
+        width: 100px;
+        height: 30px;
+    }
 `;
 
 const Form = styled.form`

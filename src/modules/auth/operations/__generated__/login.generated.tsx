@@ -13,7 +13,7 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login: (
     { __typename?: 'NewTokenResult' }
-    & Pick<Types.NewTokenResult, 'token'>
+    & Pick<Types.NewTokenResult, 'token' | 'success'>
     & { error?: Types.Maybe<(
       { __typename?: 'Error' }
       & Pick<Types.Error, 'code' | 'message' | 'extra'>
@@ -29,6 +29,7 @@ export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     token
+    success
     error {
       code
       message

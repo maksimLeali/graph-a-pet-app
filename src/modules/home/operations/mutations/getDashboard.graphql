@@ -1,0 +1,38 @@
+query getUserDashboard( $date_from: String!, $date_to: String! ) {
+	getUserDashboard {
+		dashboard {
+			ownerships {
+				items {
+					id
+					pet {
+						...DashboardPet
+					}
+				}
+				success
+				error {
+					code
+					message
+				}
+			}
+			reports {
+				items {
+					id
+					created_at
+					place
+					latitude
+					longitude
+				}
+				success
+				error {
+					code
+					message
+				}
+			}
+		}
+		success
+		error {
+			code
+			message
+		}
+	}
+}

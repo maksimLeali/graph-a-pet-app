@@ -8,6 +8,8 @@ http://ionicframework.com/docs/theming/ */
   --ion-background-color: #fff;
   --max-width: 480px;
 
+  --ion-color-white: #FFFFFF;
+  --ion-color-black: #2B2B2B;
   /** primary **/
   --ion-color-primary: #18a065;
 	--ion-color-primary-rgb: 24,160,101;
@@ -240,3 +242,63 @@ http://ionicframework.com/docs/theming/ */
     --ion-card-background: #1e1e1e;
   }
 }
+
+
+@keyframes activate-counter {
+  0% {
+    top: -1000px;
+    left: 0;
+  }
+  15%{
+    top: 0;
+    left: -500px;
+  }
+  50% {
+    left: 0;
+  }
+}
+
+@keyframes activate-clock {
+  0% {
+    top: -1000px;
+    left: 0
+  }
+  15%{
+    top: 0;
+    left: 500px;
+  }
+  50% {
+    left: 0;
+  }
+}
+
+@keyframes deactivate-counter {
+  0% {
+    top:0;
+    left: 0;
+  }
+  90%{
+    top:0;
+    left: 500px;
+  }
+  100% {
+    top:-1000px ;
+    left: 0;
+  }
+}
+
+@keyframes deactivate-clock {
+  0% {
+    top:0 ;
+    left: 0;
+  }
+  90%{
+    top:0;
+    left: -500px;
+  }
+  100% {
+    top:-1000px ;
+    left: 0;
+  }
+}
+

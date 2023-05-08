@@ -1,7 +1,7 @@
 
 import { IonIcon } from "@ionic/react";
 import styled, { CSSObject } from "styled-components";
-import { IconName } from "./IconName";
+import { IconName } from "./iconName";
 import * as Icons from 'ionicons/icons'
 
 

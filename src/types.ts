@@ -226,12 +226,25 @@ export type ListFilter = {
   value: Array<Maybe<Scalars['String']>>;
 };
 
+export type MainColor = {
+  __typename?: 'MainColor';
+  color: Scalars['String'];
+  contrast: Scalars['String'];
+};
+
+export type MainColorCreate = {
+  color: Scalars['String'];
+  contrast?: Maybe<Scalars['String']>;
+};
+
 export type Media = {
   __typename?: 'Media';
   id: Scalars['ID'];
   url: Scalars['String'];
   type: Scalars['String'];
   scope: Scalars['String'];
+  main_color?: Maybe<MainColor>;
+  main_colors?: Maybe<Array<MainColor>>;
   ref_id: Scalars['String'];
 };
 
@@ -239,6 +252,8 @@ export type MediaCreate = {
   url: Scalars['String'];
   scope: Scalars['String'];
   ref_id: Scalars['String'];
+  main_colors?: Maybe<Array<Maybe<MainColorCreate>>>;
+  main_color?: Maybe<MainColorCreate>;
   type: Scalars['String'];
 };
 
@@ -253,6 +268,8 @@ export type MediaUpdate = {
   url?: Maybe<Scalars['String']>;
   scope?: Maybe<Scalars['String']>;
   ref_id?: Maybe<Scalars['String']>;
+  main_colors?: Maybe<Array<Maybe<MainColorCreate>>>;
+  main_color?: Maybe<MainColorCreate>;
   type?: Maybe<Scalars['String']>;
 };
 
@@ -546,6 +563,7 @@ export type Pet = {
   diet?: Maybe<Array<Maybe<Scalars['String']>>>;
   intollerance?: Maybe<Array<Maybe<Scalars['String']>>>;
   disciplines?: Maybe<Array<Maybe<Scalars['String']>>>;
+  main_picture?: Maybe<Media>;
 };
 
 
@@ -654,6 +672,7 @@ export type Query = {
   getGroupedStatistics: StatisticsResult;
   getDamnatioMemoriae?: Maybe<DamnatioMemoriaeResult>;
   listDamnationesMemoriae?: Maybe<PaginatedDamnationesMemoriae>;
+  getUserDashboard: UserDashboardResult;
 };
 
 
@@ -941,10 +960,16 @@ export type User = {
   pets_on_loan: Scalars['Int'];
   last_activity?: Maybe<Scalars['String']>;
   profile_picture?: Maybe<Media>;
+  reports?: Maybe<PaginatedReports>;
 };
 
 
 export type UserOwnershipsArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type UserReportsArgs = {
   commonSearch?: Maybe<CommonSearch>;
 };
 
@@ -953,6 +978,30 @@ export type UserCreate = {
   last_name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type UserDashboard = {
+  __typename?: 'UserDashboard';
+  user_id?: Maybe<Scalars['String']>;
+  ownerships?: Maybe<PaginatedOwnerships>;
+  reports?: Maybe<PaginatedReports>;
+};
+
+
+export type UserDashboardOwnershipsArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type UserDashboardReportsArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+export type UserDashboardResult = {
+  __typename?: 'UserDashboardResult';
+  dashboard?: Maybe<UserDashboard>;
+  error?: Maybe<Error>;
+  success?: Maybe<Scalars['Boolean']>;
 };
 
 export type UserResult = {

@@ -17,20 +17,20 @@ export const AuthenticatedRoute = ({
   }) => {
     const [cookies, setCookie ] = useCookies(['jwt'])
     console.log(cookies.jwt)
-
+    
     return (
       <Route
         {...rest}
         render={(props) => {
-          return (
-          // return cookies.jwt ? (
+          // return (
+          return cookies.jwt ? (
             <MainLayout >
               <Component {...props} />
             </MainLayout>
           ) 
-          // : (
-          //   <Redirect to="/auth/login" />
-          // );
+          : (
+            <Redirect to="/auth/login" />
+          );
         }}
       />
     );
