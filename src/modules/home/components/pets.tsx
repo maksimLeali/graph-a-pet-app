@@ -31,7 +31,7 @@ export const Pets: React.FC<props> = ({pets}) => {
 
     return (
         
-        <PetsContainer mainColor={pets[active]?.main_picture?.main_color?.color ?? 'var(--ion-color-primary)'} contrast={pets[active]?.main_picture?.main_color?.color ??'var(--ion-color-white)'}> 
+        <PetsContainer mainColor={pets[active]?.main_picture?.main_color?.color ?? 'var(--ion-color-primary)'} contrast={pets[active]?.main_picture?.main_color?.contrast ??'var(--ion-color-white)'}> 
             <BoxContainer> 
                     <PetsBox className="pet-box" direction={direction}>
                         {pets.map((pet, i)=>(
