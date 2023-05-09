@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "graph-a-pet-app"
+  },
+  "targets": {
+    "graph-a-pet-app": {
+      "hosting": {
+        "dev": [
+          "graph-a-pet-app"
+        ]
+      }
+    }
+  }
+}

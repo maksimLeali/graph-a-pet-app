@@ -20,6 +20,11 @@
         "at_least_a_number": "Almeno un numero",
         "logout": "Logout"
       },
+      "users": {
+        "general": {
+          "empty_list": "Nessun elemento"
+        }
+      },
       "actions": {
         "cancel": "Annulla",
         "confirm": "Conferma",
