@@ -34,12 +34,17 @@ const List = styled.div`
 const Item = styled.div`
     width:100%;
     border-bottom: 1px solid var(--ion-color-medium);
-    height: 50px;
+    height: 90px;
     display: flex;
 `
 const UserImageBox = styled.div`
-    width: 50px;
+    width: 90px;
     margin-right:10px;
+    padding: 15px;
+    > .img2x {
+        width: 100%;
+        height: 100%;
+    }
 `
 
 const DescBox = styled.div`

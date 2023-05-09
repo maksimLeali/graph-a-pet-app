@@ -58,9 +58,10 @@ export const Pets: React.FC<props> = ({ pets }) => {
             {openModal && (
                 <Modal
                     onClose={() => setOpenModal(false)}
-                    onConfirm={() => setOpenModal(false)}
                 >
-                    <SubOwnerList ownerships={pets[active].ownerships?.items ?? []} />
+                    <SubOwnerList
+                        ownerships={pets[active].ownerships?.items ?? []}
+                    />
                 </Modal>
             )}
             <BoxContainer>
@@ -169,6 +170,7 @@ const BoxContainer = styled.div`
     padding: 20px;
     box-sizing: border-box;
     position: relative;
+    z-index:0;
 `;
 const PetsBox = styled.div<{ direction?: "clock" | "counter" }>`
     width: 200px;
