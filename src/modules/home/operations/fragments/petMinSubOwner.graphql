@@ -1,0 +1,22 @@
+fragment petMinSubOwner on Ownership{
+        id
+        user {
+            id
+            first_name
+            email
+            last_name
+            profile_picture{
+                id
+                scope
+                main_colors{
+                    color
+                    contrast
+                }
+                main_color{
+                    color
+                    contrast
+                }
+            }
+        }
+    
+}

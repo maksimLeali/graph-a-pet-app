@@ -1,109 +1,126 @@
 import styled from "styled-components";
-import { Icon, Image2x } from "../../../components";
+import { Icon, Image2x, Modal } from "../../../components";
 import { FastAverageColor } from "fast-average-color";
 import { useCallback, useEffect, useState } from "react";
 import { config } from "../../../config";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 import { useSwipe } from "../../../hooks";
+import { SubOwnerList } from "./SubOwnersList";
 
+type props = {
+    pets: DashboardPetFragment[];
+};
 
-type props ={
-    pets: DashboardPetFragment[]
-}
+export const Pets: React.FC<props> = ({ pets }) => {
+    const [active, setActive] = useState(0);
+    const [prev, setprev] = useState(0);
+    const [direction, setDirection] = useState<"clock" | "counter">("clock");
+    const [openModal, setOpenModal] = useState(false);
 
-export const Pets: React.FC<props> = ({pets}) => {
-    
-    const [active, setActive ]= useState(0)
-    const [prev, setprev ]= useState(0)
-    const [direction, setDirection] = useState<'clock' | 'counter'>('clock')
-    
-    const onLeft = useCallback(
-        () =>changeMain(active +1),
-        [active]
-      );
-      const onRight = useCallback(
-        () =>changeMain(active -1),
-        [active]
-      );
-      const { handleTouchStart, handleTouchMove } = useSwipe({
+    const onLeft = useCallback(() => changeMain(active + 1), [active]);
+    const onRight = useCallback(() => changeMain(active - 1), [active]);
+    const { handleTouchStart, handleTouchMove } = useSwipe({
         onLeft,
         onRight,
-      });
-    
+    });
 
-
-
-   const changeMain = (i: number)=> {
-    if(i !== active){
-        console.log(i)
-        console.log(active)
-        setprev(active)
-        setDirection(i < active ? 'counter' : 'clock' )
-        if(i<0){
-            console.log(pets.length-1)
-            return setActive(pets.length-1)
+    const changeMain = (i: number) => {
+        if (i !== active) {
+            console.log(i);
+            console.log(active);
+            setprev(active);
+            setDirection(i < active ? "counter" : "clock");
+            if (i < 0) {
+                console.log(pets.length - 1);
+                return setActive(pets.length - 1);
+            }
+            if (i >= pets.length) {
+                return setActive(0);
+            }
+            return setActive(i);
         }
-        if(i>= pets.length){
-          return setActive(0)
-        }
-        return setActive(i)
-        
-    }
-   }
+    };
 
     return (
-        
-        <PetsContainer  onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} mainColor={pets[active]?.main_picture?.main_color?.color ?? 'var(--ion-color-primary)'} contrast={pets[active]?.main_picture?.main_color?.contrast ??'var(--ion-color-white)'}> 
-            <BoxContainer> 
-                    <PetsBox className="pet-box" direction={direction}>
-                        {pets.map((pet, i)=>(
-                        <Image2x id={pet.main_picture!.id} key={i} className={`${i==prev? 'deactivated' : ''} ${i == active ? 'active' : ''}`}/>
-                        ))}
-                    </PetsBox>
-                <ActionChip className="top left">
-                    <Icon name="bookOutline" color='var(--ion-color-dark)' />
-                    <span>
-                        {"Libretto"}
-                    </span>
+        <PetsContainer
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            mainColor={
+                pets[active]?.main_picture?.main_color?.color ??
+                "var(--ion-color-primary)"
+            }
+            contrast={
+                pets[active]?.main_picture?.main_color?.contrast ??
+                "var(--ion-color-white)"
+            }
+        >
+            {openModal && (
+                <Modal
+                    onClose={() => setOpenModal(false)}
+                    onConfirm={() => setOpenModal(false)}
+                >
+                    <SubOwnerList ownerships={pets[active].ownerships?.items ?? []} />
+                </Modal>
+            )}
+            <BoxContainer>
+                <PetsBox className="pet-box" direction={direction}>
+                    {pets.map((pet, i) => (
+                        <Image2x
+                            id={pet.main_picture!.id}
+                            key={i}
+                            className={`${i == prev ? "deactivated" : ""} ${
+                                i == active ? "active" : ""
+                            }`}
+                        />
+                    ))}
+                </PetsBox>
+                <ActionChip
+                    className="top left"
+                    onClick={() => setOpenModal(true)}
+                >
+                    <Icon name="peopleOutline" color="var(--ion-color-dark)" />
+                    <span>{"Affidatari"}</span>
                 </ActionChip>
                 <ActionChip className="top right">
-                <Icon name="calendarNumberOutline" color='var(--ion-color-dark)' />
-                    <span>
-                    {"Eventi"}
-                    </span>
+                    <Icon name="bookOutline" color="var(--ion-color-dark)" />
+                    <span>{"Libretto"}</span>
                 </ActionChip>
                 <ActionChip className="bottom left">
-                <Icon name="informationCircleOutline" color='var(--ion-color-dark)' />
-                    <span>
-                    {"Profilo"}
-                    </span>
+                    <Icon
+                        name="informationCircleOutline"
+                        color="var(--ion-color-dark)"
+                    />
+                    <span>{"Profilo"}</span>
                 </ActionChip>
                 <ActionChip className="bottom right">
-                <Icon name="shareOutline" color='var(--ion-color-dark)' mode="md"/>
-                    <span>
-                    {"Share"}
-                    </span>
+                    <Icon
+                        name="shareOutline"
+                        color="var(--ion-color-dark)"
+                        mode="md"
+                    />
+                    <span>{"Share"}</span>
                 </ActionChip>
             </BoxContainer>
-            
-                {pets && pets.length && <Title>{pets[active].name}</Title>}
 
-                
-                    <DotsContainer>
-                    { pets && pets.length && pets.map((pet, i)=> (
-                        <PetDot key={i} className={`pet-dot ${i == active ?'active' : ''}`} onClick={()=> changeMain(i)}/>
-                    )) }
-                    </DotsContainer>
-                
-            
+            {pets && pets.length && <Title>{pets[active].name}</Title>}
+
+            <DotsContainer>
+                {pets &&
+                    pets.length &&
+                    pets.map((pet, i) => (
+                        <PetDot
+                            key={i}
+                            className={`pet-dot ${i == active ? "active" : ""}`}
+                            onClick={() => changeMain(i)}
+                        />
+                    ))}
+            </DotsContainer>
         </PetsContainer>
-            
-    
     );
 };
 
-const PetsContainer = styled.div<{ mainColor?: string, contrast?: string }>`
+const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -114,17 +131,16 @@ const PetsContainer = styled.div<{ mainColor?: string, contrast?: string }>`
     > * {
         > * {
             transition: color 1s ease-in, background-color 1s ease-in;
-            color:  ${({ contrast }) =>
+            color: ${({ contrast }) =>
                 contrast ? contrast : "var(--ion-color-primary)"};
             background-color: ${({ mainColor }) =>
                 mainColor ? mainColor : "var(--ion-color-primary)"};
-            &::after{
-            transition: color 1s ease-in, background-color 1s ease-in;
-            color:  ${({ contrast }) =>
-                contrast ? contrast : "var(--ion-color-primary)"};
-            background-color: ${({ mainColor }) =>
-                mainColor ? mainColor : "var(--ion-color-primary)"};
-
+            &::after {
+                transition: color 1s ease-in, background-color 1s ease-in;
+                color: ${({ contrast }) =>
+                    contrast ? contrast : "var(--ion-color-primary)"};
+                background-color: ${({ mainColor }) =>
+                    mainColor ? mainColor : "var(--ion-color-primary)"};
             }
             &.pet-box {
                 transition: color 1s ease-in, background-color 1s ease-in;
@@ -135,14 +151,14 @@ const PetsContainer = styled.div<{ mainColor?: string, contrast?: string }>`
     }
     > h1 {
         transition: color 1s ease-in, background-color 1s ease-in;
-        color:  ${({ contrast }) =>
-                contrast ? contrast : "var(--ion-color-primary)"};
+        color: ${({ contrast }) =>
+            contrast ? contrast : "var(--ion-color-primary)"};
         background-color: ${({ mainColor }) =>
             mainColor ? mainColor : "var(--ion-color-primary)"};
     }
     * {
         transition: color 1s ease-in, background-color 1s ease-in;
-        color: #fff!important;
+        color: #fff !important;
     }
 `;
 const BoxContainer = styled.div`
@@ -154,12 +170,12 @@ const BoxContainer = styled.div`
     box-sizing: border-box;
     position: relative;
 `;
-const PetsBox = styled.div<{direction?: 'clock' | 'counter' }>`
+const PetsBox = styled.div<{ direction?: "clock" | "counter" }>`
     width: 200px;
     margin: 40px 0 0 0;
     aspect-ratio: 1;
-    z-index:3;
-    position:relative;
+    z-index: 3;
+    position: relative;
     border-radius: 500px;
     overflow: hidden;
     display: flex;
@@ -177,21 +193,19 @@ const PetsBox = styled.div<{direction?: 'clock' | 'counter' }>`
         width: 100%;
         height: 100%;
         position: absolute;
-        top:-1000px;
+        top: -1000px;
         left: -0;
         &.deactivated {
-            top:-1000px;
+            top: -1000px;
             left: -0;
-            animation:  deactivate-${({direction})=> direction } 1.5s ease-in-out;
+            animation: deactivate-${({ direction }) => direction} 1.5s ease-in-out;
         }
-        &.active{
-                animation:activate-${({direction})=> direction } 1.5s cubic-bezier(0.05, 0.4, 0, 1);
-                top:0;
-                left: 0;
-            }
+        &.active {
+            animation: activate-${({ direction }) => direction} 1.5s cubic-bezier(0.05, 0.4, 0, 1);
+            top: 0;
+            left: 0;
         }
-    
-    
+    }
 `;
 
 const ActionChip = styled.span`
@@ -216,88 +230,79 @@ const ActionChip = styled.span`
     }
     @media only screen and (max-width: 350px) {
         height: 55px;
-        font-size: .9rem;
+        font-size: 0.9rem;
     }
-    &.left{
+    &.left {
         justify-content: start;
         left: 0;
     }
-    &.right{
+    &.right {
         right: 0%;
         justify-content: end;
-        flex-direction: row-reverse
+        flex-direction: row-reverse;
     }
-    &.top{
+    &.top {
         top: 24%;
         @media only screen and (max-width: 420px) {
-            top: 28%
+            top: 28%;
         }
         @media only screen and (max-width: 380px) {
-            top: 30%
-
+            top: 30%;
         }
         @media only screen and (max-width: 350px) {
             top: 32%;
         }
     }
-    &.bottom{
+    &.bottom {
         top: calc(24% + 93px);
         @media only screen and (max-width: 420px) {
             top: calc(28% + 79px);
-            
         }
         @media only screen and (max-width: 380px) {
             top: calc(30% + 69px);
-            
         }
         @media only screen and (max-width: 350px) {
             top: calc(32% + 59px);
-
         }
     }
-   
-    
 `;
 
 const Title = styled.h1`
     padding: 4px 30px;
     border-radius: 4px;
     width: fit-content;
-    margin-bottom :60px;
+    margin-bottom: 60px;
     text-transform: uppercase;
 `;
-
 
 const DotsContainer = styled.div`
     display: flex;
     justify-content: space-evenly;
     width: 100%;
     padding: 0 20%;
-    
-    
-`
+`;
 
 const PetDot = styled.span`
     width: 30px;
     height: 30px;
-    padding: 7px;
+    padding: 10px;
     box-sizing: border-box;
-    background-color: var(--ion-background-color) ;
-    &:after{
-        display:flex;
+    background-color: var(--ion-background-color);
+    transition: padding 0.2s ease-out;
+    &:after {
+        display: flex;
         content: "";
         width: 100%;
-        height:100%;
+        height: 100%;
 
         border-radius: 15px;
         border: 1px solid var(--ion-color-dark);
-        
     }
-    &.active::after{
+    &.active::after {
         content: "";
-        border: 2px solid var(--ion-color-dark)
-        
+        border: 2px solid var(--ion-color-dark);
     }
-
-
-`
+    &.active {
+        padding: 5px;
+    }
+`;

@@ -1,10 +1,18 @@
 import * as Types from '../../../../types.js';
 
+import { PetMinSubOwnerFragment } from './petMinSubOwner.generated';
 import { gql } from '@apollo/client';
+import { PetMinSubOwnerFragmentDoc } from './petMinSubOwner.generated';
 export type DashboardPetFragment = (
   { __typename?: 'Pet' }
   & Pick<Types.Pet, 'name' | 'id'>
-  & { main_picture?: Types.Maybe<(
+  & { ownerships?: Types.Maybe<(
+    { __typename?: 'PaginatedOwnerships' }
+    & { items: Array<Types.Maybe<(
+      { __typename?: 'Ownership' }
+      & PetMinSubOwnerFragment
+    )>> }
+  )>, main_picture?: Types.Maybe<(
     { __typename?: 'Media' }
     & Pick<Types.Media, 'id' | 'url' | 'ref_id'>
     & { main_color?: Types.Maybe<(
@@ -35,6 +43,13 @@ export const DashboardPetFragmentDoc = gql`
     fragment DashboardPet on Pet {
   name
   id
+  ownerships(
+    commonSearch: {filters: {lists: [{key: "custody_level", value: ["SUB_OWNER", "PET_SITTER"]}]}}
+  ) {
+    items {
+      ...petMinSubOwner
+    }
+  }
   main_picture {
     id
     main_color {
@@ -67,4 +82,4 @@ export const DashboardPetFragmentDoc = gql`
     }
   }
 }
-    `;
+    ${PetMinSubOwnerFragmentDoc}`;

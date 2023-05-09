@@ -20,6 +20,11 @@
         "at_least_a_number": "Almeno un numero",
         "logout": "Logout"
       },
+      "actions": {
+        "cancel": "Annulla",
+        "confirm": "Conferma",
+        "close": "Chiudi"
+      },
       "message": {
         "done": "Finito con successo",
         "success": {

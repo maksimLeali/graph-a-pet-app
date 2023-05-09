@@ -1,6 +1,19 @@
 fragment DashboardPet on Pet {
     name
     id
+    ownerships(commonSearch: {
+        filters: {
+            lists: [{
+                key: "custody_level",
+                value : [ "SUB_OWNER", "PET_SITTER"]
+            }]
+        }
+    }){
+        items {
+        ...petMinSubOwner
+        }
+        
+    }
     main_picture{
         id
         main_color{

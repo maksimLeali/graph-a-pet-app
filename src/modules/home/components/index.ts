@@ -1,1 +1,2 @@
-export { Pets } from './pets'
+export { Pets } from './Pets'
+export { SubOwnerList } from './SubOwnersList'
