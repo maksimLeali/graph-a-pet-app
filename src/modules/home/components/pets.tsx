@@ -9,13 +9,17 @@ import { useSwipe } from "../../../hooks";
 import { SubOwnerList } from "./SubOwnersList";
 import { ModalContextProvider, useModal } from "../../../components/system/ModalContext";
 import { useTranslation } from "react-i18next";
+import { PetMinSubOwnerFragment } from "../operations/__generated__/petMinSubOwner.generated";
 
 type props = {
     pets: DashboardPetFragment[];
 };
 
+
+
 export const Pets: React.FC<props> = ({ pets }) => {
     const [active, setActive] = useState(0);
+    // const [list, setList] = useState(()=>List([]))
     const [prev, setprev] = useState(0);
     const [direction, setDirection] = useState<"clock" | "counter">("clock");
     const {openModal, closeModal} = useModal()
@@ -25,6 +29,11 @@ export const Pets: React.FC<props> = ({ pets }) => {
         onLeft,
         onRight,
     });
+    const List = (ownerships: PetMinSubOwnerFragment[] )=> {
+        return  <>
+        {ownerships && <SubOwnerList ownerships={ownerships } onSelected= {(str)=> {console.log(str)}} />}
+        </>
+    }
     const {t} = useTranslation()
     const changeMain = (i: number) => {
         if (i !== active) {
@@ -45,16 +54,19 @@ export const Pets: React.FC<props> = ({ pets }) => {
     const modalOpen = useCallback(()=> {    
         openModal({
             onClose: ()=> closeModal(),
-            customActions: [{
-                action: ()=> {console.log('ciao pippo')},
-                
-                text:'pippo'
-            }],
-            children: SubOwnerList({ ownerships:pets[active].ownerships?.items ?? [], noItemText:t('users.general.empty_list') })
+            children: List(pets[active].ownerships!.items.filter(item=> item) as PetMinSubOwnerFragment[])
             });
         
-    },[active])
+    },[active ])
+
+    useEffect(()=> {
+        if(pets[active].ownerships){ 
+            // setList(()=> List(  ))
+        }
+    }, [active])
     
+  
+
     return (
        
         <PetsContainer

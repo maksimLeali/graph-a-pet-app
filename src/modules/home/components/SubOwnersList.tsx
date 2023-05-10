@@ -3,20 +3,22 @@ import { Image2x } from "../../../components";
 import { PetMinSubOwnerFragment } from "../operations/__generated__/petMinSubOwner.generated";
 import { Maybe } from "../../../types";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 type props = {
-    ownerships: Maybe<PetMinSubOwnerFragment>[];
-    noItemText: string
+    ownerships: PetMinSubOwnerFragment[];
+    onSelected: (v: string)=> void
 };
 
-export const SubOwnerList: React.FC<props> = ({ ownerships = [], noItemText= '' }) => {
-    
+export const SubOwnerList: React.FC<props> = ({ ownerships = [], onSelected}) => {
+    const { t } = useTranslation();
+    useEffect(()=>{console.log('ciao')}, [])
     const items = [1,2,3,4,5,6,7,8,9,10];
     return (
         <List>
             {ownerships.length ? (
                 items.map((ownership, i) => (
-                    <Item key={i}>
+                    <Item key={i} onClick={()=>onSelected('pippo')}>
                         <UserImageBox>
                             {ownerships[0]?.user.profile_picture && (
                                 <Image2x
@@ -34,7 +36,7 @@ export const SubOwnerList: React.FC<props> = ({ ownerships = [], noItemText= '' 
                     </Item>
                 ))
             ) : (
-                <h2>{noItemText}</h2>
+                <h2>{t('users.general.empty_list')}</h2>
             )}
         </List>
     );

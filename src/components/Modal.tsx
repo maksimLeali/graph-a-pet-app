@@ -13,7 +13,7 @@ export type ModalProps = {
     onConfirm?: () => void;
     bgColor?: string;
     txtColor?: string;
-    children?: React.ReactElement<any ,any> | null;
+    children?: React.ReactNode;
     customActions?: {
         action: () => void;
         txtColor?: string;
@@ -64,8 +64,9 @@ export const Modal: React.FC<ModalProps> = ({
                             {t("actions.cancel")}
                         </IonButton>
                     )}
-                    {customActions.map((customAction) => (
+                    {customActions.map((customAction,i) => (
                         <CustomIonButton
+                            key={i}
                             color={customAction.bgColor}
                             txtColor={customAction.txtColor}
                             onClick={() => customAction.action()}
@@ -87,7 +88,7 @@ export const Modal: React.FC<ModalProps> = ({
 const ModalBg = styled.div<{open:boolean}>`
     width: 100vw;
     height: 100vh;
-    background-color: #2b2b2b88;
+    background-color: #111d;
     position: fixed;
     display: flex;
     align-items: center;
