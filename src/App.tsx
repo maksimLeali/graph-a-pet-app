@@ -19,13 +19,14 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { Toaster } from 'react-hot-toast';
+import { AppContextProvider } from './components';
 
 setupIonicReact();
 
 const App: React.FC = () => (
 
     <IonApp>
-
+      <AppContextProvider>
       <Toaster
             toastOptions={{
               className: '',
@@ -35,6 +36,7 @@ const App: React.FC = () => (
             }}
             />
       <AppRouter/>
+      </AppContextProvider>
     </IonApp>
 );
 

@@ -16,7 +16,7 @@ export const AuthenticatedRoute = ({
     [key: string]: any;
   }) => {
     const [cookies, setCookie ] = useCookies(['jwt'])
-    console.log(cookies.jwt)
+    
     
     return (
       <Route

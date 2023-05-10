@@ -1,27 +1,29 @@
 import { IonButton } from "@ionic/react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Icon } from ".";
+import { Icon,  useModal } from ".";
 import { useOnClickOutside } from "../hooks";
-import { useRef } from "react";
-type props = {
+import { useContext, useEffect, useRef } from "react";
+
+
+export type ModalProps = {
+    open?:boolean
     onClose: () => void;
     onCancel?: () => void;
     onConfirm?: () => void;
     bgColor?: string;
     txtColor?: string;
-    children: React.ReactNode;
-    customActions?: [
-        {
-            action: () => void;
-            txtColor?: string;
-            bgColor?: string;
-            text: string;
-        }
-    ];
-};
+    children?: React.ReactElement<any ,any> | null;
+    customActions?: {
+        action: () => void;
+        txtColor?: string;
+        bgColor?: string;
+        text: string;
+    }[];
+}
 
-export const Modal: React.FC<props> = ({
+export const Modal: React.FC<ModalProps> = ({
+    open,
     onClose,
     onCancel,
     onConfirm,
@@ -31,12 +33,17 @@ export const Modal: React.FC<props> = ({
     customActions = [],
 }) => {
     const { t } = useTranslation();
-
     const ref = useRef<HTMLDivElement>(null);
-    useOnClickOutside(ref, onClose);
-
+    useOnClickOutside(ref, ()=>onClose() );
     return (
-        <ModalBg onClick={(e)=> {e.preventDefault(); e.stopPropagation()}}>
+        <ModalBg
+            className="ModalBg"
+            open={open ?? false}
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }}
+        >
             <ModalBox
                 ref={ref}
                 className="Modal"
@@ -47,7 +54,7 @@ export const Modal: React.FC<props> = ({
                     <Icon
                         name="close"
                         color="var(--ion-color-medium)"
-                        onClick={onClose}
+                        onClick={()=>onClose()}
                     />
                 </CloseContainer>
                 {children}
@@ -55,14 +62,13 @@ export const Modal: React.FC<props> = ({
                     {onCancel !== null && onCancel !== undefined && (
                         <IonButton color="danger" onClick={onCancel}>
                             {t("actions.cancel")}
-                            <Icon name="closeCircleOutline" color={txtColor} />
                         </IonButton>
                     )}
                     {customActions.map((customAction) => (
                         <CustomIonButton
                             color={customAction.bgColor}
                             txtColor={customAction.txtColor}
-                            onClick={() => customAction.action}
+                            onClick={() => customAction.action()}
                         >
                             {customAction.text}
                         </CustomIonButton>
@@ -70,7 +76,6 @@ export const Modal: React.FC<props> = ({
                     {onConfirm !== null && onConfirm !== undefined && (
                         <IonButton color="primary" onClick={onConfirm}>
                             {t("actions.confirm")}
-                            <Icon name="closeCircleOutline" color={txtColor} />
                         </IonButton>
                     )}
                 </Actions>
@@ -79,7 +84,7 @@ export const Modal: React.FC<props> = ({
     );
 };
 
-const ModalBg = styled.div`
+const ModalBg = styled.div<{open:boolean}>`
     width: 100vw;
     height: 100vh;
     background-color: #2b2b2b88;
@@ -87,27 +92,30 @@ const ModalBg = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: ${({open})=> open? 1000 : -1};
+    opacity: ${({open})=> open? 1 : 0};
     top: 0;
     left: 0;
     padding: 40px 10px;
-    
+    transition: opacity .5s ease-in-out;
     box-sizing: border-box;
 `;
 
 const ModalBox = styled.div<{ bgColor: string; txtColor: string }>`
     max-width: 460px;
     width: 100%;
+    max-height:90vh;
     border-radius: 4px;
     color: ${({ txtColor }) => txtColor};
     background-color: ${({ bgColor }) => bgColor}!important;
-    
 `;
 
 const CloseContainer = styled.div`
     width: 100%;
     height: fit-content;
     padding: 10px 5px;
+    height: 50px;
+    box-sizing: border-box;
     display: flex;
     justify-content: flex-end;
 `;
@@ -119,7 +127,7 @@ const CustomIonButton = styled(IonButton)<{ txtColor?: string }>`
 const Actions = styled.div`
     display: flex;
     justify-content: flex-end;
-    padding: 20px ;
+    padding: 20px;
     > *:first-child {
         justify-self: flex-start;
     }

@@ -24,7 +24,7 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
   
   const token = Cookies.get('jwt')
-  console.log('token', token)
+  
   return {
     headers: {
       ...headers,

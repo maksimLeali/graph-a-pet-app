@@ -6,16 +6,17 @@ import { useTranslation } from "react-i18next";
 
 type props = {
     ownerships: Maybe<PetMinSubOwnerFragment>[];
+    noItemText: string
 };
 
-export const SubOwnerList: React.FC<props> = ({ ownerships = [] }) => {
-    const { t } = useTranslation();
+export const SubOwnerList: React.FC<props> = ({ ownerships = [], noItemText= '' }) => {
+    
     const items = [1,2,3,4,5,6,7,8,9,10];
     return (
         <List>
             {ownerships.length ? (
                 items.map((ownership, i) => (
-                    <Item>
+                    <Item key={i}>
                         <UserImageBox>
                             {ownerships[0]?.user.profile_picture && (
                                 <Image2x
@@ -33,7 +34,7 @@ export const SubOwnerList: React.FC<props> = ({ ownerships = [] }) => {
                     </Item>
                 ))
             ) : (
-                <h2>{t("users.general.empty_list")}</h2>
+                <h2>{noItemText}</h2>
             )}
         </List>
     );
@@ -44,7 +45,7 @@ const List = styled.div`
     display: flex;
     flex-direction: column;
     border-top: 1px solid var(--ion-color-medium);
-    max-height:60vh;
+    max-height:calc(90vh - 140px);
     overflow-y: scroll;
     flex-flow: wrap;
     scroll-behavior: smooth;

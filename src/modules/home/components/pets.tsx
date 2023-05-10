@@ -1,12 +1,14 @@
 import styled from "styled-components";
 import { Icon, Image2x, Modal } from "../../../components";
 import { FastAverageColor } from "fast-average-color";
-import { useCallback, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState, Dispatch } from "react";
 import { config } from "../../../config";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 import { useSwipe } from "../../../hooks";
 import { SubOwnerList } from "./SubOwnersList";
+import { ModalContextProvider, useModal } from "../../../components/system/ModalContext";
+import { useTranslation } from "react-i18next";
 
 type props = {
     pets: DashboardPetFragment[];
@@ -16,19 +18,16 @@ export const Pets: React.FC<props> = ({ pets }) => {
     const [active, setActive] = useState(0);
     const [prev, setprev] = useState(0);
     const [direction, setDirection] = useState<"clock" | "counter">("clock");
-    const [openModal, setOpenModal] = useState(false);
-
+    const {openModal, closeModal} = useModal()
     const onLeft = useCallback(() => changeMain(active + 1), [active]);
     const onRight = useCallback(() => changeMain(active - 1), [active]);
     const { handleTouchStart, handleTouchMove } = useSwipe({
         onLeft,
         onRight,
     });
-
+    const {t} = useTranslation()
     const changeMain = (i: number) => {
         if (i !== active) {
-            console.log(i);
-            console.log(active);
             setprev(active);
             setDirection(i < active ? "counter" : "clock");
             if (i < 0) {
@@ -42,7 +41,22 @@ export const Pets: React.FC<props> = ({ pets }) => {
         }
     };
 
+
+    const modalOpen = useCallback(()=> {    
+        openModal({
+            onClose: ()=> closeModal(),
+            customActions: [{
+                action: ()=> {console.log('ciao pippo')},
+                
+                text:'pippo'
+            }],
+            children: SubOwnerList({ ownerships:pets[active].ownerships?.items ?? [], noItemText:t('users.general.empty_list') })
+            });
+        
+    },[active])
+    
     return (
+       
         <PetsContainer
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -55,15 +69,6 @@ export const Pets: React.FC<props> = ({ pets }) => {
                 "var(--ion-color-white)"
             }
         >
-            {openModal && (
-                <Modal
-                    onClose={() => setOpenModal(false)}
-                >
-                    <SubOwnerList
-                        ownerships={pets[active].ownerships?.items ?? []}
-                    />
-                </Modal>
-            )}
             <BoxContainer>
                 <PetsBox className="pet-box" direction={direction}>
                     {pets.map((pet, i) => (
@@ -78,7 +83,7 @@ export const Pets: React.FC<props> = ({ pets }) => {
                 </PetsBox>
                 <ActionChip
                     className="top left"
-                    onClick={() => setOpenModal(true)}
+                    onClick={()=>modalOpen()}
                 >
                     <Icon name="peopleOutline" color="var(--ion-color-dark)" />
                     <span>{"Affidatari"}</span>

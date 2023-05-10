@@ -1,15 +1,17 @@
 import styled from "styled-components"
-import { Icon } from "../components"
+import { Icon, Modal, useModal } from "../components"
 import { IonNavLink } from "@ionic/react"
+import { ModalContextProvider } from "../components/system/ModalContext"
+import { useState } from "react"
 
 
 
-export const MainLayout:React.FC<{children: React.ReactNode}> = ({children})=> {
+export const MainLayout:React.FC<{children: React.ReactNode}> = ({children: nodes})=> {
 
-    return <Main>
-        
-            {children}
-        
+    return <ModalContextProvider >
+    
+    <Main>
+            {nodes}
         <BottomMenu>
             <IonNavLink>
 
@@ -26,6 +28,7 @@ export const MainLayout:React.FC<{children: React.ReactNode}> = ({children})=> {
             </IonNavLink>
         </BottomMenu>
     </Main>
+    </ModalContextProvider>
 }
 
 const Main = styled.div`
