@@ -29,11 +29,6 @@ export const Pets: React.FC<props> = ({ pets }) => {
         onLeft,
         onRight,
     });
-    const List = (ownerships: PetMinSubOwnerFragment[] )=> {
-        return  <>
-        {ownerships && <SubOwnerList ownerships={ownerships } onSelected= {(str)=> {console.log(str)}} />}
-        </>
-    }
     const {t} = useTranslation()
     const changeMain = (i: number) => {
         if (i !== active) {
@@ -54,16 +49,11 @@ export const Pets: React.FC<props> = ({ pets }) => {
     const modalOpen = useCallback(()=> {    
         openModal({
             onClose: ()=> closeModal(),
-            children: List(pets[active].ownerships!.items.filter(item=> item) as PetMinSubOwnerFragment[])
+            children:  <SubOwnerList ownerships={pets[active].ownerships?.items.filter(item=> item) as PetMinSubOwnerFragment[] ?? [] } onSelected= {(str)=> {console.log(str)}} />
             });
         
     },[active ])
 
-    useEffect(()=> {
-        if(pets[active].ownerships){ 
-            // setList(()=> List(  ))
-        }
-    }, [active])
     
   
 
