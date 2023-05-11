@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Image2x } from "../../../components";
+import { Icon, Image2x } from "../../../components";
 import { PetMinSubOwnerFragment } from "../operations/__generated__/petMinSubOwner.generated";
 import { Maybe } from "../../../types";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ export const SubOwnerList: React.FC<props> = ({ ownerships = [], onSelected}) =>
         <List>
             {ownerships.length ? (
                 items.map((ownership, i) => (
+                    <>
                     <Item key={i} onClick={()=>onSelected('pippo')}>
                         <UserImageBox>
                             {ownerships[0]?.user.profile_picture && (
@@ -33,11 +34,16 @@ export const SubOwnerList: React.FC<props> = ({ ownerships = [], onSelected}) =>
                             </h5>
                             <span>{ownerships[0]?.user.email}</span>
                         </DescBox>
+                        <ActionsOpener>
+                            <Icon name="ellipsisHorizontalOutline" color="var(--ion-color-medium)" />
+                        </ActionsOpener>
                     </Item>
+                    </>
                 ))
             ) : (
                 <h2>{t('users.general.empty_list')}</h2>
             )}
+            {ownerships.length > 0 && <Gradient />}
         </List>
     );
 };
@@ -51,6 +57,8 @@ const List = styled.div`
     overflow-y: scroll;
     flex-flow: wrap;
     scroll-behavior: smooth;
+    box-sizing:border-box;
+    position:relative;
     > h2 {
         margin-top: 30px;
         width: 100%;
@@ -63,6 +71,7 @@ const Item = styled.div`
     border-bottom: 1px solid var(--ion-color-medium);
     height: 90px;
     display: flex;
+    justify-content:flex-start;
 `;
 const UserImageBox = styled.div`
     width: 90px;
@@ -78,3 +87,20 @@ const DescBox = styled.div`
     display: flex;
     flex-direction: column;
 `;
+
+const ActionsOpener = styled.div`
+    width: 50px;
+    height: 100%;
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    margin-left:auto;
+    margin-right:12px;
+`
+const Gradient = styled.div`
+    width:100%;
+    height:50px;
+    position: sticky;
+    bottom:-2px;
+    background: linear-gradient(to top, var(--ion-color-light) , var(--ion-trasparent));
+`

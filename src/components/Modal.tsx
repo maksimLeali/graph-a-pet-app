@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Icon, } from ".";
 import { useOnClickOutside } from "../hooks";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 export type ModalProps = {
@@ -33,12 +33,18 @@ export const Modal: React.FC<ModalProps> = ({
     customActions = [],
 }) => {
     const { t } = useTranslation();
+    const [zIndex, setZIndex] = useState(0);
+    useEffect(()=> {
+        if(open) return setZIndex(201)
+        setTimeout(()=> {setZIndex(0)}, 1000);
+    },[open])
     const ref = useRef<HTMLDivElement>(null);
     useOnClickOutside(ref, ()=>onClose() );
     return (
         <ModalBg
             className="ModalBg"
             open={open ?? false}
+            zIndex={zIndex}
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -85,7 +91,7 @@ export const Modal: React.FC<ModalProps> = ({
     );
 };
 
-const ModalBg = styled.div<{open:boolean}>`
+const ModalBg = styled.div<{open:boolean, zIndex:number}>`
     width: 100vw;
     height: 100vh;
     background-color: #111d;
@@ -93,7 +99,7 @@ const ModalBg = styled.div<{open:boolean}>`
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: ${({open})=> open? 1000 : -1};
+    z-index: ${({zIndex})=> zIndex};
     opacity: ${({open})=> open? 1 : 0};
     top: 0;
     left: 0;

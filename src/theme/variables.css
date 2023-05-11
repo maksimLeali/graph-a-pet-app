@@ -10,6 +10,7 @@ http://ionicframework.com/docs/theming/ */
 
   --ion-color-white: #FFFFFF;
   --ion-color-black: #2B2B2B;
+  --ion-trasparent: #FFFFFF00;
   /** primary **/
   --ion-color-primary: #18a065;
 	--ion-color-primary-rgb: 24,160,101;
@@ -90,6 +91,7 @@ http://ionicframework.com/docs/theming/ */
    */
 
   body {
+    --ion-trasparent: #00000000;
     --ion-color-primary: #2A9D8F;
     --ion-color-primary-rgb: 42,157,143;
     --ion-color-primary-contrast: #ffffff;

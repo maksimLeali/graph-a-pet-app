@@ -30,7 +30,6 @@ export const ModalContextProvider: React.FC<
     const [open,setOpen] = useState(false)
 
     const openModal = (props :ModalProps)=> {
-        console.log('custom actions',props.customActions?.length)
         setOpen(true);
         setModal(props)
     }
