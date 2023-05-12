@@ -41,7 +41,7 @@ export const SubOwnerList: React.FC<props> = ({ ownerships = [], onSelected}) =>
                     </>
                 ))
             ) : (
-                <h2>{t('users.general.empty_list')}</h2>
+                <h2>{t('users.general.no_sub_owners')}</h2>
             )}
             {ownerships.length > 0 && <Gradient />}
         </List>

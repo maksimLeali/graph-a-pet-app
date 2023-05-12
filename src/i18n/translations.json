@@ -22,7 +22,8 @@
       },
       "users": {
         "general": {
-          "empty_list": "Nessun elemento"
+          "empty_list": "Nessun elemento",
+          "no_sub_owners": "Nessun affidatario"
         }
       },
       "actions": {
