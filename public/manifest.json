@@ -1,6 +1,6 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "Graph a Pet",
+  "name": "Graph a Pet",
   "icons": [
     {
      "src": "\/android-icon-36x36.png",

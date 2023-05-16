@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Icon, Image2x, Modal } from "../../../components";
 import {
     useCallback,
+    useEffect,
     useState,
 } from "react";
 import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
@@ -17,10 +18,11 @@ type props = {
     pets: DashboardPetFragment[];
 };
 
-export const Pets: React.FC<props> = ({ pets }) => {
+export const MainBox: React.FC<props> = ({ pets }) => {
     const [active, setActive] = useState(0);
     const [prev, setprev] = useState(0);
     const [direction, setDirection] = useState<"clock" | "counter">("clock");
+    const [canShare, setCanShare] = useState(true);
     const { openModal, closeModal } = useModal();
     const onLeft = useCallback(() => changeMain(active + 1), [active]);
     const onRight = useCallback(() => changeMain(active - 1), [active]);
@@ -43,6 +45,25 @@ export const Pets: React.FC<props> = ({ pets }) => {
             return setActive(i);
         }
     };
+    useEffect(()=> {
+        try {
+            navigator.canShare()
+        }catch(e){
+            setCanShare(false)
+        }
+
+    }, [])
+    const share = useCallback(()=>{
+        try {
+            if(!canShare){
+                return null;
+            }
+            navigator.share({url: 'https://graph-a-pet-app.web.app/home', title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
+        }catch(e){
+            console.log(e)
+        }
+
+    }, [])
 
     const modalOpen = useCallback(() => {
         openModal({
@@ -102,7 +123,7 @@ export const Pets: React.FC<props> = ({ pets }) => {
                     />
                     <span>{"Profilo"}</span>
                 </ActionChip>
-                <ActionChip className="bottom right">
+                <ActionChip className="bottom right" onClick={()=>share()}>
                     <Icon
                         name="shareOutline"
                         color="var(--ion-color-dark)"
