@@ -47,7 +47,7 @@ export const MainBox: React.FC<props> = ({ pets }) => {
     };
     useEffect(()=> {
         try {
-            navigator.canShare()
+            navigator.canShare({url: 'https://graph-a-pet-app.web.app/home', title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
         }catch(e){
             setCanShare(false)
         }
