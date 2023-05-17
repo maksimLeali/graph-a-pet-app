@@ -176,7 +176,7 @@ const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
             &.pet-box {
                 transition: color 1s ease-in, background-color 1s ease-in;
                 border: 3px solid var(--ion-background-color);
-                background-color: var(--ion-background-color);
+                background-color: ${({mainColor})=> mainColor ? mainColor : "var(--ion-color-primary)" };
             }
         }
     }
