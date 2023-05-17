@@ -24,6 +24,7 @@ export const SubOwnerList: React.FC<props> = ({ ownerships = [], onSelected}) =>
                             {ownerships[0]?.user.profile_picture && (
                                 <Image2x
                                     id={ownerships[0].user.profile_picture.id}
+                                    alt={`${ownerships[0].user.first_name} ${ownerships[0].user.last_name} picture`}
                                 />
                             )}
                         </UserImageBox>

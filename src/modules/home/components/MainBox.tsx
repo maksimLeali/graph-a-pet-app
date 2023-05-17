@@ -102,6 +102,7 @@ export const MainBox: React.FC<props> = ({ pets }) => {
                         <Image2x
                             id={pet.main_picture!.id}
                             key={i}
+                            alt={`${pet.name} picture`}
                             className={`${i == prev ? "deactivated" : ""} ${
                                 i == active ? "active" : ""
                             }`}
