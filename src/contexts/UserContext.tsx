@@ -75,11 +75,12 @@ const CustomIonHeader = styled(IonHeader)<{visible: boolean}>`
 `
 
 const MainImage = styled.div`
-    width:40px;
-    height: 40px;
+    width:50px;
+    height: 50px;
     position:absolute;
-    right: 12px;
-    top:12px;
+    right: 6px;
+    top:6px;
+    border: 2px solid var(--ion-color-primary);
     background-color: var(--ion-color-primary);
     border-radius:40px;
     > .img2x {
