@@ -55,7 +55,7 @@ const BottomMenu = styled.div`
     width: 100%;
     max-width: var(--max-width);
     box-shadow: 0 -1px 2px 0px var(--ion-color-medium);
-    background-color: var(--ion-background-color);
+    background-color: var(--ion-color-step-50);
     display: flex;
     justify-content: space-between;
     padding: 20px 60px 20px 60px;
