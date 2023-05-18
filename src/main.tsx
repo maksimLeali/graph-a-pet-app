@@ -45,6 +45,7 @@ const testResponseLink = new ApolloLink((operation, forward)=> {
       console.log('found not auth')
       toast.error('User not Authorized')
       Cookies.remove('jwt')
+      Cookies.remove('user')
       setTimeout(()=> {
         window.location.reload()
       }, 1000)

@@ -1,13 +1,13 @@
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { User } from '../types'
 import { IonHeader, IonToolbar, IonTitle } from '@ionic/react'
 import styled from 'styled-components'
 import { MinUserFragment } from '../modules/auth/operations/__generated__/minUser.generated'
 import { Image2x } from '../components'
+import { useCookies } from 'react-cookie'
 
 export type IUserContext ={
     setPage: (page: Page)=> void,
-    setContextUser: (user: MinUserFragment) => void
 
 } & Record<string, any>
 
@@ -17,7 +17,6 @@ type Page = {
 
 const defaultValue: IUserContext = {
   setPage: ()=> {},
-  setContextUser:()=> {}
 }
 const UserContext = React.createContext<IUserContext>(defaultValue)
 
@@ -27,6 +26,7 @@ type Props= {
 
 export const UserContextProvider: React.FC< Props & Record<string, unknown>> = ({ children }) => {
     const [pageName, setPageName] = useState("") 
+    const [cookie] = useCookies(["jwt", "user"]);
     const [visible, setVisible] = useState(true) 
     const [user, setUser] = useState<MinUserFragment | null>(null)
     const setPage = ({name, visible}: Page)=> {
@@ -34,13 +34,15 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
         setVisible(visible)
     }
 
-    const setContextUser = (user: MinUserFragment)=> {
-        console.log('setting context user',user)
-        setUser(user)
-    }
+    useEffect(()=> {
+        console.log('user changed', cookie.user)
+        setUser(cookie.user)
+    }, [cookie.user])
+
+
 
     
-    const value = useMemo(() => ({...defaultValue, setPage, setContextUser}), [])
+    const value = useMemo(() => ({...defaultValue, setPage}), [])
 
   return <UserContext.Provider value={value}>
     <CustomIonHeader visible={visible}>
@@ -80,4 +82,8 @@ const MainImage = styled.div`
     top:12px;
     background-color: var(--ion-color-primary);
     border-radius:40px;
+    > .img2x {
+        width: 100%;
+        height: 100%;
+    }
 `

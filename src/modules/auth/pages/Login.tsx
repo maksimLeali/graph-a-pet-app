@@ -13,22 +13,18 @@ import { useUserContext } from "../../../contexts";
 
 export const Login: React.FC = ()  => {
     const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
-    const [cookie, setCookie] = useCookies(["jwt"]);
+    const [cookie, setCookie] = useCookies(["jwt", "user"]);
     const history = useHistory()
     const { setContextUser } = useUserContext()
     let timeout: string | number | NodeJS.Timeout | null | undefined = null;
     const [login, { loading }] = useLoginMutation({
         onCompleted: ({ login }) => {
-            console.log("completed");
-            console.log(login)
-            console.log('*****')
             if (!login.user || !login.token) {
                 toast.error(t("errors.login"));
                 return
             }
             setCookie("jwt", login.token);
-            console.log('set user after login', login.user)
-            setContextUser(login.user)
+            setCookie("user", JSON.stringify(login.user));
             toast.success(t("success.login"))
             timeout = setTimeout(()=> {
                 if(timeout) clearTimeout(timeout);
