@@ -78,7 +78,7 @@ const MainImage = styled.div`
     width:50px;
     height: 50px;
     position:absolute;
-    right: 12px;
+    right: 20px;
     top:6px;
     border: 2px solid var(--ion-color-primary);
     /* background-color: var(--ion-color-primary); */
