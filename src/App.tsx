@@ -19,7 +19,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { Toaster } from 'react-hot-toast';
-import { AppContextProvider } from './components';
+import { AppContextProvider } from './contexts';
 
 setupIonicReact();
 

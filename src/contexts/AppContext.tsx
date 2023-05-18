@@ -15,7 +15,9 @@ type Props= {
 export const AppContextProvider: React.FC< Props & Record<string, unknown>> = ({ children }) => {
   const value = useMemo(() => ({}), [])
   
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
+  return <AppContext.Provider value={value}>
+    {children}
+    </AppContext.Provider>
 }
 
 export const useAppContext = () => useContext(AppContext)

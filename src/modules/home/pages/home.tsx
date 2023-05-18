@@ -11,14 +11,21 @@ import { useGetUserDashboardQuery } from "../operations/__generated__/getDashboa
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
 import { Pet } from "../../../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { useUserContext } from "../../../contexts";
 
 export const Home: React.FC = () => {
     const [dateFrom, setDateFrom] = useState(dayjs().toISOString());
     const [dateTo, setDateTo] = useState(dayjs(dateFrom).add(7, "days").toISOString())
     const [pets, setPets] = useState<DashboardPetFragment[]>([]);
+    const { setPage } = useUserContext()
+
+    useEffect(()=> {
+        console.log('setting page in home')
+        setPage({visible: true, name: "Home"})
+    }, [])
     const getDashboard = useGetUserDashboardQuery({
         variables: {
             date_from: dateFrom,
@@ -45,11 +52,6 @@ export const Home: React.FC = () => {
 
     return (
         <Container>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Blank</IonTitle>
-                </IonToolbar>
-            </IonHeader>
             <IonContent fullscreen>
                { pets && pets.length>0 && <Pets pets={pets} />}
             </IonContent>

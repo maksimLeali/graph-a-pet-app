@@ -1,6 +1,7 @@
 import { useCookies } from "react-cookie";
 import { Redirect, Route } from "react-router-dom";
 import { MainLayout } from "../layouts";
+import { UserContextProvider } from "../contexts/UserContext";
 
 type Props = {
     
@@ -25,7 +26,10 @@ export const AuthenticatedRoute = ({
           // return (
           return cookies.jwt ? (
             <MainLayout >
+              <UserContextProvider >
+
               <Component {...props} />
+              </UserContextProvider>
             </MainLayout>
           ) 
           : (

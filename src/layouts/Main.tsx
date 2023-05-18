@@ -1,8 +1,7 @@
 import styled from "styled-components"
-import { Icon, Modal, useModal } from "../components"
+import { Icon } from "../components"
 import { IonNavLink } from "@ionic/react"
-import { ModalContextProvider } from "../components/system/ModalContext"
-import { useState } from "react"
+import { ModalContextProvider } from "../contexts"
 
 
 
@@ -14,7 +13,6 @@ export const MainLayout:React.FC<{children: React.ReactNode}> = ({children: node
             {nodes}
         <BottomMenu>
             <IonNavLink>
-
             <Icon name="home" color="var(--ion-color-primary)" />
             </IonNavLink>
             <IonNavLink >
@@ -28,6 +26,7 @@ export const MainLayout:React.FC<{children: React.ReactNode}> = ({children: node
             </IonNavLink>
         </BottomMenu>
     </Main>
+
     </ModalContextProvider>
 }
 
@@ -41,6 +40,7 @@ const Main = styled.div`
     position: relative;
     scroll-behavior: smooth ;
     padding-bottom: 80px;
+    padding-top: 64px;
     &::-webkit-scrollbar {
         display: none; /* for Chrome, Safari, and Opera */
     }

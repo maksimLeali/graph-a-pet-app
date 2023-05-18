@@ -10,7 +10,7 @@ import { useSwipe } from "../../../hooks";
 import { SubOwnerList } from "./SubOwnersList";
 import {
     useModal,
-} from "../../../components/system/ModalContext";
+} from "../../../contexts/ModalContext";
 import { useTranslation } from "react-i18next";
 import { PetMinSubOwnerFragment } from "../operations/__generated__/petMinSubOwner.generated";
 

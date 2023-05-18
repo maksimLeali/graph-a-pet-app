@@ -84,10 +84,10 @@ export const TextInput: React.FC<props> = ({
                 {/* {type == 'password' || icon ? <IonIcon name="alert-circle-outline" size="large" color="primary"  />: ''} */}
                 {type == 'password' ? <Icon name={ showPsw ? "eyeOff" : 'eye'} onClick={()=> setShowPsw(!showPsw) }  color={focused || compiled ? 'var(--ion-color-primary)' : 'var(--ion-color-medium)'}/> : ''}
                 {icon ? <Icon name={icon} size="14px" color={focused ? 'var(--ion-color-primary)' : 'var(--ion-color-medium)'}/> : ''}
-                <FocusCircle
+                <FocusBox
                     color={color}
                     focusColor={focusColor}
-                    className={`${focused ? "focused" : ""} ${
+                    className={`foxusBox ${focused ? "focused" : ""} ${
                         compiled ? "compiled" : ""
                     }`}
                 />
@@ -154,27 +154,35 @@ const InputWrapper = styled.div<wrapperProps>`
     }
 `;
 
-const FocusCircle = styled.span<focusCircleProps>`
+const FocusBox = styled.span<focusCircleProps>`
     background-color: var(--ion-color-medium);
     position: absolute;
     display: block;
     z-index: 1;
+    bottom:0;
     width: 0;
-    left: -50%;
-    top: -50vw;
-    border-radius: 9999px;
-    aspect-ratio: 1 / 1;
-    transition: background-color 2s cubic-bezier(1, 0.07, 1, 0.12) 0s,
-        width 1s ease-out;
+    left:-1px;
+    max-height: 0;
+    height:100%;
+    
+    
+    transition: background-color 1s cubic-bezier(1, 0.07, 1, 0.12) 0s,
+        width .5s ease-out, max-height .5s ease-out;
     &.focused {
         background-color: var(--ion-color-${({ focusColor }) => focusColor});
-        width: 200%;
-        transition: background-color 2s cubic-bezier(0.02, 1.17, 0, 0.97) 0s,
-            width 1s ease-out;
+        width: 100%;
+        max-height: 100%;
+        transition: background-color 1s cubic-bezier(0.02, 1.17, 0, 0.97) 0s,
+            width .5s ease-out, max-height .5s ease-out;
+            
+            
+
     }
     &.compiled {
         background-color: var(--ion-color-${({ focusColor }) => focusColor});
-        width: 200%;
+        width: 100%;
+        max-height:100%;
+        
     }
 `;
 
