@@ -8,11 +8,7 @@ mutation Login($email: String!, $password: String!) {
       extra
     }
     user{
-      id
-      role
-      first_name
-      last_name
-      email
+      ...minUser
       
     }
   }

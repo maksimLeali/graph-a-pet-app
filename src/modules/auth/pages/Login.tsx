@@ -8,26 +8,27 @@ import { TextInput } from "../../../components";
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useHistory } from "react-router";
+import { useUserContext } from "../../../contexts";
 
 
 export const Login: React.FC = ()  => {
     const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
     const [cookie, setCookie] = useCookies(["jwt"]);
     const history = useHistory()
+    const { setContextUser } = useUserContext()
     let timeout: string | number | NodeJS.Timeout | null | undefined = null;
     const [login, { loading }] = useLoginMutation({
         onCompleted: ({ login }) => {
             console.log("completed");
             console.log(login)
-            if (login.error) {
-                toast.error(t("errors.login"));
-                return;
-            }
             console.log('*****')
-            if (login.user && login.token) {
-                
-                setCookie("jwt", login.token);
+            if (!login.user || !login.token) {
+                toast.error(t("errors.login"));
+                return
             }
+            setCookie("jwt", login.token);
+            console.log('set user after login', login.user)
+            setContextUser(login.user)
             toast.success(t("success.login"))
             timeout = setTimeout(()=> {
                 if(timeout) clearTimeout(timeout);
@@ -35,10 +36,7 @@ export const Login: React.FC = ()  => {
             }, 500)
 
         },
-        onError: (error) => {
-            console.log(error)
-            toast.error(t("errors.login"));
-        },
+
     });
    
     const { t } = useTranslation();

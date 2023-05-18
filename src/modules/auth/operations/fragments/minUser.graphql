@@ -1,0 +1,10 @@
+fragment minUser on User{
+    id
+      role
+      first_name
+      last_name
+      email
+      profile_picture {
+        id
+      }
+}

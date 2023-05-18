@@ -1,6 +1,8 @@
 import * as Types from '../../../../types.js';
 
+import { MinUserFragment } from './minUser.generated';
 import { gql } from '@apollo/client';
+import { MinUserFragmentDoc } from './minUser.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions =  {}
 export type LoginMutationVariables = Types.Exact<{
@@ -19,7 +21,7 @@ export type LoginMutation = (
       & Pick<Types.Error, 'code' | 'message' | 'extra'>
     )>, user?: Types.Maybe<(
       { __typename?: 'User' }
-      & Pick<Types.User, 'id' | 'role' | 'first_name' | 'last_name' | 'email'>
+      & MinUserFragment
     )> }
   ) }
 );
@@ -36,15 +38,11 @@ export const LoginDocument = gql`
       extra
     }
     user {
-      id
-      role
-      first_name
-      last_name
-      email
+      ...minUser
     }
   }
 }
-    `;
+    ${MinUserFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
