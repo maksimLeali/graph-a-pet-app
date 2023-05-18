@@ -23,7 +23,6 @@ export const Home: React.FC = () => {
     const { setPage } = useUserContext()
 
     useEffect(()=> {
-        console.log('setting page in home')
         setPage({visible: true, name: "Home"})
     }, [])
     const getDashboard = useGetUserDashboardQuery({
@@ -32,20 +31,12 @@ export const Home: React.FC = () => {
             date_to: dateTo,
         },
         onCompleted: ({ getUserDashboard }) => {
-            console.log(getUserDashboard);
-            if (getUserDashboard.error) {
-              toast.error('error')
-            }
             if(getUserDashboard.dashboard ){
               if(getUserDashboard.dashboard.ownerships 
                 && getUserDashboard.dashboard.ownerships.items 
                 && getUserDashboard.dashboard.ownerships.items.length)
               setPets(getUserDashboard.dashboard.ownerships.items.map((item)=> item!.pet))
             }
-            return;
-        },
-        onError: (error) => {
-            toast.error("error");
             return;
         },
     });

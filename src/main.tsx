@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache, from, gql} from '@apollo/client'
+import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache, from, gql, ApolloLink} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
 import { onError } from 'apollo-link-error'
@@ -34,24 +34,43 @@ const authLink = setContext((_, { headers }) => {
 })
 
 
-
-// const logoutLink = onError((received) => {
-  
-//   console.log(received)
-//   console.log(received.graphQLErrors![0].extensions)
-// 
-//   if (['401', '403'].includes(_.get(received, 'graphQLErrors.0.extensions.code', '') )) {
+const testResponseLink = new ApolloLink((operation, forward)=> {
+  return forward(operation).map(response => {
+    // Access the response data here
+    const responseData = response.data;
+    console.log(response)
+    console.log(responseData); // Perform any necessary logging or modifications
+    console.log(_.get(response, 'errors.0.extensions.code', ''))
+    if ([401, 403].includes(_.get(response, 'errors.0.extensions.code', 0) )) {
+      console.log('found not auth')
+      toast.error('User not Authorized')
+      Cookies.remove('jwt')
+      setTimeout(()=> {
+        window.location.reload()
+      }, 1000)
     
-//     toast.error('User not Authorized')
-//     setTimeout(()=> {
-//       removeCookie('jwt')
-//       window.location.reload()
-//     }, 1000)
-//   }
-// })
+    }
+    return response;
+  });
+})
+
+
+const logoutLink = onError((received) => {
+  
+  console.log(received)
+  console.log(received.graphQLErrors![0].extensions)
+
+  if (['401', '403'].includes(_.get(received, 'graphQLErrors.0.extensions.code', '') )) {
+    console.log('not auth')
+    toast.error('User not Authorized')
+    
+  }
+})
+
 
 export const apolloClient = new ApolloClient({
-  link: from([ authLink, httpLink,]),
+  link: testResponseLink.concat(authLink).concat(httpLink ),
+  // link: from([ authLink, httpLink, logoutLink as any , ]),
   cache: new InMemoryCache(),
 })
 

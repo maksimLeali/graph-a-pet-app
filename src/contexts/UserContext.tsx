@@ -34,6 +34,7 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     <CustomIonHeader visible={visible}>
         <IonToolbar>
             <IonTitle>{pageName}</IonTitle>
+        <MainImage/>
         </IonToolbar>
     </CustomIonHeader>
     {children}
@@ -52,4 +53,14 @@ const CustomIonHeader = styled(IonHeader)<{visible: boolean}>`
             height: 100%;
         }
     }
+`
+
+const MainImage = styled.div`
+    width:40px;
+    height: 40px;
+    position:absolute;
+    right: 12px;
+    top:12px;
+    background-color: var(--ion-color-primary);
+    border-radius:40px;
 `
