@@ -78,10 +78,10 @@ const MainImage = styled.div`
     width:50px;
     height: 50px;
     position:absolute;
-    right: 6px;
+    right: 12px;
     top:6px;
     border: 2px solid var(--ion-color-primary);
-    background-color: var(--ion-color-primary);
+    /* background-color: var(--ion-color-primary); */
     border-radius:40px;
     > .img2x {
         width: 100%;
