@@ -15,7 +15,9 @@ export const Image2x: React.FC<props>= ({id, alt, fit= false, rounded=false ,cla
     const [src,setSrc] = useState<string>() ;
     const [src2x, setSrc2x] =useState<string>() ; 
     const ref = useRef<HTMLDivElement>(null)
-
+    useEffect(()=> {
+        console.log(ref)
+    }, [ref])
 
     useEffect(()=> {
         const baseUrl = `${config.baseUrl?.replace('graphql', 'media')}/${id}`
