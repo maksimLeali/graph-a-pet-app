@@ -48,13 +48,13 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     <CustomIonHeader visible={visible}>
         <IonToolbar>
             <IonTitle>{pageName}</IonTitle>
-        <MainImage>
+        </IonToolbar>
+        <MainImage className='skeleton'>
             {user && user.profile_picture
                 ? <Image2x id={user.profile_picture.id} />
                 : <></>
             }
         </MainImage>
-        </IonToolbar>
     </CustomIonHeader>
     {children}
     </UserContext.Provider>
@@ -79,6 +79,7 @@ const MainImage = styled.div`
     height: 50px;
     position:absolute;
     right: 20px;
+    z-index:10;
     top:6px;
     border: 2px solid var(--ion-color-primary);
     /* background-color: var(--ion-color-primary); */

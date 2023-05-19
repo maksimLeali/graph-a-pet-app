@@ -6,7 +6,7 @@ import {
     IonToolbar,
 } from "@ionic/react";
 import styled from "styled-components";
-import { Pets } from "../components";
+import { Pets, SkeletonBox } from "../components";
 import { useGetUserDashboardQuery } from "../operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
@@ -44,7 +44,8 @@ export const Home: React.FC = () => {
     return (
         <Container>
             <IonContent fullscreen>
-               { pets && pets.length>0 && <Pets pets={pets} />}
+               { pets && pets.length>0 ? <Pets pets={pets} /> : <SkeletonBox />}
+               
             </IonContent>
         </Container>
     );
