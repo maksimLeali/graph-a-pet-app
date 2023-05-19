@@ -28,7 +28,7 @@ const ChoiseContainer = styled.div`
     display: flex;
     position: relative;
     flex-direction: column;
-    margin-top:40px;
+    margin-top:50px;
     padding: 20px 0;
 
 `
@@ -37,7 +37,7 @@ const SkeletonChoise = styled.div`
     width: 100%;
     height: 90px;
     background-color : var(--ion-color-medium) ;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     @media only screen and (max-width: 420px) {
         height: 75px;
 

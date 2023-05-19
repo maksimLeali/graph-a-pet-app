@@ -25,7 +25,7 @@ export const Home: React.FC = () => {
     useEffect(()=> {
         setPage({visible: true, name: "Home"})
     }, [])
-    const getDashboard = useGetUserDashboardQuery({
+    const {loading}= useGetUserDashboardQuery({
         variables: {
             date_from: dateFrom,
             date_to: dateTo,
@@ -44,7 +44,7 @@ export const Home: React.FC = () => {
     return (
         <Container>
             <IonContent fullscreen>
-               { pets && pets.length>0 ? <Pets pets={pets} /> : <SkeletonBox />}
+               { pets && pets.length>0 && !loading ?  <Pets pets={pets} /> : <SkeletonBox />}
                
             </IonContent>
         </Container>
