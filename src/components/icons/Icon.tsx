@@ -8,7 +8,7 @@ import * as Icons from 'ionicons/icons'
 
 type Props = {
     name : IconName,
-    color: CSSObject['color'],
+    color?: string,
     size?: string
     className?: string,
     mode?: 'ios' | 'md'
@@ -16,7 +16,7 @@ type Props = {
     onClick?: ()=> void
 
 }
-export const Icon: React.FC<Props>= ({mode, name, color, size, className, reverse= false, onClick}) => {
+export const Icon: React.FC<Props>= ({mode="md", name, color="dark", size="24px", className, reverse= false, onClick}) => {
  
     return (
         <Container onClick={onClick ? ()=> onClick() : ()=>{}}  size={size} className={`icon-wrapper ${className}`} iconColor={color} reverse={reverse}>
@@ -28,14 +28,14 @@ export const Icon: React.FC<Props>= ({mode, name, color, size, className, revers
 
 type ContainerProps = {
     size?: string
-    iconColor: CSSObject['color']
+    iconColor: string
     reverse: boolean
 }
 
 const Container = styled.div<ContainerProps>`
     display: flex;
     > * {
-        color: ${({iconColor})=> iconColor} !important ;
+        color: var(--ion-color-${({iconColor})=> iconColor}) !important ;
         width: ${({size})=> size ? `${size}!important` : ''};
         aspect-ratio:1;
         ${({reverse})=> reverse? `transform: ScaleX(-1)` : ''}

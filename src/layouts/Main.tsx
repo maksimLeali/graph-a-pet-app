@@ -13,16 +13,16 @@ export const MainLayout:React.FC<{children: React.ReactNode}> = ({children: node
             {nodes}
         <BottomMenu>
             <IonNavLink>
-            <Icon name="home" color="var(--ion-color-primary)" />
+            <Icon name="home" size="32px" color="primary" />
             </IonNavLink>
             <IonNavLink >
-                <Icon name="paw" color="var(--ion-color-medium)"/>
+                <Icon name="paw" size="32px" color="medium"/>
             </IonNavLink>
             <IonNavLink >
-                <Icon name="warning"  color="var(--ion-color-medium)" />
+                <Icon name="warning" size="32px" color="medium" />
             </IonNavLink>
             <IonNavLink >
-                <Icon name="calendar"  color="var(--ion-color-medium)" />
+                <Icon name="calendar" size="32px" color="medium" />
             </IonNavLink>
         </BottomMenu>
     </Main>

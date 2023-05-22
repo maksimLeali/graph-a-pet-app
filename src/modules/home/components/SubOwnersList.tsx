@@ -13,38 +13,37 @@ type props = {
 export const SubOwnerList: React.FC<props> = ({ ownerships = [], onSelected}) => {
     const { t } = useTranslation();
     useEffect(()=>{console.log('ciao')}, [])
-    const items = [1,2,3,4,5,6,7,8,9,10];
     return (
         <List>
             {ownerships.length ? (
-                items.map((ownership, i) => (
-                    <>
+                ownerships.map((ownership, i) => (
+                    
                     <Item key={i} onClick={()=>onSelected('pippo')}>
                         <UserImageBox>
-                            {ownerships[0]?.user.profile_picture && (
+                            {ownership?.user?.profile_picture && (
                                 <Image2x
-                                    id={ownerships[0].user.profile_picture.id}
-                                    alt={`${ownerships[0].user.first_name} ${ownerships[0].user.last_name} picture`}
+                                    id={ownership.user.profile_picture.id}
+                                    alt={`${ownership.user.first_name} ${ownership.user.last_name} picture`}
                                 />
                             )}
                         </UserImageBox>
                         <DescBox>
                             <h5>
-                                {ownerships[0]?.user.first_name}
-                                {ownerships[0]?.user.last_name}
+                                {ownership?.user.first_name}
+                                {ownership?.user.last_name}
                             </h5>
-                            <span>{ownerships[0]?.user.email}</span>
+                            <span>{ownership?.user.email}</span>
                         </DescBox>
                         <ActionsOpener>
                             <Icon name="ellipsisHorizontalOutline" color="var(--ion-color-medium)" />
                         </ActionsOpener>
                     </Item>
-                    </>
+                    
                 ))
             ) : (
                 <h2>{t('users.general.no_sub_owners')}</h2>
             )}
-            {ownerships.length > 0 && <Gradient />}
+            {ownerships.length > 5 && <Gradient />}
         </List>
     );
 };

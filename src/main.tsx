@@ -22,9 +22,7 @@ const httpLink = createHttpLink({
 })
 
 const authLink = setContext((_, { headers }) => {
-  
   const token = Cookies.get('jwt')
-  
   return {
     headers: {
       ...headers,
@@ -38,11 +36,7 @@ const testResponseLink = new ApolloLink((operation, forward)=> {
   return forward(operation).map(response => {
     // Access the response data here
     const responseData = response.data;
-    console.log(response)
-    console.log(responseData); // Perform any necessary logging or modifications
-    console.log(_.get(response, 'errors.0.extensions.code', ''))
     if ([401, 403].includes(_.get(response, 'errors.0.extensions.code', 0) )) {
-      console.log('found not auth')
       toast.error('User not Authorized')
       Cookies.remove('jwt')
       Cookies.remove('user')
@@ -57,14 +51,9 @@ const testResponseLink = new ApolloLink((operation, forward)=> {
 
 
 const logoutLink = onError((received) => {
-  
-  console.log(received)
-  console.log(received.graphQLErrors![0].extensions)
-
   if (['401', '403'].includes(_.get(received, 'graphQLErrors.0.extensions.code', '') )) {
     console.log('not auth')
     toast.error('User not Authorized')
-    
   }
 })
 

@@ -20,12 +20,12 @@ export const Login: React.FC = ()  => {
     const [login, { loading }] = useLoginMutation({
         onCompleted: ({ login }) => {
             if (!login.user || !login.token) {
-                toast.error(t("errors.login"));
+                toast.error(t("message.errors.login"));
                 return
             }
             setCookie("jwt", login.token);
             setCookie("user", JSON.stringify(login.user));
-            toast.success(t("success.login"))
+            toast.success(t("message.success.login"))
             timeout = setTimeout(()=> {
                 if(timeout) clearTimeout(timeout);
                 return history.push('/home')

@@ -53,7 +53,7 @@ export const Modal: React.FC<ModalProps> = ({
                 <CloseContainer>
                     <Icon
                         name="close"
-                        color="var(--ion-color-medium)"
+                        color="medium"
                         onClick={()=>onClose()}
                     />
                 </CloseContainer>
@@ -104,7 +104,7 @@ const ModalBg = styled.div`
     box-sizing: border-box;
     &.open {
         animation: overMenuOpen .5s ease-in-out;
-        z-index: 201;
+        z-index: 202;
         opacity:1;
     }
 `;
@@ -134,9 +134,12 @@ const CustomIonButton = styled(IonButton)<{ txtColor?: string }>`
 
 const Actions = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding: 20px;
     > *:first-child {
         justify-self: flex-start;
+    }
+    > ion-button {
+        padding: 4px 12px;
     }
 `;

@@ -26,6 +26,16 @@
           "no_sub_owners": "Nessun affidatario"
         }
       },
+      "system": {
+        "menu": {
+          "settings": "Impostazioni",
+          "profile": "Profilo"
+        },
+        "logout_modal": {
+          "title":"Stai per uscire",
+          "text":"Sicuro di voler uscire dall'app?"
+        }
+      },
       "actions": {
         "cancel": "Annulla",
         "confirm": "Conferma",
@@ -34,17 +44,16 @@
       "message": {
         "done": "Finito con successo",
         "success": {
-          "pet_updated": "Dati Pet aggiornati con successo"
+          "pet_updated": "Dati Pet aggiornati con successo",
+          "login": "Accesso effettuato"
         },
         "errors": {
-          "not_authorized": "Utente non autorizzato"
+          "not_authorized": "Utente non autorizzato",
+          "login":"errore di autenticazione",
+          "me": "Errore nel recupero propri dati",
+          "user": "Errore nel caricamento utente",
+          "fetch": "Errore nel reperimento dati"
         }
-      },
-      "errors":{
-        "login":"errore di autenticazione",
-        "me": "Errore nel recupero propri dati",
-        "user": "Errore nel caricamento utente",
-        "fetch": "Errore nel reperimento dati"
       }
     }
   }

@@ -7,7 +7,8 @@ http://ionicframework.com/docs/theming/ */
 :root {
   --ion-background-color: #fff;
   --max-width: 480px;
---ion-trasparent-bg: #111d;
+  --ion-trasparent-bg: #111d;
+  --ion-trasparent-bg-shade: #1118;
   --ion-color-white: #FFFFFF;
   --ion-color-black: #2B2B2B;
   --ion-trasparent: #FFFFFF00;

@@ -1,5 +1,9 @@
-import { useRef, useState , useEffect} from "react";
+import { useRef, useState , useEffect, useCallback} from "react";
+import { useCookies } from "react-cookie";
+import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router";
 import styled from "styled-components";
+import { useModal } from "../../contexts";
 import { useOnClickOutside } from "../../hooks";
 import { Toggle } from "../formFields";
 import { Icon } from "../icons";
@@ -11,17 +15,46 @@ type props = {
 
 export const MainMenu: React.FC<props> = ({ open, onClose }) => {
     const ref = useRef<HTMLDivElement>(null);
-    useOnClickOutside(ref, () => onClose());
+    useOnClickOutside(ref, () => {if(!modalOpen) onClose()});
     const [darkMode, setDarkMode] = useState(false);
     const [inited, setInited] = useState(false);
+    const [isPWA, setIsPWA] = useState(false)
+    const [cookies, setCookies, removeCookies] = useCookies(['user','jwt'])
+    const [modalOpen, setModalOpen] = useState(false);
+    const history = useHistory()
+    const {t} = useTranslation()
 
     useEffect(()=> {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-        if(prefersDark.matches){
-            setDarkMode(true)
-        }
+        const isRunningAsPWA = !window.matchMedia('(display-mode: browser)').matches;
+        setIsPWA(isRunningAsPWA)
+        setDarkMode(prefersDark.matches)
         setInited(true)
     }, [])
+
+    const exit= useCallback(()=> {
+        removeCookies('user')
+        removeCookies('jwt')
+        history.push('/')
+    }, [])
+
+    const {openModal, closeModal} = useModal()
+
+    const openLogoutModal = useCallback(() => {
+        setModalOpen(true)
+        openModal({
+            onClose: () => {setModalOpen(false); closeModal()},
+            children: (
+                <ConfirmLogout />
+            ),
+            onConfirm: ()=> {
+                exit()
+            },
+            onCancel: ()=> {
+                setModalOpen(false); closeModal()
+            }
+        });
+    }, []);
 
     useEffect(()=> {
         if(!inited) return
@@ -29,34 +62,44 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
         document.body.classList.toggle('dark', darkMode)
     }, [darkMode, inited])
 
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-
-    
-
     return (
-        <MenuBackground className={`${open ? "open" : ""}`}>
+        <MenuBackground className={`${open ? "open" : ""} ${isPWA ? '' : 'browser'}`}>
             <Container ref={ref}>
                 <MainOptions>
-                    <Option>
-                        <span>Impostazioni</span>
+                    <Option href="#settings">
+                        <Icon size="24px" name="settingsOutline" />
+                        <span>{t('system.menu.settings')}</span>
                     </Option>
-                    <Option>
-                        <span>Profilo</span>
+                    <Option href="#profile">
+                        <Icon size="24px" name="personOutline" />
+                        <span>{t('system.menu.profile')}</span>
                     </Option>
                 </MainOptions>
-                <Option className="modeSelector">
-                    <Toggle value={darkMode} onChange={()=> {setDarkMode(!darkMode)}} rigthElement={ <Icon size="18px" name="sunny" color="var(--ion-color-dark)" /> } leftElement={ <Icon size="18px"   name="moonOutline" color="var(--ion-color-dark)" />} />
-                </Option>
+                <ActionOptions>
+                    <Option onClick={(e)=> {e.preventDefault(); openLogoutModal()}}>
+                        <Icon name="exitOutline" />
+                        <span>Logout</span>
+                    </Option>
+                </ActionOptions>
+                <ToggleOption className="modeSelector">
+                    <Toggle value={darkMode} onChange={()=> {setDarkMode(!darkMode)}} rigthElement={ <Icon size="18px" name="sunny" color="dark" /> } leftElement={ <Icon size="18px"   name="moonOutline" color="dark" />} />
+                </ToggleOption>
             </Container>
         </MenuBackground>
     );
 };
 
+const ConfirmLogout = ()=> {
+    const {t}= useTranslation()
+    return <LogoutContainer>
+            <p>{t('system.logout_modal.text')}</p>
+        </LogoutContainer>
+}
+
 const MenuBackground = styled.div`
     width: 100vw;
     height: 100vh;
-    background-color: var(--ion-trasparent-bg);
+    background-color: var(--ion-trasparent-bg-shade);
     position: fixed;
     display: flex;
     align-items: center;
@@ -87,7 +130,10 @@ const Container = styled.div`
     border-radius: 4px 4px 0 0;
     transition: bottom 0.5s ease-in-out;
     .open & {
-        bottom: 0px;
+        bottom: 0;
+    }
+    .browser & {
+        padding-bottom:80px;
     }
 `;
 
@@ -100,13 +146,54 @@ const MainOptions = styled.div`
     gap: 10px;
     margin-bottom: 20px;
 `;
-const Option = styled.div`
+const ActionOptions = styled.div`
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--ion-color-dark);
+    gap: 10px;
+    margin-bottom: 20px;
+`;
+const Option = styled.a`
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    align-items:center ;
+    gap:20px;
+    padding-bottom: 12px;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: inherit;
+    &.modeSelector {
+        justify-content: flex-end;
+    }
+    > span {
+        color: var(--ion-color-dark);
+    }
+`;
+const ToggleOption = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items:center ;
+    gap:20px;
     padding-bottom: 12px;
     box-sizing: border-box;
     &.modeSelector {
         justify-content: flex-end;
     }
+    > span {
+        color: var(--ion-color-dark);
+    }
 `;
+
+const LogoutContainer = styled.div`
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    padding: 0 12px;
+    > p {
+        text-align: center ;
+    }
+`

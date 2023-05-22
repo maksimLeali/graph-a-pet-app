@@ -27,13 +27,13 @@ export const SignUp = () => {
         onCompleted: ({ signUp }) => {
             console.log("completed");
             if (signUp.error) {
-                toast.error(t("errors.login"));
+                toast.error(t("message.errors.login"));
                 return;
             }
             
         },
         onError: (error) => {
-            toast.error(t("errors.login"));
+            toast.error(t("message.errors.login"));
         },
     });
 
