@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { MinUserFragment } from '../modules/auth/operations/__generated__/minUser.generated'
 import { Image2x } from '../components'
 import { useCookies } from 'react-cookie'
+import { MainMenu } from '../components/system'
 
 export type IUserContext ={
     setPage: (page: Page)=> void,
@@ -29,6 +30,7 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     const [cookie] = useCookies(["jwt", "user"]);
     const [visible, setVisible] = useState(true) 
     const [user, setUser] = useState<MinUserFragment | null>(null)
+    const [menuOpen,setMenuOpen ]= useState(false)
     const setPage = ({name, visible}: Page)=> {
         setPageName(name);
         setVisible(visible)
@@ -39,8 +41,6 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
         setUser(cookie.user)
     }, [cookie.user])
 
-
-
     
     const value = useMemo(() => ({...defaultValue, setPage}), [])
 
@@ -49,7 +49,7 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
         <IonToolbar>
             <IonTitle>{pageName}</IonTitle>
         </IonToolbar>
-        <MainImage className='skeleton'>
+        <MainImage className='skeleton' onClick={()=> setMenuOpen(true)}>
             {user && user.profile_picture
                 ? <Image2x id={user.profile_picture.id} />
                 : <></>
@@ -57,6 +57,7 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
         </MainImage>
     </CustomIonHeader>
     {children}
+    <MainMenu open ={menuOpen} onClose={()=> {setMenuOpen(false)}}/>
     </UserContext.Provider>
 }
 

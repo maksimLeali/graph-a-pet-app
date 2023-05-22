@@ -75,7 +75,6 @@ export const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-
 root.render(
   <ApolloProvider client={apolloClient}>
     <App />

@@ -33,18 +33,12 @@ export const Modal: React.FC<ModalProps> = ({
     customActions = [],
 }) => {
     const { t } = useTranslation();
-    const [zIndex, setZIndex] = useState(0);
-    useEffect(()=> {
-        if(open) return setZIndex(201)
-        setTimeout(()=> {setZIndex(0)}, 1000);
-    },[open])
+    
     const ref = useRef<HTMLDivElement>(null);
     useOnClickOutside(ref, ()=>onClose() );
     return (
         <ModalBg
-            className="ModalBg"
-            open={open ?? false}
-            zIndex={zIndex}
+            className={`ModalBg ${open ? 'open' : ''}`}
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -91,25 +85,32 @@ export const Modal: React.FC<ModalProps> = ({
     );
 };
 
-const ModalBg = styled.div<{open:boolean, zIndex:number}>`
+const ModalBg = styled.div`
     width: 100vw;
     height: 100vh;
-    background-color: #111d;
+    background-color: var(--ion-trasparent-bg);
     position: fixed;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: ${({zIndex})=> zIndex};
-    opacity: ${({open})=> open? 1 : 0};
+    z-index: 0;
+    opacity: 0;
+    
+    animation: overMenuClose .5s ease-in-out;
     top: 0;
     left: 0;
     padding: 40px 10px;
     transition: opacity .5s ease-in-out;
     box-sizing: border-box;
+    &.open {
+        animation: overMenuOpen .5s ease-in-out;
+        z-index: 201;
+        opacity:1;
+    }
 `;
 
 const ModalBox = styled.div<{ bgColor: string; txtColor: string }>`
-    max-width: 460px;
+    max-width: var(--max-width);
     width: 100%;
     max-height:90vh;
     border-radius: 4px;
