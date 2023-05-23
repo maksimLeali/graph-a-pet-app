@@ -13,7 +13,7 @@ export type IUserContext ={
 } & Record<string, any>
 
 type Page = {
-    name: string , visible: boolean
+    name: string , visible?: boolean
 }
 
 const defaultValue: IUserContext = {
@@ -31,13 +31,12 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     const [visible, setVisible] = useState(true) 
     const [user, setUser] = useState<MinUserFragment | null>(null)
     const [menuOpen,setMenuOpen ]= useState(false)
-    const setPage = ({name, visible}: Page)=> {
+    const setPage = ({name, visible = true}: Page)=> {
         setPageName(name);
         setVisible(visible)
     }
 
     useEffect(()=> {
-        console.log('user changed', cookie.user)
         setUser(cookie.user)
     }, [cookie.user])
 

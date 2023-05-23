@@ -52,7 +52,7 @@ const testResponseLink = new ApolloLink((operation, forward)=> {
 
 const logoutLink = onError((received) => {
   if (['401', '403'].includes(_.get(received, 'graphQLErrors.0.extensions.code', '') )) {
-    console.log('not auth')
+    
     toast.error('User not Authorized')
   }
 })

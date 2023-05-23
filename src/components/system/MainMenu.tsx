@@ -58,7 +58,6 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 
     useEffect(()=> {
         if(!inited) return
-        console.log( document.body.classList)
         document.body.classList.toggle('dark', darkMode)
     }, [darkMode, inited])
 

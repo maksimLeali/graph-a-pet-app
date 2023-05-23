@@ -11,13 +11,13 @@ export const AppRouter = ()=> {
         <IonReactRouter>
             <IonRouterOutlet>
                 <Switch>
-                <AuthenticatedRoute exact path="/home" component={()=><HomeRouter />} />    
+                <AuthenticatedRoute path="/home" component={()=><HomeRouter />} />    
                 <Route path="/auth">
                     <AuthLayout>
                         <AuthRouter />
                     </AuthLayout>
                 </Route>
-                <Route  path="/">
+                <Route path="/">
                     <Redirect to="/home" />
                 </Route>
                 </Switch>

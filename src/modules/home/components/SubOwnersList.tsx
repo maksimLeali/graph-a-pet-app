@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Icon, Image2x } from "../../../components";
 import { PetMinSubOwnerFragment } from "../operations/__generated__/petMinSubOwner.generated";
-import { Maybe } from "../../../types";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 

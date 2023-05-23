@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Icon, Image2x, Modal } from "../../../components";
+import { Icon, Image2x } from "../../../components";
 import {
     useCallback,
     useEffect,
