@@ -8,7 +8,7 @@
         "insert_new_password": "Inserisci new password",
         "insert_code": "Inserisci code",
         "forgot_password_link": "Forgot password?",
-        "login": "Login",
+        "login": "Accedi",
         "password_recovery": "Recupera password",
         "password_recovery_text": "Inserisci la tua email per impostare una nuova password",
         "password_recovery_email_text": "Inserisci il codice ricevuto nella tua email",
@@ -18,7 +18,8 @@
         "at_least_8_chars": "Almeno 8 caratteri",
         "at_least_both_cases": "Entrambe maiuscole e minuscole",
         "at_least_a_number": "Almeno un numero",
-        "logout": "Logout"
+        "logout": "Logout",
+        "signup": "Registrati"
       },
       "users": {
         "general": {

@@ -1,10 +1,10 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { useCookies } from "react-cookie";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { TextInput } from "../../../components";
+import { SubmitInput, TextInput } from "../../../components";
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useHistory } from "react-router";
@@ -12,7 +12,7 @@ import { useUserContext } from "../../../contexts";
 
 
 export const Login: React.FC = ()  => {
-    const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
+    const methods = useForm<MutationLoginArgs>({ mode: "onChange" });
     const [cookie, setCookie] = useCookies(["jwt", "user"]);
     const history = useHistory()
     const { setContextUser } = useUserContext()
@@ -49,18 +49,21 @@ export const Login: React.FC = ()  => {
     return (
         
         <Container>
-            <Form
-                onSubmit={handleSubmit((variables) => login({ variables } as any))}
-            >
-                <TextInput
-                    name="email"
-                    innerRef={register}
-                    ntTextLabel="Email"
-                />
-                <TextInput type='password' name="password" innerRef={register} ntTextLabel="Password"/>
-                <IonButton type="submit" >{"Login"} </IonButton>
+            <FormProvider {...methods}>
+                <Form
+                    onSubmit={methods.handleSubmit((variables) => login({ variables } as any))}
+                >
+                    <TextInput
+                        name="email"
+                        required
+                        registerOptions={{pattern:  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/}}
+                        ntTextLabel="Email"
+                    />
+                    <TextInput type='password' name="password" ntTextLabel="Password" />
+                    <SubmitInput color="primary">{t('auth.login')} </SubmitInput>
 
-            </Form>
+                </Form>
+            </FormProvider>
       </Container>
     );
 };

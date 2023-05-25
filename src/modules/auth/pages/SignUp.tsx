@@ -1,10 +1,10 @@
 import { IonButton } from "@ionic/react";
 import { useCookies } from "react-cookie";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider} from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { SelectInput, TextInput } from "../../../components";
+import { SelectInput, SubmitInput, TextInput } from "../../../components";
 import { apolloClient } from "../../../main";
 import { MutationSignUpArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
@@ -13,8 +13,8 @@ import { useSignUpMutation } from "../operations/__generated__/signup.generated"
 
 
 export const SignUp = () => {
-    const { register, handleSubmit, control } = useForm<MutationSignUpArgs>({ mode: "onChange" });
-
+    const methods = useForm<MutationSignUpArgs>({ mode: "onChange" });
+    
     const { t } = useTranslation();
     
     
@@ -34,25 +34,24 @@ export const SignUp = () => {
 
     return (
         <Container>
-            <Form
-                onSubmit={handleSubmit((variables) => {
-                    console.log("vars", variables);
-                    console.log(apolloClient);
-                    return signup({ variables } as any);
-                })}
-            >
-                <TextInput name="firstName" innerRef={register} ntTextLabel="First name"/>
-                <TextInput name="lasrName" innerRef={register} ntTextLabel="Last name"/>
-                <TextInput
-                    name="email"
-                    innerRef={register}
-                    ntTextLabel="Email"
-                />
-                <SelectInput ntTextLabel="Select example" name="test"  control={control} options={[{label: "test", value :1},{label: "test2", value :2}]}/>
-                <TextInput name="password" innerRef={register} ntTextLabel="Password"/>
-
-                <IonButton type="submit" >{"Sign Up"} </IonButton>
-            </Form>
+            <FormProvider {...methods}>
+                <Form
+                    onSubmit={methods.handleSubmit((variables) => {
+                        console.log("vars", variables);
+                        console.log(apolloClient);
+                        return signup({ variables } as any);
+                    }, (err, e)=> {
+                        console.error(err,e)
+                    })}
+                >
+                    <TextInput name="firstName"  ntTextLabel="First name"/>
+                    <SelectInput ntTextLabel="Select example" name="test"  control={methods.control} options={[{label: "test", value :1},{label: "test2", value :2}]}/>
+                 
+                    <SubmitInput color="primary">
+                        {t('auth.signup')}
+                    </SubmitInput>
+                </Form>
+            </FormProvider>
         </Container>
     );
 };
