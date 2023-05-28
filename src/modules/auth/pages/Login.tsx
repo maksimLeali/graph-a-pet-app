@@ -56,6 +56,7 @@ export const Login: React.FC = ()  => {
                 >
                     <TextInput
                         name="email"
+                        inputMode="email"
                         required
                         registerOptions={{pattern:  {value :/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, message: 'messages.errors.invalid_email'}}}
                         textLabel="auth.email"
@@ -66,7 +67,7 @@ export const Login: React.FC = ()  => {
                 </Form>
             </FormProvider>
             <InfoBox>
-                <span>{t('auth.not_registered')} <Link to="/auth/signup"><Icon color="primary" size="1rem" name="enterOutline" />{t("auth.signup")}</Link></span>
+                <span>{t('auth.not_registered')} <Link to="/auth/signup">{t("auth.signup")}<Icon color="primary" size="1rem" name="idCardOutline" /></Link></span>
             </InfoBox>
       </Container>
     );

@@ -3,19 +3,20 @@ import { useCookies } from "react-cookie";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Icon, SelectInput, SubmitInput, TextInput } from "../../../components";
 import { apolloClient } from "../../../main";
 import { MutationSignUpArgs, UserCreate } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useSignUpMutation } from "../operations/__generated__/signup.generated";
+import _ from 'lodash'
 
 export const SignUp = () => {
   const methods = useForm<UserCreate>({ mode: "onSubmit" });
-
+  let timeout: string | number | NodeJS.Timeout | null | undefined = null;
   const { t } = useTranslation();
-
+  const history = useHistory()
   const [signup, { loading }] = useSignUpMutation({
     onCompleted: ({ signUp }) => {
       console.log("completed");
@@ -23,10 +24,13 @@ export const SignUp = () => {
         toast.error(t("messages.errors.login"));
         return;
       }
+      toast.success(t("messages.success.signup"))
+      timeout = setTimeout(()=> {
+          if(timeout) clearTimeout(timeout);
+          return history.push('/auth')
+      }, 500)
     },
-    onError: (error) => {
-      toast.error(t("messages.errors.login"));
-    },
+  
   });
 
   return (
@@ -37,7 +41,7 @@ export const SignUp = () => {
             (variables) => {
               console.log("vars", variables);
               console.log(apolloClient);
-              return signup({ variables: { data: variables } });
+              return signup({ variables: { data: _.omit(variables, 'confirm_password') } });
             },
             (err, e) => {
               console.log(methods.getValues());
@@ -85,8 +89,8 @@ export const SignUp = () => {
         <span>
           {t("auth.already_registered")}{" "}
           <Link to="/auth/login">
-            <Icon size="1rem" name="enterOutline" color="primary" />
             {t("auth.login")}
+            <Icon size="1rem" name="enterOutline" color="primary" />
           </Link>
         </span>
       </InfoBox>

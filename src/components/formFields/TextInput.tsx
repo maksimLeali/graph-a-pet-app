@@ -21,7 +21,8 @@ type props = {
   focusColor?: string;
   disabledColor?: string;
   textColor?: string;
-  type?: "text" | "password";
+  type?: "text" | "password" ;
+  inputMode?: "text" | "email" ;
   errorText?: string;
   pattern?: RegExp;
   icon?: IconName;
@@ -37,6 +38,7 @@ export const TextInput: React.FC<props> = ({
   required = false,
   registerOptions,
   type = "text",
+  inputMode = "text",
   focusColor = "primary",
   disabledColor = "lightGray",
   errorColor = "danger",
@@ -82,6 +84,7 @@ export const TextInput: React.FC<props> = ({
         <StyledInput
           id={name}
           onFocus={() => setFocused(true)}
+          inputMode={inputMode}
           type={type == "password" ? (showPsw ? "text" : "password") : type}
           textColor={textColor}
           {...register(name, {
