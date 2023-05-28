@@ -9,6 +9,7 @@ import _ from 'lodash'
 type Option = {
     value: any;
     label: string;
+    render?: React.ReactNode
 };
 
 type props = {
@@ -102,6 +103,14 @@ export const SelectInput: React.FC<props> = ({
                                         _.find(
                                             options,
                                             (opt) => opt.value === value
+                                        )?.render 
+                                        ? _.find(
+                                            options,
+                                            (opt) => opt.value === value
+                                        )?.render 
+                                        : _.find(
+                                            options,
+                                            (opt) => opt.value === value
                                         )?.label
                                     }
                                 </p>
@@ -138,7 +147,12 @@ export const SelectInput: React.FC<props> = ({
                                     onChange(option.value)
                                     console.log(option)
                                 }} > 
-                                    <span>{option.label}</span>
+                                    {
+                                    option.render 
+                                    ? option.render 
+                                    : <span>{option.label}</span>
+                                    }
+
                                     {option.value === value ? <Icon name="closeCircleOutline" color={color} /> : <></>}
                                 </Option>
                             })}
@@ -342,7 +356,7 @@ const OptionsContainer = styled.div<{maxHeight: number}>`
     // margin-left: 20px ;
     max-height: 0;
     box-shadow: 1px 1px 2px 0px #2b2b2b;
-    transition: max-height 1s ease-in-out, opacity .5s ease-in-out;
+    transition: max-height .5s ease-in-out, opacity .5s ease-in-out;
     
     @media (prefers-color-scheme: dark) {
         background-color: var(--ion-background-color);

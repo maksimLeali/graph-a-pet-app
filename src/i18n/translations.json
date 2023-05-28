@@ -3,7 +3,11 @@
     "graph_a_pet_app": {
       "auth": {
         "insert_email": "Inserisci email",
-        "password": "Inserisci password",
+        "password": "Password",
+        "email": "E-mail",
+        "first_name": "Nome",
+        "last_name": "Cognome",
+        "confirm_password" : "Conferma password",
         "insert_password": "Inserisci password",
         "insert_new_password": "Inserisci new password",
         "insert_code": "Inserisci code",
@@ -19,7 +23,9 @@
         "at_least_both_cases": "Entrambe maiuscole e minuscole",
         "at_least_a_number": "Almeno un numero",
         "logout": "Logout",
-        "signup": "Registrati"
+        "signup": "Registrati",
+        "already_registered": "Sei già un utente ?",
+        "not_registered": "Non sei ancora registrato?"
       },
       "users": {
         "general": {
@@ -42,7 +48,7 @@
         "confirm": "Conferma",
         "close": "Chiudi"
       },
-      "message": {
+      "messages": {
         "done": "Finito con successo",
         "success": {
           "pet_updated": "Dati Pet aggiornati con successo",
@@ -53,7 +59,10 @@
           "login":"errore di autenticazione",
           "me": "Errore nel recupero propri dati",
           "user": "Errore nel caricamento utente",
-          "fetch": "Errore nel reperimento dati"
+          "fetch": "Errore nel reperimento dati",
+          "invalid_email":"Email non valida",
+          "password_mismatch" : "Le password non coincidono",
+          "required": "Campo obbligatorio"
         }
       }
     }

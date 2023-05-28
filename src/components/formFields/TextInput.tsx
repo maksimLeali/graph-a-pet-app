@@ -76,6 +76,7 @@ export const TextInput: React.FC<props> = ({
         }`}
       >
         {textLabel ? t(textLabel) : ntTextLabel}
+        {required && !compiled && ' *'}
       </InputLabel>
       <InputWrapper ref={ref} color={color}>
         <StyledInput
@@ -87,7 +88,7 @@ export const TextInput: React.FC<props> = ({
             onChange: (v) => {
               setCompiled(v.target.value.length > 0);
             },
-            required,
+            required : { value: required , message: 'messages.errors.required'},
             ...registerOptions,
           })}
         />
@@ -97,7 +98,8 @@ export const TextInput: React.FC<props> = ({
             name={showPsw ? "eyeOff" : "eye"}
             onClick={() => setShowPsw(!showPsw)}
             color={
-              focused || compiled ? "--ion-color-primary" : "--ion-color-medium"
+              error ? 'danger' :
+              focused || compiled ? "primary" : "medium"
             }
           />
         ) : (
@@ -107,7 +109,10 @@ export const TextInput: React.FC<props> = ({
           <Icon
             name={icon}
             size="14px"
-            color={focused ? "--ion-color-primary" : "ion-color-medium"}
+            color={
+              error ? 'danger' :
+              focused || compiled ? "primary" : "medium"
+            }
           />
         ) : (
           ""
@@ -118,8 +123,9 @@ export const TextInput: React.FC<props> = ({
           className={`foxusBox ${focused ? "focused" : ""} ${
             compiled ? "compiled" : ""
           } ${error ? "error" : ""}`}
-        />
+        /> 
       </InputWrapper>
+      {errors[name]?.message ? <ErrorSpan >{t(errors[name]?.message as I18NKey)}</ErrorSpan> : ''}
     </Wrapper>
   );
 };
@@ -140,6 +146,7 @@ type labelProps = {
 const Wrapper = styled.div`
   width: 100%;
   position: relative;
+  margin-bottom: 40px ;
 `;
 
 const InputLabel = styled.label<labelProps>`
@@ -175,6 +182,7 @@ const InputWrapper = styled.div<wrapperProps>`
   border-radius: 2px;
   border-top-right-radius: 0;
   height: 38px;
+  margin-bottom: 12px;
   overflow: hidden;
   z-index: 1;
   > .icon-wrapper {
@@ -234,4 +242,18 @@ const StyledInput = styled.input<{ textColor: string }>`
   @media (prefers-color-scheme: dark) {
     background-color: var(--ion-background-color);
   }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover, 
+  &:-webkit-autofill:focus, 
+  &:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    color: var(--ion-color-${({ textColor }) => textColor});
+    -webkit-text-fill-color: var(--ion-color-${({ textColor }) => textColor});
+}
 `;
+
+const ErrorSpan = styled.span`
+  color: var(--ion-color-danger);
+  font-size: .7rem ;
+`
