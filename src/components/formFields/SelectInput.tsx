@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "../../hooks";
 import { useTranslation } from "react-i18next";
-import _ from 'lodash'
+import _ from "lodash";
 type Option = {
     value: any;
     label: string;
@@ -48,7 +48,7 @@ export const SelectInput: React.FC<props> = ({
 }) => {
     const [focused, setFocused] = useState(false);
     const [compiled, setCompiled] = useState(false);
-    const [showOption, setShowOption] = useState(false)
+    const [showOption, setShowOption] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const selectRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation();
@@ -112,13 +112,18 @@ export const SelectInput: React.FC<props> = ({
                                 name="caretDownCircleOutline"
                             />
                         </IconContainer>
-                        <OptionsContainer className={`options-container ${focused ? "focused" : ""} ${
-                                compiled ? "compiled" : ""
-                            }`} ref={selectRef}>
-                            {_.map(options , (option)=>{
-                                return <Option className="option" > 
-                                    <span>{option.label}</span>
-                                </Option>
+                        <OptionsContainer
+                            className={`options-container ${
+                                focused ? "focused" : ""
+                            } ${compiled ? "compiled" : ""}`}
+                            ref={selectRef}
+                        >
+                            {_.map(options, (option) => {
+                                return (
+                                    <Option className="option">
+                                        <span>{option.label}</span>
+                                    </Option>
+                                );
                             })}
                         </OptionsContainer>
                         <FocusBox
@@ -198,14 +203,16 @@ const Wrapper = styled.div<selectProps>`
     }
     .options-container {
         background-color: var(--ion-background-color);
-        border-color:  var(--ion-color-${({ bgColor }) => bgColor});
+        border-color: var(--ion-color-${({ bgColor }) => bgColor});
     }
     .option {
-        color: var(--ion-color-${({txtColor})=> txtColor});
+        color: var(--ion-color-${({ txtColor }) => txtColor});
         border-color: var(--ion-color-${({ bgColor }) => bgColor});
-        &:hover{
+        &:hover {
             border-color: var(--ion-color-${({ focusColor }) => focusColor});
-            background-color:var(--ion-color-${({ hoverColor }) => hoverColor}); ;
+            background-color: var(
+                --ion-color-${({ hoverColor }) => hoverColor}
+            );
         }
     }
 `;
@@ -263,8 +270,8 @@ const IconContainer = styled.div`
         background-color: var(--ion-background-color);
     }
     .selectIcon {
-        &.focused{
-            >* {
+        &.focused {
+            > * {
                 transform: rotate(-180deg);
             }
         }
@@ -298,16 +305,16 @@ const FocusBox = styled.span`
 `;
 
 const OptionsContainer = styled.div`
-    width:calc(100% - 40px);
+    width: calc(100% - 40px);
     position: absolute;
-    z-index:4;
-    top:100%;
-    left:0;
+    z-index: 4;
+    top: 100%;
+    left: 0;
     overflow-y: hidden;
     border-left: 1px solid;
     opacity: 0;
     max-height: 0;
-    transition: max-height 1s ease-in-out, opacity .5s ease-in-out;
+    transition: max-height 1s ease-in-out, opacity 0.5s ease-in-out;
     @media (prefers-color-scheme: dark) {
         background-color: var(--ion-background-color);
     }
@@ -315,18 +322,16 @@ const OptionsContainer = styled.div`
         opacity: 1;
         max-height: 200px;
     }
-`
+`;
 
 const Option = styled.div`
-    width:100%;
-    height:35px;
-    border-bottom: 1px solid ;
-    padding: 5px 12px ;
+    width: 100%;
+    height: 35px;
+    border-bottom: 1px solid;
+    padding: 5px 12px;
     box-sizing: border-box;
-    position:relative;
+    position: relative;
     &:hover {
-        
-        border-left: 1px solid ; 
+        border-left: 1px solid;
     }
-    
-`
+`;

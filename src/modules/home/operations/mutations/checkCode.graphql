@@ -1,0 +1,16 @@
+mutation checkCode($code: String!) {
+	checkCode(code: $code) {
+		error{
+			code
+			message
+		}
+		success
+		is_valid
+		code {
+			id
+			code
+			ref_id
+			ref_table
+		}
+	}
+}

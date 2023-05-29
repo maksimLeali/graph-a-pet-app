@@ -64,6 +64,37 @@ export type CoatUpdate = {
   pattern?: Maybe<CoatPattern>;
 };
 
+export type Code = {
+  __typename?: 'Code';
+  id: Scalars['ID'];
+  code: Scalars['String'];
+  ref_id: Scalars['ID'];
+  ref_table: Scalars['String'];
+  created_by: Scalars['String'];
+  created_at: Scalars['String'];
+};
+
+export type CodeCreate = {
+  code: Scalars['String'];
+  ref_id: Scalars['String'];
+  ref_table: Scalars['String'];
+};
+
+export type CodeResult = {
+  __typename?: 'CodeResult';
+  success: Scalars['Boolean'];
+  error?: Maybe<Error>;
+  code?: Maybe<Code>;
+};
+
+export type CodeValidationResult = {
+  __typename?: 'CodeValidationResult';
+  success: Scalars['Boolean'];
+  error?: Maybe<Error>;
+  is_valid?: Maybe<Scalars['Boolean']>;
+  code?: Maybe<Code>;
+};
+
 export type CommonSearch = {
   page?: Maybe<Scalars['Int']>;
   page_size?: Maybe<Scalars['Int']>;
@@ -286,6 +317,8 @@ export type Mutation = {
   deleteOwnership: DeleteResult;
   updateOwnership: OwnershipResult;
   login: NewTokenResult;
+  linkPetToUser: OwnershipResult;
+  linkPetToMe: OwnershipResult;
   logout: Scalars['Boolean'];
   addPet: PetResult;
   addPetToUser: PetAddedResult;
@@ -299,6 +332,8 @@ export type Mutation = {
   updateReport: ReportResult;
   updateMedia: MediaResult;
   createMedia: MediaResult;
+  createCode: CodeResult;
+  checkCode: CodeValidationResult;
   restoreMemoriae: RestoredResult;
   respondToReport: ReportResult;
 };
@@ -363,6 +398,19 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationLinkPetToUserArgs = {
+  userId: Scalars['ID'];
+  petId: Scalars['ID'];
+  custodyLevel?: Maybe<CustodyLevel>;
+};
+
+
+export type MutationLinkPetToMeArgs = {
+  petId: Scalars['ID'];
+  custodyLevel?: Maybe<CustodyLevel>;
+};
+
+
 export type MutationAddPetArgs = {
   pet: PetCreate;
 };
@@ -424,6 +472,16 @@ export type MutationCreateMediaArgs = {
 };
 
 
+export type MutationCreateCodeArgs = {
+  data: CodeCreate;
+};
+
+
+export type MutationCheckCodeArgs = {
+  code: Scalars['String'];
+};
+
+
 export type MutationRestoreMemoriaeArgs = {
   id: Scalars['ID'];
 };
@@ -472,6 +530,14 @@ export type OwnershipsResult = {
   success: Scalars['Boolean'];
   error?: Maybe<Error>;
   ownerships: Array<Maybe<Ownership>>;
+};
+
+export type PaginatedCodes = {
+  __typename?: 'PaginatedCodes';
+  success?: Maybe<Scalars['Boolean']>;
+  error?: Maybe<Error>;
+  items: Array<Maybe<Code>>;
+  pagination: Pagination;
 };
 
 export type PaginatedDamnationesMemoriae = {
@@ -666,13 +732,16 @@ export type Query = {
   getReport?: Maybe<ReportResult>;
   listReports: PaginatedReports;
   getMedia: MediaResult;
+  getCode: CodeResult;
   listMedias: PaginatedMedias;
+  listCodes: PaginatedCodes;
   getDashboard: DashboardResult;
   getRealTimeStatistic: RealTimeStatisticResult;
   getGroupedStatistics: StatisticsResult;
   getDamnatioMemoriae?: Maybe<DamnatioMemoriaeResult>;
   listDamnationesMemoriae?: Maybe<PaginatedDamnationesMemoriae>;
   getUserDashboard: UserDashboardResult;
+  getOrCreateCode?: Maybe<CodeResult>;
 };
 
 
@@ -741,7 +810,17 @@ export type QueryGetMediaArgs = {
 };
 
 
+export type QueryGetCodeArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type QueryListMediasArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type QueryListCodesArgs = {
   commonSearch?: Maybe<CommonSearch>;
 };
 
@@ -760,6 +839,13 @@ export type QueryGetDamnatioMemoriaeArgs = {
 
 export type QueryListDamnationesMemoriaeArgs = {
   commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type QueryGetOrCreateCodeArgs = {
+  ref_id: Scalars['String'];
+  ref_table: Scalars['String'];
+  code?: Maybe<Scalars['String']>;
 };
 
 export type RangeFilter = {

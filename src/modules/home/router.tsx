@@ -9,7 +9,7 @@ export const HomeRouter = () => {
             <Route exact path={`${path}`} strict>
                 <Home />
             </Route>
-            <Route path={`${path}/sharing/:id`} >
+            <Route path={`${path}/sharing/:code`} >
                 <SharingPet />
             </Route>
             <Route exact path={`${path}/sharing`} strict>

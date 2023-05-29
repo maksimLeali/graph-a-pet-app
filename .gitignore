@@ -30,3 +30,6 @@ yarn-error.log*
 
 # Optional eslint cache
 .eslintcache
+*/__generated__/
+*/__generated__/*
+*/__generated__
