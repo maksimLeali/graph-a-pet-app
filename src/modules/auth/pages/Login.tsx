@@ -1,18 +1,19 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { useCookies } from "react-cookie";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { TextInput } from "../../../components";
+import { Icon, SubmitInput, TextInput } from "../../../components";
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useHistory } from "react-router";
 import { useUserContext } from "../../../contexts";
+import { Link } from "react-router-dom";
 
 
 export const Login: React.FC = ()  => {
-    const { register, handleSubmit } = useForm<MutationLoginArgs>({ mode: "onChange" });
+    const methods = useForm<MutationLoginArgs>({ mode: "onSubmit" });
     const [cookie, setCookie] = useCookies(["jwt", "user"]);
     const history = useHistory()
     const { setContextUser } = useUserContext()
@@ -20,12 +21,12 @@ export const Login: React.FC = ()  => {
     const [login, { loading }] = useLoginMutation({
         onCompleted: ({ login }) => {
             if (!login.user || !login.token) {
-                toast.error(t("message.errors.login"));
+                toast.error(t("messages.errors.login"));
                 return
             }
             setCookie("jwt", login.token);
             setCookie("user", JSON.stringify(login.user));
-            toast.success(t("message.success.login"))
+            toast.success(t("messages.success.login"))
             timeout = setTimeout(()=> {
                 if(timeout) clearTimeout(timeout);
                 return history.push('/home')
@@ -49,18 +50,25 @@ export const Login: React.FC = ()  => {
     return (
         
         <Container>
-            <Form
-                onSubmit={handleSubmit((variables) => login({ variables } as any))}
-            >
-                <TextInput
-                    name="email"
-                    innerRef={register}
-                    ntTextLabel="Email"
-                />
-                <TextInput type='password' name="password" innerRef={register} ntTextLabel="Password"/>
-                <IonButton type="submit" >{"Login"} </IonButton>
+            <FormProvider {...methods}>
+                <Form
+                    onSubmit={methods.handleSubmit((variables) => login({ variables } as any))}
+                >
+                    <TextInput
+                        name="email"
+                        inputMode="email"
+                        required
+                        registerOptions={{pattern:  {value :/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, message: 'messages.errors.invalid_email'}}}
+                        textLabel="auth.email"
+                    />
+                    <TextInput required type='password' name="password" textLabel="auth.password" />
+                    <SubmitInput color="primary">{t('auth.login')} </SubmitInput>
 
-            </Form>
+                </Form>
+            </FormProvider>
+            <InfoBox>
+                <span>{t('auth.not_registered')} <Link to="/auth/signup">{t("auth.signup")}<Icon color="primary" size="1rem" name="idCardOutline" /></Link></span>
+            </InfoBox>
       </Container>
     );
 };
@@ -68,6 +76,8 @@ export const Login: React.FC = ()  => {
 const Container = styled.div`
     display: flex;
     align-items: center;
+    justify-content:center ;
+    flex-direction:column ;
     width: 100%;
     height: 100%;
     > button {
@@ -81,6 +91,27 @@ const Form = styled.form`
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 60px;
     padding-top: 30px;
+`;
+
+const InfoBox = styled.div`
+    width:100%;
+    color: var(--ion-color-dark);
+    padding: 10px 24px;
+    > span {
+        display:flex;
+        width:100%;
+        font-size: .8rem;
+        gap: 5px;
+        > a {
+            text-decoration:none ;
+            display:flex ;
+            align-items:flex-start ;
+            gap: 5px;
+            > .icon-wrapper {
+                height: 1rem;
+                align-items:center ;
+            }
+        }
+    }
 `;
