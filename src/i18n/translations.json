@@ -64,6 +64,10 @@
           "password_mismatch" : "Le password non coincidono",
           "required": "Campo obbligatorio"
         }
+      },
+      "pages": {
+        "home": "Home",
+        "pet_sharing": "Mi vuoi ?"
       }
     }
   }

@@ -1,0 +1,17 @@
+fragment MinPet on Pet {
+    name
+    id
+    main_picture{
+        id
+        main_color{
+            color
+            contrast
+        }
+        main_colors{
+            color
+            contrast
+        }
+        url
+        ref_id
+    }
+}
