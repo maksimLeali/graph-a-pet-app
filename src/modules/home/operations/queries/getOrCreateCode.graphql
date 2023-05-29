@@ -1,0 +1,15 @@
+query getOrCreate($ref_id: String!, $ref_table: String! $code: String) {
+	getOrCreateCode(ref_id: $ref_id, ref_table: $ref_table, code: $code) {
+		error{
+			code
+			message
+		}
+		success
+		code {
+			id
+			code
+			ref_id
+			ref_table
+		}
+	}
+}

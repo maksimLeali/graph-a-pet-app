@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 import { useUserContext } from "../../../contexts";
 
+
 export const Home: React.FC = () => {
     const dateFrom = dayjs().toISOString()
     const dateTo = dayjs(dateFrom).add(7, "days").toISOString()

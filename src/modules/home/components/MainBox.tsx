@@ -13,6 +13,7 @@ import {
 } from "../../../contexts/ModalContext";
 import { useTranslation } from "react-i18next";
 import { PetMinSubOwnerFragment } from "../operations/__generated__/petMinSubOwner.generated";
+import { useGetOrCreateLazyQuery } from "../operations/__generated__/getOrCreateCode.generated";
 
 type props = {
     pets: DashboardPetFragment[];
@@ -45,6 +46,27 @@ export const MainBox: React.FC<props> = ({ pets }) => {
             return setActive(i);
         }
     };
+    
+
+    const [getOrCreateCode] = useGetOrCreateLazyQuery({
+        onCompleted: ({getOrCreateCode})=> {
+            if(!getOrCreateCode?.code || getOrCreateCode.error){
+                return
+            }
+            try {
+                console.log(`https://graph-a-pet-app.web.app/home/sharing/${getOrCreateCode.code.code}`)
+                if(!canShare){
+                    return null;
+                }
+                navigator.share({url: `https://graph-a-pet-app.web.app/home/sharing/${getOrCreateCode.code.code}`, title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
+            }catch(e){
+                console.log(e)
+            }
+            
+
+        }
+    })
+
     useEffect(()=> {
         try {
             navigator.canShare({url: 'https://graph-a-pet-app.web.app/home', title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
@@ -54,14 +76,7 @@ export const MainBox: React.FC<props> = ({ pets }) => {
 
     }, [])
     const share = useCallback(()=>{
-        try {
-            if(!canShare){
-                return null;
-            }
-            navigator.share({url: 'https://graph-a-pet-app.web.app/home', title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
-        }catch(e){
-            console.log(e)
-        }
+       getOrCreateCode({variables: {ref_table:'pets' , ref_id: pets[active].id, code: null}})
 
     }, [])
 
