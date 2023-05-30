@@ -158,6 +158,7 @@ const InfoBox = styled.div`
     gap: 10px;
     > span {
         text-align: center;
+        color: var(--ion-color-dark)
     }
     &.info1 {
         align-self: flex-start;
@@ -178,5 +179,10 @@ const InfoChip = styled.span`
     height: 30px;
     border-radius: 4px;
     background-color: var(--ion-color-primary);
+    color: var(--ion-color-light)!important;
+    .dark &{
+        color: var(--ion-color-dark)!important;
+        
+    }
     
 `
