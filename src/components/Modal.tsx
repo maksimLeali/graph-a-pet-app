@@ -60,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
                 {children}
                 <Actions>
                     {onCancel !== null && onCancel !== undefined && (
-                        <IonButton color="danger" onClick={onCancel}>
+                        <IonButton color="danger" fill="outline" onClick={onCancel}>
                             {t("actions.cancel")}
                         </IonButton>
                     )}

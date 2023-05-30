@@ -316,7 +316,7 @@ const ActionChip = styled.span`
 
 const Title = styled.h1`
     padding: 4px 30px;
-    border-radius: 4px;
+    border-radius: 30px;
     width: fit-content;
     margin-bottom: 60px;
     text-transform: uppercase;

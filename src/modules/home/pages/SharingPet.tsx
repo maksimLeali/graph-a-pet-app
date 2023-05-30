@@ -83,7 +83,7 @@ export const SharingPet: React.FC<props> = ()=>{
             
         </SharedBox>
         : <Empty >
-            <h1>{t('messages.error.no_pet_found')}</h1>
+            <h1>{t('messages.errors.no_pet_found')}</h1>
         </Empty>    
     }
     {pet && <ActionContainer>
@@ -145,7 +145,7 @@ const NameBox = styled.div`
     min-width: 80px;
     height: 30px;
     padding: 5px 12px;
-    border-radius: 2px;
+    border-radius: 30px;
     box-sizing: border-box;
     background-color: var(--ion-color-primary);
     display:flex;
@@ -193,7 +193,7 @@ const InfoChip = styled.span`
     width: 100%;
     padding: 5px;
     height: 30px;
-    border-radius: 4px;
+    border-radius: 30px;
     background-color: var(--ion-color-primary);
     color: var(--ion-color-light)!important;
     .dark &{

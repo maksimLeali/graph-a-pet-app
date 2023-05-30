@@ -72,7 +72,8 @@
           "fetch": "Errore nel reperimento dati",
           "invalid_email":"Email non valida",
           "password_mismatch" : "Le password non coincidono",
-          "required": "Campo obbligatorio"
+          "required": "Campo obbligatorio",
+          "no_pet_found": "Nessun animale è stato trovato"
         }
       },
       "pages": {
