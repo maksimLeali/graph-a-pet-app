@@ -33,6 +33,14 @@
           "no_sub_owners": "Nessun affidatario"
         }
       },
+      "pets": {
+        "name": "Nome",
+        "weight": "Peso",
+        "age": "Età",
+        "neutered": "Sterilizzato",
+        "gender": "Sesso",
+        "family": "Pet"
+      },
       "system": {
         "menu": {
           "settings": "Impostazioni",
@@ -44,6 +52,8 @@
         }
       },
       "actions": {
+        "accept": "Accetta",
+        "refuse": "Rifiuta",
         "cancel": "Annulla",
         "confirm": "Conferma",
         "close": "Chiudi"

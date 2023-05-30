@@ -9,6 +9,7 @@ import { useCheckCodeMutation } from "../operations/__generated__/checkCode.gene
 import { useGetPetLazyQuery, useGetPetQuery } from "../operations/__generated__/getSinglePet.generated";
 import { Pet } from "../../../types";
 import { MinPetFragment } from "../operations/__generated__/minPet.generated";
+import { IonButton } from "@ionic/react";
 
 
 
@@ -51,7 +52,7 @@ export const SharingPet: React.FC<props> = ()=>{
     
     
     return <Container >
-        <SharedBox>
+        {getPetLoading || checkLoading || pet ?<SharedBox>
             <MainPetContainer>
 
             <ImageWrapper className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
@@ -62,25 +63,39 @@ export const SharingPet: React.FC<props> = ()=>{
             </NameBox>
             </MainPetContainer>
             <InfoBox className="info1">
-                <span>Pet</span>
+                <span>{t('pets.family')}</span>
                 <InfoChip className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
                     {pet && <span>{pet.body.family}</span> }
                 </InfoChip>
             </InfoBox>
             <InfoBox className="info2">
-                <span>Gender</span>
+                <span>{t('pets.gender')}</span>
                 <InfoChip className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
                     {pet && <span>{pet.gender}</span> }
                 </InfoChip>
             </InfoBox>
             <InfoBox className="info3">
-                <span>TEST</span>
+                <span>{t('pets.weight')}</span>
                 <InfoChip className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
                     {pet && <span>{pet.weight_kg} Kg</span> }
                 </InfoChip>
             </InfoBox>
             
         </SharedBox>
+        : <Empty >
+            <h1>{t('messages.error.no_pet_found')}</h1>
+        </Empty>    
+    }
+    {pet && <ActionContainer>
+            <IonButton color="danger" fill="outline" onClick={()=>{}} >
+                {t('actions.refuse')}
+            </IonButton>
+            <IonButton color="primary" onClick={()=>{}} >
+                {t('actions.accept')}
+            </IonButton>
+
+        </ActionContainer>
+        }
     </Container>
 }
 
@@ -111,6 +126,7 @@ const MainPetContainer = styled.div`
 
 const ImageWrapper = styled.div`
     width:100%;
+    max-width:180px;
     aspect-ratio: 1/1;
     border: 2px solid var(--ion-color-primary);
     border-radius: 260px;
@@ -185,4 +201,26 @@ const InfoChip = styled.span`
         
     }
     
+`
+
+const Empty = styled.div`
+    width:100%;
+    padding: 80px 12px;
+    > h1 {
+        text-align: center;
+    }
+`
+
+const ActionContainer = styled.div`
+    width:calc(100% - 24px);
+    border-radius:30px 30px 0 0;
+    background-color: var(--ion-color-light);
+    position: absolute;
+    bottom:80px;
+    left: 12px;
+    display:flex;
+    padding: 30px 12px 30px;
+    box-sizing: border-box;
+    justify-content: space-between;
+
 `
