@@ -14,4 +14,11 @@ fragment MinPet on Pet {
         url
         ref_id
     }
+    weight_kg
+    birthday
+    gender
+    body{
+        breed
+        family
+    }
 }

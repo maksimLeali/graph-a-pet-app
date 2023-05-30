@@ -69,7 +69,7 @@ export const MainBox: React.FC<props> = ({ pets }) => {
 
     useEffect(()=> {
         try {
-            navigator.canShare({url: 'https://graph-a-pet-app.web.app/home', title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
+            navigator.canShare({url: 'https://graph-a-pet-app.web.app/home', text: "Un cucciolo per te" })
         }catch(e){
             setCanShare(false)
         }
@@ -78,7 +78,7 @@ export const MainBox: React.FC<props> = ({ pets }) => {
     const share = useCallback(()=>{
        getOrCreateCode({variables: {ref_table:'pets' , ref_id: pets[active].id, code: null}})
 
-    }, [])
+    }, [active])
 
     const modalOpen = useCallback(() => {
         openModal({
@@ -224,7 +224,7 @@ const PetsBox = styled.div<{ direction?: "clock" | "counter" }>`
     z-index: 3;
     position: relative;
     border-radius: 500px;
-    overflow: hidden;
+    overflow-y: hidden;
     display: flex;
     @media only screen and (max-width: 420px) {
         width: 170px;

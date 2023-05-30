@@ -27,7 +27,7 @@ export const SharingPet: React.FC<props> = ()=>{
         checkCode({variables: {code}})
     }, [])
 
-    const [checkCode] = useCheckCodeMutation({
+    const [checkCode, {loading : checkLoading}] = useCheckCodeMutation({
         onCompleted: ({checkCode})=> {
             if(!checkCode?.code || checkCode.error){
                 return
@@ -38,7 +38,7 @@ export const SharingPet: React.FC<props> = ()=>{
         }
     })
     
-    const [getPet, ] = useGetPetLazyQuery ({
+    const [getPet, {loading: getPetLoading}] = useGetPetLazyQuery ({
         onCompleted:({getPet})=> {
             if(!getPet?.pet || getPet.error ){
                 return
@@ -52,42 +52,70 @@ export const SharingPet: React.FC<props> = ()=>{
     
     return <Container >
         <SharedBox>
-            {pet ? <ImageWrapper>
-                {pet.main_picture? <Image2x id={pet.main_picture.id} /> : <></>}
-            </ImageWrapper> : 
-            <ImageWrapper className="skeleton"></ImageWrapper>
-             }
-                {pet ? 
-            <NameBox >
-                <span>{pet.name}</span> 
+            <MainPetContainer>
+
+            <ImageWrapper className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
+                {!(getPetLoading || checkLoading)&& pet?.main_picture? <Image2x id={pet?.main_picture.id} /> : <FillBox></FillBox>}
+            </ImageWrapper>    
+            <NameBox className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`} >
+                {pet && <span>{pet.name}</span> }
             </NameBox>
-                : 
-                <NameBox className="skeleton" />
-            }
-                
+            </MainPetContainer>
+            <InfoBox className="info1">
+                <span>Pet</span>
+                <InfoChip className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
+                    {pet && <span>{pet.body.family}</span> }
+                </InfoChip>
+            </InfoBox>
+            <InfoBox className="info2">
+                <span>Gender</span>
+                <InfoChip className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
+                    {pet && <span>{pet.gender}</span> }
+                </InfoChip>
+            </InfoBox>
+            <InfoBox className="info3">
+                <span>TEST</span>
+                <InfoChip className={`${getPetLoading ||checkLoading? 'skeleton' : ''}`}>
+                    {pet && <span>{pet.weight_kg} Kg</span> }
+                </InfoChip>
+            </InfoBox>
+            
         </SharedBox>
     </Container>
 }
 
 const Container = styled.div`
     width: 100%;
-    padding: 40px 24px ;
+    padding: 20px 12px ;
     box-sizing: border-box;
 `
 
 const SharedBox = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(4, 80px);
+`
+
+const MainPetContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    justify-content: space-between;
+    grid-row-start: 1;
+    grid-row-end: 4;
+    grid-column: 1;
+    
+    
 `
 
 const ImageWrapper = styled.div`
-    width:260px;
+    width:100%;
     aspect-ratio: 1/1;
     border: 2px solid var(--ion-color-primary);
     border-radius: 260px;
     margin-bottom: 20px;
+    overflow-y: hidden;
     > .img2x {
         width:100%;
         height:100%;
@@ -99,7 +127,7 @@ const ImageWrapper = styled.div`
 
 const NameBox = styled.div`
     min-width: 80px;
-    height: 40px;
+    height: 30px;
     padding: 5px 12px;
     border-radius: 2px;
     box-sizing: border-box;
@@ -111,4 +139,44 @@ const NameBox = styled.div`
         text-transform: uppercase;
         font-weight: 600;
     }
+`
+
+const FillBox = styled.span`
+    width: 100%;
+    height: 100%;
+    background-color: var(--ion-color-primary);
+`
+const InfoBox = styled.div`
+    
+    grid-column: 2;
+    padding: 10px 12px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    justify-content: flex-end;
+    gap: 10px;
+    > span {
+        text-align: center;
+    }
+    &.info1 {
+        align-self: flex-start;
+        grid-row: 1 ;
+    }
+    &.info2 {
+        align-self: center;
+        grid-row: 2 ;
+    }
+    &.info3 {
+        grid-row: 3 ;
+    }
+`
+
+const InfoChip = styled.span`
+    width: 100%;
+    padding: 5px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: var(--ion-color-primary);
+    
 `
