@@ -28,7 +28,7 @@ const ChoiseContainer = styled.div`
     display: flex;
     position: relative;
     flex-direction: column;
-    margin-top:50px;
+    margin-top:47px;
     padding: 20px 0;
 
 `
@@ -73,9 +73,9 @@ const SkeletonTitle = styled.div`
     align-self: center;
     width:120px;
     height: 40px;
-    margin-top: 20px;
+    margin-top: 27px;
     background-color : var(--ion-color-medium) ;
-    border-radius: 4px;
+    border-radius: 40px;
     margin-bottom: 60px;
 `
 
