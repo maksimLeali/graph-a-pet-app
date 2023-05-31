@@ -54,11 +54,11 @@ export const MainBox: React.FC<props> = ({ pets }) => {
                 return
             }
             try {
-                console.log(`https://graph-a-pet-app.web.app/home/sharing/${getOrCreateCode.code.code}`)
+                console.log(`https://graph-a-pet-app.web.app/pets/sharing/${getOrCreateCode.code.code}`)
                 if(!canShare){
                     return null;
                 }
-                navigator.share({url: `https://graph-a-pet-app.web.app/home/sharing/${getOrCreateCode.code.code}`, title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
+                navigator.share({url: `https://graph-a-pet-app.web.app/pets/sharing/${getOrCreateCode.code.code}`, title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
             }catch(e){
                 console.log(e)
             }
