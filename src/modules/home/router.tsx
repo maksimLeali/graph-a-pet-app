@@ -6,10 +6,10 @@ export const HomeRouter = () => {
     console.log(path);
     return (
         <>
-            <Route exact path={`${path}`} strict>
+            <Route exact path={`${path}`} >
                 <Home />
             </Route>
-            <Route exact path={`${path}/sharing`} strict>
+            <Route exact path={`${path}/sharing`} >
                 <Redirect to={`${path}`} />
             </Route>
         </>

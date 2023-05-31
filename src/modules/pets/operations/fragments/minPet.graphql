@@ -14,6 +14,19 @@ fragment MinPet on Pet {
         url
         ref_id
     }
+    ownerships {
+        items {
+            custody_level
+            user{
+                profile_picture {
+                    id
+                }
+                first_name
+                last_name
+                
+            }
+        }
+    }
     weight_kg
     birthday
     gender

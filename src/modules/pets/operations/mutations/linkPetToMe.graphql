@@ -1,0 +1,16 @@
+mutation linkPetToMe($petId : ID!, $custodyLevel: CustodyLevel!){
+    linkPetToMe(petId: $petId, custodyLevel: $custodyLevel) {
+        ownership{
+            id
+            custody_level
+            pet {
+                ...MinPet
+            }
+        }
+        success 
+        error{
+            message
+            code
+        }
+    }
+}

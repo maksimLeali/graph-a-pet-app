@@ -14,20 +14,13 @@ import { MinPetFragment } from "../operations/__generated__/minPet.generated";
 import { IonButton } from "@ionic/react";
 import _ from 'lodash'
 import { CustodyLevelSelector } from "../components/CustodyLevelSelector";
+import { ShareBox } from "../components";
 
 export const Sharing: React.FC = () => {
     const { code } = useParams<{ code: string }>();
-    const location = useLocation();
     const [pet, setPet] = useState<MinPetFragment>();
-    const [custodyLevel, setCustodyLevel] = useState<
-        Exclude<CustodyLevel, CustodyLevel.Owner>
-    >(CustodyLevel.SubOwner);
     const { t } = useTranslation();
     const { setPage } = useUserContext();
-    useEffect(() => {
-        setPage({ name: t("pages.pet_sharing") });
-        checkCode({ variables: { code } });
-    }, []);
 
     const [checkCode, { loading: checkLoading }] = useCheckCodeMutation({
         onCompleted: ({ checkCode }) => {
@@ -51,6 +44,13 @@ export const Sharing: React.FC = () => {
         },
     });
 
+
+    useEffect(() => {
+        setPage({ name: t("pages.pet_sharing") });
+        checkCode({ variables: { code } });
+    }, []);
+
+    
     return (
         <Container>
             {getPetLoading || checkLoading || pet ? (
@@ -113,21 +113,7 @@ export const Sharing: React.FC = () => {
                 </Empty>
             )}
             {pet && (
-                <ShareBox>
-                    <CustodyLevelSelector current={custodyLevel} onSelected={(v)=> setCustodyLevel(v as Exclude<CustodyLevel, CustodyLevel.Owner> )} />
-                    <ActionContainer>
-                        <IonButton
-                            color="danger"
-                            fill="outline"
-                            onClick={() => {}}
-                        >
-                            {t("actions.refuse")}
-                        </IonButton>
-                        <IonButton color="primary" onClick={() => {}}>
-                            {t("actions.accept")}
-                        </IonButton>
-                    </ActionContainer>
-                </ShareBox>
+                <ShareBox  onConfirm={(v)=> console.log('test', v)}/>
             )}
         </Container>
     );
@@ -135,8 +121,12 @@ export const Sharing: React.FC = () => {
 
 const Container = styled.div`
     width: 100%;
-    padding: 20px 12px;
+    padding: 20px 12px 0;
     box-sizing: border-box;
+    @media( max-height: 700px){
+        min-height:calc(100vh - 90px);
+
+    }
 `;
 
 const PetInfoBox = styled.div`
@@ -176,7 +166,7 @@ const ImageWrapper = styled.div`
 const NameBox = styled.div`
     min-width: 80px;
     height: 30px;
-    padding: 5px 12px;
+    padding: 5px 24px;
     border-radius: 30px;
     box-sizing: border-box;
     background-color: var(--ion-color-primary);
@@ -240,22 +230,4 @@ const Empty = styled.div`
     }
 `;
 
-const ShareBox = styled.div`
-    width: calc(100% - 24px);
-    border-radius: 40px 30px 0 0;
-    background-color: var(--ion-color-light);
-    position: absolute;
-    bottom: 80px;
-    left: 12px;
-    display: flex;
-    flex-direction: column;
-    padding: 50px 12px 30px;
-    box-sizing: border-box;
-    justify-content: space-between;
-    gap: 30px;
-`;
-const ActionContainer = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-`;
+

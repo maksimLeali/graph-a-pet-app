@@ -13,7 +13,7 @@ export type ModalProps = {
     onConfirm?: () => void;
     bgColor?: string;
     txtColor?: string;
-    children?: React.ReactNode;
+    children?: React.ReactNode ;
     customActions?: {
         action: () => void;
         txtColor?: string;

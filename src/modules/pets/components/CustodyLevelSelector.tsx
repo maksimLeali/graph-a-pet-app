@@ -4,8 +4,9 @@ import { CustodyLevel } from "../../../types";
 import { Chip, Icon } from "../../../components";
 import { useTranslation } from "react-i18next";
 import { useModal } from "../../../contexts";
-import { useCallback, useEffect } from "react";
-import _, { indexOf } from "lodash";
+import { useCallback, useEffect, useState } from "react";
+
+import { CustodyLevelsList } from "./";
 
 type props = {
     current: CustodyLevel;
@@ -17,27 +18,23 @@ export const CustodyLevelSelector: React.FC<props> = ({
     onSelected,
 }) => {
     const { t } = useTranslation();
-
+ 
     const { openModal, closeModal } = useModal()
-    const clKeys = enumKeys(CustodyLevel);
-    clKeys.splice(_.indexOf(clKeys, 'Owner'),_.indexOf(clKeys, 'Owner'));
-    
-    
+  
+
     const open = useCallback(() => {
         openModal({
             onClose: () => closeModal(),
-            children: (
-               <ChipsContainer >
-                    {clKeys.map((cl)=> <Chip invert={CustodyLevel[cl] != current} key={cl} label={t(`pets.${cl.toLocaleLowerCase()}`)} color={custodyLevelColors[CustodyLevel[cl]]} />)}
-                </ChipsContainer>
-            ),
+            children: <CustodyLevelsList onClick={(v)=>{onSelected(v); closeModal()}}  current={current} />,
         });
-    }, []);
+    }, [current,confirm]);
 
     return (
         <Container onClick={()=> open()}>
+            <p >{t('pets.accept_as')}</p>
             <Chip label={t(`pets.${current.toLocaleLowerCase()}`)} color={custodyLevelColors[current]} />
-            <Icon size="24px" name="create" />
+            <Icon size="24px" name="swapVertical" />
+            <p dangerouslySetInnerHTML={{__html: t(`pets.desc_${current.toLocaleLowerCase()}`) }} />
         </Container>
     );
 };
@@ -45,16 +42,27 @@ export const CustodyLevelSelector: React.FC<props> = ({
 const Container = styled.div`
     width: 100%;
     display: flex;
-    justify-content: flex-start;
     gap: 20px;
     flex-wrap: wrap;
-`;
+    margin-bottom: 10px;
+    padding: 12px;
+    align-items: center;
+    > p {
+        margin: 0;
+        color: var(--ion-color-dark);
+        &:last-child{
 
-const ChipsContainer = styled.div`
-       width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 0 30px;
-`
+            text-align:center ;
+            width:100%;
+        }
+    }
+    > div {
+        &:nth-child(2){
+            margin-left: auto;
+        }
+        &:nth-child(3){
+            margin-right: auto;
+
+        }
+    }
+`;

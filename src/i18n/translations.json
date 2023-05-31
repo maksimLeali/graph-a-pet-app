@@ -44,7 +44,10 @@
         "sub_owner": "Affidatario",
         "pet_sitter": "Pet Sitter",
         "subowner": "Affidatario",
-        "petsitter": "Pet Sitter"
+        "petsitter": "Pet Sitter",
+        "accept_as": "Accetta come:",
+        "desc_sub_owner": "Un <b>Affidatario</b> si occupa dell'animale come il padrone.<br/>Di solito è un <b>famigliare</b> o un <b>Amico</b>",
+        "desc_pet_sitter": "Un <b>Pet Sitter</b> si occupa dell'animale per <b>lavoro</b>"
       },
       "system": {
         "menu": {
