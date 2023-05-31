@@ -15,6 +15,7 @@ type Option = {
 type props = {
     name: string;
     required?: boolean;
+    bgColor?: string
     textLabel?: I18NKey;
     ntTextLabel?: string;
     color?: string;
@@ -25,15 +26,18 @@ type props = {
     errorText?: string;
     icon?: IconName;
     rowsPerList?: number;
-    control: any;
+    control?: any;
     registerOptions?: RegisterOptions;
     errorColor?: string;
     options: Option[];
+    onSelected?: (v: any)=> void
+    currentValue?: any
 };
 
 export const SelectInput: React.FC<props> = ({
     name,
     required,
+    bgColor,
     textLabel,
     ntTextLabel,
     color = "medium",
@@ -44,9 +48,11 @@ export const SelectInput: React.FC<props> = ({
     errorText = "danger",
     rowsPerList = 7,
     control,
+    onSelected,
     registerOptions,
     errorColor,
     options,
+    currentValue,
 }) => {
     const [focused, setFocused] = useState(false);
     const [compiled, setCompiled] = useState(false);
@@ -83,7 +89,8 @@ export const SelectInput: React.FC<props> = ({
             >
                 {textLabel ? t(textLabel) : ntTextLabel}
             </InputLabel>
-            <Controller
+            
+            {control ? <Controller
                 name={name}
                 control={control}
                 render={({ field: { onChange, value, name } }) => (
@@ -96,7 +103,7 @@ export const SelectInput: React.FC<props> = ({
                             id={name}
                             onFocus={()=>setFocused(!focused)}
                         />
-                        <LabelContainer className="label-container" onClick={()=>setFocused(!focused)}>
+                        <LabelContainer bgColor={bgColor} className="label-container" onClick={()=>setFocused(!focused)}>
                             {value ? (
                                 <p>
                                     {
@@ -104,11 +111,7 @@ export const SelectInput: React.FC<props> = ({
                                             options,
                                             (opt) => opt.value === value
                                         )?.render 
-                                        ? _.find(
-                                            options,
-                                            (opt) => opt.value === value
-                                        )?.render 
-                                        : _.find(
+                                        ?? _.find(
                                             options,
                                             (opt) => opt.value === value
                                         )?.label
@@ -118,7 +121,7 @@ export const SelectInput: React.FC<props> = ({
                                 <></>
                             )}
                         </LabelContainer>
-                        <IconContainer>
+                        <IconContainer bgColor={bgColor}>
                             <Icon
                                 size="30px"
                                 time=".5s"
@@ -165,6 +168,80 @@ export const SelectInput: React.FC<props> = ({
                     </InputWrapper>
                 )}
             />
+        : <InputWrapper
+        ref={ref}
+        className="inputWrapper "
+        
+    >
+        <InvisibleInput
+            id={name}
+            onFocus={()=>setFocused(!focused)}
+        />
+        <LabelContainer bgColor={bgColor} className="label-container" onClick={()=>setFocused(!focused)}>
+            {currentValue ? (
+                    _.find(
+                            options,
+                            (opt) => opt.value === currentValue
+                        )?.render ??
+                         <p>
+                            {
+                         _.find(
+                            options,
+                            (opt) => opt.value === currentValue
+                        )?.label
+                         }
+                        </p>
+    
+            ) : (
+                <></>
+            )}
+        </LabelContainer>
+        <IconContainer bgColor={bgColor}>
+            <Icon
+                size="30px"
+                time=".5s"
+                onMouseUp={()=>setFocused(!focused)}
+                className={`selectIcon ${
+                    focused ? "focused" : ""
+                } ${compiled ? "compiled" : ""}`}
+                name="caretDownCircleOutline"
+            />
+        </IconContainer>
+        <OptionsContainer maxHeight={ options.length > rowsPerList ? rowsPerList * 50 : options.length * 50} className={`options-container ${focused ? "focused" : ""} ${
+                compiled ? "compiled" : ""
+            } ${
+                up? 'up' : ""
+            }`} ref={optionsRef}>
+            {_.map(options , (option,i)=>{
+                return <Option key={i} className="option" onMouseUp={()=>{
+                    setFocused(false)
+                    if (option.value === currentValue) {
+                        onSelected!(null);
+                        setCompiled(false)
+                        return;
+                    }
+                    setCompiled(true)
+                    
+                    onSelected!(option.value)
+                    console.log(option)
+                }} > 
+                    {
+                    option.render 
+                    ? option.render 
+                    : <span>{option.label}</span>
+                    }
+
+                    {option.value === currentValue ? <Icon name="closeCircleOutline" color={color} /> : <></>}
+                </Option>
+            })}
+        </OptionsContainer>
+        <FocusBox
+            className={`focusBox ${focused ? "focused" : ""} ${
+                compiled ? "compiled" : ""
+            }`}
+        />
+    </InputWrapper>
+        }
         </Wrapper>
     );
 };
@@ -285,31 +362,29 @@ const InputWrapper = styled.div`
     justify-content: space-between;
 `;
 
-const LabelContainer = styled.div`
+const LabelContainer = styled.div<{bgColor?: string}>`
     height: 100%;
     position: relative;
     z-index: 2;
     width: calc(100% - 40px);
     font-size: 1.3rem;
     padding-left: 20px;
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--ion-background-color);
-    }
+    
+    background-color: ${ ({bgColor})=> bgColor ? `var(--ion-color-${bgColor})` : 'var(--ion-background-color)'};
+    
     > p {
         margin:0;
     }
 `;
 
-const IconContainer = styled.div`
+const IconContainer = styled.div<{bgColor?: string}>`
     width: 38px;
     position: relative;
     z-index: 2;
     display: flex;
     justify-content: center;
     align-items: center;
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--ion-background-color);
-    }
+    background-color: ${ ({bgColor})=> bgColor ? `var(--ion-color-${bgColor})` : 'var(--ion-background-color)'};
     .selectIcon {
         &.focused {
             > * {

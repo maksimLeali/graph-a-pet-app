@@ -39,7 +39,10 @@
         "age": "Età",
         "neutered": "Sterilizzato",
         "gender": "Sesso",
-        "family": "Pet"
+        "family": "Pet",
+        "owner": "Padrone",
+        "sub_owner": "Affidatario",
+        "pet_sitter": "Pet Sitter"
       },
       "system": {
         "menu": {
