@@ -11,7 +11,6 @@ type props = {
 
 export const SubOwnerList: React.FC<props> = ({ ownerships = [], onSelected}) => {
     const { t } = useTranslation();
-    useEffect(()=>{console.log('ciao')}, [])
     return (
         <List>
             {ownerships.length ? (

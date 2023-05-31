@@ -42,7 +42,9 @@
         "family": "Pet",
         "owner": "Padrone",
         "sub_owner": "Affidatario",
-        "pet_sitter": "Pet Sitter"
+        "pet_sitter": "Pet Sitter",
+        "subowner": "Affidatario",
+        "petsitter": "Pet Sitter"
       },
       "system": {
         "menu": {

@@ -4,18 +4,18 @@ import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useUserContext } from "../../../contexts";
 import { useTranslation } from "react-i18next";
-import { Image2x, SelectInput } from "../../../components";
+import { Image2x } from "../../../components";
 import { useCheckCodeMutation } from "../operations/__generated__/checkCode.generated";
 import {
     useGetPetLazyQuery,
-    useGetPetQuery,
 } from "../operations/__generated__/getSinglePet.generated";
-import { CustodyLevel, Pet } from "../../../types";
+import { CustodyLevel } from "../../../types";
 import { MinPetFragment } from "../operations/__generated__/minPet.generated";
 import { IonButton } from "@ionic/react";
 import _ from 'lodash'
+import { CustodyLevelSelector } from "../components/CustodyLevelSelector";
 
-export const SharingPet: React.FC = () => {
+export const Sharing: React.FC = () => {
     const { code } = useParams<{ code: string }>();
     const location = useLocation();
     const [pet, setPet] = useState<MinPetFragment>();
@@ -114,6 +114,7 @@ export const SharingPet: React.FC = () => {
             )}
             {pet && (
                 <ShareBox>
+                    <CustodyLevelSelector current={custodyLevel} onSelected={(v)=> setCustodyLevel(v as Exclude<CustodyLevel, CustodyLevel.Owner> )} />
                     <ActionContainer>
                         <IonButton
                             color="danger"

@@ -2,8 +2,9 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { IonReactRouter } from '@ionic/react-router';
 import { IonRouterOutlet } from '@ionic/react';
 import { AuthenticatedRoute } from '../components';
-import { AuthRouter, HomeRouter, Login, } from '../modules';
+import { AuthRouter, HomeRouter, PetsRouter } from '../modules';
 import { AuthLayout } from '../layouts';
+
 
 export const AppRouter = ()=> {
     
@@ -12,6 +13,7 @@ export const AppRouter = ()=> {
             <IonRouterOutlet>
                 <Switch>
                 <AuthenticatedRoute path="/home" component={()=><HomeRouter />} />    
+                <AuthenticatedRoute path="/pets" component={()=><PetsRouter />} />    
                 <Route path="/auth">
                     <AuthLayout>
                         <AuthRouter />

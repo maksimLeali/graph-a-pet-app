@@ -1,0 +1,13 @@
+query getPet($id: ID!){
+	getPet(id: $id){
+		pet{
+			...MinPet
+		}
+		success
+		error{
+			code
+			message
+		}
+		
+	}
+}
