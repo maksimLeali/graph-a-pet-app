@@ -7,6 +7,7 @@ import { useModal } from "../../contexts";
 import { useOnClickOutside } from "../../hooks";
 import { Toggle } from "../formFields";
 import { Icon } from "../icons";
+import { toast } from "react-hot-toast";
 
 type props = {
     open: boolean;
@@ -35,7 +36,10 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
     const exit= useCallback(()=> {
         removeCookies('user')
         removeCookies('jwt')
-        history.push('/')
+        toast.success('messages.success.logout')
+        setTimeout(()=> {
+            history.push('/')
+        }, 1500)
     }, [])
 
     const {openModal, closeModal} = useModal()

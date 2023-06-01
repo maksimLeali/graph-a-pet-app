@@ -16,16 +16,8 @@ fragment MinPet on Pet {
     }
     ownerships {
         items {
-            custody_level
-            user{
-                profile_picture {
-                    id
-                }
-                first_name
-                last_name
-                
+            ...petMinSubOwner
             }
-        }
     }
     weight_kg
     birthday

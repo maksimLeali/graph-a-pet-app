@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Icon } from "../components"
-import { IonNavLink } from "@ionic/react"
 import { ModalContextProvider } from "../contexts"
+import { Link } from "react-router-dom"
 
 
 
@@ -12,18 +12,18 @@ export const MainLayout:React.FC<{children: React.ReactNode}> = ({children: node
     <Main>
             {nodes}
         <BottomMenu>
-            <IonNavLink>
-            <Icon name="home" size="32px" color="primary" />
-            </IonNavLink>
-            <IonNavLink >
+            <Link to="/home" >
+            <Icon name="home"  size="32px" color="primary" />
+            </Link>
+            <Link to="#">
                 <Icon name="paw" size="32px" color="medium"/>
-            </IonNavLink>
-            <IonNavLink >
+            </Link>
+            <Link to="#">
                 <Icon name="warning" size="32px" color="medium" />
-            </IonNavLink>
-            <IonNavLink >
+            </Link>
+            <Link to="#">
                 <Icon name="calendar" size="32px" color="medium" />
-            </IonNavLink>
+            </Link>
         </BottomMenu>
     </Main>
 

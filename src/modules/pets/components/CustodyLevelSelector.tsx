@@ -20,7 +20,6 @@ export const CustodyLevelSelector: React.FC<props> = ({
     const { t } = useTranslation();
  
     const { openModal, closeModal } = useModal()
-  
 
     const open = useCallback(() => {
         openModal({

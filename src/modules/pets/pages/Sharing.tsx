@@ -4,24 +4,29 @@ import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useUserContext } from "../../../contexts";
 import { useTranslation } from "react-i18next";
-import { Image2x } from "../../../components";
+import { Image2x, SubOwnerList, SubOwnerListItem } from "../../../components";
 import { useCheckCodeMutation } from "../operations/__generated__/checkCode.generated";
-import {
-    useGetPetLazyQuery,
-} from "../operations/__generated__/getSinglePet.generated";
+import { useGetPetLazyQuery } from "../operations/__generated__/getSinglePet.generated";
 import { CustodyLevel } from "../../../types";
 import { MinPetFragment } from "../operations/__generated__/minPet.generated";
 import { IonButton } from "@ionic/react";
-import _ from 'lodash'
+import _ from "lodash";
 import { CustodyLevelSelector } from "../components/CustodyLevelSelector";
 import { ShareBox } from "../components";
+import { useCookies } from "react-cookie";
+import { PetMinSubOwnerFragment } from "../../home/operations/__generated__/petMinSubOwner.generated";
+import { useLinkPetToMeMutation } from "../operations/__generated__/linkPetToMe.generated";
+import { toast } from "react-hot-toast";
+
 
 export const Sharing: React.FC = () => {
     const { code } = useParams<{ code: string }>();
     const [pet, setPet] = useState<MinPetFragment>();
     const { t } = useTranslation();
     const { setPage } = useUserContext();
-
+    const [cookies] = useCookies(["user"]);
+    const [owner, setOwner] = useState<string>();
+    const [loaners, setLoaners] = useState<string[]>([]);
     const [checkCode, { loading: checkLoading }] = useCheckCodeMutation({
         onCompleted: ({ checkCode }) => {
             if (!checkCode?.code || checkCode.error) {
@@ -39,18 +44,41 @@ export const Sharing: React.FC = () => {
                 return;
             }
             setPet(getPet.pet);
-
+            if (getPet.pet.ownerships?.items) {
+                setOwner(
+                    getPet.pet.ownerships.items.find(
+                        (item) => item!.custody_level == CustodyLevel.Owner
+                    )?.user.id
+                );
+                setLoaners(
+                    getPet.pet.ownerships.items
+                        .filter(
+                            (item) => item!.custody_level != CustodyLevel.Owner
+                        )
+                        .map((item) => item!.user.id)
+                );
+            }
             console.log(getPet.pet);
         },
     });
 
+    const [linkPetToMe, {loading}] = useLinkPetToMeMutation({
+        onCompleted: ({linkPetToMe})=> {
+            if(linkPetToMe.error){
+                return
+            }
+            toast.success(t('messages.success.linked_succesfully'))
+            setTimeout(()=> {
+                window.location.reload();
+            }, 1000)
+        }
+    })
 
     useEffect(() => {
         setPage({ name: t("pages.pet_sharing") });
         checkCode({ variables: { code } });
     }, []);
 
-    
     return (
         <Container>
             {getPetLoading || checkLoading || pet ? (
@@ -112,8 +140,34 @@ export const Sharing: React.FC = () => {
                     <h1>{t("messages.errors.no_pet_found")}</h1>
                 </Empty>
             )}
-            {pet && (
-                <ShareBox  onConfirm={(v)=> console.log('test', v)}/>
+            {!checkLoading && !getPetLoading && (
+                <>
+                    {pet &&
+                    owner != cookies.user.id &&
+                    !loaners.includes(cookies.user.id) ? (
+                        <ShareBox onConfirm={(v) => linkPetToMe({variables: {petId: pet.id , custodyLevel: v}})} />
+                    ) : owner == cookies.user.id ? (
+                        <>
+                        <h3 className="sharing-title">{t('pets.shared_with')}</h3>
+                        <SubOwnerList
+                            gradient={false}
+                            ownerships={
+                                (pet!.ownerships?.items.filter(
+                                    (item) => item && item.custody_level!= CustodyLevel.Owner
+                                ) as PetMinSubOwnerFragment[]) ?? [] 
+                            }
+                            onSelected={(v)=> {console.log('v', v)}}
+                        />
+                        </>
+                    ) : (
+                        <>
+                        <h3 className="sharing-title">{t('pets.shared_from')} </h3>
+                       {pet?.ownerships?.items && <SubOwnerListItem ownership={ pet!.ownerships?.items?.find(
+                                    (item) => item && item.custody_level == CustodyLevel.Owner
+                                ) as PetMinSubOwnerFragment} onSelected={(v)=> console.log(v)}/>}
+                        </>
+                    )}
+                </>
             )}
         </Container>
     );
@@ -121,11 +175,18 @@ export const Sharing: React.FC = () => {
 
 const Container = styled.div`
     width: 100%;
-    padding: 20px 12px 0;
+    padding: 20px 12px 20px;
     box-sizing: border-box;
-    @media( max-height: 700px){
-        min-height:calc(100vh - 90px);
-
+    @media (max-height: 700px) {
+        padding-bottom: 0;
+        min-height: calc(100vh - 90px);
+    }
+    > .sharing-title {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .ownerships-list {
+        max-height: unset;
     }
 `;
 
@@ -229,5 +290,3 @@ const Empty = styled.div`
         text-align: center;
     }
 `;
-
-

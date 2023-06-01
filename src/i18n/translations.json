@@ -40,9 +40,14 @@
         "neutered": "Sterilizzato",
         "gender": "Sesso",
         "family": "Pet",
-        "owner": "Padrone",
+        "shared_with": "Chi può vederlo?",
+        "shared_from": "Proprietario",
+        "owner": "Proprietario",
+        "owner_short": "P.rio",
         "sub_owner": "Affidatario",
+        "sub_owner_short": "Aff.",
         "pet_sitter": "Pet Sitter",
+        "pet_sitter_short": "P.sit",
         "subowner": "Affidatario",
         "petsitter": "Pet Sitter",
         "accept_as": "Accetta come:",
@@ -70,7 +75,8 @@
         "done": "Finito con successo",
         "success": {
           "pet_updated": "Dati Pet aggiornati con successo",
-          "login": "Accesso effettuato"
+          "login": "Accesso effettuato",
+          "logout":"Uscita effettuata con successo"
         },
         "errors": {
           "not_authorized": "Utente non autorizzato",

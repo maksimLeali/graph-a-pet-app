@@ -1,5 +1,6 @@
 fragment petMinSubOwner on Ownership{
         id
+        custody_level
         user {
             id
             first_name

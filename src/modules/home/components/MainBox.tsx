@@ -7,7 +7,7 @@ import {
 } from "react";
 import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 import { useSwipe } from "../../../hooks";
-import { SubOwnerList } from "./SubOwnersList";
+import { SubOwnerList } from "../../../components";
 import {
     useModal,
 } from "../../../contexts/ModalContext";
