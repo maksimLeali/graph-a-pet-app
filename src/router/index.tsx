@@ -14,6 +14,8 @@ export const AppRouter = ()=> {
                 <Switch>
                 <AuthenticatedRoute path="/home" component={()=><HomeRouter />} />    
                 <AuthenticatedRoute path="/pets" component={()=><PetsRouter />} />    
+                <AuthenticatedRoute path="/board" component={()=><PetsRouter />} />    
+                <AuthenticatedRoute path="/events" component={()=><PetsRouter />} />    
                 <Route path="/auth">
                     <AuthLayout>
                         <AuthRouter />
