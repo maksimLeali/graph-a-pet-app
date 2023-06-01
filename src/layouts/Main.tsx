@@ -1,54 +1,66 @@
-import styled from "styled-components"
-import { Icon } from "../components"
-import { ModalContextProvider } from "../contexts"
-import { Link } from "react-router-dom"
+import styled from "styled-components";
+import { Icon, IconName } from "../components";
+import { ModalContextProvider } from "../contexts";
+import { Link } from "react-router-dom";
 
+export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
+    children: nodes,
+}) => {
+    console.log(window.location.pathname);
 
-
-export const MainLayout:React.FC<{children: React.ReactNode}> = ({children: nodes})=> {
-
-    return <ModalContextProvider >
-    
-    <Main>
-            {nodes}
-        <BottomMenu>
-            <Link to="/home" >
-            <Icon name="home"  size="32px" color="primary" />
-            </Link>
-            <Link to="#">
-                <Icon name="paw" size="32px" color="medium"/>
-            </Link>
-            <Link to="#">
-                <Icon name="warning" size="32px" color="medium" />
-            </Link>
-            <Link to="#">
-                <Icon name="calendar" size="32px" color="medium" />
-            </Link>
-        </BottomMenu>
-    </Main>
-
-    </ModalContextProvider>
-}
+    const mainManuitems: { to: string; icon: IconName }[] = [
+        { to: "/home", icon: "home" },
+        { to: "/pets", icon: "paw" },
+        { to: "/board", icon: "warning" },
+        { to: "/events", icon: "calendar" },
+    ];
+    return (
+        <ModalContextProvider>
+            <Main>
+                {nodes}
+                <BottomMenu>
+                    {mainManuitems.map((item) => {
+                        return window.location.pathname != item.to ? (
+                            <Link to={item.to}>
+                                <Icon
+                                    name={item.icon}
+                                    size="32px"
+                                    color="medium"
+                                />
+                            </Link>
+                        ) : (
+                            <Icon
+                                name={item.icon}
+                                size="32px"
+                                color="primary"
+                            />
+                        );
+                    })}
+                </BottomMenu>
+            </Main>
+        </ModalContextProvider>
+    );
+};
 
 const Main = styled.div`
     width: 100%;
     height: 100%;
-    overflow-y:scroll ;
+    overflow-y: scroll;
     max-width: var(--max-width);
-    margin-left:auto; 
+    margin-left: auto;
     margin-right: auto;
     position: relative;
-    scroll-behavior: smooth ;
+    scroll-behavior: smooth;
     padding-bottom: 80px;
     padding-top: 64px;
     &::-webkit-scrollbar {
         display: none; /* for Chrome, Safari, and Opera */
     }
-`
+`;
 
 const BottomMenu = styled.div`
-    position:fixed;
-    z-index:200;
+    position: fixed;
+    z-index: 200;
     bottom: 0;
     height: 80px;
     border-radius: 10px 10px 0 0;
@@ -60,4 +72,4 @@ const BottomMenu = styled.div`
     justify-content: space-between;
     padding: 20px 60px 20px 60px;
     box-sizing: border-box;
-`
+`;
