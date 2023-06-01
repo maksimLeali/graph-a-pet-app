@@ -68,9 +68,6 @@ export const Sharing: React.FC = () => {
                 return
             }
             toast.success(t('messages.success.linked_succesfully'))
-            setTimeout(()=> {
-                window.location.reload();
-            }, 1000)
         }
     })
 

@@ -76,7 +76,8 @@
         "success": {
           "pet_updated": "Dati Pet aggiornati con successo",
           "login": "Accesso effettuato",
-          "logout":"Uscita effettuata con successo"
+          "logout":"Uscita effettuata con successo",
+          "pet_linked_succesfully": "Animale aggiunto correttamente"
         },
         "errors": {
           "not_authorized": "Utente non autorizzato",

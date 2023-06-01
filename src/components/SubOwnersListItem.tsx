@@ -59,7 +59,11 @@ const UserImageBox = styled.div`
 
 const DescBox = styled.div`
     display: flex;
+    max-width: 40%;
     flex-direction: column;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const ActionsOpener = styled.div`
