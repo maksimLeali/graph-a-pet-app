@@ -29,7 +29,8 @@ export const Login: React.FC = ()  => {
             toast.success(t("messages.success.login"))
             timeout = setTimeout(()=> {
                 if(timeout) clearTimeout(timeout);
-                return history.push('/home')
+                const lastLocation = localStorage.getItem('userLastLocation')
+                return history.push( lastLocation ?? '/home')
             }, 500)
 
         },

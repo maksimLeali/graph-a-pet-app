@@ -40,9 +40,12 @@ const testResponseLink = new ApolloLink((operation, forward)=> {
       toast.error('User not Authorized')
       Cookies.remove('jwt')
       Cookies.remove('user')
+      console.log(window.location.pathname)
+      localStorage.setItem('userLastLocation',window.location.pathname);
+      console.log('********')
       setTimeout(()=> {
-        window.location.reload()
-      }, 1000)
+        window.location.href='/'
+      }, 1500)
     
     }
     return response;
@@ -50,12 +53,6 @@ const testResponseLink = new ApolloLink((operation, forward)=> {
 })
 
 
-const logoutLink = onError((received) => {
-  if (['401', '403'].includes(_.get(received, 'graphQLErrors.0.extensions.code', '') )) {
-    
-    toast.error('User not Authorized')
-  }
-})
 
 
 export const apolloClient = new ApolloClient({
