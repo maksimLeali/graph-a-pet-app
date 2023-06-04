@@ -8,15 +8,15 @@ import { Image2x, SubOwnerList, SubOwnerListItem } from "../../../components";
 import { useCheckCodeMutation } from "../operations/__generated__/checkCode.generated";
 import { useGetPetLazyQuery } from "../operations/__generated__/getSinglePet.generated";
 import { CustodyLevel } from "../../../types";
-import { MinPetFragment } from "../operations/__generated__/minPet.generated";
 import { IonButton } from "@ionic/react";
 import _ from "lodash";
 import { CustodyLevelSelector } from "../components/CustodyLevelSelector";
 import { ShareBox } from "../components";
 import { useCookies } from "react-cookie";
-import { PetMinSubOwnerFragment } from "../../home/operations/__generated__/petMinSubOwner.generated";
 import { useLinkPetToMeMutation } from "../operations/__generated__/linkPetToMe.generated";
 import { toast } from "react-hot-toast";
+import { MinPetFragment } from "../../../components/operations/__generated__/minPet.generated";
+import { PetMinSubOwnerFragment } from "../../../components/operations/__generated__/petMinSubOwner.generated";
 
 
 export const Sharing: React.FC = () => {

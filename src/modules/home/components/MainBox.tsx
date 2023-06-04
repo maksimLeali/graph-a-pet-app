@@ -5,15 +5,15 @@ import {
     useEffect,
     useState,
 } from "react";
-import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 import { useSwipe } from "../../../hooks";
 import { SubOwnerList } from "../../../components";
 import {
     useModal,
 } from "../../../contexts/ModalContext";
 import { useTranslation } from "react-i18next";
-import { PetMinSubOwnerFragment } from "../operations/__generated__/petMinSubOwner.generated";
 import { useGetOrCreateLazyQuery } from "../operations/__generated__/getOrCreateCode.generated";
+import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
+import { PetMinSubOwnerFragment } from "../../../components/operations/__generated__/petMinSubOwner.generated";
 
 type props = {
     pets: DashboardPetFragment[];

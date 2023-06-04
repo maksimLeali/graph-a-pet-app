@@ -6,8 +6,8 @@ import { Pets, SkeletonBox } from "../components";
 import { useGetUserDashboardQuery } from "../operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { DashboardPetFragment } from "../operations/__generated__/dashboardPet.generated";
 import { useUserContext } from "../../../contexts";
+import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
 
 
 export const Home: React.FC = () => {
