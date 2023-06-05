@@ -1,1 +1,1 @@
-export { Calendar }from './calendar'
+export { CalendarEvents }from './calendar'

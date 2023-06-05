@@ -14,6 +14,7 @@ http://ionicframework.com/docs/theming/ */
   --ion-trasparent: #FFFFFF00;
   /** primary **/
   --ion-color-primary: #18a065;
+  --ion-color-primary-trasparent: #18a06588;
 	--ion-color-primary-rgb: 24,160,101;
 	--ion-color-primary-contrast: #ffffff;
 	--ion-color-primary-contrast-rgb: 255,255,255;
@@ -22,6 +23,7 @@ http://ionicframework.com/docs/theming/ */
   
   /** secondary **/
 	--ion-color-secondary: #0667b2;
+	--ion-color-secondary-trasparent: #0667b288;
 	--ion-color-secondary-rgb: 6,103,178;
 	--ion-color-secondary-contrast: #ffffff;
 	--ion-color-secondary-contrast-rgb: 255,255,255;
@@ -30,6 +32,7 @@ http://ionicframework.com/docs/theming/ */
   
   /** tertiary **/
 	--ion-color-tertiary: #1d4762;
+	--ion-color-tertiary-trasparent: #1d476288;
 	--ion-color-tertiary-rgb: 29,71,98;
 	--ion-color-tertiary-contrast: #ffffff;
 	--ion-color-tertiary-contrast-rgb: 255,255,255;
@@ -92,6 +95,7 @@ http://ionicframework.com/docs/theming/ */
    body.dark {
     --ion-trasparent: #00000000;
     --ion-color-primary: #2A9D8F;
+    --ion-color-primary-trasparent: #2A9D8F88;
     --ion-color-primary-rgb: 42,157,143;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255,255,255;
@@ -99,6 +103,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-primary-tint: #3fa79a;
 
     --ion-color-secondary: #264653;
+    --ion-color-secondary-trasparent: #26465388;
     --ion-color-secondary-rgb: 38,70,83;
     --ion-color-secondary-contrast: #ffffff;
     --ion-color-secondary-contrast-rgb: 255,255,255;
@@ -106,6 +111,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-secondary-tint: #3c5964;
 
     --ion-color-tertiary: #284B63;
+    --ion-color-tertiary-trasparent: #284B6388;
     --ion-color-tertiary-rgb: 40,75,99;
     --ion-color-tertiary-contrast: #ffffff;
     --ion-color-tertiary-contrast-rgb: 255,255,255;
@@ -356,6 +362,7 @@ http://ionicframework.com/docs/theming/ */
   body.dark {
     --ion-trasparent: #00000000;
     --ion-color-primary: #2A9D8F;
+    --ion-color-primary-trasparent: #2A9D8F88;
     --ion-color-primary-rgb: 42,157,143;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255,255,255;
@@ -363,6 +370,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-primary-tint: #3fa79a;
 
     --ion-color-secondary: #264653;
+    --ion-color-secondary-trasparent: #26465388;
     --ion-color-secondary-rgb: 38,70,83;
     --ion-color-secondary-contrast: #ffffff;
     --ion-color-secondary-contrast-rgb: 255,255,255;
@@ -370,6 +378,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-secondary-tint: #3c5964;
 
     --ion-color-tertiary: #284B63;
+    --ion-color-tertiary-trasparent: #284B6388;
     --ion-color-tertiary-rgb: 40,75,99;
     --ion-color-tertiary-contrast: #ffffff;
     --ion-color-tertiary-contrast-rgb: 255,255,255;
@@ -506,109 +515,6 @@ http://ionicframework.com/docs/theming/ */
 
     --ion-card-background: #1e1e1e;
   }
-
-
-
-@keyframes activate-counter {
-  0% {
-    top: -1000px;
-    left: 0;
-  }
-  15%{
-    top: 0;
-    left: -500px;
-  }
-  50% {
-    left: 0;
-  }
-}
-
-@keyframes activate-clock {
-  0% {
-    top: -1000px;
-    left: 0
-  }
-  15%{
-    top: 0;
-    left: 500px;
-  }
-  50% {
-    left: 0;
-  }
-}
-
-@keyframes deactivate-counter {
-  0% {
-    top:0;
-    left: 0;
-  }
-  90%{
-    top:0;
-    left: 500px;
-  }
-  100% {
-    top:-1000px ;
-    left: 0;
-  }
-}
-
-@keyframes deactivate-clock {
-  0% {
-    top:0 ;
-    left: 0;
-  }
-  90%{
-    top:0;
-    left: -500px;
-  }
-  100% {
-    top:-1000px ;
-    left: 0;
-  }
-}
-
-.skeleton {
-  animation: skeletonAnimation 2s infinite linear;
-}
-
-@keyframes skeletonAnimation {
-  0% {
-    background-color: var(--ion-color-medium-tint)
-  }
-  50% {
-    background-color: var(--ion-color-medium-shade)
-  }
-  100% {
-    background-color: var(--ion-color-medium-tint)
-  }
-} 
-
-
-@keyframes overMenuOpen {
-  0% {
-    opacity: 0;
-    z-index: -1;
-  }
-  1% {
-    z-index: 201;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes overMenuClose {
-  0%{
-    opacity: 1;
-    z-index: 201;
-  }
-  99%{
-    opacity: 0;
-    z-index: 201;
-  }
-  100%{
-    z-index: -1;
-  }
-}
 }
 
 

@@ -1,5 +1,5 @@
 import { Redirect, Route, useRouteMatch } from "react-router-dom";
-import { Calendar } from ".";
+import { CalendarEvents } from ".";
 
 export const EventsRouter = () => {
     const { path } = useRouteMatch();
@@ -7,7 +7,7 @@ export const EventsRouter = () => {
     return (
         <>
             <Route exact path={`${path}`} >
-                <Calendar />
+                <CalendarEvents />
             </Route>
         </>
     );
