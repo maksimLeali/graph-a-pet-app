@@ -34,12 +34,15 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
     }, [])
 
     const exit= useCallback(()=> {
-        removeCookies('user')
         removeCookies('jwt')
+        removeCookies('user')
         toast.success('messages.success.logout')
+        console.log('pippo')
         setTimeout(()=> {
-            history.push('/')
-        }, 1500)
+            console.log('pippo1')
+            history.push('/auth')
+        }, 15000)
+        console.log('pippo2')
     }, [])
 
     const {openModal, closeModal} = useModal()
