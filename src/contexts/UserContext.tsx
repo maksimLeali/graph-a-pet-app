@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { User } from '../types'
 import { IonHeader, IonToolbar, IonTitle } from '@ionic/react'
 import styled from 'styled-components'
-import { MinUserFragment } from '../modules/auth/operations/__generated__/minUser.generated'
+
 import { Image2x } from '../components'
 import { useCookies } from 'react-cookie'
 import { MainMenu } from '../components/system'
+import { MinUserFragment } from '../components/operations/__generated__/minUser.generated'
 
 export type IUserContext ={
     setPage: (page: Page)=> void,

@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 
 import { custodyLevelColors } from "../utils";
-import { PetMinSubOwnerFragment } from "../modules/home/operations/__generated__/petMinSubOwner.generated";
+import { PetMinSubOwnerFragment } from "./operations/__generated__/petMinSubOwner.generated";
+
 
 type props = {
     ownerships: PetMinSubOwnerFragment[];
