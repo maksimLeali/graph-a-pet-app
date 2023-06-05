@@ -16,9 +16,7 @@ export const AuthenticatedRoute = ({
     component: React.ElementType;
     [key: string]: any;
   }) => {
-    console.log(window.location.pathname)
     localStorage.setItem('userLastLocation',window.location.pathname);
-    console.log('********')
     const [cookies, setCookie ] = useCookies(['jwt'])
     
     

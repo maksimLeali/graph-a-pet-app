@@ -3,7 +3,7 @@ import {
 } from "@ionic/react";
 import styled from "styled-components";
 import { Pets, SkeletonBox } from "../components";
-import { useGetUserDashboardQuery } from "../operations/__generated__/getDashboard.generated";
+import { useGetUserDashboardLazyQuery, useGetUserDashboardQuery } from "../operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useUserContext } from "../../../contexts";
@@ -11,15 +11,16 @@ import { DashboardPetFragment } from "../../../components/operations/__generated
 
 
 export const Home: React.FC = () => {
-    const dateFrom = dayjs().toISOString()
-    const dateTo = dayjs(dateFrom).add(7, "days").toISOString()
+    const [dateFrom, setDateFrom ] = useState(dayjs().toISOString())
+    const [dateTo, setDateTo] = useState(dayjs(dateFrom).add(7, "days").toISOString())
     const [pets, setPets] = useState<DashboardPetFragment[]>([]);
     const { setPage } = useUserContext()
 
     useEffect(()=> {
         setPage({ name: "Home"})
+        getUserDashboardQuery()
     }, [])
-    const {loading}= useGetUserDashboardQuery({
+    const [getUserDashboardQuery, {loading = false }] = useGetUserDashboardLazyQuery({
         variables: {
             date_from: dateFrom,
             date_to: dateTo,

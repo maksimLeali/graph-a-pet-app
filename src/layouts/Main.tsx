@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
     children: nodes,
 }) => {
-    console.log(window.location.pathname);
-
     const mainManuitems: { to: string; icon: IconName }[] = [
         { to: "/home", icon: "home" },
         { to: "/pets", icon: "paw" },
@@ -19,9 +17,9 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
             <Main>
                 {nodes}
                 <BottomMenu>
-                    {mainManuitems.map((item) => {
-                        return window.location.pathname != item.to ? (
-                            <Link to={item.to}>
+                    {mainManuitems.map((item, i) => {
+                        return !window.location.pathname.startsWith(item.to) ? (
+                            <Link key={i} to={item.to}>
                                 <Icon
                                     name={item.icon}
                                     size="32px"
@@ -30,6 +28,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
                             </Link>
                         ) : (
                             <Icon
+                                key={i}
                                 name={item.icon}
                                 size="32px"
                                 color="primary"

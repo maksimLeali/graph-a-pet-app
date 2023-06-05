@@ -1,14 +1,13 @@
 import { Redirect, Route, useRouteMatch } from "react-router-dom";
-import { Home} from ".";
+import { Board } from ".";
 
-export const HomeRouter = () => {
+export const BoardRouter = () => {
     const { path } = useRouteMatch();
-    
+    console.log(path);
     return (
         <>
             <Route exact path={`${path}`} >
-                
-                <Home />
+                <Board />
             </Route>
         </>
     );
