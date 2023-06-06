@@ -82,7 +82,7 @@ export const CalendarEvents: React.FC = () => {
 
     return (
         <IonContent fullscreen>
-            <CustomCalendar appointments={appointments} onStartDateChange={(v)=> {console.log(v.toISOString()) ;setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
+            <CustomCalendar appointments={appointments} onStartDateChange={(v)=> {setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
         </IonContent>
     );
 };
