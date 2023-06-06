@@ -46,7 +46,6 @@ export const CustomCalendar: React.FC<props> = ({ appointments = [], onStartDate
           _((appointments ) ?? [])
             .map((ev) => ({
               color: ev?.health_card?.pet.main_picture?.main_color?.color ?? 'var(--ion-color-primary)',
-            //   color: ev?.health_card?.pet.main_picture?.main_color?.color ?? 'var(--ion-color-primary)',
               from: dayjs(ev?.date).startOf("day"),
               to: dayjs(ev?.date).endOf("day"),
               event: ev,
@@ -97,7 +96,9 @@ export const CustomCalendar: React.FC<props> = ({ appointments = [], onStartDate
                     }
                   }}
                 value={selectedDay}
-                tileContent={({date})=> {
+                tileContent={(val)=> {
+                    console.log(val)
+                    const date = val.date;
                     const day =  dayjs(date).set("hour", 12);
                     const activePeriod = periodsWithEvents.filter(
                         ({ from, to }) => day.isAfter(from) && day.isBefore(to)
@@ -112,7 +113,7 @@ export const CustomCalendar: React.FC<props> = ({ appointments = [], onStartDate
                         </CircleContainer>
                         </TileContainer>
                       ) : (
-                       <TileContainer className="tile-container">
+                       <TileContainer className="tile-container empty">
                         <span>{date.getDate()}</span>
                        </TileContainer>
                        
@@ -155,7 +156,11 @@ const MyCalendar = styled(Calendar)`
     
     .react-calendar__tile--active,
     .react-calendar__tile--hasActive {
-        background-color: var(--ion-color-primary-trasparent) !important;
+        > .tile-container { 
+            span {
+                background-color: var(--ion-color-primary-trasparent) !important;
+            }
+        }
     }
     .react-calendar__tile--now {
         > .tile-container {
@@ -182,11 +187,21 @@ const MyCalendar = styled(Calendar)`
     .react-calendar__tile {
         color: var(--ion-color-dark);
         position: relative;
+        > .tile-container {
+            display: none;
+        }
         &.react-calendar__month-view__days__day{
+            padding:0;
             background-color:none!important;
             background: none!important;;
             display: flex;
+            margin-bottom: 5px;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            > .tile-container {
+                display:flex
+            }
             > abbr {
                 display: none
             }
@@ -199,15 +214,15 @@ const CircleContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  position: absolute;
-  justify-content: center;
+  justify-content: flex-end;
   padding-right:5px;
+  gap: 1px;
   bottom: 0;
 `;
 
 const Circle = styled.div<{ color: string }>`
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
   border: 1px solid var(--ion-color-medium-shade);
   border-radius: 10px;
   background-color: ${(props) => props.color};
@@ -217,9 +232,24 @@ const Circle = styled.div<{ color: string }>`
 const TileContainer = styled.div`
     width:100%;
     height:100%;
+    flex-direction: column;
+    gap:2px;
+    justify-content: center;
+    align-items: center;
     > span {
         color: var(--ion-color-dark);
-        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width:30px;
+        aspect-ratio:1;
+        box-sizing:border-box;
         border-radius: 10px;
+        margin-bottom: 0;
+    }
+    &.empty {
+        > span {
+            margin-bottom: 14px;
+        }
     }
 `
