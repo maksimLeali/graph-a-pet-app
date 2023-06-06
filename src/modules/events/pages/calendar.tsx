@@ -15,8 +15,8 @@ export const CalendarEvents: React.FC = () => {
         Maybe<AppointmentFragment>[]
     >([]);
 
-    const [fromDate,setFromDate] = useState(dayjs().startOf('month').toISOString())
-    const [toDate,setToDate] = useState(dayjs().endOf('month').toISOString())
+    const [fromDate,setFromDate] = useState(dayjs().startOf('month').startOf('week').toISOString())
+    const [toDate,setToDate] = useState(dayjs().endOf('month').endOf('week').toISOString())
 
     const [getMyAppointments] = useListMyTreatmentsLazyQuery({
         variables: {
