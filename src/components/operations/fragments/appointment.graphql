@@ -1,0 +1,17 @@
+fragment Appointment on Treatment {
+    id
+    date
+    type
+    name
+    health_card{
+        pet{
+            id 
+            name
+            main_picture{
+                main_color{
+                    color			
+                }
+            }
+        }
+    }
+}

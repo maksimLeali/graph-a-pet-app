@@ -1,4 +1,4 @@
-import { RegisterOptions, Controller } from "react-hook-form";
+import { RegisterOptions, Controller, useFormContext } from "react-hook-form";
 import { I18NKey } from "../../i18n";
 import { Icon, IconName } from "../";
 import styled from "styled-components";
@@ -67,6 +67,10 @@ export const SelectInput: React.FC<props> = ({
         hide.classList.remove("hide");
     });
 
+    const {
+        formState: {isSubmitting},
+      } = useFormContext();
+
     useEffect(()=> {
         const itemsHeight = options.length > rowsPerList ? rowsPerList * 50 : options.length * 50
         setUp( itemsHeight +((optionsRef.current?.offsetParent as HTMLDivElement)?.offsetTop ?? 0)> window.innerHeight );
@@ -75,6 +79,7 @@ export const SelectInput: React.FC<props> = ({
 
     return (
         <Wrapper
+            className={`${isSubmitting ? 'submitting' : ''}`}
             focusColor={focusColor}
             hoverColor={hoverColor}
             txtColor={textColor}
@@ -265,6 +270,10 @@ const Wrapper = styled.div<selectProps>`
     width: 100%;
     position: relative;
     height: 40px;
+    &.submitting {
+        opacity: .5;
+        pointer-events: none;
+    }
 
     .inputWrapper {
         background-color: var(--ion-color-${({ bgColor }) => bgColor});

@@ -1,0 +1,16 @@
+query listMyTreatments( $commonSearch: CommonSearch! ){
+	listMyTreatments(commonSearch: $commonSearch) {
+		items {
+			...Appointment
+		}
+		success
+		error{
+			code
+			message
+		}
+		pagination {
+			page_size
+			total_items
+		}
+	}
+}

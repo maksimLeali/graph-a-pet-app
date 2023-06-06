@@ -1,5 +1,6 @@
 import { IonButton } from "@ionic/react"
 import { Children } from "react"
+import { useFormContext } from "react-hook-form"
 import styled from "styled-components"
 
 
@@ -7,12 +8,19 @@ import styled from "styled-components"
 type props = {
     children: React.ReactNode,
     color: string
+    submitting?: boolean,
+    disabled?: boolean
 }
 
-export const SubmitInput:React.FC<props> = ({color, children})=> {
+export const SubmitInput:React.FC<props> = ({color, children, submitting=false, disabled=false})=> {
+    
+    const {
+        formState: {isSubmitting},
+      } = useFormContext();
+
     return <>
-        <HiddenSubmit type="submit"/>
-        <IonButton type="submit" color={color} >{children}</IonButton>
+        <HiddenSubmit className={`${submitting ? 'submitting' : ''}`} type="submit"/>
+        <IonButton disabled={isSubmitting|| submitting || disabled} type="submit" color={color} >{children}</IonButton>
     </>
 }
 

@@ -729,6 +729,7 @@ export type Query = {
   getHealthCard?: Maybe<HealthCardResult>;
   getTreatment?: Maybe<TreatmentResult>;
   listTreatments: PaginatedTreatments;
+  listMyTreatments: PaginatedTreatments;
   getReport?: Maybe<ReportResult>;
   listReports: PaginatedReports;
   getMedia: MediaResult;
@@ -791,6 +792,11 @@ export type QueryGetTreatmentArgs = {
 
 
 export type QueryListTreatmentsArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type QueryListMyTreatmentsArgs = {
   commonSearch?: Maybe<CommonSearch>;
 };
 

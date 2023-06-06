@@ -54,7 +54,7 @@ export const TextInput: React.FC<props> = ({
   const [showPsw, setShowPsw] = useState(false);
   const {
     register,
-    formState: { errors },
+    formState: { errors , isSubmitting},
   } = useFormContext();
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export const TextInput: React.FC<props> = ({
     hide.classList.remove("hide");
   });
   return (
-    <Wrapper>
+    <Wrapper className={`${isSubmitting ? 'submitting' : '' }`} >
       <InputLabel
         color={color}
         focusColor={focusColor}
@@ -150,6 +150,10 @@ const Wrapper = styled.div`
   width: 100%;
   position: relative;
   margin-bottom: 40px ;
+  &.submitting {
+    opacity: .5;
+    pointer-events: none;
+  }
 `;
 
 const InputLabel = styled.label<labelProps>`
