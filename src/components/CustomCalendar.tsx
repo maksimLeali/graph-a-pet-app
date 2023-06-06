@@ -189,8 +189,8 @@ const CircleContainer = styled.div`
 `;
 
 const Circle = styled.div<{ color: string }>`
-  width: 9px;
-  height: 9px;
+  width: 5px;
+  height: 5px;
   border: 1px solid var(--ion-color-medium-shade);
   border-radius: 10px;
   background-color: ${(props) => props.color};
