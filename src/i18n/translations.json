@@ -97,7 +97,7 @@
       },
       "events": {
         "general": {
-          "no_evets": "Nessun appuntamento"
+          "no_events": "Nessun appuntamento"
         }
       }
     }
