@@ -37,11 +37,20 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
         return periodsWithEvents
           .filter(
             ({ from, to }) =>
+            selected ?
               selected.endOf("day").isAfter(from) &&
               selected.startOf("day").isBefore(to)
+            : dayjs(now).endOf("day").isAfter(from) &&
+                dayjs(now).startOf("day").isBefore(to)
+
           )
           .map((p) => p.event);
       }, [periodsWithEvents, selectedDay]);
+
+
+    useEffect(()=> {
+        console.log('dayevents', dayEvents)
+    }, [dayEvents])
 
     useEffect(()=> {
         [...Array(14)].map((el, i)=> {
@@ -76,7 +85,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
 
             })}
         </WeeksContainer>
-        <AppointmentsList appointments={appointments}/>
+        <AppointmentsList appointments={dayEvents.map(dayEvent=> dayEvent)}/>
     </Container>
 }
 
