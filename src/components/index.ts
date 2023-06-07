@@ -5,6 +5,7 @@ export { Chip } from './Chip'
 export {SubOwnerList} from './SubOwnersList'
 export {SubOwnerListItem} from './SubOwnersListItem'
 export {CustomCalendar } from './CustomCalendar'
+export {WeeksView} from './WeeksView'
 export * from "./formFields";
 export * from './icons' 
 

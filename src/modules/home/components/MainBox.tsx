@@ -169,6 +169,7 @@ export const MainBox: React.FC<props> = ({ pets }) => {
 const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
     width: 100%;
     display: flex;
+    margin-bottom: 60px;
     flex-direction: column;
     box-sizing: border-box;
     position: relative;
