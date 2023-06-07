@@ -16,6 +16,7 @@ export const Home: React.FC = () => {
     const [dateFrom, setDateFrom ] = useState(dayjs().startOf('w').toISOString())
     const [dateTo, setDateTo] = useState(dayjs(dateFrom).add(14, "days").toISOString())
     const [pets, setPets] = useState<DashboardPetFragment[]>([]);
+    const [activePet,setActivePet] = useState(0)
     const { setPage } = useUserContext()
     const [appointments , setAppointments]= useState<AppointmentFragment[]>()
     useEffect(()=> {
