@@ -28,7 +28,8 @@ export const Image2x: React.FC<props>= ({id, alt, fit= false, rounded=false ,cla
 
 const ImageContainer = styled.div<{rounded: boolean}>`
     ${({rounded})=> rounded && `border-radius: 999px; overflow: hidden;`}
-    
+    width:100%;
+    height: 100%;
     > img {
         width: 100%;
         height:  100%;
