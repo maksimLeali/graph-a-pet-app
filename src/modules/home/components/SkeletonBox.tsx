@@ -24,7 +24,7 @@ export const SkeletonBox: React.FC = ()=> {
 
 const MainContainer = styled.div`
 width: 100%;
-height: 440px;
+
 display: flex;
 padding-top:10px;
 margin-bottom: 60px;

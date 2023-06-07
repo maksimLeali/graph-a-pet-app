@@ -96,13 +96,16 @@ const DateContainer = styled.div`
     width: calc((200% -140px )/ 14 );
     flex: 0 0 calc((200% - 140px) / 14 );
     margin-right: 10px;
+    
     > span {
         text-align: center;
         display: flex;
         border-radius: 10px;
+        height: 46px;
         padding: 4px 0;
+        box-sizing: border-box;
         align-items: center;
-        margin-bottom: 4px;
+        
         justify-content: center;
         color: var(--ion-color-dark);
         &.now{
