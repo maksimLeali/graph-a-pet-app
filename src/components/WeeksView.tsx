@@ -13,7 +13,7 @@ type props ={
 
 export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
 
-    const [startDay,setStartDay]= useState(fromDate)
+    
     const [now, setNow] = useState<Date>()
     
     const periodsWithEvents = useMemo(
@@ -33,7 +33,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
 
     useEffect(()=> {
         [...Array(14)].map((el, i)=> {
-            if(dayjs(startDay).add(i, 'd').date() == dayjs().date()){
+            if(dayjs(fromDate).add(i, 'd').date() == dayjs().date()){
                 setNow(new Date())
             }
         })
@@ -43,7 +43,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
     return <Container>
         <WeeksContainer >
             {[...Array(14)].map((el, i)=> {
-                const date = dayjs(startDay).add(i, 'd');
+                const date = dayjs(fromDate).add(i, 'd');
                 const isNow = date.date() == dayjs().date();
                 const selected = selectedDay && date.date() == selectedDay;
                 const day =  dayjs(date).set("hour", 12);
@@ -51,7 +51,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
                     ({ from, to }) => day.isAfter(from) && day.isBefore(to)
                     );
                 return <DateContainer key={i}>
-                    <span key={i} onClick={()=> { setSelectedDay(dayjs(startDay).add(i, 'd').date())}} className={`${isNow ? 'now' : ''} ${selected ? 'selected': ''}`} dangerouslySetInnerHTML={{__html: dayjs(startDay).add(i, 'd').format("ddd <br> D")}} />
+                    <span key={i} onClick={()=> { setSelectedDay(date.date())}} className={`${isNow ? 'now' : ''} ${selected ? 'selected': ''}`} dangerouslySetInnerHTML={{__html:date.format("ddd <br> D")}} />
                     {activePeriod.length > 0 && 
                         <CircleContainer key={'#'+i+'00'}>
 
