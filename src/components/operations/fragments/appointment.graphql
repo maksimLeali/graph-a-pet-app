@@ -8,6 +8,7 @@ fragment Appointment on Treatment {
             id 
             name
             main_picture{
+                id
                 main_color{
                     color			
                 }

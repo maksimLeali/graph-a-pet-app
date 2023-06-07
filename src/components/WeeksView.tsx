@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import { Maybe } from "../types";
 import _ from "lodash";
+import { AppointmentsList } from "./appointmentsList";
 
 type props ={
     fromDate: Date;
@@ -13,7 +14,7 @@ type props ={
 
 export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
 
-    
+    const [selectedDay, setSelectedDay] = useState<Date>()
     const [now, setNow] = useState<Date>()
     
     const periodsWithEvents = useMemo(
@@ -31,6 +32,17 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
         [appointments]
       );
 
+      const dayEvents = useMemo(() => {
+        const selected = dayjs(selectedDay);
+        return periodsWithEvents
+          .filter(
+            ({ from, to }) =>
+              selected.endOf("day").isAfter(from) &&
+              selected.startOf("day").isBefore(to)
+          )
+          .map((p) => p.event);
+      }, [periodsWithEvents, selectedDay]);
+
     useEffect(()=> {
         [...Array(14)].map((el, i)=> {
             if(dayjs(fromDate).add(i, 'd').date() == dayjs().date()){
@@ -39,19 +51,19 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
         })
     }, [])
     // const [endDay,setEndDay]= useState(dayjs().add(1,'w').endOf('week'))
-    const [selectedDay, setSelectedDay] = useState<Number>()
+    
     return <Container>
         <WeeksContainer >
             {[...Array(14)].map((el, i)=> {
                 const date = dayjs(fromDate).add(i, 'd');
-                const isNow = date.date() == dayjs().date();
-                const selected = selectedDay && date.date() == selectedDay;
+                const isNow = date.isSame( dayjs(), 'day');
+                const selected = selectedDay && date.isSame( dayjs(selectedDay), 'day');
                 const day =  dayjs(date).set("hour", 12);
                 const activePeriod = periodsWithEvents.filter(
                     ({ from, to }) => day.isAfter(from) && day.isBefore(to)
                     );
                 return <DateContainer key={i}>
-                    <span key={i} onClick={()=> { setSelectedDay(date.date())}} className={`${isNow ? 'now' : ''} ${selected ? 'selected': ''}`} dangerouslySetInnerHTML={{__html:date.format("ddd <br> D")}} />
+                    <span key={i} onClick={()=> { setSelectedDay(date.toDate())}} className={`${isNow ? 'now' : ''} ${selected ? 'selected': ''}`} dangerouslySetInnerHTML={{__html:date.format("ddd <br> D")}} />
                     {activePeriod.length > 0 && 
                         <CircleContainer key={'#'+i+'00'}>
 
@@ -64,6 +76,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
 
             })}
         </WeeksContainer>
+        <AppointmentsList appointments={appointments}/>
     </Container>
 }
 

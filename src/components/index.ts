@@ -6,6 +6,8 @@ export {SubOwnerList} from './SubOwnersList'
 export {SubOwnerListItem} from './SubOwnersListItem'
 export {CustomCalendar } from './CustomCalendar'
 export {WeeksView} from './WeeksView'
+export {MinAppointment} from './MinAppointment'
+export {AppointmentsList} from './appointmentsList'
 export * from "./formFields";
 export * from './icons' 
 

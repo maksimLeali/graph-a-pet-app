@@ -14,7 +14,7 @@ export const SkeletonBox: React.FC = ()=> {
             <FakeWeekContainer>
                 <FakeWeek >
                     {[...Array(7)].map((el, i)=> {
-                        return <SkeletonDay className="skeleton"/>
+                        return <SkeletonDay key={i} className="skeleton"/>
                     })}
                 </FakeWeek>
             </FakeWeekContainer>

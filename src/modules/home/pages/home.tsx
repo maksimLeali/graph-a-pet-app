@@ -61,6 +61,7 @@ export const Home: React.FC = () => {
                             id: pet.id,
                             name: pet.name,
                             main_picture: {
+                                id: pet.main_picture?.id,
                                 main_color :{
                                     color: pet.main_picture?.main_color?.color
                                 }

@@ -94,6 +94,11 @@
       "pages": {
         "home": "Home",
         "pet_sharing": "Mi vuoi ?"
+      },
+      "events": {
+        "general": {
+          "no_evets": "Nessun appuntamento"
+        }
       }
     }
   }
