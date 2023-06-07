@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Pets, SkeletonBox } from "../components";
 import { useGetUserDashboardLazyQuery, useGetUserDashboardQuery } from "../operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useUserContext } from "../../../contexts";
 import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
 import { WeeksView } from "../../../components";
@@ -33,41 +33,49 @@ export const Home: React.FC = () => {
               if(getUserDashboard.dashboard.ownerships 
                 && getUserDashboard.dashboard.ownerships.items 
                 && getUserDashboard.dashboard.ownerships.items.length){
-                    setPets(getUserDashboard.dashboard.ownerships.items.map((item)=> item!.pet))
-
-                    setAppointments( (getUserDashboard.dashboard.ownerships.items.map(
-                        (item)=> item!.pet
-                    ).map(pet=>   pet.health_card?.treatments.items?.length 
-                        ? pet.health_card?.treatments.items?.map((treatment)=> ({
-                                date : treatment!.date, 
-                                type: treatment!.type, 
-                                id: treatment!.id,
-                                name: treatment!.name,
-                                health_card: {
-                                    pet: {
-                                        id: pet.id,
-                                        name: pet.name,
-                                        main_picture: {
-                                            main_color :{
-                                                color: pet.main_picture?.main_color?.color
-                                            }
-                                        }
-                                    }
-                                }
-                            })) 
-                        : [] )
-                    .flat() as unknown as AppointmentFragment[]))
+                    const pets = getUserDashboard.dashboard.ownerships.items.map((item)=> item!.pet)
+                    setPets(pets)
+                    
                 }
             }
             return;
         },
     });
 
+    useEffect(()=> {
+        if(pets.length){
+            searchAppointments()
+        }
+    },[activePet, pets])
+
+    const searchAppointments = useCallback(()=> {
+        const pet=pets[activePet]
+        setAppointments(pet.health_card?.treatments.items?.length 
+            ? pet.health_card?.treatments.items?.map((treatment)=> ({
+                    date : treatment!.date, 
+                    type: treatment!.type, 
+                    id: treatment!.id,
+                    name: treatment!.name,
+                    health_card: {
+                        pet: {
+                            id: pet.id,
+                            name: pet.name,
+                            main_picture: {
+                                main_color :{
+                                    color: pet.main_picture?.main_color?.color
+                                }
+                            }
+                        }
+                    }
+                }) ) as unknown as AppointmentFragment[]  
+            : [] )
+    }, [ pets, activePet])
+
     return (
             <IonContent fullscreen>
                { pets && pets.length>0 && !loading 
                     ?  <>
-                            <Pets pets={pets} /> 
+                            <Pets pets={pets} onActiveChange={(v)=> setActivePet(v)}/> 
                             <WeeksView appointments={appointments} fromDate={dayjs().startOf('w').toDate()}/>
                         </>
                     : <SkeletonBox />

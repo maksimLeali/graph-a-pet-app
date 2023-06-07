@@ -31,11 +31,6 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
         [appointments]
       );
 
-      useEffect(()=> {
-        console.log(periodsWithEvents)
-      }, [periodsWithEvents])
-
-
     useEffect(()=> {
         [...Array(14)].map((el, i)=> {
             if(dayjs(startDay).add(i, 'd').date() == dayjs().date()){
@@ -55,14 +50,14 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
                 const activePeriod = periodsWithEvents.filter(
                     ({ from, to }) => day.isAfter(from) && day.isBefore(to)
                     );
-                return <DateContainer>
+                return <DateContainer key={i}>
                     <span key={i} onClick={()=> { setSelectedDay(dayjs(startDay).add(i, 'd').date())}} className={`${isNow ? 'now' : ''} ${selected ? 'selected': ''}`} dangerouslySetInnerHTML={{__html: dayjs(startDay).add(i, 'd').format("ddd <br> D")}} />
-                    {activePeriod.length ? 
-                        <CircleContainer >
+                    {activePeriod.length > 0 && 
+                        <CircleContainer key={'#'+i+'00'}>
 
-                        {activePeriod.map((item)=> <Circle color={item.color} /> )}
+                        {activePeriod.map((item, i)=> <Circle key={item.color+i} color={item.color} /> )}
                         </CircleContainer>
-                        : <></>
+                      
                         }
                 </DateContainer> 
                 

@@ -17,9 +17,10 @@ import { PetMinSubOwnerFragment } from "../../../components/operations/__generat
 
 type props = {
     pets: DashboardPetFragment[];
+    onActiveChange: (v:number)=> void
 };
 
-export const MainBox: React.FC<props> = ({ pets }) => {
+export const Pets: React.FC<props> = ({ pets , onActiveChange}) => {
     const [active, setActive] = useState(0);
     const [prev, setprev] = useState(0);
     const [direction, setDirection] = useState<"clock" | "counter">("clock");
@@ -46,6 +47,9 @@ export const MainBox: React.FC<props> = ({ pets }) => {
             return setActive(i);
         }
     };
+    useEffect(()=> {
+        onActiveChange(active)
+    }, [active])
     
 
     const [getOrCreateCode] = useGetOrCreateLazyQuery({

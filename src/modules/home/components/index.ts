@@ -1,2 +1,2 @@
-export { MainBox as Pets } from './MainBox'
+export { Pets } from './Pets'
 export { SkeletonBox } from './SkeletonBox'
