@@ -81,6 +81,7 @@ export const Home: React.FC = () => {
                     : <SkeletonBox />
                 }
                
+                 
             </IonContent>
         
     );

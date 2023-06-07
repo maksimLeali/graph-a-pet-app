@@ -75,9 +75,11 @@ const Container = styled.div`
 const WeeksContainer = styled.div`
     height:72px;
     overflow-x: scroll;
-    padding: 5px 10px 10px;
+    padding: 5px 0 10px;
     display: flex;
-    gap: 5px;
+    justify-content: space-between;
+    padding-left:10px;
+    width:100%;
     border-top: 1px solid; 
     border-bottom: 1px solid ;
     border-color:var(--ion-color-medium);
@@ -91,9 +93,9 @@ const WeeksContainer = styled.div`
 `
 
 const DateContainer = styled.div`
-    width: calc(200% / 15 - 15px);
-    flex: 0 0 calc(200% / 15 - 15px);
-    margin-right:15px;
+    width: calc((200% -140px )/ 14 );
+    flex: 0 0 calc((200% - 140px) / 14 );
+    margin-right: 10px;
     > span {
         text-align: center;
         display: flex;
