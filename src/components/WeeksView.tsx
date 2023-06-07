@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import { Maybe } from "../types";
 import _ from "lodash";
-import { AppointmentsList } from "./appointmentsList";
+import { AppointmentsList } from "./";
 
 type props ={
     fromDate: Date;
