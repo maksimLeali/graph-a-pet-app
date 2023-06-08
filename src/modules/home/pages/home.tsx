@@ -49,26 +49,26 @@ export const Home: React.FC = () => {
     },[activePet, pets])
 
     const searchAppointments = useCallback(()=> {
-        const pet=pets[activePet]
-        setAppointments(pet.health_card?.treatments.items?.length 
-            ? pet.health_card?.treatments.items?.map((treatment)=> ({
-                    date : treatment!.date, 
-                    type: treatment!.type, 
-                    id: treatment!.id,
-                    name: treatment!.name,
-                    health_card: {
-                        pet: {
-                            id: pet.id,
-                            name: pet.name,
-                            main_picture: {
-                                id: pet.main_picture?.id,
-                                main_color :{
-                                    color: pet.main_picture?.main_color?.color
-                                }
+        // const pet=pets[activePet]
+        setAppointments(pets.length 
+            ? pets.map((pet)=> pet.health_card?.treatments.items?.map((treatment)=> ({
+                date : treatment!.date, 
+                type: treatment!.type, 
+                id: treatment!.id,
+                name: treatment!.name,
+                health_card: {
+                    pet: {
+                        id: pet.id,
+                        name: pet.name,
+                        main_picture: {
+                            id: pet.main_picture?.id,
+                            main_color :{
+                                color: pet.main_picture?.main_color?.color
                             }
                         }
                     }
-                }) ) as unknown as AppointmentFragment[]  
+                }
+            }) ) as unknown as AppointmentFragment[] ).flat()
             : [] )
     }, [ pets, activePet])
 

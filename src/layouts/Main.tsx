@@ -65,10 +65,14 @@ const BottomMenu = styled.div`
     border-radius: 10px 10px 0 0;
     width: 100%;
     max-width: var(--max-width);
+    
+    background-color: var(--ion-color-light);
     box-shadow: 0 -1px 2px 0px var(--ion-color-medium);
-    background-color: var(--ion-color-step-50);
     display: flex;
     justify-content: space-between;
     padding: 20px 60px 20px 60px;
     box-sizing: border-box;
+    .dark & {
+        background-color: var(--ion-color-step-50);
+    }
 `;

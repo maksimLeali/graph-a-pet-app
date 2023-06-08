@@ -1,6 +1,6 @@
 import { IonContent } from "@ionic/react";
 import styled from "styled-components";
-import { CustomCalendar } from "../../../components";
+import { AppointmentsList, CustomCalendar } from "../../../components";
 import "react-calendar/dist/Calendar.css";
 import { useUserContext } from "../../../contexts";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ export const CalendarEvents: React.FC = () => {
     const [appointments, setAppointments] = useState<
         Maybe<AppointmentFragment>[]
     >([]);
+    const [events, setEvents] = useState<AppointmentFragment[]|Maybe<AppointmentFragment>[] | undefined>([])
 
     const [fromDate,setFromDate] = useState(dayjs().startOf('month').startOf('week').toISOString())
     const [toDate,setToDate] = useState(dayjs().endOf('month').endOf('week').toISOString())
@@ -75,6 +76,8 @@ export const CalendarEvents: React.FC = () => {
         },
     });
 
+    
+      
     useEffect(() => {
         setPage({ visible: false, name: "Events" });
         getMyAppointments();
@@ -82,7 +85,8 @@ export const CalendarEvents: React.FC = () => {
 
     return (
         <IonContent fullscreen>
-            <CustomCalendar appointments={appointments} onStartDateChange={(v)=> {setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
+            <CustomCalendar appointments={appointments} setDayEvents={(events)=> setEvents(events)} onStartDateChange={(v)=> {setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
+            {events && <AppointmentsList appointments={events as AppointmentFragment[]}/>}
         </IonContent>
     );
 };

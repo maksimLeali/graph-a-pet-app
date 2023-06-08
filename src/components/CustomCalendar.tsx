@@ -9,10 +9,11 @@ import _ from "lodash";
 
 type props = {
     appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[],
-    onStartDateChange: (startDate: Date)=> void
+    onStartDateChange: (startDate: Date)=> void,
+    setDayEvents: (events : AppointmentFragment[]) => void
 };
 
-export const CustomCalendar: React.FC<props> = ({ appointments = [], onStartDateChange }) => {
+export const CustomCalendar: React.FC<props> = ({ appointments = [], onStartDateChange, setDayEvents }) => {
     const [activeStartDate, setActiveStartDate] = useState(
         dayjs().startOf("month").toDate()
     );
@@ -66,6 +67,14 @@ export const CustomCalendar: React.FC<props> = ({ appointments = [], onStartDate
           )
           .map((p) => p.event);
       }, [periodsWithEvents, selectedDay]);
+
+      useEffect(()=> {
+        if(dayEvents?.length){
+            setDayEvents(dayEvents as AppointmentFragment[])
+            return
+        }
+        setDayEvents([])
+      }, [dayEvents])
 
     const { handleTouchStart, handleTouchMove } = useSwipe({
         onLeft,
