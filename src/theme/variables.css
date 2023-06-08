@@ -5,6 +5,14 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+
+  --vaccine:#3e92cc;
+  --antiparasitic:#008148;
+  --operation:#02c39a;
+  --reminder:#A07178;
+  --tablet:#575A4B;
+
+
   --ion-background-color: #fff;
   --max-width: 480px;
   --ion-trasparent-bg: #111d;

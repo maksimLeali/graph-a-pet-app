@@ -5,6 +5,7 @@ import { Image2x } from "./Image2x";
 import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import { SpecialIcon } from "./SpecialIcons";
 import { SpecialIconName } from "./SpecialIcons/SpecialIcons";
+import { treatmentsColors } from "../utils";
 
 type props = {
     appointment: AppointmentFragment | Maybe<AppointmentFragment>;
@@ -16,6 +17,9 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
             color={
                 appointment?.health_card?.pet.main_picture?.main_color?.color
             }
+            appointmentColor={'var(--ion-color-light-shade)'}
+            // appointmentColor={appointment?.health_card?.pet.main_picture?.main_color?.color}
+            // appointmentColor={treatmentsColors[appointment!.type]}
         >
             <Heading className="heading">
                 <ImageWrapper className="image-wrapper">
@@ -31,11 +35,8 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
                 <IconWrapper className="icon-wrapper">
                     <SpecialIcon
                         name={appointment?.type.toLocaleLowerCase() as SpecialIconName}
-                        color={
-                            appointment?.health_card?.pet.main_picture
-                                ?.main_color?.color ??
-                            "var(--ion-color-primary)"
-                        }
+                        // color={'var(--ion-color-primary)'}
+                        color={treatmentsColors[appointment!.type]}
                     />
                 </IconWrapper>
             </Heading>
@@ -48,7 +49,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
     );
 };
 
-const Container = styled.div<{ color?: string }>`
+const Container = styled.div<{ color?: string, appointmentColor?:string }>`
     width: 100%;
 
     position: relative;
@@ -61,24 +62,25 @@ const Container = styled.div<{ color?: string }>`
     flex-direction: column;
     justify-content: space-between;
     .heading {
-        background-color: ${({ color }) =>
-            color ? color : "var(--ion-color-primary)"};
-          color: var(--ion-color-light);
-          .dark &{
-            color: var(--ion-color-dark);
-
-          }
+        background-color: ${({ appointmentColor }) =>
+            appointmentColor ? appointmentColor : "var(--ion-color-primary)"};
+          color: var(--ion-color-dark);
+          
     }
     .footer {
       background-color: var(--ion-background-color);
-      border-color: ${({ color }) =>
-          color ? color : "var(--ion-color-primary)"};
+      border-color: ${({ appointmentColor }) =>
+          appointmentColor ? appointmentColor : "var(--ion-color-primary)"};
       
     }
-    .image-wrapper,
-    .icon-wrapper {
+    .image-wrapper{
+
         border-color: ${({ color }) =>
             color ? color : "var(--ion-color-primary)"};
+    }
+    .icon-wrapper {
+        border-color: ${({ appointmentColor }) =>
+          appointmentColor ? appointmentColor : "var(--ion-color-primary)"};
     }
 `;
 const Title = styled.span`
