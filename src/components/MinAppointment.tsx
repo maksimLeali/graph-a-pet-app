@@ -23,7 +23,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
             }
             // appointmentColor={'var(--ion-color-light-tint)'}
             // appointmentColor={appointment?.health_card?.pet.main_picture?.main_color?.color}
-            appointmentColor={treatmentsColors[appointment!.type]}
+            // appointmentColor={treatmentsColors[appointment!.type]}
         >
             <Heading className="heading">
                 {/* <ImageWrapper className="image-wrapper">
@@ -62,7 +62,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
     );
 };
 
-const Container = styled.div<{ color?: string, appointmentColor?:string }>`
+const Container = styled.div<{ color?: string,  }>`
     width: 100%;
 
     position: relative;
@@ -75,15 +75,21 @@ const Container = styled.div<{ color?: string, appointmentColor?:string }>`
     flex-direction: column;
     justify-content: space-between;
     .heading {
-        background-color: ${({ appointmentColor }) =>
-            appointmentColor ? appointmentColor : "var(--ion-color-primary)"};
-          color: var(--ion-color-dark);
-          
+        background-color: var(--ion-color-medium-tint);
+        color: var(--ion-color-light);
+        .dark &{
+            background-color: var(--ion-color-light-tint);
+            color: var(--ion-color-dark);
+        }
     }
     .footer {
       background-color: var(--ion-background-color);
-      border-color: ${({ appointmentColor }) =>
-          appointmentColor ? appointmentColor : "var(--ion-color-primary)"};
+      border-color: var(--ion-color-medium-tint);
+      .dark &{
+            border-color: var(--ion-color-light-tint);
+
+        }
+
       
     }
     .image-wrapper{
