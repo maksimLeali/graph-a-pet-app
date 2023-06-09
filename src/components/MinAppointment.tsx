@@ -6,45 +6,58 @@ import { AppointmentFragment } from "./operations/__generated__/appointment.gene
 import { SpecialIcon } from "./SpecialIcons";
 import { SpecialIconName } from "./SpecialIcons/SpecialIcons";
 import { treatmentsColors } from "../utils";
+import { useTranslation } from "react-i18next";
 
 type props = {
     appointment: AppointmentFragment | Maybe<AppointmentFragment>;
 };
 
 export const MinAppointment: React.FC<props> = ({ appointment }) => {
+
+    const {t} = useTranslation()
+
     return (
         <Container
             color={
                 appointment?.health_card?.pet.main_picture?.main_color?.color
             }
-            appointmentColor={'var(--ion-color-light-shade)'}
+            // appointmentColor={'var(--ion-color-light-tint)'}
             // appointmentColor={appointment?.health_card?.pet.main_picture?.main_color?.color}
-            // appointmentColor={treatmentsColors[appointment!.type]}
+            appointmentColor={treatmentsColors[appointment!.type]}
         >
             <Heading className="heading">
-                <ImageWrapper className="image-wrapper">
+                {/* <ImageWrapper className="image-wrapper">
                     <Image2x
                         id={appointment!.health_card!.pet.main_picture!.id}
                     />
-                </ImageWrapper>
-
-                <Title>
+                </ImageWrapper> */}
+                
+                
+                <PetName>
+                    {appointment?.health_card?.pet.name+ ": "}
+                    {t(`events.${appointment?.type.toLocaleLowerCase()}`)}
+                    
+                    
+                </PetName>
+                <CustomSpan>
                     {dayjs(appointment!.date).format("HH:mm")}
-                </Title>
-
-                <IconWrapper className="icon-wrapper">
+            </CustomSpan>
+                
+            </Heading>
+            <Footer className="footer">
+              <CustomSpan>
+              {appointment?.name}
+              </CustomSpan>
+              
+                
+            </Footer>
+            <IconWrapper className="icon-wrapper" borderColor={treatmentsColors[appointment!.type]}>
                     <SpecialIcon
                         name={appointment?.type.toLocaleLowerCase() as SpecialIconName}
                         // color={'var(--ion-color-primary)'}
                         color={treatmentsColors[appointment!.type]}
-                    />
+                        />
                 </IconWrapper>
-            </Heading>
-            <Footer className="footer">
-              <CustomSpan>
-                {appointment?.name}
-              </CustomSpan>
-            </Footer>
         </Container>
     );
 };
@@ -78,10 +91,7 @@ const Container = styled.div<{ color?: string, appointmentColor?:string }>`
         border-color: ${({ color }) =>
             color ? color : "var(--ion-color-primary)"};
     }
-    .icon-wrapper {
-        border-color: ${({ appointmentColor }) =>
-          appointmentColor ? appointmentColor : "var(--ion-color-primary)"};
-    }
+
 `;
 const Title = styled.span`
     position: relative;
@@ -98,20 +108,27 @@ const Heading = styled.div`
     height: 40px;
     width: 100%;
     display: flex;
-    border-radius: 40px;
+    padding-left: 60px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+    border-radius: 40px 40px 0 0;
     justify-content: space-between;
+    align-items: flex-end;
 `;
 
 const Footer = styled.div`
-    width: calc(100% - 40px);
+    width: 100% ;
+    /* width: calc(100% - 40px); */
     margin: 0 20px;
     height:40px;
+    border-radius: 0 0 40px 40px;
     border: 2px solid;
-    border-radius: 0 0 5px 5px;
+    /* border-radius: 0 0 5px 5px; */
     font-weight: 400;
     display: flex;
     align-items: center;
-    justify-content: center;
+    padding-left: 60px;
+    justify-content: flex-start;
 `;
 
 const CustomSpan = styled.span`
@@ -120,20 +137,26 @@ const CustomSpan = styled.span`
 
 const ImageWrapper = styled.div`
     width: 40px;
+    position:relative;
     aspect-ratio: 1;
+    z-index:2;
     border-radius: 40px;
     left: 0;
     border: 2px solid;
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{borderColor: string}>`
     width: 40px;
     aspect-ratio: 1;
     border-radius: 80px;
     display: flex;
-    border: 2px solid;
+    left: 10px;
+    top:20px;
+    position: absolute;
+    border: 2px solid ${({borderColor})=> borderColor};
+    z-index:1;
     background-color: var(--ion-background-color);
-    padding: 8px;
+    padding: 6px;
     box-sizing: border-box;
     align-items: center;
     > * {
@@ -141,3 +164,9 @@ const IconWrapper = styled.div`
     }
 `;
 
+const PetName = styled.p`
+    font-size: 1.5rem;
+    margin-right: 10px;
+    margin: 0;
+    
+`

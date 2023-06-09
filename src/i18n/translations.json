@@ -96,6 +96,11 @@
         "pet_sharing": "Mi vuoi ?"
       },
       "events": {
+        "antiparasitic": "Antiparassitario",
+        "vaccine": "Vaccino",
+        "tablet": "Pastiglia",
+        "reminder": "Promemoria",
+        "operation": "Operazione",
         "general": {
           "no_events": "Nessun appuntamento"
         }
