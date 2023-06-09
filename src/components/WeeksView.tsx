@@ -34,7 +34,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
 
       const dayEvents = useMemo(() => {
         const selected = dayjs(selectedDay);
-        return periodsWithEvents
+        return _(periodsWithEvents)
           .filter(
             ({ from, to }) =>
             selected ?
@@ -43,8 +43,8 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
             : dayjs(now).endOf("day").isAfter(from) &&
                 dayjs(now).startOf("day").isBefore(to)
 
-          )
-          .map((p) => p.event);
+          ).orderBy(item => item.event!.date, ['asc'])
+          .map((p) => p.event).value();
       }, [periodsWithEvents, selectedDay]);
 
 

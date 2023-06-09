@@ -31,6 +31,8 @@ fragment DashboardPet on Pet {
         id
         treatments(
             commonSearch: {
+                order_by: "date"
+                order_direction: "asc"
                 filters: {
                     ranges: [
                         {

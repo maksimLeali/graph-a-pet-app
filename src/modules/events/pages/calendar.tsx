@@ -23,6 +23,8 @@ export const CalendarEvents: React.FC = () => {
         variables: {
             commonSearch: {
                 page_size: 50,
+                order_by: 'date',
+                order_direction: 'desc',
                 filters: {
                     ranges: [
                         {

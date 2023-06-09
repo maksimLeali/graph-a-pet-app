@@ -14,7 +14,7 @@ query getUserDashboard( $date_from: String!, $date_to: String! ) {
 					message
 				}
 			}
-			reports {
+			reports{
 				items {
 					id
 					created_at

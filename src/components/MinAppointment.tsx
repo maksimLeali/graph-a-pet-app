@@ -7,6 +7,7 @@ import { SpecialIcon } from "./SpecialIcons";
 import { SpecialIconName } from "./SpecialIcons/SpecialIcons";
 import { treatmentsColors } from "../utils";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 type props = {
     appointment: AppointmentFragment | Maybe<AppointmentFragment>;
@@ -15,7 +16,7 @@ type props = {
 export const MinAppointment: React.FC<props> = ({ appointment }) => {
 
     const {t} = useTranslation()
-
+   
     return (
         <Container
             color={
@@ -23,7 +24,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
             }
             // appointmentColor={'var(--ion-color-light-tint)'}
             // appointmentColor={appointment?.health_card?.pet.main_picture?.main_color?.color}
-            // appointmentColor={treatmentsColors[appointment!.type]}
+            appointmentColor={treatmentsColors[appointment!.type]}
         >
             <Heading className="heading">
                 {/* <ImageWrapper className="image-wrapper">
@@ -62,7 +63,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
     );
 };
 
-const Container = styled.div<{ color?: string,  }>`
+const Container = styled.div<{ color?: string, appointmentColor: string  }>`
     width: 100%;
 
     position: relative;
@@ -81,13 +82,23 @@ const Container = styled.div<{ color?: string,  }>`
             background-color: var(--ion-color-light-tint);
             color: var(--ion-color-dark);
         }
+        ::after{
+            border-color:${({appointmentColor})=> appointmentColor};
+            background-color: ${({appointmentColor})=> appointmentColor};
+        }
+
     }
     .footer {
-      background-color: var(--ion-background-color);
-      border-color: var(--ion-color-medium-tint);
-      .dark &{
+        background-color: var(--ion-background-color);
+        border-color: var(--ion-color-medium-tint);
+        .dark &{
             border-color: var(--ion-color-light-tint);
 
+        }
+        ::after{
+            border-color:${({appointmentColor})=> appointmentColor};
+            background-color: ${({appointmentColor})=> appointmentColor};
+            /* background-color: var(--ion-background-color); */
         }
 
       
@@ -114,12 +125,22 @@ const Heading = styled.div`
     height: 40px;
     width: 100%;
     display: flex;
-    padding-left: 60px;
+    padding-left: 70px;
     padding-right: 20px;
     padding-bottom: 5px;
     border-radius: 40px 40px 0 0;
     justify-content: space-between;
     align-items: flex-end;
+    ::after{
+        content: "";
+        width:60px;
+        height: 40px;
+        left:0;
+        top:0;
+        border-bottom: 1px solid;
+        border-radius: 40px 0 0 0;
+        position:absolute;
+    }
 `;
 
 const Footer = styled.div`
@@ -133,8 +154,21 @@ const Footer = styled.div`
     font-weight: 400;
     display: flex;
     align-items: center;
-    padding-left: 60px;
+    position:relative;
+    padding-left: 70px;
     justify-content: flex-start;
+    ::after{
+        content: "";
+        width:58px;
+        height: 36px;
+        left:-2px;
+        top:-2px;
+        border-top: 2px solid;
+        border-left: 2px solid ;
+        border-bottom: 2px solid;
+        border-radius: 0 0 0 40px ;
+        position:absolute;
+    }
 `;
 
 const CustomSpan = styled.span`
