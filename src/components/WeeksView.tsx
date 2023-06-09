@@ -26,8 +26,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
               to: dayjs(ev?.date).endOf("day"),
               event: ev,
             }))
-            .sortBy("from")
-            .reverse()
+            .orderBy(item=> item.event?.date ,['asc'])
             .value(),
         [appointments]
       );
