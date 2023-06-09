@@ -232,7 +232,7 @@ const CircleContainer = styled.div`
 const Circle = styled.div<{ color: string }>`
   width: 8px;
   height: 8px;
-  border: 1px solid var(--ion-color-medium-shade);
+  border: 1px solid var(--ion-color-dark-shade);
   border-radius: 10px;
   background-color: ${(props) => props.color};
   margin-top: 0.2em;

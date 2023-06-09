@@ -21,8 +21,6 @@ const Container = styled.div`
     width:100%;
     display:flex;
     flex-direction: column;
-    max-height:500px;
-    overflow-y: scroll;
     padding: 20px 12px;
     align-items:center;
 `
