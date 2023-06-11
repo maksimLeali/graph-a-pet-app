@@ -32,14 +32,14 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
           {t(`events.${appointment?.type.toLocaleLowerCase()}`)}
         </PetName>
        
-        <CustomSpan>{dayjs(appointment!.date).format("HH:mm")}</CustomSpan>
+        
       </Heading>
       <Footer className="footer">
         <CustomSpan>{appointment?.name}</CustomSpan>
       </Footer>
-      <ImageWrapper className="image-wrapper">
+      {/* <ImageWrapper className="image-wrapper">
         <Image2x id={appointment!.health_card!.pet.main_picture!.id} />
-      </ImageWrapper>
+    </ImageWrapper> */}
       <IconWrapper
         className="icon-wrapper"
         borderColor={treatmentsColors[appointment!.type]}
@@ -56,6 +56,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
           //color={'var(--ion-color-light-tint)'}
         />
       </IconWrapper>
+      <AppointmentTime>{dayjs(appointment!.date).format("HH:mm")}</AppointmentTime>
     </Container>
   );
 };
@@ -81,7 +82,12 @@ const Container = styled.div<{ color?: string; appointmentColor: string }>`
     }
     ::after {
       border-color: ${({ appointmentColor }) => appointmentColor};
-      background-color: ${({ appointmentColor }) => appointmentColor};
+      background-color: var(--ion-color-medium-tint);
+      color: var(--ion-color-light);
+        .dark & {
+        background-color: var(--ion-color-light-tint);
+        color: var(--ion-color-dark);
+      }
     }
   }
   .footer {
@@ -91,8 +97,7 @@ const Container = styled.div<{ color?: string; appointmentColor: string }>`
       border-color: var(--ion-color-light-tint);
     }
     ::after {
-      border-color: ${({ appointmentColor }) => appointmentColor};
-      background-color: ${({ appointmentColor }) => appointmentColor};
+      background-color: var(--ion-background-color);
       border-color: var(--ion-color-medium-tint);
       .dark & {
         border-color: var(--ion-color-light-tint);
@@ -120,46 +125,28 @@ const Heading = styled.div`
   height: 40px;
   width: 100%;
   display: flex;
-  padding-left: 90px;
+  padding-left: 70px;
   padding-right: 20px;
   padding-bottom: 5px;
-  border-radius: 40px 40px 0 0;
+  border-radius: 2px 2px 0 0;
   justify-content: space-between;
   align-items: flex-end;
-  ::after {
-    content: "";
-    width: 78px;
-    height: 38px;
-    left: 2px;
-    top: 2px;
-    border-radius: 40px 0 0 0;
-    position: absolute;
-  }
+
 `;
 
 const Footer = styled.div`
   width: 100%;
   /* width: calc(100% - 40px); */
   height: 40px;
-  border-radius: 0 0 40px 40px;
+  border-radius: 0 0 2px 2px;
   border: 2px solid;
   /* border-radius: 0 0 5px 5px; */
   font-weight: 400;
   display: flex;
   align-items: center;
   position: relative;
-  padding-left: 90px;
+  padding-left: 70px;
   justify-content: flex-start;
-  ::after {
-    content: "";
-    width: 78px;
-    height: 38px;
-    left: 0px;
-    top: -2px;
-    border-right: 2px solid;
-    border-radius: 0 0 0 40px;
-    position: absolute;
-  }
 `;
 
 const CustomSpan = styled.span`
@@ -183,14 +170,13 @@ const IconWrapper = styled.div<{ borderColor: string }>`
   aspect-ratio: 1;
   border-radius: 80px;
   display: flex;
-  display: none;
-  left:44px;
+  left:15px;
   position: absolute;
-  top: 44px;
-  border: 2px solid ${({ borderColor }) => borderColor};
+  top: 8px;
+  // border: 2px solid ${({ borderColor }) => borderColor};
 
   z-index: 1;
-  background-color: #0008;
+
 
   padding: 4px;
   box-sizing: border-box;
@@ -205,3 +191,10 @@ const PetName = styled.p`
   margin-right: 10px;
   margin: 0;
 `;
+
+const AppointmentTime = styled.div`
+  position: absolute;
+  bottom:10px;
+  left:14px;
+  font-size:.8rem;
+`
