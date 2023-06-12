@@ -304,6 +304,14 @@ export type MediaUpdate = {
   type?: Maybe<Scalars['String']>;
 };
 
+export type MinTreatment = {
+  __typename?: 'MinTreatment';
+  id: Scalars['ID'];
+  type: TreatmentType;
+  name: Scalars['String'];
+  date: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: UserResult;
@@ -992,11 +1000,13 @@ export type Treatment = {
   name: Scalars['String'];
   date: Scalars['String'];
   logs?: Maybe<Array<Maybe<Scalars['String']>>>;
+  duration?: Maybe<TreatmentDuration>;
   frequency_value?: Maybe<Scalars['Int']>;
   frequency_times?: Maybe<Scalars['Int']>;
   frequency_unit?: Maybe<FrequencyUnit>;
   booster?: Maybe<Treatment>;
   health_card?: Maybe<HealthCard>;
+  related?: Maybe<Array<Maybe<MinTreatment>>>;
 };
 
 export type TreatmentCreate = {
@@ -1121,3 +1131,12 @@ export type UsersResult = {
   error?: Maybe<Error>;
   users: Array<Maybe<User>>;
 };
+
+export enum TreatmentDuration {
+  TenMinutes = 'TEN_MINUTES',
+  QuarterHour = 'QUARTER_HOUR',
+  ThreeQuarter = 'THREE_QUARTER',
+  HalfHour = 'HALF_HOUR',
+  HourAndHalf = 'HOUR_AND_HALF',
+  TwoHours = 'TWO_HOURS'
+}
