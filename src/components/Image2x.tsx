@@ -22,7 +22,7 @@ export const Image2x: React.FC<props>= ({id, alt, fit= false, rounded=false ,cla
         setSrc2x (`${baseUrl}/${ref.current ? ref.current.offsetWidth*2 : 0}x${ref.current ? ref.current.offsetHeight*2 : 0}${fit ? '/fit' : ''}`)
     }, [ref.current?.offsetHeight, ref.current?.offsetWidth])
     return <ImageContainer className={`img2x ${className}`} ref={ref} rounded>
-        {src && src2x &&<img src={src} alt={alt} srcSet={`${src2x} 2x`} />}
+        {src && src2x &&<img src={src} alt={alt ?? `${id}`} srcSet={`${src2x} 2x`} loading="lazy" />}
     </ImageContainer>
 }
 
