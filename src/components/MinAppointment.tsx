@@ -73,36 +73,22 @@ const Container = styled.div<{ color?: string; appointmentColor: string }>`
   align-items: center;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 3px 16px 0px;
   .heading {
-    background-color: var(--ion-color-medium-tint);
+    
     color: var(--ion-color-light);
+    background-color: var(--ion-color-light-shade);
     .dark & {
-      background-color: var(--ion-color-light-tint);
-      color: var(--ion-color-dark);
-    }
-    ::after {
-      border-color: ${({ appointmentColor }) => appointmentColor};
-      background-color: var(--ion-color-medium-tint);
-      color: var(--ion-color-light);
-        .dark & {
         background-color: var(--ion-color-light-tint);
-        color: var(--ion-color-dark);
-      }
+        
+      color: var(--ion-color-dark);
     }
   }
   .footer {
     background-color: var(--ion-background-color);
-    border-color: var(--ion-color-medium-tint);
+    border-color: var(--ion-color-light-shade);
     .dark & {
       border-color: var(--ion-color-light-tint);
-    }
-    ::after {
-      background-color: var(--ion-background-color);
-      border-color: var(--ion-color-medium-tint);
-      .dark & {
-        border-color: var(--ion-color-light-tint);
-      }
-      /* background-color: var(--ion-background-color); */
     }
   }
   .image-wrapper {
@@ -139,7 +125,7 @@ const Footer = styled.div`
   /* width: calc(100% - 40px); */
   height: 40px;
   border-radius: 0 0 2px 2px;
-  border: 2px solid;
+  border: 1px solid;
   /* border-radius: 0 0 5px 5px; */
   font-weight: 400;
   display: flex;
@@ -172,7 +158,7 @@ const IconWrapper = styled.div<{ borderColor: string }>`
   display: flex;
   left:15px;
   position: absolute;
-  top: 8px;
+  bottom: 5px;
   // border: 2px solid ${({ borderColor }) => borderColor};
 
   z-index: 1;
@@ -189,12 +175,16 @@ const IconWrapper = styled.div<{ borderColor: string }>`
 const PetName = styled.p`
   font-size: 1.2rem;
   margin-right: 10px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
   margin: 0;
 `;
 
 const AppointmentTime = styled.div`
   position: absolute;
-  bottom:10px;
+  top:18px;
   left:14px;
+  font-weight: 600;
   font-size:.8rem;
+  color: var(--ion-color-primary);
 `
