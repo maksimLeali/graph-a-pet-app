@@ -3,6 +3,7 @@ fragment Appointment on Treatment {
     date
     type
     name
+    duration
     health_card{
         pet{
             id 

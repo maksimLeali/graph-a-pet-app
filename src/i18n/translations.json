@@ -101,6 +101,7 @@
         "tablet": "Pastiglia",
         "reminder": "Promemoria",
         "operation": "Operazione",
+        "from_to": "Dalle {{from}} alle {{to}}",
         "general": {
           "no_events": "Nessun appuntamento"
         }
