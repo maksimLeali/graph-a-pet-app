@@ -161,18 +161,18 @@ const InputLabel = styled.label<labelProps>`
   position: absolute;
   left: 20px;
   top: 2px;
-  font-size: 1.3rem;
+  font-size: 2rem;
   color: var(--ion-color-${({ color }) => color});
   transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
     font-size 0.5s ease-in;
   &.focused {
-    font-size: 0.8rem;
+    font-size: 1.8rem;
     top: -25px;
     left: 0px;
     color: var(--ion-color-${({ focusColor }) => focusColor});
   }
   &.compiled {
-    font-size: 0.8rem;
+    font-size: 1.8rem;
     top: -25px;
     left: 0px;
     color: var(--ion-color-${({ focusColor }) => focusColor});
@@ -262,5 +262,5 @@ const StyledInput = styled.input<{ textColor: string }>`
 
 const ErrorSpan = styled.span`
   color: var(--ion-color-danger);
-  font-size: .7rem ;
+  font-size: 1.5rem ;
 `

@@ -269,20 +269,20 @@ const ActionChip = styled.span`
     align-items: center;
     gap: 12px;
     z-index: 2;
-    font-size: 1.2rem;
+    font-size: 2.1rem;
     padding: 0 12px;
     @media only screen and (max-width: 420px) {
         height: 75px;
         gap: 8px;
-        font-size: 1.1rem;
+        font-size: 1.7rem;
     }
     @media only screen and (max-width: 380px) {
         height: 65px;
-        font-size: 1rem;
+        font-size: 1.6rem;
     }
     @media only screen and (max-width: 350px) {
         height: 55px;
-        font-size: 0.9rem;
+        font-size: 1.5rem;
     }
     &.left {
         justify-content: start;

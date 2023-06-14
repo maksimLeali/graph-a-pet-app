@@ -124,6 +124,7 @@ const DateContainer = styled.div`
         border-radius: 10px;
         height: 46px;
         padding: 4px 0;
+        font-size: 1.4rem;;
         box-sizing: border-box;
         align-items: center;
         

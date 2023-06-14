@@ -7,6 +7,7 @@ http://ionicframework.com/docs/theming/ */
 body, html {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  font-size: 10px;
 }
 
 /** Ionic CSS Variables **/

@@ -344,17 +344,17 @@ const InputLabel = styled.label`
     position: absolute;
     left: 20px;
     top: 2px;
-    font-size: 1.3rem;
+    font-size: 2rem;
     color: var(--ion-color-${({ color }) => color});
     transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
         font-size 0.5s ease-in;
     &.focused {
-        font-size: 0.8rem;
+        font-size: 1.8rem;
         top: -25px;
         left: 0px;
     }
     &.compiled {
-        font-size: 0.8rem;
+        font-size: 1.8rem;
         top: -25px;
         left: 0px;
     }

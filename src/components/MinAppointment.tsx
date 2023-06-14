@@ -27,25 +27,9 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
 
     return (
         <Container href={`/events/${appointment?.id}`}
-            color={
-                appointment?.health_card?.pet.main_picture?.main_color?.color
-            }
         >
-            <Heading className="heading">
-            <CustomSpan>
-                    {appointment?.health_card?.pet.name + ": "}
-                    {t(`events.${appointment?.type.toLocaleLowerCase()}`)}
-                </CustomSpan>
-            </Heading>
-            <Body className ="body">
-            <CustomSpan>{appointment?.name}</CustomSpan>
-            </Body>
-            <Footer className="footer">
-                <CustomSpan>{t("events.from_to", {from: dayjs(appointment!.date).format("HH:mm"), to: dayjs(appointment!.date).add(translatedDuration[appointment!.duration ?? TreatmentDuration.HalfHour], "minutes" ).format("HH:mm")},)}</CustomSpan>
-            </Footer>
             <IconWrapper
                 className="icon-wrapper"
-                borderColor={treatmentsColors[appointment!.type]}
             >
                 <SpecialIcon
                     name={
@@ -54,112 +38,91 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
                     color={treatmentsColors[appointment!.type]}
                 />
             </IconWrapper>
-            {/* <ImageWrapper className="image-wrapper">
-            <Image2x id={appointment!.health_card!.pet.main_picture!.id} />
-            </ImageWrapper> */}
-            
+            <Body>
+                <CustomSpan><b>{t("events.from_to", {from: dayjs(appointment!.date).format("HH:mm"), to: dayjs(appointment!.date).add(translatedDuration[appointment!.duration ?? TreatmentDuration.HalfHour], "minutes" ).format("HH:mm")},)}</b></CustomSpan>
+                <CustomSpan>{t(`events.${appointment?.type.toLocaleLowerCase()}`)}: {appointment?.name}</CustomSpan>
+            </Body>
+            <PetName color={appointment?.health_card?.pet.main_picture?.main_color?.color}>
+                {appointment?.health_card?.pet.name}
+            </PetName>
+           
         </Container>
     );
 };
 
-const Container = styled.a<{ color?: string }>`
+const Container = styled.a`
     width: calc(100% - 40px);
+    height: 60px;
     position: relative;
     margin-bottom: 20px;
     box-sizing: border-box;
     display: flex;
+    border-radius: 10px;
+    padding: 10px 10px;
     align-items: center;
     text-decoration: none;
-    flex-direction: column;
+    background-color: var(--ion-color-light-shade);
     justify-content: space-between;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     .dark &{
         box-shadow:  rgba(220, 220, 220, 0.23) 0px 3px 6px;
     }
-    .heading, .footer {
-        > span, > p {
 
-            color: var(--ion-color-light);
-        }
-        background-color: ${({color})=> color};
-        /* background-color: var(--ion-color-light-shade); */
-        .dark & {
-            /* background-color: var(--ion-color-light-tint); */
-            > span, > p {
-                color: var(--ion-color-dark);
-            }
-        }
-    }
-    .body {
-        background-color: var(--ion-background-color);
-        border-color: var(--ion-color-light-shade);
-        color: var(--ion-color-dark);
-        .dark & {
-            border-color: var(--ion-color-light-tint);
-        }
-    }
-    .image-wrapper {
-        border-color: ${({ color }) =>
-            color ? color : "var(--ion-color-primary)"};
-    }
+
+
 `;
 
-const Heading = styled.div`
-    height: 25px;
-    width: 100%;
-    display: flex;
-    
-    
-    padding-bottom: 5px;
-    padding-top: 5px;;
-    border-radius: 2px 2px 0 0;
-    justify-content: center;
-    align-items: center;
-`;
 
-const Footer = styled(Heading)`
-    border-radius: 0 0 2px 2px;
-`
 
 const Body = styled.div`
     width: 100%;
     /* width: calc(100% - 40px); */
     height: 46px;
     border-radius: 0 0 2px 2px;
-    border: 1px solid;
+    
     /* border-radius: 0 0 5px 5px; */
     font-weight: 400;
+
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     position: relative;
-    
-    justify-content: center;
+    margin-left: 12px;
+    justify-content: space-evenly;
 `;
 
 
 
 const CustomSpan = styled.span`
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.2rem;
     color: var(--ion-color-dark);
 `;
 
-const IconWrapper = styled.div<{ borderColor: string }>`
-    width: 24px;
+const PetName = styled.span<{color?: string}>`
+    padding: 3px 8px;
+    color: var(--ion-color-ligth);
+    border-radius: 20px;
+    font-size: 1.7rem;
+    .dark &{
+        color: var(--ion-color-dark);
+    }
+    background-color: ${({color})=> color ? color : 'var(--ion-color-primary)'};
+
+`
+
+const IconWrapper = styled.div`
+    width: 46px;
     aspect-ratio: 1;
-    border-radius: 80px;
+    border-radius: 10px;
     display: flex;
-    left: 15px;
-    position: absolute;
-    
     z-index: 1;
-    top: 36px;
-    background-color: var(--ion-background-color);
-    
-    border-color: ${ ({borderColor})=> {return borderColor} } ;
-    
+    padding: 10px;
+    background-color: var(--ion-color-light-shade);
     box-sizing: border-box;
     align-items: center;
+
+    background-color: var(--ion-color-light-tint);
+    justify-content: center;
     > * {
         width: 100%;
     }

@@ -68,7 +68,7 @@ export const Login: React.FC = ()  => {
                 </Form>
             </FormProvider>
             <InfoBox>
-                <span>{t('auth.not_registered')} <Link to="/auth/signup">{t("auth.signup")}<Icon color="primary" size="1rem" name="idCardOutline" /></Link></span>
+                <span>{t('auth.not_registered')} <Link to="/auth/signup">{t("auth.signup")}<Icon color="primary" size="2.5rem" name="idCardOutline" /></Link></span>
             </InfoBox>
       </Container>
     );
@@ -102,7 +102,7 @@ const InfoBox = styled.div`
     > span {
         display:flex;
         width:100%;
-        font-size: .8rem;
+        font-size: 1.2rem;
         gap: 5px;
         > a {
             text-decoration:none ;
@@ -110,7 +110,7 @@ const InfoBox = styled.div`
             align-items:flex-start ;
             gap: 5px;
             > .icon-wrapper {
-                height: 1rem;
+                height: 2rem;
                 align-items:center ;
             }
         }

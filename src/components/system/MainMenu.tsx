@@ -151,13 +151,15 @@ const MainOptions = styled.div`
     border-bottom: 1px solid var(--ion-color-dark);
     gap: 10px;
     margin-bottom: 20px;
-`;
+    font-size: 1.6rem;
+    `;
 const ActionOptions = styled.div`
     width: 100%;
     padding: 0;
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid var(--ion-color-dark);
+    font-size: 1.6rem;
     gap: 10px;
     margin-bottom: 20px;
 `;

@@ -90,7 +90,7 @@ export const SignUp = () => {
           {t("auth.already_registered")}{" "}
           <Link to="/auth/login">
             {t("auth.login")}
-            <Icon size="1rem" name="enterOutline" color="primary" />
+            <Icon size="2.4rem" name="enterOutline" color="primary" />
           </Link>
         </span>
       </InfoBox>
@@ -122,7 +122,7 @@ const InfoBox = styled.div`
     > span {
         display:flex;
         width:100%;
-        font-size: .8rem;
+        font-size: 1.8rem;
         gap: 5px;
         > a {
             text-decoration:none ;
@@ -130,7 +130,7 @@ const InfoBox = styled.div`
             align-items:flex-start ;
             gap: 5px;
             > .icon-wrapper {
-                height: 1rem;
+                height: 2rem;
                 align-items:center ;
             }
         }
