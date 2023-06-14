@@ -1,0 +1,20 @@
+fragment FullTreatment on Treatment {
+    id
+    name
+    date
+    logs
+    type
+    frequency_unit
+    frequency_value
+    frequency_times
+    booster{
+        id
+    }
+    related{
+        id
+        date
+        name
+        type
+        
+    }
+}

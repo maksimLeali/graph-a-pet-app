@@ -81,7 +81,7 @@ export const CalendarEvents: React.FC = () => {
     
       
     useEffect(() => {
-        setPage({ visible: false, name: "Events" });
+        setPage({ visible: true, name: "Events" });
         getMyAppointments();
     }, []);
 

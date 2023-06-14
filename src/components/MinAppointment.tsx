@@ -62,6 +62,7 @@ const Container = styled.a`
     align-items: center;
     text-decoration: none;
     background-color: var(--ion-color-light-shade);
+    background-color: var(--ion-color-light-tint);
     justify-content: space-between;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     .dark &{
@@ -114,15 +115,15 @@ const PetName = styled.span<{color?: string}>`
 const IconWrapper = styled.div`
     width: 46px;
     aspect-ratio: 1;
-    border-radius: 10px;
+    border-radius: 80px;
     display: flex;
     z-index: 1;
     padding: 10px;
+    background-color: var(--ion-color-light-tint);
     background-color: var(--ion-color-light-shade);
     box-sizing: border-box;
     align-items: center;
 
-    background-color: var(--ion-color-light-tint);
     justify-content: center;
     > * {
         width: 100%;
