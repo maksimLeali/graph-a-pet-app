@@ -16,10 +16,11 @@ type props = {
 export const MinAppointment: React.FC<props> = ({ appointment }) => {
     const { t } = useTranslation();
     const translatedDuration: Record<TreatmentDuration, number> = {
-        [TreatmentDuration.HalfHour] : 30,
-        [TreatmentDuration.HourAndHalf] : 90, 
-        [TreatmentDuration.QuarterHour] : 15, 
         [TreatmentDuration.TenMinutes] : 10, 
+        [TreatmentDuration.QuarterHour] : 15, 
+        [TreatmentDuration.HalfHour] : 30,
+        [TreatmentDuration.Hour] : 60,
+        [TreatmentDuration.HourAndHalf] : 90, 
         [TreatmentDuration.TwoHours] : 120, 
         [TreatmentDuration.ThreeQuarter]: 45
     }
@@ -31,10 +32,10 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
             }
         >
             <Heading className="heading">
-                <PetName>
+            <CustomSpan>
                     {appointment?.health_card?.pet.name + ": "}
                     {t(`events.${appointment?.type.toLocaleLowerCase()}`)}
-                </PetName>
+                </CustomSpan>
             </Heading>
             <Body className ="body">
             <CustomSpan>{appointment?.name}</CustomSpan>
@@ -56,15 +57,13 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
             {/* <ImageWrapper className="image-wrapper">
             <Image2x id={appointment!.health_card!.pet.main_picture!.id} />
             </ImageWrapper> */}
-            {/* <AppointmentTime>
-                {dayjs(appointment!.date).format("HH:mm")}
-            </AppointmentTime> */}
+            
         </Container>
     );
 };
 
 const Container = styled.a<{ color?: string }>`
-    width: 100%;
+    width: calc(100% - 40px);
     position: relative;
     margin-bottom: 20px;
     box-sizing: border-box;
@@ -73,7 +72,10 @@ const Container = styled.a<{ color?: string }>`
     text-decoration: none;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: rgba(0, 0, 0, 0.65) 0px 5px 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    .dark &{
+        box-shadow:  rgba(220, 220, 220, 0.23) 0px 3px 6px;
+    }
     .heading, .footer {
         > span, > p {
 
@@ -103,33 +105,26 @@ const Container = styled.a<{ color?: string }>`
 `;
 
 const Heading = styled.div`
-    height: 40px;
-    width: 100%;
-    display: flex;
-    padding-left: 50px;
-    padding-right: 20px;
-    padding-bottom: 5px;
-    border-radius: 2px 2px 0 0;
-    justify-content: space-between;
-    align-items: flex-end;
-`;
-
-const Footer = styled.div`
     height: 25px;
     width: 100%;
     display: flex;
-    padding-left: 50px;
-    padding-right: 20px;
-    padding-bottom: 2px;
+    
+    
+    padding-bottom: 5px;
+    padding-top: 5px;;
+    border-radius: 2px 2px 0 0;
+    justify-content: center;
+    align-items: center;
+`;
+
+const Footer = styled(Heading)`
     border-radius: 0 0 2px 2px;
-    justify-content: space-between;
-    align-items: flex-end;
 `
 
 const Body = styled.div`
     width: 100%;
     /* width: calc(100% - 40px); */
-    height: 40px;
+    height: 46px;
     border-radius: 0 0 2px 2px;
     border: 1px solid;
     /* border-radius: 0 0 5px 5px; */
@@ -137,31 +132,32 @@ const Body = styled.div`
     display: flex;
     align-items: center;
     position: relative;
-    padding-left: 50px;
-    justify-content: flex-start;
+    
+    justify-content: center;
 `;
 
 
 
 const CustomSpan = styled.span`
     font-size: 1rem;
+    font-weight: 600;
     color: var(--ion-color-dark);
 `;
 
 const IconWrapper = styled.div<{ borderColor: string }>`
-    width: 30px;
+    width: 24px;
     aspect-ratio: 1;
     border-radius: 80px;
     display: flex;
-    left: 10px;
+    left: 15px;
     position: absolute;
-    bottom: 5px;
+    
     z-index: 1;
-    top: 45px;
+    top: 36px;
     background-color: var(--ion-background-color);
-    border: 1px solid;
+    
     border-color: ${ ({borderColor})=> {return borderColor} } ;
-    padding: 4px;
+    
     box-sizing: border-box;
     align-items: center;
     > * {
@@ -169,29 +165,3 @@ const IconWrapper = styled.div<{ borderColor: string }>`
     }
 `;
 
-const PetName = styled.p`
-    font-size: 1.2rem;
-    margin-right: 10px;
-    font-weight: 600;
-    margin: 0;
-`;
-
-
-const ImageWrapper = styled.div`
-  width: 30px;
-  aspect-ratio: 1;
-  z-index: 2;
-  border-radius: 40px;
-  top: 40px;
-  position: absolute;
-  left: 13px;
-  border: 2px solid;
-`;
-const AppointmentTime = styled.div`
-    position: absolute;
-    top: 18px;
-    left: 14px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    color: var(--ion-color-dark);
-`;

@@ -1137,6 +1137,7 @@ export enum TreatmentDuration {
   QuarterHour = 'QUARTER_HOUR',
   ThreeQuarter = 'THREE_QUARTER',
   HalfHour = 'HALF_HOUR',
+  Hour = 'HOUR',
   HourAndHalf = 'HOUR_AND_HALF',
   TwoHours = 'TWO_HOURS'
 }
