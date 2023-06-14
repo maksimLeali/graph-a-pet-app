@@ -1,13 +1,11 @@
 import dayjs from "dayjs";
 import styled from "styled-components";
 import { Maybe, TreatmentDuration } from "../types";
-import { Image2x } from "./Image2x";
 import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import { SpecialIcon } from "./SpecialIcons";
 import { SpecialIconName } from "./SpecialIcons/SpecialIcons";
 import { treatmentsColors } from "../utils";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
 
 type props = {
     appointment: AppointmentFragment | Maybe<AppointmentFragment>;

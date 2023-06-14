@@ -9,10 +9,11 @@ type props = {
     alt?: string, 
     fit?: boolean,
     rounded?: boolean
-    className?: string
+    className?: string,
+    lazy?: boolean
 }
 
-export const Image2x: React.FC<props>= ({id, alt, fit= false, rounded=false ,className})=> {
+export const Image2x: React.FC<props>= ({id, alt, fit= false, rounded=false ,className, lazy})=> {
     const [src,setSrc] = useState<string>() ;
     const [src2x, setSrc2x] =useState<string>() ; 
     const ref = useRef<HTMLDivElement>(null)
@@ -28,7 +29,7 @@ export const Image2x: React.FC<props>= ({id, alt, fit= false, rounded=false ,cla
         setSrc2x (`${baseUrl}/${ref.current ? ref.current.offsetWidth*2 : 0}x${ref.current ? ref.current.offsetHeight*2 : 0}${fit ? '/fit' : ''}${parameters.length > 0 ? '?' + parameters.join('&') : ''}`)
     }, [ref.current?.offsetHeight, ref.current?.offsetWidth])
     return <ImageContainer className={`img2x ${className}`} ref={ref} rounded>
-        {src && src2x &&<img src={src} alt={alt ?? `${id}`} srcSet={`${src2x} 2x`} loading="lazy" />}
+        {src && src2x &&<img src={src} alt={alt ?? `${id}`} srcSet={`${src2x} 2x`} loading={ lazy ? "lazy" : 'eager'} />}
     </ImageContainer>
 }
 

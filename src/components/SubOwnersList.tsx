@@ -1,10 +1,8 @@
 import styled from "styled-components";
-import { Chip, Icon, Image2x, SubOwnerListItem } from "./";
+import { SubOwnerListItem } from "./";
 
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 
-import { custodyLevelColors } from "../utils";
 import { PetMinSubOwnerFragment } from "./operations/__generated__/petMinSubOwner.generated";
 
 

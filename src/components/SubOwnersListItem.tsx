@@ -21,6 +21,7 @@ export const SubOwnerListItem: React.FC<props> = ({ ownership, onSelected}) => {
                         <UserImageBox>
                             {ownership?.user?.profile_picture && (
                                 <Image2x
+                                    lazy
                                     id={ownership.user.profile_picture.id}
                                     alt={`${ownership.user.first_name} ${ownership.user.last_name} picture`}
                                 />
