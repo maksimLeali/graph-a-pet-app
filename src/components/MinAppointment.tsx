@@ -99,9 +99,10 @@ const CustomSpan = styled.span`
 `;
 
 const PetName = styled.span<{color?: string}>`
-    padding: 3px 8px;
-    color: var(--ion-color-ligth);
+    padding: 3px 12px;
+    color: var(--ion-color-light);
     border-radius: 20px;
+    font-weight: 600;
     font-size: 1.7rem;
     .dark &{
         color: var(--ion-color-dark);
