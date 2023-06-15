@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "start": "react-scripts start",
+    
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test.unit": "vitest",
     "lint": "eslint",
+    "start": "serve -p 3100 ",
     "fetch:graphql": "apollo service:download --endpoint=https://graph-a-pet.makso.me/graphql graphql-schema.json",
     "fetch:graphql:dev": "env-cmd -x -f .env.development yarn fetch:graphql",
     "generate": "graphql-codegen"

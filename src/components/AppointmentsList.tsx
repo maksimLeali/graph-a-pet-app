@@ -13,7 +13,7 @@ export const AppointmentsList: React.FC<props> =({appointments=[]})=> {
     return <Container>
         {appointments.length > 0 
         ? appointments.map(appointment=> { return <MinAppointment key={appointment?.id} appointment={appointment}/>})
-        : <span dangerouslySetInnerHTML={{__html: t('events.general.no_events')}} /> }  
+        : <span dangerouslySetInnerHTML={{ __html: t('events.general.no_events') ?? ''} } /> }  
     </Container>
 }
 

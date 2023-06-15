@@ -33,7 +33,7 @@ export const CustodyLevelSelector: React.FC<props> = ({
             <p >{t('pets.accept_as')}</p>
             <Chip label={t(`pets.${current.toLocaleLowerCase()}`)} color={custodyLevelColors[current]} />
             <Icon size="24px" name="swapVertical" />
-            <p dangerouslySetInnerHTML={{__html: t(`pets.desc_${current.toLocaleLowerCase()}`) }} />
+            <p dangerouslySetInnerHTML={{__html: t(`pets.desc_${current.toLocaleLowerCase()}` ) ?? '' }} />
         </Container>
     );
 };
