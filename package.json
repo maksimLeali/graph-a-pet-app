@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test.unit": "vitest",
     "lint": "eslint",
-    "start": "serve -p 3100 ",
+    "start": "serve -p 3100 -s dist",
     "fetch:graphql": "apollo service:download --endpoint=https://graph-a-pet.makso.me/graphql graphql-schema.json",
     "fetch:graphql:dev": "env-cmd -x -f .env.development yarn fetch:graphql",
     "generate": "graphql-codegen"
