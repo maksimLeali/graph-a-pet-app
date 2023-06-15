@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  gap_app:
+    container_name: gap_app
+    image: gap_app
+    build:
+      context: .
+      target: development
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 3100:3100
