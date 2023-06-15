@@ -6,6 +6,7 @@ import { SpecialIcon } from "./SpecialIcons";
 import { SpecialIconName } from "./SpecialIcons/SpecialIcons";
 import { treatmentsColors } from "../utils";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 type props = {
     appointment: AppointmentFragment | Maybe<AppointmentFragment>;
@@ -24,7 +25,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
     }
 
     return (
-        <Container href={`/events/${appointment?.id}`}
+        <Container to={`/events/${appointment?.id}`}  aria-label={`${appointment?.name} ${appointment?.type}`}
         >
             <IconWrapper
                 className="icon-wrapper"
@@ -48,7 +49,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
     );
 };
 
-const Container = styled.a`
+const Container = styled(Link)`
     width: calc(100% - 40px);
     height: 60px;
     position: relative;

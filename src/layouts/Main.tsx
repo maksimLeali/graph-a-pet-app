@@ -17,24 +17,17 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
             <Main>
                 {nodes}
                 <BottomMenu>
-                    {mainManuitems.map((item, i) => {
-                        return !window.location.pathname.startsWith(item.to) ? (
-                            <Link key={i} to={item.to}>
+                    {mainManuitems.map((item, i) => 
+                      
+                            <Link key={i} to={item.to} aria-label= {item.to.split('/')[1]}>
                                 <Icon
                                     name={item.icon}
                                     size="32px"
-                                    color="medium"
+                                    color={!window.location.pathname.startsWith(item.to) ? 'primary' : "medium"}
                                 />
                             </Link>
-                        ) : (
-                            <Icon
-                                key={i}
-                                name={item.icon}
-                                size="32px"
-                                color="primary"
-                            />
-                        );
-                    })}
+                                              
+                    )}
                 </BottomMenu>
             </Main>
         </ModalContextProvider>
