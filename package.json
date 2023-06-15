@@ -8,7 +8,6 @@
     "start": "react-scripts start",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test.e2e": "cypress run",
     "test.unit": "vitest",
     "lint": "eslint",
     "fetch:graphql": "apollo service:download --endpoint=https://graph-a-pet.makso.me/graphql graphql-schema.json",
@@ -17,10 +16,10 @@
   },
   "resolutions": {
     "graphql": "15.5.0",
-    "**/graphql": "15.5.0"
-  },
-  "peerDependencies": {
-    "graphql-ws":"^5.5.5"
+    "**/graphql": "15.5.0",
+    "graphql-ws":"5.5.5",
+    "**/graphql-ws":"5.5.5"
+    
   },
   "dependencies": {
     "@apollo/client": "^3.3.15",
@@ -76,7 +75,6 @@
     "@types/styled-components": "^5.1.26",
     "@vitejs/plugin-react": "^3.1.0",
     "apollo": "^2.32.5",
-    "cypress": "^12.7.0",
     "eslint": "^8.35.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
