@@ -28,12 +28,9 @@ const App: React.FC = () => (
     <IonApp>
       <AppContextProvider>
       <Toaster
-            toastOptions={{
-              className: '',
-              style: {
-                fontFamily: "'Open Sans', sans-serif",
-              },
-            }}
+
+            
+            containerStyle={{ fontFamily: "'Karla', sans-serif" ,fontSize: '18px' }}
             />
       <AppRouter/>
       </AppContextProvider>
@@ -41,3 +38,4 @@ const App: React.FC = () => (
 );
 
 export default App;
+

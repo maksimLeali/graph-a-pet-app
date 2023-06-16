@@ -23,7 +23,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
                                 <Icon
                                     name={item.icon}
                                     size="32px"
-                                    color={!window.location.pathname.startsWith(item.to) ? 'primary' : "medium"}
+                                    color={window.location.pathname.startsWith(item.to) ? 'primary' : "medium"}
                                 />
                             </Link>
                                               

@@ -239,7 +239,7 @@ const StyledInput = styled.input<{ textColor: string }>`
   color: var(--ion-color-${({ textColor }) => textColor});
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   box-shadow: none;
   height: 100%;
   width: 100%;
@@ -262,5 +262,5 @@ const StyledInput = styled.input<{ textColor: string }>`
 
 const ErrorSpan = styled.span`
   color: var(--ion-color-danger);
-  font-size: 1.5rem ;
+  font-size: 1.6rem ;
 `
