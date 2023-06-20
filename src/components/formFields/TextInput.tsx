@@ -251,9 +251,13 @@ const StyledInput = styled.input<{ textColor: string }>`
   }
 
   &:-webkit-autofill,
+  .dark &:-webkit-autofill,
   &:-webkit-autofill:hover, 
+  .dark &:-webkit-autofill:hover, 
   &:-webkit-autofill:focus, 
-  &:-webkit-autofill:active{
+  .dark &:-webkit-autofill:focus, 
+  &:-webkit-autofill:active
+  .dark &:-webkit-autofill:active{
     -webkit-box-shadow: 0 0 0 30px white inset !important;
     color: var(--ion-color-${({ textColor }) => textColor});
     -webkit-text-fill-color: var(--ion-color-${({ textColor }) => textColor});

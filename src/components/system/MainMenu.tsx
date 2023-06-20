@@ -39,7 +39,6 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
         toast.success(t('messages.success.logout'))
         
         setTimeout(()=> {
-        
             history.push('/auth')
         }, 15000)
         
@@ -203,5 +202,6 @@ const LogoutContainer = styled.div`
     padding: 0 12px;
     > p {
         text-align: center ;
+        font-size: 1.6rem;
     }
 `

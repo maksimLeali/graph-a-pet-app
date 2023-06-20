@@ -25,7 +25,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
     }
 
     return (
-        <Container to={`/events/${appointment?.id}`}  aria-label={`${appointment?.name} ${appointment?.type}`}
+        <Container to={`/events/${appointment?.id}`}  aria-label={`${appointment?.name} ${appointment?.type}`} className="item-shadow"
         >
             <IconWrapper
                 className="icon-wrapper"
@@ -63,10 +63,7 @@ const Container = styled(Link)`
     background-color: var(--ion-color-light-shade);
     background-color: var(--ion-color-light-tint);
     justify-content: space-between;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    .dark &{
-        box-shadow:  rgba(220, 220, 220, 0.23) 0px 3px 6px;
-    }
+    
 
 
 

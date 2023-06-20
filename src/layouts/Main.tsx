@@ -19,8 +19,9 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
                 <BottomMenu>
                     {mainManuitems.map((item, i) => 
                       
-                            <Link key={i} to={item.to} aria-label= {item.to.split('/')[1]}>
+                            <Link className={`${window.location.pathname.startsWith(item.to) ? 'selected' : ''}`} key={i} to={item.to} aria-label= {item.to.split('/')[1]}>
                                 <Icon
+                                    dropShadow
                                     name={item.icon}
                                     size="32px"
                                     color={window.location.pathname.startsWith(item.to) ? 'primary' : "medium"}

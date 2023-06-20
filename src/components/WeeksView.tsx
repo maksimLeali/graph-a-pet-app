@@ -61,7 +61,7 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
     // const [endDay,setEndDay]= useState(dayjs().add(1,'w').endOf('week'))
     
     return <Container>
-        <WeeksContainer >
+        <WeeksContainer className="list-shadow">
             {[...Array(14)].map((el, i)=> {
                 const date = dayjs(fromDate).add(i, 'd');
                 const isNow = date.isSame( dayjs(), 'day');
@@ -105,6 +105,7 @@ const WeeksContainer = styled.div`
     border-bottom: 1px solid ;
     border-color:var(--ion-color-medium);
     box-sizing: border-box;
+   
     &::-webkit-scrollbar {
         display: none;
         -ms-overflow-style: none;
