@@ -2,12 +2,12 @@
 # Use a Node 16 base image
 FROM node:16-alpine as development
 # Set the working directory to /app inside the container
+RUN yarn 
 COPY . ./app
 WORKDIR /app
 # Copy app files
 # ==== BUILD =====
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
-RUN yarn 
 # Build the app
 RUN yarn generate
 RUN yarn build
