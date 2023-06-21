@@ -17,7 +17,7 @@ jobs:
           script: |
             cd projects/graph-a-pet-app
             git pull
-            yarn generate
+            
             docker-compose down --remove-orphans
             docker-compose up -d --build --remove-orphans
             echo 'Deployment finished succesfully'
