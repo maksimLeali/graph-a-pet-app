@@ -17,7 +17,9 @@ jobs:
           script: |
             cd projects/graph-a-pet-app
             git pull
-            
+            docker image prune -a -f
+            docker volume prune -f
+            docker system prune -a -f
             docker-compose down --remove-orphans
             docker-compose up -d --build --remove-orphans
             echo 'Deployment finished succesfully'
