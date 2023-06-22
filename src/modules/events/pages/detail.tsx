@@ -4,7 +4,8 @@ import { useUserContext } from "../../../contexts";
 import { useParams } from "react-router";
 import { useGetTreatmentLazyQuery } from "../operations/__generated__/getAppointment.generated";
 import { FullTreatmentFragment } from "../../../components/operations/__generated__/fullTreatment.generated";
-import { IonHeader } from "@ionic/react";
+import { IonContent, IonHeader } from "@ionic/react";
+import { Icon } from "../../../components";
 
 type props = {
 
@@ -12,7 +13,7 @@ type props = {
 
 export const EventDetails: React.FC<props> = ()=> {
     const { id } = useParams<{ id: string }>();
-
+    const [actionsOpen, setActionsOpen] = useState(false)
     const { setPage } = useUserContext();
     const [event,setEvent] = useState<FullTreatmentFragment>();
 
@@ -27,19 +28,74 @@ export const EventDetails: React.FC<props> = ()=> {
     })
     useEffect(() => {
         console.log(id)
-        setPage({ visible: false, name: "Events detail" });
+        setPage({ visible: false, name: "" });
         getEvent({variables:{id}})
     }, []);
 
 
-    return <Container>
-        <IonHeader>
+    return <IonContent>
+        <Header >
+
+        </Header>
+        <Logs>
+            { event?.logs?.map( (log, i) => <p key={i}> { log } </p> ) }
+        </Logs>
+        <Actions>
             
-        </IonHeader>
-    </Container>
+            <IconsWrapper className={`${actionsOpen ? 'open' : ''}`}>
+                <Icon name="ellipsisVerticalOutline" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
+                <Icon name="createOutline" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
+                <Icon name="copyOutline" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
+                <Icon name="trash" color="danger" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
+            </IconsWrapper>
+        </Actions>
+    </IonContent>
 }
 
-const Container = styled.div`
+const Header = styled.div`
+    width: 100%;
+
+`
+
+const Logs = styled.div`
+    width: 100%;
+    > p {
+        padding: 24px 12px;
+        border-bottom: 1px solid var(--ion-color-dark) ;
+        margin-bottom: 16px;
+    }
+
+`
+
+const Actions = styled.div`
+    width: 100%;
+    position:absolute;
+    bottom: 40px;
+    right: 24px;
+    
     
 `
 
+const IconsWrapper = styled.div`
+    width:38px;
+    max-height: 38px;
+    height: 300px;
+    margin-left: auto;
+    border: 2px solid var(--ion-color-medium);
+    background-color: var(--ion-color-light-tint);
+    padding: 2px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center ;
+    justify-content: space-between ;
+    overflow-y: hidden;
+    box-shadow: var(--ion-color-light-shade) 0px 1px 4px, var(--ion-color-light-shade) 0px 0px 0px 3px;
+    
+    box-sizing: border-box;
+    transition: max-height .5s ease-in;
+    &.open{
+        max-height: calc(45px * 4);
+    }
+
+`

@@ -9,6 +9,9 @@ body, html {
   scrollbar-width: none;
   font-size: 10px;
 }
+html * {
+  font-size: 1.6rem;
+}
 
 /** Ionic CSS Variables **/
 :root {

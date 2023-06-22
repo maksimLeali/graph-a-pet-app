@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Icon, IconName } from "../components";
-import { ModalContextProvider } from "../contexts";
+import { ModalContextProvider, useUserContext } from "../contexts";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
     children: nodes,
@@ -12,6 +13,8 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
         { to: "/board", icon: "warning" },
         { to: "/events", icon: "calendar" },
     ];
+    
+    
     return (
         <ModalContextProvider>
             <Main>
@@ -45,7 +48,6 @@ const Main = styled.div`
     position: relative;
     scroll-behavior: smooth;
     padding-bottom: 80px;
-    padding-top: 64px;
     &::-webkit-scrollbar {
         display: none; /* for Chrome, Safari, and Opera */
     }

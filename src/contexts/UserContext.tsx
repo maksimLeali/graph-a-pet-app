@@ -42,10 +42,10 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     }, [cookie.user])
 
     
-    const value = useMemo(() => ({...defaultValue, setPage}), [])
+    const value = useMemo(() => ({...defaultValue, setPage, visible}), [])
 
   return <UserContext.Provider value={value}>
-    <CustomIonHeader visible={visible}>
+    <CustomIonHeader visible={visible}  className='MainHeader'>
         <IonToolbar>
             <IonTitle>{pageName}</IonTitle>
         </IonToolbar>
@@ -56,7 +56,9 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
             }
         </MainImage>
     </CustomIonHeader>
+    <MainBody className={ !visible ?  "noUserMenu" : ''}>
     {children}
+    </MainBody>
     <MainMenu open ={menuOpen} onClose={()=> {setMenuOpen(false)}}/>
     </UserContext.Provider>
 }
@@ -88,5 +90,14 @@ const MainImage = styled.div`
     > .img2x {
         width: 100%;
         height: 100%;
+    }
+`
+
+const MainBody = styled.div`
+    width: 100%;
+    padding-top: 64px;
+    height: 100%;;
+    &.noUserMenu{
+        padding-top:0 ;
     }
 `
