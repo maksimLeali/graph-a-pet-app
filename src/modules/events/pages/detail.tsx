@@ -4,8 +4,9 @@ import { useUserContext } from "../../../contexts";
 import { useParams } from "react-router";
 import { useGetTreatmentLazyQuery } from "../operations/__generated__/getAppointment.generated";
 import { FullTreatmentFragment } from "../../../components/operations/__generated__/fullTreatment.generated";
-import { IonContent, IonHeader } from "@ionic/react";
+import { IonContent } from "@ionic/react";
 import { Icon } from "../../../components";
+import { useTranslation } from "react-i18next";
 
 type props = {
 
@@ -16,7 +17,7 @@ export const EventDetails: React.FC<props> = ()=> {
     const [actionsOpen, setActionsOpen] = useState(false)
     const { setPage } = useUserContext();
     const [event,setEvent] = useState<FullTreatmentFragment>();
-
+    const {t} = useTranslation()
     const [getEvent, {loading}] = useGetTreatmentLazyQuery({
         onCompleted:({getTreatment})=> {
             if(!getTreatment?.treatment || getTreatment.error){
@@ -38,7 +39,11 @@ export const EventDetails: React.FC<props> = ()=> {
 
         </Header>
         <Logs>
-            { event?.logs?.map( (log, i) => <p key={i}> { log } </p> ) }
+            <h2>Note:</h2>
+            { event?.logs?.length 
+                ? event?.logs?.map( (log, i) => <p key={i}> { log } </p> ) 
+                : <h4>{t('events.general.no_events')}</h4>
+            }
         </Logs>
         <Actions>
             
@@ -54,6 +59,8 @@ export const EventDetails: React.FC<props> = ()=> {
 
 const Header = styled.div`
     width: 100%;
+    height: 50px;
+    background-color:var(--ion-color-light-shade) ;
 
 `
 
@@ -64,6 +71,12 @@ const Logs = styled.div`
         border-bottom: 1px solid var(--ion-color-dark) ;
         margin-bottom: 16px;
     }
+    
+    > * {
+        padding-left :12px;
+        padding-right :12px;
+    }
+    
 
 `
 

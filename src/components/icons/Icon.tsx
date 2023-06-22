@@ -44,7 +44,8 @@ const Container = styled.div<ContainerProps>`
         width: ${({size})=> size ? `${size}` : ''};
         aspect-ratio:1;
         
-        ${({dropShadow})=> dropShadow ? 'filter: drop-shadow(1px 1px 2px var(--ion-color-medium-tint)) ;' : ''}
+        ${({dropShadow})=> dropShadow ? 'filter: drop-shadow(0px 4px 2px #000 );' : ''}
+        /* ${({dropShadow})=> dropShadow ? 'filter: drop-shadow(1px 1px 2px var(--ion-color-primary-shade)) ;' : ''} */
         /* ${({dropShadow})=> dropShadow ? 'filter: dropShadow(0 10px 3px var(--ion-color-dark)) ' : ''} */
         ${({reverse})=> reverse? `transform: ScaleX(-1);` : ''}
         transition: color ${({time})=> time} ease-in, transform ${({time})=> time} ease-in;

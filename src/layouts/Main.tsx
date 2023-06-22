@@ -21,15 +21,16 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
                 {nodes}
                 <BottomMenu>
                     {mainManuitems.map((item, i) => 
-                      
-                            <Link className={`${window.location.pathname.startsWith(item.to) ? 'selected' : ''}`} key={i} to={item.to} aria-label= {item.to.split('/')[1]}>
+                            {
+                                const selected =window.location.pathname.startsWith(item.to);
+                            return <Link className={`${selected ? 'selected' : ''}`} key={i} to={item.to} aria-label= {item.to.split('/')[1]}>
                                 <Icon
-                                    dropShadow
+                                    dropShadow ={selected}
                                     name={item.icon}
                                     size="32px"
-                                    color={window.location.pathname.startsWith(item.to) ? 'primary' : "medium"}
+                                    color={selected ? 'primary' : "medium"}
                                 />
-                            </Link>
+                            </Link>}
                                               
                     )}
                 </BottomMenu>
