@@ -27,7 +27,7 @@ export const AppointmentsList: React.FC<props> =({appointments=[], loading= fals
 }
 
 const Container = styled.div`
-    border: 1px solid #fa0;
+    
     width:100%;
     display:flex;
     flex-direction: column;
