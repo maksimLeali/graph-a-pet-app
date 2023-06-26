@@ -75,12 +75,11 @@ export const Home: React.FC = () => {
     return (
             <IonContent fullscreen>
                { pets && pets.length>0 && !loading 
-                    ?  <>
-                            <Pets pets={pets} onActiveChange={(v)=> setActivePet(v)}/> 
-                            <WeeksView appointments={appointments} fromDate={dayjs().startOf('w').toDate()}/>
-                        </>
-                    : <SkeletonBox />
+                    ?  <Pets pets={pets} onActiveChange={(v)=> setActivePet(v)}/> 
+                    :  <SkeletonBox />            
                 }
+
+                <WeeksView appointments={appointments} loading={loading} fromDate={dayjs().startOf('w').toDate()}/>
                
                 {/* <SkeletonBox /> */}
                  

@@ -11,13 +11,7 @@ export const SkeletonBox: React.FC = ()=> {
             <SkeletonTitle className="skeleton"/>
             <SkeletonDot className="skeleton"/>
         </MainContainer>
-            <FakeWeekContainer>
-                <FakeWeek >
-                    {[...Array(7)].map((el, i)=> {
-                        return <SkeletonDay key={i} className="skeleton"/>
-                    })}
-                </FakeWeek>
-            </FakeWeekContainer>
+        
     </>
 
 }
@@ -27,7 +21,7 @@ width: 100%;
 
 display: flex;
 padding-top:10px;
-margin-bottom: 60px;
+margin-bottom: 66px;
 flex-direction: column;
 
 `
@@ -97,24 +91,3 @@ const SkeletonDot = styled.div`
     border: 2px solid var(--ion-color-light);
 `
 
-
-const FakeWeekContainer = styled.div`
-width: 100%;
-`
-
-const FakeWeek = styled.div`
-    height:72px;
-    padding: 5px 10px 10px;
-    border-bottom: 1px solid;
-    border-top: 1px solid;
-    border-color: var(--ion-color-medium);
-    display: flex;
-    justify-content: space-between;
-`  
-
-const SkeletonDay = styled.div`
-    width: calc((100% - 70px )/ 7 );
-    flex: 0 0 calc((100% - 70px) / 7 );
-    border-radius:10px;
-    height:46px;
-`   

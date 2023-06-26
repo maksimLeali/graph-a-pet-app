@@ -4,15 +4,15 @@ import styled from "styled-components"
 import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import { Maybe } from "../types";
 import _ from "lodash";
-import { AppointmentsList } from "./";
+import { AppointmentsList, WeeksSkeleton } from "./";
 
 type props ={
     fromDate: Date;
-    // endDate: Date;
+    loading?: boolean,
     appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[]
 }
 
-export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
+export const WeeksView: React.FC<props> = ({fromDate, appointments=[], loading= false})=> {
 
     const [selectedDay, setSelectedDay] = useState<Date>()
     const [now, setNow] = useState<Date>()
@@ -61,7 +61,9 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
     // const [endDay,setEndDay]= useState(dayjs().add(1,'w').endOf('week'))
     
     return <Container>
-        <WeeksContainer className="list-shadow">
+        {loading 
+            ? <WeeksSkeleton />
+            : <WeeksContainer className="list-shadow">
             {[...Array(14)].map((el, i)=> {
                 const date = dayjs(fromDate).add(i, 'd');
                 const isNow = date.isSame( dayjs(), 'day');
@@ -84,7 +86,9 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[]})=> {
 
             })}
         </WeeksContainer>
-        <AppointmentsList appointments={dayEvents.map(dayEvent=> dayEvent)}/>
+        
+        }
+        <AppointmentsList loading={loading} appointments={dayEvents.map(dayEvent=> dayEvent)}/>
     </Container>
 }
 
@@ -96,10 +100,10 @@ const Container = styled.div`
 const WeeksContainer = styled.div`
     height:72px;
     overflow-x: scroll;
-    padding: 5px 0 10px;
+    padding: 5px 0 10px 10px;
     display: flex;
     justify-content: space-between;
-    padding-left:10px;
+    
     width:100%;
     border-top: 1px solid; 
     border-bottom: 1px solid ;
@@ -111,14 +115,12 @@ const WeeksContainer = styled.div`
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
-    
 `
 
 const DateContainer = styled.div`
     width: calc((200% -140px )/ 14 );
     flex: 0 0 calc((200% - 140px) / 14 );
     margin-right: 10px;
-    
     > span {
         text-align: center;
         display: flex;
@@ -128,7 +130,6 @@ const DateContainer = styled.div`
         font-size: 1.4rem;;
         box-sizing: border-box;
         align-items: center;
-        
         justify-content: center;
         color: var(--ion-color-dark);
         &.now{

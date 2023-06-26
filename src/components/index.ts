@@ -8,6 +8,7 @@ export {CustomCalendar } from './CustomCalendar'
 export {WeeksView} from './WeeksView'
 export {MinAppointment} from './MinAppointment'
 export {AppointmentsList} from './AppointmentsList'
+export {WeeksSkeleton} from './WeeksSkeleton'
 export * from './SpecialIcons'
 export * from "./formFields";
 export * from './icons' 

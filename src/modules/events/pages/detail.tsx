@@ -5,8 +5,10 @@ import { useParams } from "react-router";
 import { useGetTreatmentLazyQuery } from "../operations/__generated__/getAppointment.generated";
 import { FullTreatmentFragment } from "../../../components/operations/__generated__/fullTreatment.generated";
 import { IonContent } from "@ionic/react";
-import { Icon } from "../../../components";
+import { Icon, SpecialIcon } from "../../../components";
 import { useTranslation } from "react-i18next";
+import { SpecialIconName } from "../../../components/SpecialIcons/SpecialIcons";
+import { treatmentsColors } from "../../../utils";
 
 type props = {
 
@@ -33,10 +35,22 @@ export const EventDetails: React.FC<props> = ()=> {
         getEvent({variables:{id}})
     }, []);
 
-
     return <IonContent>
         <Header >
-
+            <Top > 
+                
+                
+                <IconWrapper className={`${loading? 'skeleton' : ''}`}>
+                    {event && <SpecialIcon name={event.type.toLocaleLowerCase() as SpecialIconName} color={treatmentsColors[event.type]} />}
+                </IconWrapper>
+                 <h2 className={`${loading? 'skeleton' : ''}`} >{event && t(`events.${event.type.toLocaleLowerCase()}`)}</h2>
+    
+            
+            </Top>
+            {loading 
+                ? <SkeletonP className="skeleton" /> 
+                : <p>{event ? event.name : ''} </p>
+            } 
         </Header>
         <Logs>
             <h2>Note:</h2>
@@ -44,7 +58,7 @@ export const EventDetails: React.FC<props> = ()=> {
                 ? event?.logs?.map( (log, i) => <p key={i}> { log } </p> ) 
                 : <h4>{t('events.general.no_events')}</h4>
             }
-        </Logs>
+            </Logs>
         <Actions>
             
             <IconsWrapper className={`${actionsOpen ? 'open' : ''}`}>
@@ -58,10 +72,52 @@ export const EventDetails: React.FC<props> = ()=> {
 }
 
 const Header = styled.div`
-    width: 100%;
-    height: 50px;
-    background-color:var(--ion-color-light-shade) ;
+    width: calc(100% - 2px);
+    border: 2px solid var(--ion-color-light-shade) ;
+    border-top: 0;
+    border-left: 0 ;
+    border-radius: 0 0 8px 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+    display: flex; 
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 10px 12px;
+    gap :15px;
+    padding-left:12px;
+    > p {
+        margin: 0;
+    }   
+`
+const Top = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    box-sizing: border-box;
+    align-items: center;
+    min-height: 50px;
+    > h2 {
+        margin-bottom: 0;
+        margin-top: 0;
+        min-width: 200px;
+        min-height:30px;
+    }
+`
 
+const IconWrapper =styled.div`
+    width: 46px;
+    aspect-ratio: 1;
+    border-radius: 80px;
+    height:fit-content;
+    z-index: 1;
+    padding: 10px;
+    background-color: var(--ion-color-light-tint);
+    background-color: var(--ion-color-light-shade);
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    > * {
+        width: 100%;
+    }
 `
 
 const Logs = styled.div`
@@ -76,17 +132,13 @@ const Logs = styled.div`
         padding-left :12px;
         padding-right :12px;
     }
-    
-
 `
 
 const Actions = styled.div`
     width: 100%;
     position:absolute;
     bottom: 40px;
-    right: 24px;
-    
-    
+    right: 24px;  
 `
 
 const IconsWrapper = styled.div`
@@ -104,11 +156,15 @@ const IconsWrapper = styled.div`
     justify-content: space-between ;
     overflow-y: hidden;
     box-shadow: var(--ion-color-light-shade) 0px 1px 4px, var(--ion-color-light-shade) 0px 0px 0px 3px;
-    
     box-sizing: border-box;
     transition: max-height .5s ease-in;
     &.open{
         max-height: calc(45px * 4);
     }
 
+`
+
+const SkeletonP = styled.div`
+    width: 100px;
+    height: 19px;
 `

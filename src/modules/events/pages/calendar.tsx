@@ -19,7 +19,7 @@ export const CalendarEvents: React.FC = () => {
     const [fromDate,setFromDate] = useState(dayjs().startOf('month').startOf('week').toISOString())
     const [toDate,setToDate] = useState(dayjs().endOf('month').endOf('week').toISOString())
 
-    const [getMyAppointments] = useListMyTreatmentsLazyQuery({
+    const [getMyAppointments, {loading}] = useListMyTreatmentsLazyQuery({
         variables: {
             commonSearch: {
                 page_size: 50,
@@ -88,7 +88,7 @@ export const CalendarEvents: React.FC = () => {
     return (
         <IonContent fullscreen>
             <CustomCalendar appointments={appointments} setDayEvents={(events)=> setEvents(events)} onStartDateChange={(v)=> {setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
-            {events && <AppointmentsList appointments={events as AppointmentFragment[]}/>}
+            {events && <AppointmentsList loading={loading} appointments={events as AppointmentFragment[]}/>}
         </IonContent>
     );
 };
