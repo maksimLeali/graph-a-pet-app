@@ -69,6 +69,12 @@ const CustomIonHeader = styled(IonHeader)<{visible: boolean}>`
     position: absolute;
     top: ${({visible})=> visible ? '0' : '-100%'};   
     height: 64px;
+    max-width: var(--max-width);
+    margin-left: auto;
+    left: calc(50% - 240px);
+    @media only screen and (max-width: 480px) {
+        left:0;
+    }
     > * {
         height: 100%;
         > * {
