@@ -39,9 +39,12 @@ type ContainerProps = {
 
 const Container = styled.div<ContainerProps>`
     display: flex;
+    width: ${({size})=> size ? `${size}` : ''};
+    height: ${({size})=> size ? `${size}` : ''};
     > * {
         color: var(--ion-color-${({iconColor})=> iconColor}) !important ;
-        width: ${({size})=> size ? `${size}` : ''};
+        width: 100%;
+        height: 100%;
         aspect-ratio:1;
         
         ${({dropShadow})=> dropShadow ? 'filter: drop-shadow(0px 4px 2px #000 );' : ''}
