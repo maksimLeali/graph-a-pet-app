@@ -145,7 +145,7 @@ const MyCalendar = styled(Calendar)`
     padding: 40px 12px;
     .react-calendar__month-view__days__day {
         flex: 0 0 12% !important;
-        margin: 0 1.14%;
+        margin: 0 2.14%;
         aspect-ratio: 1/1;
         &.react-calendar__month-view__days__day--weekend {
             color: var(--ion-color-primary);
@@ -154,9 +154,11 @@ const MyCalendar = styled(Calendar)`
             opacity: 0.5;
         }
     }
+    
     .react-calendar__month-view__weekdays__weekday {
         > * {
             text-decoration: unset !important;
+            font-size: 1.2rem;
         }
     }
     .react-calendar__month-view__weekdays__weekday--weekend {
