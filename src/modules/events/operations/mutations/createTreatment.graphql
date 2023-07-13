@@ -1,0 +1,19 @@
+mutation CreateTreatment($treatment: TreatmentCreate!) {
+	createTreatment(data: $treatment) {
+		success
+		error {
+			extra
+			code
+			message
+		}
+		treatment {
+			id
+			name
+			date
+			related {
+				id
+				date
+			}
+		}
+	}
+}

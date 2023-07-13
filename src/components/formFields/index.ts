@@ -1,4 +1,5 @@
 export { TextInput } from './TextInput'
+export { TextAreaInput } from './TextAreaInput'
 export { Toggle } from './Toggle'
 export { SelectInput } from './SelectInput'
 export { SubmitInput } from './SubmitInput'

@@ -102,6 +102,8 @@
         "reminder": "Promemoria",
         "operation": "Operazione",
         "from_to": "Dalle {{from}} alle {{to}}",
+        "add_event": "Aggiungi evento",
+        "name": "Nome evento",
         "general": {
           "no_events": "Nessun appuntamento"
         }

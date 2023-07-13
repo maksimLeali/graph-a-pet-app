@@ -2,7 +2,8 @@ import { IonContent } from "@ionic/react";
 import styled from "styled-components";
 import { AppointmentsList, CustomCalendar, Icon } from "../../../components";
 import "react-calendar/dist/Calendar.css";
-import { useUserContext } from "../../../contexts";
+import { useUserContext, useModal } from "../../../contexts";
+
 import { useEffect, useState } from "react";
 import { useListMyTreatmentsLazyQuery } from "../operations/__generated__/getMyAppointments.generated";
 import { AppointmentFragment } from "../../../components/operations/__generated__/appointment.generated";
@@ -79,7 +80,9 @@ export const CalendarEvents: React.FC = () => {
     });
 
     
-      
+    const { } = useModal()
+    
+
     useEffect(() => {
         setPage({ visible: true, name: "Events" });
         getMyAppointments();
