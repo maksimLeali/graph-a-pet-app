@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   RegisterOptions,
   useFormContext,
@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useOnClickOutside } from "../../hooks";
 import { I18NKey } from "../../i18n";
-
-
+import sanitizeHtml from "sanitize-html"
+import ContentEditable from 'react-contenteditable';
 type props = {
   name: string;
   required?: boolean;
@@ -47,10 +47,26 @@ export const TextAreaInput: React.FC<props> = ({
     register,
     formState: { errors , isSubmitting},
   } = useFormContext();
+  const [content,setContent] = useState<string>()
+
+
+  const onContentBlur = useCallback((evt : any )  => {
+    const sanitizeConf = {
+      allowedTags: ["b", "i", "a", "p"],
+      allowedAttributes: { a: ["href"] }
+    };
+    const text = sanitizeHtml(evt.currentTarget.innerHTML, sanitizeConf).replaceAll('\n', "<br>")
+    console.log(text)
+    setContent(text)
+  }, [content])
 
   useEffect(() => {
     setError(errors[name] != undefined);
   }, [errors[name]]);
+
+  useEffect(()=> {
+    console.log(content)
+  }, [content])
 
   useOnClickOutside(ref, () => {
     setFocused(false);
@@ -72,18 +88,7 @@ export const TextAreaInput: React.FC<props> = ({
         {required && !compiled && ' *'}
       </InputLabel>
       <InputWrapper ref={ref} color={color}>
-        <StyledInput
-          id={name}
-          onFocus={() => setFocused(true)}
-          textColor={textColor}
-          {...register(name, {
-            onChange: (v) => {
-              setCompiled(v.target.value.length > 0);
-            },
-            required : { value: required , message: 'messages.errors.required'},
-            ...registerOptions,
-          })}
-        />
+        <Editable onChange={()=> {console.log('pippo')}} onBlur={()=> {console.log('poppo')}}  html={ content ?? ''}/>
         <FocusBox
           color={color}
           focusColor={focusColor}
@@ -152,7 +157,7 @@ const InputWrapper = styled.div<wrapperProps>`
   padding: 0 0 2px 2px;
   border-radius: 2px;
   border-top-right-radius: 0;
-  height: 38px;
+  min-height: 38px;
   margin-bottom: 12px;
   overflow: hidden;
   z-index: 1;
@@ -194,6 +199,11 @@ const FocusBox = styled.span<focusCircleProps>`
   }
 `;
 
+const Editable = styled(ContentEditable)`
+   height: 100%;
+    width: 100%;
+  min-height:38px;
+`
 const StyledInput = styled.textarea<{ textColor: string }>`
   outline: none;
   border: none;

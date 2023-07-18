@@ -63,7 +63,7 @@ export const Login: React.FC = ()  => {
                         textLabel="auth.email"
                     />
                     <TextInput required type='password' name="password" textLabel="auth.password" />
-                    <TextAreaInput required name="stocazzo" textLabel="auth.password" />
+                    <TextAreaInput  name="stocazzo" textLabel="auth.password" />
                     <SubmitInput color="primary">{t('auth.login')} </SubmitInput>
 
                 </Form>

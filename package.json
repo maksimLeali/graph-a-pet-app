@@ -45,6 +45,7 @@
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-calendar": "^4.2.1",
+    "react-contenteditable": "^3.3.7",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
@@ -53,6 +54,7 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-scripts": "^5.0.1",
+    "sanitize-html": "^2.11.0",
     "serve": "^14.2.0",
     "styled-components": "^5.3.9"
   },
@@ -71,6 +73,7 @@
     "@types/lodash": "^4.14.192",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@types/sanitize-html": "^2.9.0",
     "@types/styled-components": "^5.1.26",
     "@vitejs/plugin-react": "^3.1.0",
     "apollo": "^2.32.5",
