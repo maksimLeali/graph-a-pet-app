@@ -10,10 +10,11 @@ import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useHistory } from "react-router";
 import { useUserContext } from "../../../contexts";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 
 export const Login: React.FC = ()  => {
-    const methods = useForm<MutationLoginArgs>({ mode: "onSubmit" });
+    const methods = useForm<MutationLoginArgs & { text : string}>({ mode: "onSubmit" });
     const [cookie, setCookie] = useCookies(["jwt", "user"]);
     const history = useHistory()
     const { setContextUser } = useUserContext()
@@ -37,6 +38,7 @@ export const Login: React.FC = ()  => {
 
     });
    
+   
     const { t } = useTranslation();
     // if (window.PublicKeyCredential) {
     
@@ -53,7 +55,7 @@ export const Login: React.FC = ()  => {
         <Container>
             <FormProvider {...methods}>
                 <Form
-                    onSubmit={methods.handleSubmit((variables) => login({ variables } as any))}
+                    onSubmit={methods.handleSubmit((variables) =>{ console.log(variables) ,login({ variables } as any) })}
                 >
                     <TextInput
                         name="email"
