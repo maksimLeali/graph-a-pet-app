@@ -49,7 +49,9 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
     const openLogoutModal = useCallback(() => {
         setModalOpen(true)
         openModal({
-            onClose: () => {setModalOpen(false); closeModal()},
+            onClose: () => {
+                setModalOpen(false); closeModal()
+            },
             children: (
                 <ConfirmLogout />
             ),
@@ -59,8 +61,8 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
             onCancel: ()=> {
                 setModalOpen(false); closeModal()
             }
-        });
-    }, []);
+            });
+    }, [confirm]);
 
     useEffect(()=> {
         if(!inited) return
@@ -81,10 +83,10 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
                     </Option>
                 </MainOptions>
                 <ActionOptions>
-                    <Option onClick={(e)=> {e.preventDefault(); openLogoutModal()}}>
+                    <FakeOption onClick={()=> { openLogoutModal()}}>
                         <Icon name="exitOutline" />
                         <span>Logout</span>
-                    </Option>
+                    </FakeOption>
                 </ActionOptions>
                 <ToggleOption className="modeSelector">
                     <Toggle value={darkMode} onChange={()=> {setDarkMode(!darkMode)}} rigthElement={ <Icon size="18px" name="sunny" color="dark" /> } leftElement={ <Icon size="18px"   name="moonOutline" color="dark" />} />
@@ -95,6 +97,9 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 };
 
 const ConfirmLogout = ()=> {
+    useEffect(()=> {
+        console.log('ehehej')
+    }, [])
     const {t}= useTranslation()
     return <LogoutContainer>
             <p>{t('system.logout_modal.text')}</p>
@@ -168,6 +173,24 @@ const Option = styled.a`
     justify-content: flex-start;
     align-items:center ;
     gap:20px;
+    padding-bottom: 12px;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: inherit;
+    &.modeSelector {
+        justify-content: flex-end;
+    }
+    > span {
+        color: var(--ion-color-dark);
+    }
+`;
+const FakeOption = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items:center ;
+    gap:20px;
+    cursor: pointer;
     padding-bottom: 12px;
     box-sizing: border-box;
     text-decoration: none;

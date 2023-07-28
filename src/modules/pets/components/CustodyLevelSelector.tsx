@@ -26,7 +26,7 @@ export const CustodyLevelSelector: React.FC<props> = ({
             onClose: () => closeModal(),
             children: <CustodyLevelsList onClick={(v)=>{onSelected(v); closeModal()}}  current={current} />,
         });
-    }, [current,confirm]);
+    }, [current]);
 
     return (
         <Container onClick={()=> open()}>

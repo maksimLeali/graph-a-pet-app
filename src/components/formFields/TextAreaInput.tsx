@@ -42,6 +42,7 @@ export const TextAreaInput: React.FC<props> = ({
     const [compiled, setCompiled] = useState(false);
     const [error, setError] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const [editableText, setEditableText] = useState('ads s<br /> sa. adsa d<br />sad adsasd <br /><br />dsasd<br /><br />')
     const editableRef = useRef<HTMLDivElement>(null);
     const [showPsw, setShowPsw] = useState(false);
     const {
@@ -54,14 +55,16 @@ export const TextAreaInput: React.FC<props> = ({
     const onContentBlur = useCallback(
         (evt: any) => {
             const sanitizeConf = {
-                allowedTags: ["b", "i", "a", "p"],
+                allowedTags: ["b", "i", "a", "p", 'br', 'div'],
                 allowedAttributes: { a: ["href"] },
             };
             const text = sanitizeHtml(
                 evt.currentTarget.innerHTML,
                 sanitizeConf
             );
+            console.log(text)
             setValue(name, text??'');
+            // setEditableText(text)
             if(text.length == 0) {
               setCompiled(false);
               return
@@ -90,12 +93,7 @@ export const TextAreaInput: React.FC<props> = ({
         if (!hide) return;
         hide.classList.remove("hide");
     });
-    const onContentKeyDown = (evt: React.KeyboardEvent<HTMLDivElement>) => {
-      if (evt.key === "Enter") {
-        evt.preventDefault(); // Prevent default behavior (adding a <div> or line break)
-        setValue(name, getValues(name) + ""); // Insert a new line character instead
-      }
-    };
+    
 
     return (
         <Wrapper className={`${isSubmitting ? "submitting" : ""}`}>
@@ -117,11 +115,10 @@ export const TextAreaInput: React.FC<props> = ({
                     textcolor={textColor}
                     onChange={onContentBlur}
                     onFocus={() => setFocused(true)}
-                    onBlur={() => {
-                        console.log("poppo");
-                    }}
-                    onKeyDown={onContentKeyDown} 
+                    onBlur={onContentBlur}
+                     
                     html={getValues(name )?? ''}
+                    
                 />
                 <FocusBox
                     color={color}

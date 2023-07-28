@@ -8,7 +8,7 @@ import { Icon, SubmitInput, TextInput, TextAreaInput } from "../../../components
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useHistory } from "react-router";
-import { useUserContext } from "../../../contexts";
+
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -17,7 +17,6 @@ export const Login: React.FC = ()  => {
     const methods = useForm<MutationLoginArgs & { text : string}>({ mode: "onSubmit" });
     const [cookie, setCookie] = useCookies(["jwt", "user"]);
     const history = useHistory()
-    const { setContextUser } = useUserContext()
     let timeout: string | number | NodeJS.Timeout | null | undefined = null;
     const [login, { loading }] = useLoginMutation({
         onCompleted: ({ login }) => {
@@ -65,7 +64,6 @@ export const Login: React.FC = ()  => {
                         textLabel="auth.email"
                     />
                     <TextInput required type='password' name="password" textLabel="auth.password" />
-                    <TextAreaInput  name="stocazzo" textLabel="auth.password" />
                     <SubmitInput color="primary">{t('auth.login')} </SubmitInput>
 
                 </Form>
