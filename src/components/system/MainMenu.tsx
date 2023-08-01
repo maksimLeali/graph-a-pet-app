@@ -8,6 +8,7 @@ import { useOnClickOutside } from "../../hooks";
 import { Toggle } from "../formFields";
 import { Icon } from "../icons";
 import { toast } from "react-hot-toast";
+import { Modal } from "../Modal";
 
 type props = {
     open: boolean;
@@ -44,25 +45,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
         
     }, [])
 
-    const {openModal, closeModal} = useModal()
 
-    const openLogoutModal = useCallback(() => {
-        setModalOpen(true)
-        openModal({
-            onClose: () => {
-                setModalOpen(false); closeModal()
-            },
-            children: (
-                <ConfirmLogout />
-            ),
-            onConfirm: ()=> {
-                exit()
-            },
-            onCancel: ()=> {
-                setModalOpen(false); closeModal()
-            }
-            });
-    }, [confirm]);
 
     useEffect(()=> {
         if(!inited) return
@@ -71,6 +54,9 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 
     return (
         <MenuBackground className={`${open ? "open" : ""} ${isPWA ? '' : 'browser'}`}>
+            <Modal open={modalOpen} onClose={()=> {setModalOpen(false)}} onCancel={()=> {setModalOpen(false)}} onConfirm={()=> { exit()}}>
+                <ConfirmLogout/>
+            </Modal>
             <Container ref={ref}>
                 <MainOptions>
                     <Option href="#settings">
@@ -83,7 +69,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
                     </Option>
                 </MainOptions>
                 <ActionOptions>
-                    <FakeOption onClick={()=> { openLogoutModal()}}>
+                    <FakeOption onClick={()=> { setModalOpen(true)}}>
                         <Icon name="exitOutline" />
                         <span>Logout</span>
                     </FakeOption>
