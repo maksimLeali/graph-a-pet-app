@@ -8,7 +8,7 @@ import { useOnClickOutside } from "../../hooks";
 import { Toggle } from "../formFields";
 import { Icon } from "../icons";
 import { toast } from "react-hot-toast";
-import { Modal } from "../Modal";
+import { Modal, ModalProps } from "../Modal";
 
 type props = {
     open: boolean;
@@ -18,6 +18,7 @@ type props = {
 export const MainMenu: React.FC<props> = ({ open, onClose }) => {
     const ref = useRef<HTMLDivElement>(null);
     useOnClickOutside(ref, () => {if(!modalOpen) onClose()});
+    const [modal, setModal] = useState<ModalProps>()
     const [darkMode, setDarkMode] = useState(false);
     const [inited, setInited] = useState(false);
     const [isPWA, setIsPWA] = useState(false)
@@ -50,13 +51,18 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
     useEffect(()=> {
         if(!inited) return
         document.body.classList.toggle('dark', darkMode)
-    }, [darkMode, inited])
+    
+        setModal({
+            open:modalOpen ?? false,
+            onClose:()=> {setModalOpen(false)},
+            onCancel: ()=> { setModalOpen(false)},
+            onConfirm:()=> { exit() }
+        })
+    }, [darkMode, inited, modalOpen])
 
     return (
         <MenuBackground className={`${open ? "open" : ""} ${isPWA ? '' : 'browser'}`}>
-            <Modal open={modalOpen} onClose={()=> {setModalOpen(false)}} onCancel={()=> {setModalOpen(false)}} onConfirm={()=> { exit()}}>
-                <ConfirmLogout/>
-            </Modal>
+            { modal ? <Modal {...modal}  /> : <></>}
             <Container ref={ref}>
                 <MainOptions>
                     <Option href="#settings">
@@ -69,7 +75,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
                     </Option>
                 </MainOptions>
                 <ActionOptions>
-                    <FakeOption onClick={()=> { setModalOpen(true)}}>
+                    <FakeOption onClick={()=> { console.log('*é********'); setModalOpen(true)}}>
                         <Icon name="exitOutline" />
                         <span>Logout</span>
                     </FakeOption>

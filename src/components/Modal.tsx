@@ -23,7 +23,7 @@ export type ModalProps = {
 }
 
 export const Modal: React.FC<ModalProps> = ({
-    open,
+    open= false,
     onClose,
     onCancel,
     onConfirm,
@@ -33,12 +33,18 @@ export const Modal: React.FC<ModalProps> = ({
     customActions = [],
 }) => {
     const { t } = useTranslation();
-    
+    const [inited, setInited] = useState(false)
     const ref = useRef<HTMLDivElement>(null);
     useOnClickOutside(ref, ()=>onClose() );
+
+    useEffect(()=> {
+        if(open && ! inited){
+            setInited(true)
+        }
+    }, [open])
     return (
         <ModalBg
-            className={`ModalBg ${open ? 'open' : ''}`}
+            className={`ModalBg ${open ? 'open' : ''} ${inited ? 'inited' : ''}`}
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -96,12 +102,15 @@ const ModalBg = styled.div`
     z-index: 0;
     opacity: 0;
     
-    animation: overMenuClose .5s ease-in-out;
+    
     top: 0;
     left: 0;
     padding: 40px 10px;
     transition: opacity .5s ease-in-out;
     box-sizing: border-box;
+    &.inited {
+        animation: overMenuClose .5s ease-in-out;
+    }
     &.open {
         animation: overMenuOpen .5s ease-in-out;
         z-index: 202;
