@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build And Deploy on development
+        id: deploy-step
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{secrets.SSH_HOST}}
@@ -21,5 +22,10 @@ jobs:
             docker volume prune -f
             docker system prune -a -f
             docker-compose down --remove-orphans
-            docker-compose up -d --build --remove-orphans
-            echo 'Deployment finished succesfully'
+            docker-compose up -d --build --remove-orphans || exit 1
+            echo 'Deployment finished successfully'
+      - name: Handle Failure
+        if: ${{ failure() }}
+        run: |
+          echo "Error occurred during deployment"
+          # You can add additional error handling logic here, such as sending a notification or failing the workflow.
