@@ -106,7 +106,6 @@ export const CustomCalendar: React.FC<props> = ({ appointments = [], onStartDate
                   }}
                 value={selectedDay}
                 tileContent={(val)=> {
-                    console.log(val)
                     const date = val.date;
                     const day =  dayjs(date).set("hour", 12);
                     const activePeriod = periodsWithEvents.filter(

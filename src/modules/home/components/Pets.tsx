@@ -38,7 +38,6 @@ export const Pets: React.FC<props> = ({ pets , onActiveChange}) => {
             setprev(active);
             setDirection(i < active ? "counter" : "clock");
             if (i < 0) {
-                console.log(pets.length - 1);
                 return setActive(pets.length - 1);
             }
             if (i >= pets.length) {
@@ -51,6 +50,8 @@ export const Pets: React.FC<props> = ({ pets , onActiveChange}) => {
         onActiveChange(active)
     }, [active])
     
+    
+
 
     const [getOrCreateCode] = useGetOrCreateLazyQuery({
         onCompleted: ({getOrCreateCode})=> {
@@ -58,11 +59,10 @@ export const Pets: React.FC<props> = ({ pets , onActiveChange}) => {
                 return
             }
             try {
-                console.log(`https://graph-a-pet-app.web.app/pets/sharing/${getOrCreateCode.code.code}`)
                 if(!canShare){
                     return null;
                 }
-                navigator.share({url: `https://graph-a-pet-app.web.app/pets/sharing/${getOrCreateCode.code.code}`, title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
+                navigator.share({url: `${window.location.origin}/pets/sharing/${getOrCreateCode.code.code}`, title: 'Un cucciolo per te', text: "ti è stato condiviso un cucciolo" })
             }catch(e){
                 console.log(e)
             }
@@ -72,8 +72,9 @@ export const Pets: React.FC<props> = ({ pets , onActiveChange}) => {
     })
 
     useEffect(()=> {
+        
         try {
-            navigator.canShare({url: 'https://graph-a-pet-app.web.app/home', text: "Un cucciolo per te" })
+            navigator.canShare({url: `${window.location.origin}/home`, text: "Un cucciolo per te" })
         }catch(e){
             setCanShare(false)
         }
@@ -95,7 +96,7 @@ export const Pets: React.FC<props> = ({ pets , onActiveChange}) => {
                         ) as PetMinSubOwnerFragment[]) ?? []
                     }
                     onSelected={(str) => {
-                        console.log(str);
+                        
                     }}
                 />
             ),

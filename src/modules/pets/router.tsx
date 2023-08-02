@@ -3,7 +3,6 @@ import { Sharing } from ".";
 
 export const PetsRouter = () => {
     const { path } = useRouteMatch();
-    console.log(path);
     return (
         <>
             <Route path={`${path}/sharing/:code`} >

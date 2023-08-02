@@ -19,7 +19,6 @@ export const SignUp = () => {
   const history = useHistory()
   const [signup, { loading }] = useSignUpMutation({
     onCompleted: ({ signUp }) => {
-      console.log("completed");
       if (signUp.error) {
         toast.error(t("messages.errors.login"));
         return;
@@ -39,13 +38,9 @@ export const SignUp = () => {
         <Form
           onSubmit={methods.handleSubmit(
             (variables) => {
-              console.log("vars", variables);
-              console.log(apolloClient);
               return signup({ variables: { data: _.omit(variables, 'confirm_password') } });
             },
             (err, e) => {
-              console.log(methods.getValues());
-              console.log("errore");
               console.error(err, e);
             }
           )}

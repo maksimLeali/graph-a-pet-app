@@ -26,7 +26,6 @@ export const EventDetails: React.FC<props> = ()=> {
                 return
             }
             setEvent(getTreatment.treatment)
-            console.log(getTreatment.treatment)
         }
     })
     useEffect(() => {

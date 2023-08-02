@@ -56,7 +56,8 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
             open:modalOpen ?? false,
             onClose:()=> {setModalOpen(false)},
             onCancel: ()=> { setModalOpen(false)},
-            onConfirm:()=> { exit() }
+            onConfirm:()=> { exit() },
+            children: <ConfirmLogout/>
         })
     }, [darkMode, inited, modalOpen])
 
@@ -75,7 +76,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
                     </Option>
                 </MainOptions>
                 <ActionOptions>
-                    <FakeOption onClick={()=> { console.log('*é********'); setModalOpen(true)}}>
+                    <FakeOption onClick={()=> { setModalOpen(true)}}>
                         <Icon name="exitOutline" />
                         <span>Logout</span>
                     </FakeOption>
@@ -89,9 +90,6 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 };
 
 const ConfirmLogout = ()=> {
-    useEffect(()=> {
-        console.log('ehehej')
-    }, [])
     const {t}= useTranslation()
     return <LogoutContainer>
             <p>{t('system.logout_modal.text')}</p>

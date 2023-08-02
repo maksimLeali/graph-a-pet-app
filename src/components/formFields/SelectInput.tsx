@@ -153,7 +153,6 @@ export const SelectInput: React.FC<props> = ({
                                     setCompiled(true)
                                     
                                     onChange(option.value)
-                                    console.log(option)
                                 }} > 
                                     {
                                     option.render 
@@ -228,7 +227,6 @@ export const SelectInput: React.FC<props> = ({
                     setCompiled(true)
                     
                     onSelected!(option.value)
-                    console.log(option)
                 }} > 
                     {
                     option.render 

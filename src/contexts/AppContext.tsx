@@ -15,7 +15,6 @@ type Props= {
 
 export const AppContextProvider: React.FC< Props & Record<string, unknown>> = ({ children }) => {
   const webpSupported = document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') == 0;
-  console.log(webpSupported)
   const value = useMemo(() => ({webpSupported}), [])
   return <AppContext.Provider value={value}>
     {children}

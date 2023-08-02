@@ -32,7 +32,6 @@ export const Sharing: React.FC = () => {
             if (!checkCode?.code || checkCode.error) {
                 return;
             }
-            console.log("code ok");
 
             getPet({ variables: { id: checkCode.code.ref_id } });
         },
@@ -58,7 +57,6 @@ export const Sharing: React.FC = () => {
                         .map((item) => item!.user.id)
                 );
             }
-            console.log(getPet.pet);
         },
     });
 
@@ -153,7 +151,7 @@ export const Sharing: React.FC = () => {
                                     (item) => item && item.custody_level!= CustodyLevel.Owner
                                 ) as PetMinSubOwnerFragment[]) ?? [] 
                             }
-                            onSelected={(v)=> {console.log('v', v)}}
+                            onSelected={(v)=> {}}
                         />
                         </>
                     ) : (

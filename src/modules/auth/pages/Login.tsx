@@ -54,7 +54,7 @@ export const Login: React.FC = ()  => {
         <Container>
             <FormProvider {...methods}>
                 <Form
-                    onSubmit={methods.handleSubmit((variables) =>{ console.log(variables) ,login({ variables } as any) })}
+                    onSubmit={methods.handleSubmit((variables) =>{ login({ variables } as any) })}
                 >
                     <TextInput
                         name="email"

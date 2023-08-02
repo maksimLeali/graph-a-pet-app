@@ -46,11 +46,6 @@ export const WeeksView: React.FC<props> = ({fromDate, appointments=[], loading= 
           .map((p) => p.event).value();
       }, [periodsWithEvents, selectedDay]);
 
-
-    useEffect(()=> {
-        console.log('dayevents', dayEvents)
-    }, [dayEvents])
-
     useEffect(()=> {
         [...Array(14)].map((el, i)=> {
             if(dayjs(fromDate).add(i, 'd').date() == dayjs().date()){

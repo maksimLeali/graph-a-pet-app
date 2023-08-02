@@ -62,7 +62,6 @@ export const TextAreaInput: React.FC<props> = ({
                 evt.currentTarget.innerHTML,
                 sanitizeConf
             );
-            console.log(text)
             setValue(name, text??'');
             // setEditableText(text)
             if(text.length == 0) {
