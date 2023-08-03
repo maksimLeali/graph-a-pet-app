@@ -4,11 +4,14 @@ import { AppointmentsList, CustomCalendar, Icon } from "../../../components";
 import "react-calendar/dist/Calendar.css";
 import { useUserContext, useModal } from "../../../contexts";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useListMyTreatmentsLazyQuery } from "../operations/__generated__/getMyAppointments.generated";
 import { AppointmentFragment } from "../../../components/operations/__generated__/appointment.generated";
 import { Maybe } from "graphql/jsutils/Maybe";
 import dayjs from "dayjs";
+import { AddEventForm } from "../components/addEventForm";
+import { FormProvider, useForm } from "react-hook-form";
+import { MutationCreateTreatmentArgs } from "../../../types";
 
 export const CalendarEvents: React.FC = () => {
     const { setPage } = useUserContext();
@@ -72,16 +75,33 @@ export const CalendarEvents: React.FC = () => {
         },
         onCompleted: ({ listMyTreatments }) => {
             if (!listMyTreatments?.items?.length || listMyTreatments.error) {
-                console.error("errore");
                 return;
             }
             setAppointments(listMyTreatments.items);
         },
     });
 
-    
-    const { } = useModal()
-    
+    const methods = useForm<MutationCreateTreatmentArgs>({ mode: "onSubmit" });
+    const { openModal, closeModal } = useModal()
+
+
+    const createEvent = ()=> {
+        console.log(methods.getValues());
+    }
+
+    const openAddCalendarModal= useCallback(()=> {
+        openModal({
+            onClose:()=> {closeModal()},
+            onCancel: ()=> {closeModal()},
+            onSubmit:(data)=>{createEvent()},
+            children: 
+                <FormProvider {...methods} >
+                    
+                        <AddEventForm />
+                    
+                </FormProvider>
+        })
+    }, [])
 
     useEffect(() => {
         setPage({ visible: true, name: "Events" });
@@ -92,7 +112,7 @@ export const CalendarEvents: React.FC = () => {
         <IonContent fullscreen>
             <CustomCalendar appointments={appointments} setDayEvents={(events)=> setEvents(events)} onStartDateChange={(v)=> {setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
             {events && <AppointmentsList loading={loading} appointments={events as AppointmentFragment[]}/>}
-            <AddButton>
+            <AddButton onClick={openAddCalendarModal}>
                 <Icon name="addCircleOutline" color="dark-tint" size ="50px" />
             </AddButton>
         </IonContent>

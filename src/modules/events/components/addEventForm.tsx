@@ -1,21 +1,23 @@
-import { useForm } from "react-hook-form";
-import styled from "styled-components"
-import { MutationCreateTreatmentArgs } from "../../../types";
-import { SubmitInput, TextInput } from "../../../components";
-import { useTranslation } from "react-i18next";
+
+import styled from "styled-components";
+import { SelectInput, TextAreaInput, TextInput } from "../../../components";
 
 
 
 export const AddEventForm = ()=> {
 
-    const methods = useForm<MutationCreateTreatmentArgs>({ mode: "onSubmit" });
-    const {t} = useTranslation() 
-    return <Form>
-        <TextInput name="name" textLabel="events.name"/>
-        <SubmitInput color="primary" >{t('events.addEvent')}</SubmitInput>
-    </Form>
+    return (
+        <Form onSubmit={(e)=> {e.preventDefault(); e.stopPropagation()} }>
+            <TextInput name="data.name" textLabel="events.name"/>
+            <TextAreaInput name="data.description" textLabel="events.notes" />
+            {/* <SelectInput name="data.type" options={[{label: 'test', value: 'pippo'}]} onSelected={}/> */}
+        </Form>
+
+    )
 }
 
-const Form = styled.form`
-    
+
+const Form = styled.div`
+    width: 100%;
+    padding: 20px;
 `

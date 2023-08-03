@@ -99,6 +99,7 @@
         "antiparasitic": "Antiparassitario",
         "vaccine": "Vaccino",
         "tablet": "Pastiglia",
+        "notes": "Note",
         "reminder": "Promemoria",
         "operation": "Operazione",
         "from_to": "Dalle {{from}} alle {{to}}",
