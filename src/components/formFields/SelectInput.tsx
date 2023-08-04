@@ -6,16 +6,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnClickOutside } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
-type Option = {
+export type Option = {
     value: any;
     label: string;
-    render?: React.ReactNode
+    render?: React.ReactNode;
 };
 
 type props = {
     name: string;
     required?: boolean;
-    bgColor?: string
+    bgColor?: string;
     textLabel?: I18NKey;
     ntTextLabel?: string;
     color?: string;
@@ -26,12 +26,11 @@ type props = {
     errorText?: string;
     icon?: IconName;
     rowsPerList?: number;
-    control?: any;
     registerOptions?: RegisterOptions;
     errorColor?: string;
     options: Option[];
-    onSelected?: (v: any)=> void
-    currentValue?: any
+    onSelected?: (v: any) => void;
+    currentValue?: any;
 };
 
 export const SelectInput: React.FC<props> = ({
@@ -47,7 +46,6 @@ export const SelectInput: React.FC<props> = ({
     textColor = "dark",
     errorText = "danger",
     rowsPerList = 7,
-    control,
     onSelected,
     registerOptions,
     errorColor,
@@ -56,7 +54,7 @@ export const SelectInput: React.FC<props> = ({
 }) => {
     const [focused, setFocused] = useState(false);
     const [compiled, setCompiled] = useState(false);
-    const [up, setUp] = useState(false)
+    const [up, setUp] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const optionsRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation();
@@ -68,18 +66,26 @@ export const SelectInput: React.FC<props> = ({
     });
 
     const {
-        formState: {isSubmitting},
-      } = useFormContext();
+        formState: { isSubmitting },
+        control
+    } = useFormContext();
 
-    useEffect(()=> {
-        const itemsHeight = options.length > rowsPerList ? rowsPerList * 50 : options.length * 50
-        setUp( itemsHeight +((optionsRef.current?.offsetParent as HTMLDivElement)?.offsetTop ?? 0)> window.innerHeight );
-    }, [rowsPerList, optionsRef.current])
-
+    useEffect(() => {
+        const itemsHeight =
+            options.length > rowsPerList
+                ? rowsPerList * 50
+                : options.length * 50;
+        setUp(
+            itemsHeight +
+                ((optionsRef.current?.offsetParent as HTMLDivElement)
+                    ?.offsetTop ?? 0) >
+                window.innerHeight
+        );
+    }, [rowsPerList, optionsRef.current]);
 
     return (
         <Wrapper
-            className={`${isSubmitting ? 'submitting' : ''}`}
+            className={`${isSubmitting ? "submitting" : ""}`}
             focusColor={focusColor}
             hoverColor={hoverColor}
             txtColor={textColor}
@@ -94,157 +100,195 @@ export const SelectInput: React.FC<props> = ({
             >
                 {textLabel ? t(textLabel) : ntTextLabel}
             </InputLabel>
-            
-            {control ? <Controller
-                name={name}
-                control={control}
-                render={({ field: { onChange, value, name } }) => (
-                    <InputWrapper
-                        ref={ref}
-                        className="inputWrapper "
-                        
+
+            {onSelected ? (
+                <InputWrapper ref={ref} className="inputWrapper ">
+                    <InvisibleInput
+                        id={name}
+                        onFocus={() => setFocused(!focused)}
+                    />
+                    <LabelContainer
+                        bgColor={bgColor}
+                        className="label-container"
+                        onClick={() => setFocused(!focused)}
                     >
-                        <InvisibleInput
-                            id={name}
-                            onFocus={()=>setFocused(!focused)}
-                        />
-                        <LabelContainer bgColor={bgColor} className="label-container" onClick={()=>setFocused(!focused)}>
-                            {value ? (
+                        {currentValue ? (
+                            _.find(options, (opt) => opt.value === currentValue)
+                                ?.render ?? (
                                 <p>
                                     {
                                         _.find(
                                             options,
-                                            (opt) => opt.value === value
-                                        )?.render 
-                                        ?? _.find(
-                                            options,
-                                            (opt) => opt.value === value
+                                            (opt) => opt.value === currentValue
                                         )?.label
                                     }
                                 </p>
-                            ) : (
-                                <></>
-                            )}
-                        </LabelContainer>
-                        <IconContainer bgColor={bgColor}>
-                            <Icon
-                                size="30px"
-                                time=".5s"
-                                onMouseUp={()=>setFocused(!focused)}
-                                className={`selectIcon ${
+                            )
+                        ) : (
+                            <></>
+                        )}
+                    </LabelContainer>
+                    <IconContainer bgColor={bgColor}>
+                        <Icon
+                            size="30px"
+                            time=".5s"
+                            onMouseUp={() => setFocused(!focused)}
+                            className={`selectIcon ${
+                                focused ? "focused" : ""
+                            } ${compiled ? "compiled" : ""}`}
+                            name="caretDownCircleOutline"
+                        />
+                    </IconContainer>
+                    <OptionsContainer
+                        maxHeight={
+                            options.length > rowsPerList
+                                ? rowsPerList * 50
+                                : options.length * 50
+                        }
+                        className={`options-container ${
+                            focused ? "focused" : ""
+                        } ${compiled ? "compiled" : ""} ${up ? "up" : ""}`}
+                        ref={optionsRef}
+                    >
+                        {_.map(options, (option, i) => {
+                            return (
+                                <Option
+                                    key={i}
+                                    className="option"
+                                    onMouseUp={() => {
+                                        setFocused(false);
+                                        if (option.value === currentValue) {
+                                            onSelected!(null);
+                                            setCompiled(false);
+                                            return;
+                                        }
+                                        setCompiled(true);
+
+                                        onSelected!(option.value);
+                                    }}
+                                >
+                                    {option.render ? (
+                                        option.render
+                                    ) : (
+                                        <span>{option.label}</span>
+                                    )}
+
+                                    {option.value === currentValue ? (
+                                        <Icon
+                                            name="closeCircleOutline"
+                                            color={color}
+                                        />
+                                    ) : (
+                                        <></>
+                                    )}
+                                </Option>
+                            );
+                        })}
+                    </OptionsContainer>
+                    <FocusBox
+                        className={`focusBox ${focused ? "focused" : ""} ${
+                            compiled ? "compiled" : ""
+                        }`}
+                    />
+                </InputWrapper>
+            ) : (
+                <Controller
+                    name={name}
+                    control={control}
+                    render={({ field: { onChange, value, name } }) => (
+                        <InputWrapper ref={ref} className="inputWrapper ">
+                            <InvisibleInput
+                                id={name}
+                                onFocus={() => setFocused(!focused)}
+                            />
+                            <LabelContainer
+                                bgColor={bgColor}
+                                className="label-container"
+                                onClick={() => setFocused(!focused)}
+                            >
+                                {value ? (
+                                    <p>
+                                        {_.find(
+                                            options,
+                                            (opt) => opt.value === value
+                                        )?.render ??
+                                            _.find(
+                                                options,
+                                                (opt) => opt.value === value
+                                            )?.label}
+                                    </p>
+                                ) : (
+                                    <></>
+                                )}
+                            </LabelContainer>
+                            <IconContainer bgColor={bgColor}>
+                                <Icon
+                                    size="30px"
+                                    time=".5s"
+                                    onMouseUp={() => setFocused(!focused)}
+                                    className={`selectIcon ${
+                                        focused ? "focused" : ""
+                                    } ${compiled ? "compiled" : ""}`}
+                                    name="caretDownCircleOutline"
+                                />
+                            </IconContainer>
+                            <OptionsContainer
+                                maxHeight={
+                                    options.length > rowsPerList
+                                        ? rowsPerList * 50
+                                        : options.length * 50
+                                }
+                                className={`options-container ${
+                                    focused ? "focused" : ""
+                                } ${compiled ? "compiled" : ""} ${
+                                    up ? "up" : ""
+                                }`}
+                                ref={optionsRef}
+                            >
+                                {_.map(options, (option, i) => {
+                                    return (
+                                        <Option
+                                            key={i}
+                                            className="option"
+                                            onMouseUp={() => {
+                                                setFocused(false);
+                                                if (option.value === value) {
+                                                    onChange(null);
+                                                    setCompiled(false);
+                                                    return;
+                                                }
+                                                setCompiled(true);
+
+                                                onChange(option.value);
+                                            }}
+                                        >
+                                            {option.render ? (
+                                                option.render
+                                            ) : (
+                                                <span>{option.label}</span>
+                                            )}
+
+                                            {option.value === value ? (
+                                                <Icon
+                                                    name="closeCircleOutline"
+                                                    color={color}
+                                                />
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </Option>
+                                    );
+                                })}
+                            </OptionsContainer>
+                            <FocusBox
+                                className={`focusBox ${
                                     focused ? "focused" : ""
                                 } ${compiled ? "compiled" : ""}`}
-                                name="caretDownCircleOutline"
                             />
-                        </IconContainer>
-                        <OptionsContainer maxHeight={ options.length > rowsPerList ? rowsPerList * 50 : options.length * 50} className={`options-container ${focused ? "focused" : ""} ${
-                                compiled ? "compiled" : ""
-                            } ${
-                                up? 'up' : ""
-                            }`} ref={optionsRef}>
-                            {_.map(options , (option,i)=>{
-                                return <Option key={i} className="option" onMouseUp={()=>{
-                                    setFocused(false)
-                                    if (option.value === value) {
-                                        onChange(null);
-                                        setCompiled(false)
-                                        return;
-                                    }
-                                    setCompiled(true)
-                                    
-                                    onChange(option.value)
-                                }} > 
-                                    {
-                                    option.render 
-                                    ? option.render 
-                                    : <span>{option.label}</span>
-                                    }
-
-                                    {option.value === value ? <Icon name="closeCircleOutline" color={color} /> : <></>}
-                                </Option>
-                            })}
-                        </OptionsContainer>
-                        <FocusBox
-                            className={`focusBox ${focused ? "focused" : ""} ${
-                                compiled ? "compiled" : ""
-                            }`}
-                        />
-                    </InputWrapper>
-                )}
-            />
-        : <InputWrapper
-        ref={ref}
-        className="inputWrapper "
-        
-    >
-        <InvisibleInput
-            id={name}
-            onFocus={()=>setFocused(!focused)}
-        />
-        <LabelContainer bgColor={bgColor} className="label-container" onClick={()=>setFocused(!focused)}>
-            {currentValue ? (
-                    _.find(
-                            options,
-                            (opt) => opt.value === currentValue
-                        )?.render ??
-                         <p>
-                            {
-                         _.find(
-                            options,
-                            (opt) => opt.value === currentValue
-                        )?.label
-                         }
-                        </p>
-    
-            ) : (
-                <></>
+                        </InputWrapper>
+                    )}
+                />
             )}
-        </LabelContainer>
-        <IconContainer bgColor={bgColor}>
-            <Icon
-                size="30px"
-                time=".5s"
-                onMouseUp={()=>setFocused(!focused)}
-                className={`selectIcon ${
-                    focused ? "focused" : ""
-                } ${compiled ? "compiled" : ""}`}
-                name="caretDownCircleOutline"
-            />
-        </IconContainer>
-        <OptionsContainer maxHeight={ options.length > rowsPerList ? rowsPerList * 50 : options.length * 50} className={`options-container ${focused ? "focused" : ""} ${
-                compiled ? "compiled" : ""
-            } ${
-                up? 'up' : ""
-            }`} ref={optionsRef}>
-            {_.map(options , (option,i)=>{
-                return <Option key={i} className="option" onMouseUp={()=>{
-                    setFocused(false)
-                    if (option.value === currentValue) {
-                        onSelected!(null);
-                        setCompiled(false)
-                        return;
-                    }
-                    setCompiled(true)
-                    
-                    onSelected!(option.value)
-                }} > 
-                    {
-                    option.render 
-                    ? option.render 
-                    : <span>{option.label}</span>
-                    }
-
-                    {option.value === currentValue ? <Icon name="closeCircleOutline" color={color} /> : <></>}
-                </Option>
-            })}
-        </OptionsContainer>
-        <FocusBox
-            className={`focusBox ${focused ? "focused" : ""} ${
-                compiled ? "compiled" : ""
-            }`}
-        />
-    </InputWrapper>
-        }
         </Wrapper>
     );
 };
@@ -269,7 +313,7 @@ const Wrapper = styled.div<selectProps>`
     position: relative;
     height: 40px;
     &.submitting {
-        opacity: .5;
+        opacity: 0.5;
         pointer-events: none;
     }
 
@@ -308,19 +352,19 @@ const Wrapper = styled.div<selectProps>`
         &.focused {
             background-color: var(
                 --ion-color-${({ focusColor }) => focusColor}
-                );
-            }
-            &.compiled {
-                background-color: var(
-                    --ion-color-${({ focusColor }) => focusColor}
-                    );
-                }
-            }
-        .label-container {
-            > p {
-                color: var(--ion-color-${({txtColor})=> txtColor});
-            }
+            );
         }
+        &.compiled {
+            background-color: var(
+                --ion-color-${({ focusColor }) => focusColor}
+            );
+        }
+    }
+    .label-container {
+        > p {
+            color: var(--ion-color-${({ txtColor }) => txtColor});
+        }
+    }
     .options-container {
         background-color: var(--ion-background-color);
         border-color: var(--ion-color-${({ bgColor }) => bgColor});
@@ -369,29 +413,38 @@ const InputWrapper = styled.div`
     justify-content: space-between;
 `;
 
-const LabelContainer = styled.div<{bgColor?: string}>`
+const LabelContainer = styled.div<{ bgColor?: string }>`
     height: 100%;
     position: relative;
     z-index: 2;
     width: calc(100% - 40px);
     font-size: 1.3rem;
     padding-left: 20px;
-    
-    background-color: ${ ({bgColor})=> bgColor ? `var(--ion-color-${bgColor})` : 'var(--ion-background-color)'};
-    
+
+    background-color: ${({ bgColor }) =>
+        bgColor
+            ? `var(--ion-color-${bgColor})`
+            : "var(--ion-background-color)"};
+    > * {
+        height: 100%;
+    }
+
     > p {
-        margin:0;
+        margin: 0;
     }
 `;
 
-const IconContainer = styled.div<{bgColor?: string}>`
+const IconContainer = styled.div<{ bgColor?: string }>`
     width: 38px;
     position: relative;
     z-index: 2;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: ${ ({bgColor})=> bgColor ? `var(--ion-color-${bgColor})` : 'var(--ion-background-color)'};
+    background-color: ${({ bgColor }) =>
+        bgColor
+            ? `var(--ion-color-${bgColor})`
+            : "var(--ion-background-color)"};
     .selectIcon {
         &.focused {
             > * {
@@ -427,27 +480,27 @@ const FocusBox = styled.span`
     }
 `;
 
-const OptionsContainer = styled.div<{maxHeight: number}>`
-    width:calc(100% - 40px);
+const OptionsContainer = styled.div<{ maxHeight: number }>`
+    width: calc(100% - 40px);
     position: absolute;
-    z-index:4;
-    top:100%;
-    border-radius:2px ;
-    left:0;
+    z-index: 4;
+    top: 100%;
+    border-radius: 2px;
+    left: 0;
     overflow-y: scroll;
     border-left: 1px solid;
     opacity: 0;
     // margin-left: 20px ;
     max-height: 0;
     box-shadow: 1px 1px 2px 0px #2b2b2b;
-    transition: max-height .5s ease-in-out, opacity .5s ease-in-out;
-    
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+
     @media (prefers-color-scheme: dark) {
         background-color: var(--ion-background-color);
     }
     &.focused {
         opacity: 1;
-        max-height: ${({maxHeight})=> maxHeight}px;
+        max-height: ${({ maxHeight }) => maxHeight}px;
     }
     &.up {
         bottom: 50px;
@@ -456,17 +509,17 @@ const OptionsContainer = styled.div<{maxHeight: number}>`
 `;
 
 const Option = styled.div`
-    width:100%;
-    height:50px;
-    border-bottom: 1px solid ;
-    padding: 5px 12px ;
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid;
+    padding: 5px 12px;
     font-size: 1.3rem;
     box-sizing: border-box;
-    position:relative;
+    position: relative;
     display: flex;
-    justify-content:space-between ;
-    align-items: center ;
+    justify-content: space-between;
+    align-items: center;
     &:hover {
-        border-left: 1px solid ; 
+        border-left: 1px solid;
     }
 `;

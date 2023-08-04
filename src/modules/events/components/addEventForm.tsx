@@ -1,23 +1,45 @@
-
 import styled from "styled-components";
-import { SelectInput, TextAreaInput, TextInput } from "../../../components";
+import {
+    Option,
+    SelectInput,
+    TextAreaInput,
+    TextInput,
+} from "../../../components";
+import { TreatmentType } from "../../../types";
+import { useTranslation } from "react-i18next";
+import { EventOption } from "./EventOption";
+import { SpecialIconName } from "../../../components/SpecialIcons/SpecialIcons";
+import { treatmentsColors } from "../../../utils";
 
-
-
-export const AddEventForm = ()=> {
+export const AddEventForm = () => {
+    const { t } = useTranslation();
+    const options: Option[] = Object.keys(TreatmentType).map((key) => ({
+        value: key,
+        label: t(`events.${key.toLowerCase()}`),
+        render: (
+            <EventOption
+                iconName={key.toLowerCase() as SpecialIconName}
+                color={treatmentsColors[key.toUpperCase() as TreatmentType]}
+                label={t(`events.${key.toLowerCase()}`)}
+            />
+        ),
+    }));
 
     return (
-        <Form onSubmit={(e)=> {e.preventDefault(); e.stopPropagation()} }>
-            <TextInput name="data.name" textLabel="events.name"/>
+        <Form
+            onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }}
+        >
+            <TextInput name="data.name" textLabel="events.name" />
             <TextAreaInput name="data.description" textLabel="events.notes" />
-            {/* <SelectInput name="data.type" options={[{label: 'test', value: 'pippo'}]} onSelected={}/> */}
+            <SelectInput name="data.type" options={options} />
         </Form>
-
-    )
-}
-
+    );
+};
 
 const Form = styled.div`
     width: 100%;
     padding: 20px;
-`
+`;

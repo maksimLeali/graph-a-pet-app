@@ -15,10 +15,7 @@
     "generate": "graphql-codegen"
   },
   "resolutions": {
-    "graphql": "15.5.0",
-    "**/graphql": "15.5.0",
-    "graphql-ws": "5.5.5",
-    "**/graphql-ws": "5.5.5"
+    "graphql-ws": "5.5.5"
   },
   "dependencies": {
     "@apollo/client": "^3.3.15",
