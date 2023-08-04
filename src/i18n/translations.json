@@ -101,6 +101,7 @@
         "tablet": "Pastiglia",
         "notes": "Note",
         "reminder": "Promemoria",
+        "type": "Tipologia",
         "operation": "Operazione",
         "from_to": "Dalle {{from}} alle {{to}}",
         "add_event": "Aggiungi evento",

@@ -34,7 +34,7 @@ export const AddEventForm = () => {
         >
             <TextInput name="data.name" textLabel="events.name" bgColor="light" />
             <TextAreaInput name="data.description" textLabel="events.notes" bgColor="light" />
-            <SelectInput name="data.type" options={options} bgColor="light" />
+            <SelectInput name="data.type" options={options} bgColor="light" textLabel="events.type" />
         </Form>
     );
 };
