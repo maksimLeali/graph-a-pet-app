@@ -100,7 +100,7 @@ export const Modal: React.FC<ModalProps> = ({
 
 const ModalBg = styled.div`
     width: 100vw;
-    height: 100vh;
+    height:0;
     background-color: var(--ion-trasparent-bg);
     position: fixed;
     display: flex;
@@ -108,8 +108,6 @@ const ModalBg = styled.div`
     justify-content: center;
     z-index: 0;
     opacity: 0;
-    
-    
     top: 0;
     left: 0;
     padding: 40px 10px;
@@ -122,6 +120,7 @@ const ModalBg = styled.div`
         animation: overMenuOpen .5s ease-in-out;
         z-index: 202;
         opacity:1;
+        height: 100vh;
     }
 `;
 
