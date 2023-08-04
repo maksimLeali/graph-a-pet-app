@@ -13,7 +13,7 @@ import { treatmentsColors } from "../../../utils";
 
 export const AddEventForm = () => {
     const { t } = useTranslation();
-    const options: Option[] = Object.keys(TreatmentType).map((key) => ({
+    const options: Option[] = Object.values(TreatmentType).map((key) => ({
         value: key,
         label: t(`events.${key.toLowerCase()}`),
         render: (
@@ -32,9 +32,9 @@ export const AddEventForm = () => {
                 e.stopPropagation();
             }}
         >
-            <TextInput name="data.name" textLabel="events.name" />
-            <TextAreaInput name="data.description" textLabel="events.notes" />
-            <SelectInput name="data.type" options={options} />
+            <TextInput name="data.name" textLabel="events.name" bgColor="light" />
+            <TextAreaInput name="data.description" textLabel="events.notes" bgColor="light" />
+            <SelectInput name="data.type" options={options} bgColor="light" />
         </Form>
     );
 };

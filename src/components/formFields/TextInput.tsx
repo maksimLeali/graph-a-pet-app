@@ -28,6 +28,7 @@ type props = {
   icon?: IconName;
   registerOptions?: RegisterOptions;
   errorColor?: string;
+  bgColor?:string
 };
 
 export const TextInput: React.FC<props> = ({
@@ -42,7 +43,7 @@ export const TextInput: React.FC<props> = ({
   focusColor = "primary",
   disabledColor = "lightGray",
   errorColor = "danger",
-
+  bgColor,
   icon,
   name,
 }: props) => {
@@ -87,6 +88,7 @@ export const TextInput: React.FC<props> = ({
           inputMode={inputMode}
           type={type == "password" ? (showPsw ? "text" : "password") : type}
           textColor={textColor}
+          bgColor={bgColor}
           {...register(name, {
             onChange: (v) => {
               setCompiled(v.target.value.length > 0);
@@ -230,7 +232,7 @@ const FocusBox = styled.span<focusCircleProps>`
   }
 `;
 
-const StyledInput = styled.input<{ textColor: string }>`
+const StyledInput = styled.input<{ textColor: string, bgColor?: string }>`
   outline: none;
   border: none;
   position: relative;
@@ -246,9 +248,11 @@ const StyledInput = styled.input<{ textColor: string }>`
   box-sizing: border-box;
   padding-left: 20px;
   padding-bottom: 10px;
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--ion-background-color);
-  }
+  background-color: ${({ bgColor }) =>
+        bgColor
+            ? `var(--ion-color-${bgColor})`
+            : "var(--ion-background-color)"};
+  
 
   &:-webkit-autofill,
   .dark &:-webkit-autofill,

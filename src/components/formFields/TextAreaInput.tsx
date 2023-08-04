@@ -23,6 +23,7 @@ type props = {
     pattern?: RegExp;
     registerOptions?: RegisterOptions;
     errorColor?: string;
+    bgColor?: string
 };
 
 export const TextAreaInput: React.FC<props> = ({
@@ -35,6 +36,7 @@ export const TextAreaInput: React.FC<props> = ({
     focusColor = "primary",
     disabledColor = "lightGray",
     errorColor = "danger",
+    bgColor,
     name,
 }: props) => {
     const { t } = useTranslation();
@@ -112,6 +114,7 @@ export const TextAreaInput: React.FC<props> = ({
                 <Editable
                     id={name}
                     textcolor={textColor}
+                    bgColor={bgColor}
                     onChange={onContentBlur}
                     onFocus={() => setFocused(true)}
                     onBlur={onContentBlur}
@@ -233,7 +236,7 @@ const FocusBox = styled.span<focusCircleProps>`
     }
 `;
 
-const Editable = styled(ContentEditable)<{ textcolor: string }>`
+const Editable = styled(ContentEditable)<{ textcolor: string, bgColor?: string }>`
     height: 100%;
     width: 100%;
     min-height: 38px;
@@ -248,9 +251,11 @@ const Editable = styled(ContentEditable)<{ textcolor: string }>`
     line-height: 2rem;
     padding-top: 8px;
     outline: 0px solid transparent;
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--ion-background-color);
-    }
+    background-color: ${({ bgColor }) =>
+        bgColor
+            ? `var(--ion-color-${bgColor})`
+            : "var(--ion-background-color)"};
+    
     &:-webkit-autofill,
     .dark &:-webkit-autofill,
     &:-webkit-autofill:hover,
