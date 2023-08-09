@@ -54,11 +54,13 @@ export const DateTimePicker: React.FC<props> = ({
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [error, setError] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const datePickerRef = useRef<HTMLDivElement>(null);
     const [showPsw, setShowPsw] = useState(false);
     const {
         register,
         formState: { errors, isSubmitting },
         getValues,
+        setValue
     } = useFormContext();
 
     useEffect(() => {
@@ -71,10 +73,15 @@ export const DateTimePicker: React.FC<props> = ({
         if (!hide) return;
         hide.classList.remove("hide");
     });
-    const formattedDate = dayjs().format("LLLL");
+
+    useOnClickOutside(datePickerRef, () => {
+        if (showDatePicker) {
+            setShowDatePicker(false);
+        }
+    });
 
     const [selectedYear, setSelectedYear] = useState(dayjs().year());
-    const [selectedMonth, setSelectedMonth] = useState(dayjs().month() + 1);
+    const [selectedMonth, setSelectedMonth] = useState(dayjs().month());
     const [selectedDay, setSelectedDay] = useState(dayjs().date());
 
     const handleYearSelect = (year: number) => {
@@ -82,57 +89,162 @@ export const DateTimePicker: React.FC<props> = ({
     };
 
     const handleMonthSelect = (month: number) => {
-        setSelectedMonth(month);
+        setSelectedMonth(month );
     };
-    const handleDaySelect = (month: number) => {
-        setSelectedDay(month);
+    const handleDaySelect = (date: number) => {
+        setSelectedDay(date);
     };
-
-    
- 
 
     const yearListRef = useRef<HTMLDivElement | null>(null);
-    const centerSelectedYear =useCallback( (smooth=true) => {
-      console.log('*****', selectedYear)
-      if(!showDatePicker) return
-      console.log('ok')
-      if(! yearListRef.current ) {
-        setTimeout(()=> {
-          centerSelectedYear()
-        }, 100)
-        return
-      }
-          const selectedYearElement = yearListRef.current.querySelector('.selected') as HTMLSpanElement | null;
-          if (selectedYearElement) {
-              const containerWidth = yearListRef.current.offsetWidth;
-              const selectedYearOffsetLeft = selectedYearElement.offsetLeft;
-              const selectedYearWidth = selectedYearElement.offsetWidth;
+    const datePickerColumnsRef = useRef<HTMLDivElement | null>(null);
+    const monthPickerColumnsRef = useRef<HTMLDivElement | null>(null);
 
-              // Calculate the scroll position to center the selected year
+    const centerSelectedYear = useCallback(
+        (smooth = true) => {
+            if (!showDatePicker) return;
+            if (!yearListRef.current) {
+                setTimeout(() => {
+                    centerSelectedYear();
+                }, 100);
+                return;
+            }
+            const selectedYearElement = yearListRef.current.querySelector(
+                ".selected"
+            ) as HTMLSpanElement | null;
+            if (selectedYearElement) {
+                const containerWidth = yearListRef.current.offsetWidth;
+                const selectedYearOffsetLeft = selectedYearElement.offsetLeft;
+                const selectedYearWidth = selectedYearElement.offsetWidth;
+
+                // Calculate the scroll position to center the selected year
+                const scrollPosition =
+                    selectedYearOffsetLeft - containerWidth / 2;
+                yearListRef.current.scrollTo({
+                    left: scrollPosition,
+                    behavior: smooth ? "smooth" : "instant",
+                });
+            }
+        },
+        [selectedDay, yearListRef, showDatePicker]
+    );
+
+    const centerSelectedDay = useCallback(
+        (smooth = true) => {
+            if (!showDatePicker) return;
+
+            if (!datePickerColumnsRef.current) {
+                setTimeout(() => {
+                    centerSelectedDay();
+                }, 100);
+                return;
+            }
+            const selectedDayElement =
+                datePickerColumnsRef.current.querySelector(
+                    ".selected"
+                ) as HTMLDivElement | null;
+            if (selectedDayElement) {
+                const containerHeight =
+                    datePickerColumnsRef.current.offsetHeight;
+                const selectedDayOffsetTop = selectedDayElement.offsetTop;
+                const selectedDayHeight = selectedDayElement.offsetHeight;
+
+                // Calculate the scroll position to center the selected day
+                const scrollPosition =
+                    selectedDayOffsetTop -
+                    containerHeight / 2 -
+                    selectedDayHeight ;
+                datePickerColumnsRef.current?.scrollTo({
+                    top: scrollPosition,
+                    behavior: smooth ? "smooth" : "instant",
+                });
+            }
+        },
+        [selectedDay, datePickerColumnsRef, showDatePicker]
+    );
+
+    const centerSelectedMonth = useCallback(
+      (smooth = true) => {
+          if (!showDatePicker) return;
+
+          if (!monthPickerColumnsRef.current) {
+              setTimeout(() => {
+                  centerSelectedMonth();
+              }, 100);
+              return;
+          }
+          const selectedMonthElement =
+              monthPickerColumnsRef.current.querySelector(
+                  ".selected"
+              ) as HTMLDivElement | null;
+          if (selectedMonthElement) {
+              const containerHeight =
+                  monthPickerColumnsRef.current.offsetHeight;
+              const selectedDayOffsetTop = selectedMonthElement.offsetTop;
+              const selectedDayHeight = selectedMonthElement.offsetHeight;
+
+              // Calculate the scroll position to center the selected day
               const scrollPosition =
-                  selectedYearOffsetLeft - (containerWidth - selectedYearWidth) / 2;
-                  console.log('scrollPosition',scrollPosition)
-              yearListRef.current.scrollTo({
-                  left: scrollPosition,
-                  behavior: smooth ? 'smooth' : 'instant',
+                  selectedDayOffsetTop -
+                  containerHeight / 2 -
+                  selectedDayHeight ;
+              monthPickerColumnsRef.current.scrollTo({
+                  top: scrollPosition,
+                  behavior: smooth ? "smooth" : "instant",
               });
           }
-      
-      
-  }, [selectedDay, yearListRef, showDatePicker])
+      },
+      [selectedMonth, monthPickerColumnsRef, showDatePicker]
+  );
+
     useEffect(() => {
-        centerSelectedYear()
+        centerSelectedYear();
     }, [selectedYear]);
 
-    useEffect(()=> {
-      setSelectedYear(dayjs(getValues(name) && getValues(name).length>0 ? getValues(name) : new Date()).year())
-    },[])
+    useEffect(() => {
+        centerSelectedDay();
+    }, [selectedDay]);
+
+    useEffect(() => {
+        centerSelectedMonth();
+        setSelectedDay(Math.min(dayjs().set('y',selectedYear).set('month', selectedMonth).endOf('month').date(), selectedDay))
+    }, [selectedMonth]);
 
     useEffect(()=> {
-      if(showDatePicker){
-        centerSelectedYear(false)
-      }
-    }, [showDatePicker])
+      setValue(name, dayjs().set('y',selectedYear).set('month', selectedMonth).set('date', selectedDay).format('ll'))
+    }, [selectedDay, selectedMonth, selectedYear])
+
+    useEffect(() => {
+        setSelectedYear(
+            dayjs(
+                getValues(name) && getValues(name).length > 0
+                    ? getValues(name)
+                    : new Date()
+            ).year()
+        );
+        setSelectedMonth(
+            dayjs(
+                getValues(name) && getValues(name).length > 0
+                    ? getValues(name)
+                    : new Date()
+            ).month()
+        );
+        setSelectedDay(
+            dayjs(
+                getValues(name) && getValues(name).length > 0
+                    ? getValues(name)
+                    : new Date()
+            ).date()
+        );
+        
+    }, []);
+
+    useEffect(() => {
+        if (showDatePicker) {
+            centerSelectedYear(false);
+            centerSelectedDay(false);
+            centerSelectedMonth(false);
+        }
+    }, [showDatePicker]);
 
     return (
         <Wrapper className={`${isSubmitting ? "submitting" : ""}`}>
@@ -150,15 +262,14 @@ export const DateTimePicker: React.FC<props> = ({
             <InputWrapper ref={ref} color={color}>
                 <StyledInput
                     id={name}
+                    value={getValues(name)}
                     onFocus={(e) => {
                         e.preventDefault();
-                        console.log("test");
                         setFocused(true);
                         setShowDatePicker(true); // Show DatePicker on focus
                     }}
                     onClick={(e) => {
                         e.preventDefault();
-                        console.log("test");
                         setFocused(true);
                         setShowDatePicker(true); // Show DatePicker on click
                     }}
@@ -169,6 +280,7 @@ export const DateTimePicker: React.FC<props> = ({
                     bgColor={bgColor}
                     {...register(name, {
                         onChange: (v) => {
+                          console.log('changed v')
                             setCompiled(v.target.value.length > 0);
                         },
                         required: {
@@ -208,24 +320,89 @@ export const DateTimePicker: React.FC<props> = ({
             )}
             {/* Hidden DatePicker */}
             {showDatePicker && (
-                <DatePickerContainer>
-                    <DatePickerHeader>{formattedDate}</DatePickerHeader>
+                <DatePickerContainer ref={datePickerRef}>
                     <YearSelectionHeader>
                         <Icon name="arrowBack" color="dark" />
-                          <YearList ref={yearListRef}>
-                              
-                                  { Array.from({length: 50},  ((_, i)=> {
-                                    const year = dayjs().add(i-39,'years').year()
-                                    const selected = year == selectedYear
-                                    return <span key={i} className={selected ? 'selected' : ''} onClick={()=>handleYearSelect(year)} > 
-                                      {year}
-                                  </span>
-                                  }))}
-                              
-                          </YearList>
+                        <YearList ref={yearListRef}>
+                            {Array.from({ length: 50 }, (_, i) => {
+                                const year = dayjs()
+                                    .add(i - 39, "years")
+                                    .year();
+                                const selected = year == selectedYear;
+                                return (
+                                    <span
+                                        key={i}
+                                        className={selected ? "selected" : ""}
+                                        onClick={() => handleYearSelect(year)}
+                                    >
+                                        {year}
+                                    </span>
+                                );
+                            })}
+                        </YearList>
                         <Icon name="arrowForward" color="dark" />
                     </YearSelectionHeader>
-                   
+                    <DatePickerColumns>
+                        <Column>
+                            <ColumnTitle>Days</ColumnTitle>
+                            <Columnitems ref={datePickerColumnsRef}>
+                                {Array.from(
+                                    {
+                                        length: dayjs()
+                                            .set("year", selectedYear)
+                                            .set("month", selectedMonth)
+                                            .endOf("month")
+                                            .date(),
+                                    },
+                                    (_, index) => {
+                                        return (
+                                            <ColumnItem
+                                                key={index + 1}
+                                                className={
+                                                    index + 1 === selectedDay
+                                                        ? "selected"
+                                                        : ""
+                                                }
+                                                onClick={() =>
+                                                    handleDaySelect(index + 1)
+                                                }
+                                            >
+                                                {index + 1}
+                                            </ColumnItem>
+                                        );
+                                    }
+                                )}
+                            </Columnitems>
+                        </Column>
+                        <Column >
+                            <ColumnTitle>Month</ColumnTitle>
+                            <Columnitems ref={monthPickerColumnsRef}>
+                                {Array.from(
+                                    {
+                                        length: 12
+                                    },
+                                    (_, index) => {
+                                        
+                                        return (
+                                            <ColumnItem
+                                                key={index }
+                                                className={
+                                                    index  === selectedMonth
+                                                        ? "selected"
+                                                        : ""
+                                                }
+                                                onClick={() =>
+                                                    handleMonthSelect(index )
+                                                }
+                                            >
+                                                {dayjs().set('month', index).format('MMM')}
+                                            </ColumnItem>
+                                        );
+                                    }
+                                )}
+                            </Columnitems>
+                        </Column>
+                    </DatePickerColumns>
                 </DatePickerContainer>
             )}
         </Wrapper>
@@ -384,13 +561,6 @@ const DatePickerContainer = styled.div`
     padding: 10px;
 `;
 
-const DatePickerHeader = styled.div`
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    cursor: pointer;
-`;
-
 const YearSelectionHeader = styled.div`
     display: flex;
     align-items: center;
@@ -405,16 +575,19 @@ const YearList = styled.div`
     display: flex;
     gap: 8px;
     max-width: calc(100% - 80px);
-    padding: 10px 40px;
+    padding: 10px 10px;
     scroll-snap-type: x proximity;
     overflow-x: scroll;
+    position: relative;
     > span {
+        scroll-snap-align: center;
         color: #000;
-        opacity: .5;
+        opacity: 0.5;
+        font-size: 2.2rem;
         &.selected {
-          opacity: 1;
+            opacity: 1;
         }
-      }
+    }
 `;
 
 const YearItem = styled.div<{ selected: boolean }>`
@@ -428,6 +601,7 @@ const YearItem = styled.div<{ selected: boolean }>`
 const DatePickerColumns = styled.div`
     display: flex;
     gap: 20px;
+    justify-content: space-around;
 `;
 
 const Column = styled.div`
@@ -437,20 +611,33 @@ const Column = styled.div`
 
 const ColumnTitle = styled.div`
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 2.2rem;
     margin-bottom: 8px;
 `;
+const Columnitems = styled.div`
+    display: flex;
+    flex-direction: column;
+    max-height: 250px;
+    overflow-y: scroll;
+    scroll-snap-type: y proximity;
+`;
 
-const ColumnItem = styled.div<{ selected: boolean }>`
+const ColumnItem = styled.div`
     padding: 5px 10px;
     border: 1px solid lightgray;
     border-radius: 4px;
+    scroll-snap-align: center;
     cursor: pointer;
-    background-color: ${({ selected }) => (selected ? "lightgray" : "white")};
+
     margin-bottom: 5px;
+    font-size: 4rem;
+    &.selected {
+        background-color: lightgrey;
+    }
 `;
 
- {/* <DatePickerColumns>
+{
+    /* <DatePickerColumns>
                         <Column>
                             <ColumnTitle>Days</ColumnTitle>
                             {Array.from({ length: 31 }, (_, index) => (
@@ -475,4 +662,5 @@ const ColumnItem = styled.div<{ selected: boolean }>`
                                 </ColumnItem>
                             ))}
                         </Column>
-                    </DatePickerColumns> */}
+                    </DatePickerColumns> */
+}
