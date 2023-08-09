@@ -121,7 +121,7 @@ export const DateTimePicker: React.FC<props> = ({
                     selectedYearOffsetLeft - containerWidth / 2;
                 yearListRef.current.scrollTo({
                     left: scrollPosition,
-                    behavior: smooth ? "smooth" : "instant",
+                    behavior: smooth ? "smooth" : undefined,
                 });
             }
         },
@@ -155,7 +155,7 @@ export const DateTimePicker: React.FC<props> = ({
                     selectedDayHeight ;
                 datePickerColumnsRef.current?.scrollTo({
                     top: scrollPosition,
-                    behavior: smooth ? "smooth" : "instant",
+                    behavior: smooth ? "smooth" : undefined,
                 });
             }
         },
@@ -189,7 +189,7 @@ export const DateTimePicker: React.FC<props> = ({
                   selectedDayHeight ;
               monthPickerColumnsRef.current.scrollTo({
                   top: scrollPosition,
-                  behavior: smooth ? "smooth" : "instant",
+                  behavior: smooth ? "smooth" : undefined,
               });
           }
       },
