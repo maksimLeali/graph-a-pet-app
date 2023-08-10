@@ -11,6 +11,7 @@ import { I18NKey } from "../../i18n";
 
 import { IconName, Icon } from "../icons";
 import dayjs from "dayjs";
+import { today } from "ionicons/icons";
 
 type props = {
     name: string;
@@ -110,7 +111,7 @@ export const DateTimePicker: React.FC<props> = ({
             }
             const selectedYearElement = yearListRef.current.querySelector(
                 ".selected"
-            ) as HTMLSpanElement | null;
+            ) as HTMLSpanElement || yearListRef.current.querySelector('.today');
             if (selectedYearElement) {
                 const containerWidth = yearListRef.current.offsetWidth;
                 const selectedYearOffsetLeft = selectedYearElement.offsetLeft;
@@ -141,7 +142,7 @@ export const DateTimePicker: React.FC<props> = ({
             const selectedDayElement =
                 datePickerColumnsRef.current.querySelector(
                     ".selected"
-                ) as HTMLDivElement | null;
+                ) as HTMLDivElement || datePickerColumnsRef.current.querySelector('.today');
             if (selectedDayElement) {
                 const containerHeight =
                     datePickerColumnsRef.current.offsetHeight;
@@ -175,7 +176,7 @@ export const DateTimePicker: React.FC<props> = ({
           const selectedMonthElement =
               monthPickerColumnsRef.current.querySelector(
                   ".selected"
-              ) as HTMLDivElement | null;
+              ) as HTMLDivElement || monthPickerColumnsRef.current.querySelector('.today');
           if (selectedMonthElement) {
               const containerHeight =
                   monthPickerColumnsRef.current.offsetHeight;
@@ -215,6 +216,7 @@ export const DateTimePicker: React.FC<props> = ({
     useEffect(()=> {
         if(!selectedDay || selectedMonth == undefined || !selectedYear) return
       setValue(name, dayjs().set('y',selectedYear).set('month', selectedMonth).set('date', selectedDay).format('ll'))
+      setCompiled(true);
     }, [selectedDay, selectedMonth, selectedYear])
 
     useEffect(() => {
@@ -329,10 +331,11 @@ export const DateTimePicker: React.FC<props> = ({
                                     .add(i - 39, "years")
                                     .year();
                                 const selected = year == selectedYear;
+                                
                                 return (
                                     <span
                                         key={i}
-                                        className={selected ? "selected" : ""}
+                                        className={`${selected ? "selected" : ""} ${year == dayjs().year() ? 'today' : ''}`}
                                         onClick={() => handleYearSelect(year)}
                                     >
                                         {year}
@@ -353,17 +356,23 @@ export const DateTimePicker: React.FC<props> = ({
                                             .set("month", selectedMonth)
                                             .endOf("month")
                                             .date() 
-                                            : 31 
+                                            : 
+                                            selectedMonth 
+                                                ? dayjs().set("month", selectedMonth).endOf("month").date() 
+                                                : dayjs().endOf("month").date()
                                             ,
                                     },
                                     (_, index) => {
                                         return (
                                             <ColumnItem
                                                 key={index + 1}
-                                                className={
+                                                className={`${
                                                     index + 1 === selectedDay
                                                         ? "selected"
                                                         : ""
+                                                    } ${
+                                                        index +1 == dayjs().date() ? 'today' : ''
+                                                    }`
                                                 }
                                                 onClick={() =>
                                                     handleDaySelect(index + 1)
@@ -388,10 +397,13 @@ export const DateTimePicker: React.FC<props> = ({
                                         return (
                                             <ColumnItem
                                                 key={index }
-                                                className={
+                                                className={`${
                                                     index  === selectedMonth
                                                         ? "selected"
                                                         : ""
+                                                    } ${
+                                                        index == dayjs().month() ? 'today' : ''
+                                                    }`
                                                 }
                                                 onClick={() =>
                                                     handleMonthSelect(index )
@@ -577,7 +589,8 @@ const YearList = styled.div`
     display: flex;
     gap: 8px;
     max-width: calc(100% - 80px);
-    padding: 10px 10px;
+    padding: 10px 120px;
+    box-sizing: border-box;
     scroll-snap-type: x proximity;
     overflow-x: scroll;
     position: relative;
@@ -586,18 +599,11 @@ const YearList = styled.div`
         color: #000;
         opacity: 0.5;
         font-size: 2.2rem;
+        width: 60px;
         &.selected {
             opacity: 1;
         }
     }
-`;
-
-const YearItem = styled.div<{ selected: boolean }>`
-    padding: 5px 10px;
-    border: 1px solid lightgray;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: ${({ selected }) => (selected ? "lightgray" : "white")};
 `;
 
 const DatePickerColumns = styled.div`
@@ -609,6 +615,7 @@ const DatePickerColumns = styled.div`
 const Column = styled.div`
     display: flex;
     flex-direction: column;
+   
 `;
 
 const ColumnTitle = styled.div`
@@ -622,11 +629,13 @@ const Columnitems = styled.div`
     max-height: 250px;
     overflow-y: scroll;
     scroll-snap-type: y proximity;
+    padding: calc(100%/2 + 65px)  0;
 `;
 
 const ColumnItem = styled.div`
     padding: 5px 10px;
-    
+    height: 50px;
+    text-transform: capitalize;
     border-radius: 4px;
     scroll-snap-align: center;
     cursor: pointer;
