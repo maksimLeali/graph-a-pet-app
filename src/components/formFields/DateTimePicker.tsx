@@ -80,9 +80,9 @@ export const DateTimePicker: React.FC<props> = ({
         }
     });
 
-    const [selectedYear, setSelectedYear] = useState(dayjs().year());
-    const [selectedMonth, setSelectedMonth] = useState(dayjs().month());
-    const [selectedDay, setSelectedDay] = useState(dayjs().date());
+    const [selectedYear, setSelectedYear] = useState<number>();
+    const [selectedMonth, setSelectedMonth] = useState<number>();
+    const [selectedDay, setSelectedDay] = useState<number>();
 
     const handleYearSelect = (year: number) => {
         setSelectedYear(year);
@@ -205,34 +205,34 @@ export const DateTimePicker: React.FC<props> = ({
     }, [selectedDay]);
 
     useEffect(() => {
+        if( undefined== selectedMonth ) return
         centerSelectedMonth();
-        setSelectedDay(Math.min(dayjs().set('y',selectedYear).set('month', selectedMonth).endOf('month').date(), selectedDay))
+        if(!selectedYear || !selectedDay) return
+        setSelectedDay(Math.min(dayjs().set('y',selectedYear).set('month', selectedMonth).endOf('month').date(), selectedDay ))
+
     }, [selectedMonth]);
 
     useEffect(()=> {
+        if(!selectedDay || selectedMonth == undefined || !selectedYear) return
       setValue(name, dayjs().set('y',selectedYear).set('month', selectedMonth).set('date', selectedDay).format('ll'))
     }, [selectedDay, selectedMonth, selectedYear])
 
     useEffect(() => {
+        const value = getValues(name)
+        if(!value) return
         setSelectedYear(
             dayjs(
-                getValues(name) && getValues(name).length > 0
-                    ? getValues(name)
-                    : new Date()
+                value
             ).year()
         );
         setSelectedMonth(
             dayjs(
-                getValues(name) && getValues(name).length > 0
-                    ? getValues(name)
-                    : new Date()
+                value 
             ).month()
         );
         setSelectedDay(
             dayjs(
-                getValues(name) && getValues(name).length > 0
-                    ? getValues(name)
-                    : new Date()
+                value
             ).date()
         );
         
@@ -348,11 +348,13 @@ export const DateTimePicker: React.FC<props> = ({
                             <Columnitems ref={datePickerColumnsRef}>
                                 {Array.from(
                                     {
-                                        length: dayjs()
+                                        length: selectedYear && selectedMonth ? dayjs()
                                             .set("year", selectedYear)
                                             .set("month", selectedMonth)
                                             .endOf("month")
-                                            .date(),
+                                            .date() 
+                                            : 31 
+                                            ,
                                     },
                                     (_, index) => {
                                         return (
@@ -624,15 +626,16 @@ const Columnitems = styled.div`
 
 const ColumnItem = styled.div`
     padding: 5px 10px;
-    border: 1px solid lightgray;
+    
     border-radius: 4px;
     scroll-snap-align: center;
     cursor: pointer;
+    color: #0008;
 
     margin-bottom: 5px;
     font-size: 4rem;
     &.selected {
-        background-color: lightgrey;
+        color: #000;
     }
 `;
 
