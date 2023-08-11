@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
     RegisterOptions,
     useFormContext,
-    UseFormRegister,
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -11,7 +10,8 @@ import { I18NKey } from "../../i18n";
 
 import { IconName, Icon } from "../icons";
 import dayjs from "dayjs";
-import { today } from "ionicons/icons";
+import { IonButton } from "@ionic/react";
+
 
 type props = {
     name: string;
@@ -43,8 +43,9 @@ export const DateTimePicker: React.FC<props> = ({
     focusColor = "primary",
     disabledColor = "lightGray",
     errorColor = "danger",
-    minDate,
-    maxDate,
+    // minDate= dayjs().subtract(30,'y').startOf('y').toISOString(),
+    minDate='1980-03-08T10:00:00.00Z',
+    maxDate=dayjs().add(5,'y').endOf('year').toISOString(),
     bgColor,
     icon,
     name,
@@ -57,12 +58,15 @@ export const DateTimePicker: React.FC<props> = ({
     const ref = useRef<HTMLDivElement>(null);
     const datePickerRef = useRef<HTMLDivElement>(null);
     const [showPsw, setShowPsw] = useState(false);
+ 
     const {
         register,
         formState: { errors, isSubmitting },
         getValues,
         setValue
     } = useFormContext();
+
+    const previousValue = getValues(name);
 
     useEffect(() => {
         setError(errors[name] != undefined);
@@ -77,9 +81,27 @@ export const DateTimePicker: React.FC<props> = ({
 
     useOnClickOutside(datePickerRef, () => {
         if (showDatePicker) {
-            setShowDatePicker(false);
+           reset()
         }
     });
+
+    const reset= ()=> {
+        setSelectedDay(undefined)
+        setSelectedMonth(undefined)
+        setSelectedYear(undefined)
+        setShowDatePicker(false);
+    }
+
+    const confirm= ()=> {
+        if(!selectedDay || selectedMonth == undefined || !selectedYear) return
+        setValue(name, dayjs().set('y',selectedYear).set('month', selectedMonth).set('date', selectedDay).format('ll'))
+        setCompiled(true);
+        setShowDatePicker(false);
+    }
+
+    const todayDate = dayjs().date()
+    const todayMonth = dayjs().month()
+    const todayYear = dayjs().year()
 
     const [selectedYear, setSelectedYear] = useState<number>();
     const [selectedMonth, setSelectedMonth] = useState<number>();
@@ -197,6 +219,29 @@ export const DateTimePicker: React.FC<props> = ({
       [selectedMonth, monthPickerColumnsRef, showDatePicker]
   );
 
+  const getMaxDateLength =useCallback(()=> {
+    if(selectedYear && selectedMonth ){
+        console.log('min date start ', dayjs(minDate).toISOString())
+        console.log('min date end ', dayjs(minDate).endOf('month').toISOString())
+        console.log('days ',(dayjs(minDate).endOf('month').diff(dayjs(minDate), "days")))
+    }
+    return selectedYear && selectedMonth
+        ? selectedYear == dayjs(minDate).year() 
+            ? selectedMonth == dayjs(minDate).month() 
+                ? (dayjs(minDate).endOf('month').diff(dayjs(minDate), "days"))
+                : dayjs(minDate).endOf('month').date()
+
+
+            : dayjs()
+                .set("year", selectedYear)
+                .set("month", selectedMonth)
+                .endOf("month")
+                .date() 
+        : selectedMonth 
+            ? dayjs().set("month", selectedMonth).endOf("month").date() 
+            : dayjs().endOf("month").date()
+  }, [selectedDay, selectedMonth, minDate])
+
     useEffect(() => {
         centerSelectedYear();
     }, [selectedYear]);
@@ -213,11 +258,6 @@ export const DateTimePicker: React.FC<props> = ({
 
     }, [selectedMonth]);
 
-    useEffect(()=> {
-        if(!selectedDay || selectedMonth == undefined || !selectedYear) return
-      setValue(name, dayjs().set('y',selectedYear).set('month', selectedMonth).set('date', selectedDay).format('ll'))
-      setCompiled(true);
-    }, [selectedDay, selectedMonth, selectedYear])
 
     useEffect(() => {
         const value = getValues(name)
@@ -326,16 +366,17 @@ export const DateTimePicker: React.FC<props> = ({
                     <YearSelectionHeader>
                         <Icon name="arrowBack" color="dark" />
                         <YearList ref={yearListRef}>
-                            {Array.from({ length: 50 }, (_, i) => {
+                            {Array.from({ length: dayjs(maxDate).diff(minDate, 'y') }, (_, i) => {
+                                
                                 const year = dayjs()
-                                    .add(i - 39, "years")
+                                    .add(i - dayjs().diff(minDate, 'y'), "years")
                                     .year();
                                 const selected = year == selectedYear;
                                 
                                 return (
                                     <span
                                         key={i}
-                                        className={`${selected ? "selected" : ""} ${year == dayjs().year() ? 'today' : ''}`}
+                                        className={`${selected ? "selected" : ""} ${year == todayYear ? 'today' : ''}`}
                                         onClick={() => handleYearSelect(year)}
                                     >
                                         {year}
@@ -351,34 +392,28 @@ export const DateTimePicker: React.FC<props> = ({
                             <Columnitems ref={datePickerColumnsRef}>
                                 {Array.from(
                                     {
-                                        length: selectedYear && selectedMonth ? dayjs()
-                                            .set("year", selectedYear)
-                                            .set("month", selectedMonth)
-                                            .endOf("month")
-                                            .date() 
-                                            : 
-                                            selectedMonth 
-                                                ? dayjs().set("month", selectedMonth).endOf("month").date() 
-                                                : dayjs().endOf("month").date()
-                                            ,
+                                        length: getMaxDateLength() ,
                                     },
                                     (_, index) => {
+                                        const offset = selectedYear && selectedMonth  && selectedYear == dayjs(minDate).year() && selectedMonth == dayjs(minDate).month() 
+                                            ? dayjs(minDate).diff(dayjs(minDate).startOf('month'), 'days') +1
+                                            : 1
                                         return (
                                             <ColumnItem
-                                                key={index + 1}
+                                                key={index + offset}
                                                 className={`${
-                                                    index + 1 === selectedDay
+                                                    index + offset === selectedDay
                                                         ? "selected"
                                                         : ""
                                                     } ${
-                                                        index +1 == dayjs().date() ? 'today' : ''
+                                                        index +offset == todayDate ? 'today' : ''
                                                     }`
                                                 }
                                                 onClick={() =>
-                                                    handleDaySelect(index + 1)
+                                                    handleDaySelect(index + offset)
                                                 }
                                             >
-                                                {index + 1}
+                                                {index + offset}
                                             </ColumnItem>
                                         );
                                     }
@@ -402,7 +437,7 @@ export const DateTimePicker: React.FC<props> = ({
                                                         ? "selected"
                                                         : ""
                                                     } ${
-                                                        index == dayjs().month() ? 'today' : ''
+                                                        index == todayMonth ? 'today' : ''
                                                     }`
                                                 }
                                                 onClick={() =>
@@ -417,6 +452,10 @@ export const DateTimePicker: React.FC<props> = ({
                             </Columnitems>
                         </Column>
                     </DatePickerColumns>
+                    <Actions>
+                        <IonButton color="danger" fill="outline" onClick={reset} >{t('actions.cancel')}</IonButton>
+                        <IonButton color="primary" onClick={confirm}  disabled={!selectedDay || !selectedYear || selectedMonth== undefined} >{t('actions.confirm')} </IonButton>
+                    </Actions>
                 </DatePickerContainer>
             )}
         </Wrapper>
@@ -564,15 +603,18 @@ const ErrorSpan = styled.span`
 const DatePickerContainer = styled.div`
     display: flex;
     flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width:calc(var(--max-width) - 40px); /* Adjust the maximum width as needed */
     background-color: white;
     color: #000;
     border: 1px solid lightgray;
     z-index: 3;
     padding: 10px;
+
 `;
 
 const YearSelectionHeader = styled.div`
@@ -648,31 +690,8 @@ const ColumnItem = styled.div`
     }
 `;
 
-{
-    /* <DatePickerColumns>
-                        <Column>
-                            <ColumnTitle>Days</ColumnTitle>
-                            {Array.from({ length: 31 }, (_, index) => (
-                                <ColumnItem
-                                    key={index + 1}
-                                    selected={index + 1 === dayjs(selectedDay).date()}
-                                    onClick={() => handleDaySelect(index + 1)}
-                                >
-                                    {index + 1}
-                                </ColumnItem>
-                            ))}
-                        </Column>
-                        <Column>
-                            <ColumnTitle>Months</ColumnTitle>
-                            {Array.from({ length: 12 }, (_, index) => (
-                                <ColumnItem
-                                    key={index + 1}
-                                    selected={index + 1 === selectedMonth}
-                                    onClick={() => handleMonthSelect(index + 1)}
-                                >
-                                    {dayjs().month(index).format("MMMM")}
-                                </ColumnItem>
-                            ))}
-                        </Column>
-                    </DatePickerColumns> */
-}
+const Actions = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+`
