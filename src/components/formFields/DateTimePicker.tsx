@@ -44,8 +44,9 @@ export const DateTimePicker: React.FC<props> = ({
     disabledColor = "lightGray",
     errorColor = "danger",
     // minDate= dayjs().subtract(30,'y').startOf('y').toISOString(),
-    minDate='1980-03-08T10:00:00.00Z',
-    maxDate=dayjs().add(5,'y').endOf('year').toISOString(),
+    minDate='1992-02-02T10:00:00.00Z',
+    // maxDate=dayjs().add(5,'y').endOf('year').toISOString(),
+    maxDate='2028-04-10T10:00:00.00Z',
     bgColor,
     icon,
     name,
@@ -57,8 +58,6 @@ export const DateTimePicker: React.FC<props> = ({
     const [error, setError] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const datePickerRef = useRef<HTMLDivElement>(null);
-    const [showPsw, setShowPsw] = useState(false);
- 
     const {
         register,
         formState: { errors, isSubmitting },
@@ -66,7 +65,6 @@ export const DateTimePicker: React.FC<props> = ({
         setValue
     } = useFormContext();
 
-    const previousValue = getValues(name);
 
     useEffect(() => {
         setError(errors[name] != undefined);
@@ -102,19 +100,27 @@ export const DateTimePicker: React.FC<props> = ({
     const todayDate = dayjs().date()
     const todayMonth = dayjs().month()
     const todayYear = dayjs().year()
+    const minYear = dayjs(minDate).year()
+    const minMonth = dayjs(minDate).month()
+    const minDay = dayjs(minDate).date()
+    const maxYear = dayjs(maxDate).year()
+    const maxMonth = dayjs(maxDate).month()
+    const maxDay = dayjs(maxDate).date()
 
-    const [selectedYear, setSelectedYear] = useState<number>();
-    const [selectedMonth, setSelectedMonth] = useState<number>();
-    const [selectedDay, setSelectedDay] = useState<number>();
+    const [selectedYear, setSelectedYear] = useState<number | undefined>();
+    const [selectedMonth, setSelectedMonth] = useState<number | undefined>();
+    const [selectedDay, setSelectedDay] = useState<number | undefined>();
 
     const handleYearSelect = (year: number) => {
-        setSelectedYear(year);
+        if(year !== selectedYear) handleMonthSelect(undefined)
+        setSelectedYear(year);  
     };
 
-    const handleMonthSelect = (month: number) => {
+    const handleMonthSelect = (month: number | undefined) => {
+        if(selectedMonth != month) handleDaySelect(undefined)
         setSelectedMonth(month );
     };
-    const handleDaySelect = (date: number) => {
+    const handleDaySelect = (date: number | undefined) => {
         setSelectedDay(date);
     };
 
@@ -137,7 +143,7 @@ export const DateTimePicker: React.FC<props> = ({
             if (selectedYearElement) {
                 const containerWidth = yearListRef.current.offsetWidth;
                 const selectedYearOffsetLeft = selectedYearElement.offsetLeft;
-                const selectedYearWidth = selectedYearElement.offsetWidth;
+                
 
                 // Calculate the scroll position to center the selected year
                 const scrollPosition =
@@ -220,27 +226,65 @@ export const DateTimePicker: React.FC<props> = ({
   );
 
   const getMaxDateLength =useCallback(()=> {
-    if(selectedYear && selectedMonth ){
-        console.log('min date start ', dayjs(minDate).toISOString())
-        console.log('min date end ', dayjs(minDate).endOf('month').toISOString())
-        console.log('days ',(dayjs(minDate).endOf('month').diff(dayjs(minDate), "days")))
+    if(!selectedYear && !selectedMonth ) return dayjs().endOf("month").date()
+    
+    if(!selectedYear) return dayjs().set("month", selectedMonth!).endOf("month").date() 
+    
+    if(selectedMonth == undefined) return dayjs().set('year', selectedYear!).endOf('month').date()
+    
+    if(![minYear, maxYear].includes(selectedYear)) return dayjs().set('year',selectedYear).set('month', selectedMonth).endOf('month').date()
+    
+    if(selectedYear == minYear ) {
+        if(minMonth == maxMonth) return dayjs(maxDate).diff(dayjs(minDate), 'days')
+        console.log('min month = sele',selectedMonth == minMonth, dayjs(minDate).endOf('month').diff(dayjs(minDate), "days") +1 )
+        if(selectedMonth == minMonth )  return dayjs(minDate).endOf('month').diff(dayjs(minDate), "days") +1 
+
+        return dayjs().set('year', selectedYear).set('month', selectedMonth).endOf('month').date()
     }
-    return selectedYear && selectedMonth
-        ? selectedYear == dayjs(minDate).year() 
-            ? selectedMonth == dayjs(minDate).month() 
-                ? (dayjs(minDate).endOf('month').diff(dayjs(minDate), "days"))
-                : dayjs(minDate).endOf('month').date()
+
+    if(selectedMonth == maxMonth) return dayjs(maxDate).date()
+    return dayjs().set('year', selectedYear).set('month', selectedMonth).endOf('month').date()
+  }, [selectedDay, selectedMonth,selectedYear,maxDate, minDate])
 
 
-            : dayjs()
-                .set("year", selectedYear)
-                .set("month", selectedMonth)
-                .endOf("month")
-                .date() 
-        : selectedMonth 
-            ? dayjs().set("month", selectedMonth).endOf("month").date() 
-            : dayjs().endOf("month").date()
-  }, [selectedDay, selectedMonth, minDate])
+  const getMaxMonthLength = useCallback(()=> {
+    if(!selectedYear) return 12
+    if(![minYear, maxYear].includes(selectedYear)) return 12
+    console.log(maxYear == minYear, dayjs(maxDate).diff(dayjs(minDate), 'months'))
+    if(maxYear == minYear) return dayjs(maxDate).diff(dayjs(minDate), 'months') +1
+
+    if(selectedYear == maxYear) return dayjs(maxDate).month() +1
+    return dayjs(minDate).endOf('year').diff(dayjs(minDate), 'months') +1
+    
+  }, [ selectedMonth,selectedYear,maxDate, minDate])
+
+
+  const getDaysOffset= ()=> {
+    if(!selectedYear ) return 1
+    if(selectedMonth == undefined ) return 1
+    if(maxYear == minYear ){
+        if(maxMonth == minMonth ) return dayjs(minDate).date() 
+        if( selectedMonth != minMonth ) return 1
+        return  dayjs(minDate).date() 
+    }
+    
+    if(![maxYear, minYear].includes(selectedYear)) return 1
+    // -- qua includo anche il caso di maxMonth == selected month in quanto l'offset di giorni per la tada massim è comunque di 1 che sia o meno il mese massimo
+    
+    if(selectedYear == maxYear ) return 1
+    // TODO provare a mettere al posto che le due condizioni qua sopra un semplice if(selectedYear != minYear)
+
+    if( selectedMonth != minMonth ) return 1
+    return  dayjs(minDate).date() 
+    }
+
+    const getMonthOffset= ()=> {
+        if(!selectedYear ) return 0
+        if(![maxYear, minYear].includes(selectedYear)) return 0
+        if(maxYear == minYear) return dayjs(minDate).month()
+        if(selectedYear == maxYear) return 0
+        return  dayjs(minDate).month()
+    }
 
     useEffect(() => {
         centerSelectedYear();
@@ -261,7 +305,9 @@ export const DateTimePicker: React.FC<props> = ({
 
     useEffect(() => {
         const value = getValues(name)
+        console.log('at start',selectedMonth, selectedYear)
         if(!value) return
+        console.log(value)
         setSelectedYear(
             dayjs(
                 value
@@ -304,7 +350,7 @@ export const DateTimePicker: React.FC<props> = ({
             <InputWrapper ref={ref} color={color}>
                 <StyledInput
                     id={name}
-                    value={getValues(name)}
+                    value={getValues(name) || ''}
                     onFocus={(e) => {
                         e.preventDefault();
                         setFocused(true);
@@ -366,7 +412,7 @@ export const DateTimePicker: React.FC<props> = ({
                     <YearSelectionHeader>
                         <Icon name="arrowBack" color="dark" />
                         <YearList ref={yearListRef}>
-                            {Array.from({ length: dayjs(maxDate).diff(minDate, 'y') }, (_, i) => {
+                            {Array.from({ length: dayjs(maxDate).endOf('year').diff(dayjs(minDate).startOf('year'), 'y') +1 }, (_, i) => {
                                 
                                 const year = dayjs()
                                     .add(i - dayjs().diff(minDate, 'y'), "years")
@@ -395,9 +441,7 @@ export const DateTimePicker: React.FC<props> = ({
                                         length: getMaxDateLength() ,
                                     },
                                     (_, index) => {
-                                        const offset = selectedYear && selectedMonth  && selectedYear == dayjs(minDate).year() && selectedMonth == dayjs(minDate).month() 
-                                            ? dayjs(minDate).diff(dayjs(minDate).startOf('month'), 'days') +1
-                                            : 1
+                                        const offset = getDaysOffset()
                                         return (
                                             <ColumnItem
                                                 key={index + offset}
@@ -423,28 +467,29 @@ export const DateTimePicker: React.FC<props> = ({
                         <Column >
                             <ColumnTitle>Month</ColumnTitle>
                             <Columnitems ref={monthPickerColumnsRef}>
-                                {Array.from(
+                                {  
+                                Array.from(
                                     {
-                                        length: 12
+                                        length: getMaxMonthLength()
                                     },
                                     (_, index) => {
-                                        
+                                        const offset = getMonthOffset()
                                         return (
                                             <ColumnItem
-                                                key={index }
+                                                key={index + offset }
                                                 className={`${
-                                                    index  === selectedMonth
+                                                    index +offset === selectedMonth
                                                         ? "selected"
                                                         : ""
                                                     } ${
-                                                        index == todayMonth ? 'today' : ''
+                                                        index + offset == todayMonth ? 'today' : ''
                                                     }`
                                                 }
                                                 onClick={() =>
-                                                    handleMonthSelect(index )
+                                                    handleMonthSelect(index + offset )
                                                 }
                                             >
-                                                {dayjs().set('month', index).format('MMM')}
+                                                {dayjs().set('month', index + offset).format('MMM')}
                                             </ColumnItem>
                                         );
                                     }
