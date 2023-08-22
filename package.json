@@ -9,8 +9,6 @@
     "start:dev": "cp -v ./src/environments/environment.dev.ts ./src/environments/environment.ts && vite --host ",
     "start:staging": "cp -v ./src/environments/environment.staging.ts ./src/environments/environment.ts && vite --host ",
     "start:prod": "cp -v ./src/environments/environment.prod.ts ./src/environments/environment.ts && vite --host ",
-    
-    
     "build": "NODE_ENV=local tsc && vite build",
     "build:local": "NODE_ENV=local ionic build --configuration=local",
     "preview": "vite preview",
