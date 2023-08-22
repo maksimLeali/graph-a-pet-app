@@ -1,0 +1,245 @@
+.
+|____ionic.config.json
+|____tsconfig.node.json
+|____index.html
+|____.DS_Store
+|____.env.local
+|____serviceAccountKey.json
+|____yarn-error.log
+|____.firebase
+| |____hosting.ZGlzdA.cache
+|____Dockerfile
+|____.firebaserc
+|____.env.prod
+|____codegen.yml
+|____yarn.lock
+|____.dockerignore
+|____public
+| |____favicon-16x16.png
+| |____favicon.ico
+| |____index.html
+| |____apple-icon.png
+| |____apple-icon-144x144.png
+| |____android-icon-192x192.png
+| |____apple-icon-precomposed.png
+| |____apple-icon-114x114.png
+| |____ms-icon-310x310.png
+| |____ms-icon-144x144.png
+| |____apple-icon-57x57.png
+| |____apple-icon-152x152.png
+| |____favicon.png
+| |____ms-icon-150x150.png
+| |____android-icon-72x72.png
+| |____android-icon-96x96.png
+| |____android-icon-36x36.png
+| |____apple-icon-180x180.png
+| |____favicon-96x96.png
+| |____manifest.json
+| |____android-icon-48x48.png
+| |____apple-icon-76x76.png
+| |____apple-icon-60x60.png
+| |____browserconfig.xml
+| |____android-icon-144x144.png
+| |____apple-icon-72x72.png
+| |____apple-icon-120x120.png
+| |____favicon-32x32.png
+| |____ms-icon-70x70.png
+|____.gitignore
+|____package.json
+|____.env
+|____.github
+| |____workflows
+| | |____deploy-dev.yml
+|____.eslintrc.js
+|____tsconfig.json
+|____firebase.json
+|____docker-compose.yml
+|____graphql-schema.json
+|____vite.config.ts
+|____.vscode
+| |____extensions.json
+|____.browserslistrc
+|____.env.development
+|____tree.txt
+|____capacitor.config.ts
+|____src
+| |____App.tsx
+| |____main.tsx
+| |____contexts
+| | |____UserContext.tsx
+| | |____ModalContext.tsx
+| | |____index.ts
+| | |____AppContext.tsx
+| |____App.test.tsx
+| |____i18n.ts
+| |____environments
+| | |____environment.prod.ts
+| | |____environment.local.ts
+| | |____environment.ts
+| |____utils
+| | |____colors.ts
+| | |____types.ts
+| | |____enumKeys.ts
+| | |____index.ts
+| |____setupTests.ts
+| |____types.ts
+| |____components
+| | |____MinAppointment.tsx
+| | |____SpecialIcons
+| | | |____reminder.svg
+| | | |____SpecialIcon.tsx
+| | | |____vaccine.svg
+| | | |____SpecialIcons.tsx
+| | | |____operation.svg
+| | | |____antiparasitic.svg
+| | | |____index.ts
+| | | |____tablet.svg
+| | |____CustomCalendar.tsx
+| | |____WeeksSkeleton.tsx
+| | |____SubOwnersList.tsx
+| | |____Image2x.tsx
+| | |____Chip.tsx
+| | |____operations
+| | | |____fragments
+| | | | |____petMinSubOwner.graphql
+| | | | |____minPet.graphql
+| | | | |____dashboardPet.graphql
+| | | | |____fullTreatment.graphql
+| | | | |____minUser.graphql
+| | | | |____appointment.graphql
+| | | |______generated__
+| | | | |____appointment.generated.tsx
+| | | | |____petMinSubOwner.generated.tsx
+| | | | |____minPet.generated.tsx
+| | | | |____fullTreatment.generated.tsx
+| | | | |____dashboardPet.generated.tsx
+| | | | |____minUser.generated.tsx
+| | |____formFields
+| | | |____TextInput.tsx
+| | | |____SubmitInput.tsx
+| | | |____DateTimePicker.tsx
+| | | |____SelectInput.tsx
+| | | |____TextAreaInput.tsx
+| | | |____index.ts
+| | | |____Toggle.tsx
+| | |____system
+| | | |____index.ts
+| | | |____MainMenu.tsx
+| | |____PrivateRoute.tsx
+| | |____WeeksView.tsx
+| | |____icons
+| | | |____index.tsx
+| | | |____iconName.ts
+| | | |____Icon.tsx
+| | |____index.ts
+| | |____AppointmentsList.tsx
+| | |____Modal.tsx
+| | |____SubOwnersListItem.tsx
+| |____layouts
+| | |____Auth.tsx
+| | |____Main.tsx
+| | |____index.ts
+| |____vite-env.d.ts
+| |____theme
+| | |____variables.css
+| |____hooks
+| | |____useOnClickOutseide.ts
+| | |____useSwipe.ts
+| | |____index.ts
+| |____config.ts
+| |____i18n
+| | |____translations.json
+| | |____errors.ts
+| | |____README.md
+| |____modules
+| | |____index.tsx
+| | |____home
+| | | |____index.tsx
+| | | |____operations
+| | | | |____mutations
+| | | | |____queries
+| | | | | |____getSinglePet.graphql
+| | | | | |____getDashboard.graphql
+| | | | | |____getOrCreateCode.graphql
+| | | | |______generated__
+| | | | | |____getSinglePet.generated.tsx
+| | | | | |____checkCode.generated.tsx
+| | | | | |____getDashboard.generated.tsx
+| | | | | |____petMinSubOwner.generated.tsx
+| | | | | |____getOrCreateCode.generated.tsx
+| | | | | |____minPet.generated.tsx
+| | | | | |____dashboardPet.generated.tsx
+| | | |____components
+| | | | |____SkeletonBox.tsx
+| | | | |____Pets.tsx
+| | | | |____index.ts
+| | | |____router.tsx
+| | | |____pages
+| | | | |____index.tsx
+| | | | |____home.tsx
+| | |____board
+| | | |____index.tsx
+| | | |____router.tsx
+| | | |____pages
+| | | | |____index.tsx
+| | | | |____board.tsx
+| | |____auth
+| | | |____index.tsx
+| | | |____operations
+| | | | |____mutations
+| | | | | |____login.graphql
+| | | | | |____signup.graphql
+| | | | |______generated__
+| | | | | |____login.generated.tsx
+| | | | | |____signup.generated.tsx
+| | | | | |____minUser.generated.tsx
+| | | |____Router.tsx
+| | | |____pages
+| | | | |____index.tsx
+| | | | |____Login.tsx
+| | | | |____SignUp.tsx
+| | |____pets
+| | | |____index.tsx
+| | | |____operations
+| | | | |____mutations
+| | | | | |____checkCode.graphql
+| | | | | |____linkPetToMe.graphql
+| | | | |____queries
+| | | | | |____getSinglePet.graphql
+| | | | |______generated__
+| | | | | |____getSinglePet.generated.tsx
+| | | | | |____checkCode.generated.tsx
+| | | | | |____linkPetToMe.generated.tsx
+| | | | | |____minPet.generated.tsx
+| | | |____components
+| | | | |____ShareBox.tsx
+| | | | |____CustodyLevelsList.tsx
+| | | | |____index.ts
+| | | | |____CustodyLevelSelector.tsx
+| | | |____router.tsx
+| | | |____pages
+| | | | |____index.ts
+| | | | |____Sharing.tsx
+| | |____events
+| | | |____index.tsx
+| | | |____operations
+| | | | |____mutations
+| | | | | |____createTreatment.graphql
+| | | | |____queries
+| | | | | |____getAppointment.graphql
+| | | | | |____getMyAppointments.graphql
+| | | | |______generated__
+| | | | | |____getMyAppointments.generated.tsx
+| | | | | |____createTreatment.generated.tsx
+| | | | | |____getAppointment.generated.tsx
+| | | |____components
+| | | | |____EventOption.tsx
+| | | | |____addEventForm.tsx
+| | | |____router.tsx
+| | | |____pages
+| | | | |____index.tsx
+| | | | |____calendar.tsx
+| | | | |____detail.tsx
+| |____consts
+| |____router
+| | |____index.tsx

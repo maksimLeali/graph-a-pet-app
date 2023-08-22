@@ -1,11 +1,9 @@
-import dotenv from 'dotenv'
+import { environment } from './environments/environment'
+console.log(environment)
+
 
 export const config = {
-  baseUrl: 'https://graph-a-pet.makso.me/graphql',
-  environment: 'local' as
-    | 'local'
-    | 'development'
-    | 'staging'
-    | 'production',
+  baseUrl: environment.baseUrl ?? 'https://graph-a-pet.makso.me/graphql',
+  environment: environment.environment ?? 'development' ,
   defaultLanguage: 'it',
 }

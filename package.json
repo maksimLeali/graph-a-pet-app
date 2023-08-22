@@ -4,12 +4,20 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "tsc && vite build",
+    "start": "vite --host ",
+    "start:local": "cp -v ./src/environments/environment.local.ts ./src/environments/environment.ts && vite --host ",
+    "start:dev": "cp -v ./src/environments/environment.dev.ts ./src/environments/environment.ts && vite --host ",
+    "start:staging": "cp -v ./src/environments/environment.staging.ts ./src/environments/environment.ts && vite --host ",
+    "start:prod": "cp -v ./src/environments/environment.prod.ts ./src/environments/environment.ts && vite --host ",
+    
+    
+    "build": "NODE_ENV=local tsc && vite build",
+    "build:local": "NODE_ENV=local ionic build --configuration=local",
     "preview": "vite preview",
     "test.unit": "vitest",
     "lint": "eslint",
-    "start": "serve -p 3100 -s dist",
+    "serve": "REACT_APP_ENV=local serve -p 3100 -s dist",
+    "serve:local": "NODE_ENV=local serve -p 3100 -s dist",
     "fetch:graphql": "apollo service:download --endpoint=https://graph-a-pet.makso.me/graphql graphql-schema.json",
     "fetch:graphql:dev": "env-cmd -x -f .env.development yarn fetch:graphql",
     "generate": "graphql-codegen"
