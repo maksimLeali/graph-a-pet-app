@@ -29,7 +29,6 @@ export const EventDetails: React.FC<props> = ()=> {
         }
     })
     useEffect(() => {
-        console.log(id)
         setPage({ visible: false, name: "" });
         getEvent({variables:{id}})
     }, []);

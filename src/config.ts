@@ -1,5 +1,5 @@
 import { environment } from './environments/environment'
-console.log(environment)
+
 
 
 export const config = {

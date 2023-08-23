@@ -3,7 +3,6 @@ import { CalendarEvents, EventDetails } from ".";
 
 export const EventsRouter = () => {
     const { path } = useRouteMatch();
-    console.log(path);
     return (
         <>
             <Route exact path={`${path}`} >
