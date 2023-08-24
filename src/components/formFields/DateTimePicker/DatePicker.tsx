@@ -190,7 +190,7 @@ export const DatePicker: React.FC<props> = ({
                             .set("month", minMonth)
                             .set("date", minDay),
                         "days"
-                    );
+                    ) +1;
             }
             if (!selectedMonth || minMonth == selectedMonth)
                 return (
