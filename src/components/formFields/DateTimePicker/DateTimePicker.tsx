@@ -9,6 +9,7 @@ import { IconName, Icon } from "../../icons";
 import dayjs from "dayjs";
 import { IonButton } from "@ionic/react";
 import { DatePicker } from "./DatePicker";
+import { TimePicker } from "./TimePicker";
 
 type props = {
     name: string;
@@ -197,7 +198,7 @@ export const DateTimePicker : React.FC<props> = ({
             {/* Hidden DatePicker */}
             {showDatePicker && (
                 <DatePickerContainer ref={datePickerRef}>
-                    <DatePicker
+                    {/* <DatePicker
                         minDate={minDate}
                         maxDate={maxDate}
                         selectedDay={selectedDay}
@@ -207,6 +208,13 @@ export const DateTimePicker : React.FC<props> = ({
                         handleSelectMonth={setSelectedMonth}
                         handleSelectYear={setSelectedYear}
                         showDatePicker={showDatePicker}
+                        reset={reset}
+                        confirm={confirm}
+                    /> */}
+                    <TimePicker 
+                        showTimePicker={showDatePicker}
+                        handleSelectHour={(v)=> { console.log(v)}}
+                        handleSelectMinute={(v)=> { console.log(v)}}
                         reset={reset}
                         confirm={confirm}
                     />
