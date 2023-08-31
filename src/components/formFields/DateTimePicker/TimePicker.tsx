@@ -10,6 +10,10 @@ type TimePickerProps = {
     selectedHour?: number;
     selectedMinute?: number;
     showTimePicker: boolean;
+    maxHour?:number
+    minHour?:number
+    maxMinute?:number
+    minMinute?:number
     handleSelectHour: (hour?: number) => void;
     handleSelectMinute: (minute?: number) => void;
     reset: () => void;
@@ -20,6 +24,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     selectedHour,
     selectedMinute,
     showTimePicker,
+    maxHour=12,
+    minHour=3,
+    maxMinute=42,
+    minMinute=2,
     handleSelectHour,
     handleSelectMinute,
     reset,
@@ -28,26 +36,92 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
     const minutePickerColumnsRef = useRef<HTMLDivElement | null>(null);
     const hourPickerColumnsRef = useRef<HTMLDivElement | null>(null);
-
+    const nowMinute = useMemo(()=> dayjs().minute() , [])
+    const nowHour = useMemo(()=> dayjs().hour() , [])
     const {t} = useTranslation()
-    // Define your constants, refs, and translations here
-    
-    // Modify and adjust functions like centerSelectedHour, centerSelectedMinute, getMaxHourLength, getMaxMinuteLength, getHourOffset, getMinuteOffset, etc. accordingly.
-    
-    // useEffect(() => {
-    //     centerSelectedHour();
-    // }, [selectedHour]);
 
-    // useEffect(() => {
-    //     centerSelectedMinute();
-    // }, [selectedMinute]);
 
-    // useEffect(() => {
-    //     if (showTimePicker) {
-    //         centerSelectedHour(false);
-    //         centerSelectedMinute(false);
-    //     }
-    // }, [showTimePicker]);
+    const centerSelectedMinute = useCallback(
+        (smooth = true) => {
+            if (!showTimePicker) return;
+
+            if (!minutePickerColumnsRef.current) {
+                setTimeout(() => {
+                    centerSelectedMinute();
+                }, 100);
+                return;
+            }
+            const selectedDayElement =
+                (minutePickerColumnsRef.current.querySelector(
+                    ".selected"
+                ) as HTMLDivElement) ||
+                minutePickerColumnsRef.current.querySelector(".now");
+            if (selectedDayElement) {
+                const containerHeight =
+                    minutePickerColumnsRef.current.offsetHeight;
+                const selectedDayOffsetTop = selectedDayElement.offsetTop;
+                // const selectedDayHeight = selectedDayElement.offsetHeight;
+
+                // Calculate the scroll position to center the selected day
+                const scrollPosition =
+                    selectedDayOffsetTop -
+                    containerHeight / 2 ;
+                minutePickerColumnsRef.current?.scrollTo({
+                    top: scrollPosition,
+                    behavior: smooth ? "smooth" : undefined,
+                });
+            }
+        },
+        [selectedMinute, minutePickerColumnsRef, showTimePicker]
+    );
+    const centerSelectedHour = useCallback(
+        (smooth = true) => {
+            if (!showTimePicker) return;
+
+            if (!hourPickerColumnsRef.current) {
+                setTimeout(() => {
+                    centerSelectedMinute();
+                }, 100);
+                return;
+            }
+            const selectedHourElement =
+                (hourPickerColumnsRef.current.querySelector(
+                    ".selected"
+                ) as HTMLDivElement) ||
+                hourPickerColumnsRef.current.querySelector(".now");
+            if (selectedHourElement) {
+                const containerHeight =
+                    hourPickerColumnsRef.current.offsetHeight;
+                const selectedHourOffsetTop = selectedHourElement.offsetTop;
+                // const selectedHourHeight = selectedHourElement.offsetHeight;
+
+                // Calculate the scroll position to center the selected day
+                const scrollPosition =
+                    selectedHourOffsetTop -
+                    containerHeight / 2 ;
+                hourPickerColumnsRef.current?.scrollTo({
+                    top: scrollPosition,
+                    behavior: smooth ? "smooth" : undefined,
+                });
+            }
+        },
+        [selectedHour, hourPickerColumnsRef, showTimePicker]
+    );
+    
+    useEffect(() => {
+        centerSelectedHour();
+    }, [selectedHour]);
+
+    useEffect(() => {
+        centerSelectedMinute();
+    }, [selectedMinute]);
+
+    useEffect(() => {
+        if (showTimePicker) {
+            centerSelectedHour(false);
+            centerSelectedMinute(false);
+        }
+    }, [showTimePicker]);
 
     return (
         <>
@@ -57,10 +131,19 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     <ColumnTitle>Hours</ColumnTitle>
                     <ColumnItems ref={hourPickerColumnsRef}>
                     {
-                        Array(12).fill('').map((_, index)=> {
+                        Array(maxHour-minHour + 1).fill('').map((_, index)=> {
                             console.log('i, index', _,index)
-                            return <ColumnItem>
-                                { index.toString().padStart(2, '0')}
+                            
+                            const isNow = index == nowHour
+                            return <ColumnItem 
+                                        className={`${
+                                            selectedHour == index + minMinute ? 'selected' : ''
+                                        } ${
+                                            isNow ? 'now' : ''
+                                        }`}
+                                        onClick={()=>handleSelectHour(index + minMinute)}
+                                        >
+                                { (index + minHour).toString().padStart(2, '0')}
                             </ColumnItem>
                         })
                         }
@@ -70,10 +153,17 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     <ColumnTitle>Minutes</ColumnTitle>
                     <ColumnItems ref={minutePickerColumnsRef}>
                         {
-                        Array(60).fill('').map((i, index)=> {
-
-                            return <ColumnItem>
-                                { index.toString().padStart(2, '0')}
+                        Array(maxMinute - minMinute +1).fill('').map((i, index)=> {
+                            const isNow = index == nowMinute
+                            return <ColumnItem
+                            className={`${
+                                selectedMinute == index + minMinute? 'selected' : ''
+                            } ${
+                                isNow ? 'now' : ''
+                            }`}
+                            onClick={()=>handleSelectMinute(index+minMinute)}
+                                >
+                                { (index + minMinute ).toString().padStart(2, '0')}
                             </ColumnItem>
                         })
                         }

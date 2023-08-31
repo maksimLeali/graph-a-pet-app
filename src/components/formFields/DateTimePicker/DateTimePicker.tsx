@@ -25,6 +25,10 @@ type props = {
     // type?: "date" | "dateTime" | "time";
     errorText?: string;
     icon?: IconName;
+    maxHour?:number
+    minHour?:number
+    maxMinute?:number
+    minMinute?:number
     registerOptions?: RegisterOptions;
     errorColor?: string;
     bgColor?: string;
@@ -42,9 +46,13 @@ export const DateTimePicker : React.FC<props> = ({
     disabledColor = "lightGray",
     errorColor = "danger",
     // minDate= dayjs().subtract(30,'y').startOf( 'y').toISOString(),
-    minDate = "2021-08-05T10:00:00.00Z",
+    minDate = "2021-08-05T00:00:00.00Z",
     // maxDate=dayjs().add(5,'y').endOf('year').toISOString(),
-    maxDate = "2021-08-11T10:00:00.00Z",
+    maxDate = "2021-08-11T23:59:00.00Z",
+    minHour,
+    minMinute,
+    maxHour,
+    maxMinute,
     bgColor,
     icon,
     name,
@@ -84,6 +92,8 @@ export const DateTimePicker : React.FC<props> = ({
         setSelectedDay(undefined);
         setSelectedMonth(undefined);
         setSelectedYear(undefined);
+        setSelectedHour(undefined)
+        setSelectedMinute(undefined)
         setShowDatePicker(false);
     };
 
@@ -104,6 +114,8 @@ export const DateTimePicker : React.FC<props> = ({
     const [selectedYear, setSelectedYear] = useState<number | undefined>();
     const [selectedMonth, setSelectedMonth] = useState<number | undefined>();
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
+    const [ selectedMinute, setSelectedMinute ] = useState< number| undefined>()
+    const [ selectedHour, setSelectedHour ] = useState< number| undefined>()
 
     useEffect(() => {
         const value = getValues(name);
@@ -212,9 +224,11 @@ export const DateTimePicker : React.FC<props> = ({
                         confirm={confirm}
                     /> */}
                     <TimePicker 
+                        selectedHour={selectedHour}
+                        selectedMinute={selectedMinute}
                         showTimePicker={showDatePicker}
-                        handleSelectHour={(v)=> { console.log(v)}}
-                        handleSelectMinute={(v)=> { console.log(v)}}
+                        handleSelectHour={(v)=> { setSelectedHour(v)}}
+                        handleSelectMinute={(v)=> { setSelectedMinute(v)}}
                         reset={reset}
                         confirm={confirm}
                     />
