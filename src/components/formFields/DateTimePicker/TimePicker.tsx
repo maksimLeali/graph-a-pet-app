@@ -124,7 +124,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
             {/* Remove YearSelectionHeader */}
             <TimePickerColumns>
                 <Column>
-                    <ColumnTitle className="columnTitle">Hours</ColumnTitle>
+                    <ColumnTitle className="columnTitle">{t("system.hour")}</ColumnTitle>
                     <ColumnItems ref={hourPickerColumnsRef}>
                         {Array(maxHour - minHour + 1)
                             .fill("")
@@ -151,7 +151,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     </ColumnItems>
                 </Column>
                 <Column>
-                    <ColumnTitle className="columnTitle">Minutes</ColumnTitle>
+                    <ColumnTitle className="columnTitle">{t('system.minute')}</ColumnTitle>
                     <ColumnItems ref={minutePickerColumnsRef}>
                         {Array(maxMinute - minMinute + 1)
                             .fill("")

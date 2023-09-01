@@ -83,6 +83,11 @@ export const SelectInput: React.FC<props> = ({
         );
     }, [rowsPerList, optionsRef.current]);
 
+
+    useEffect(()=> {
+        console.log(options)
+    },[])
+
     return (
         <Wrapper
             className={`${isSubmitting ? "submitting" : ""}`}
@@ -212,7 +217,11 @@ export const SelectInput: React.FC<props> = ({
                                         {_.find(
                                             options,
                                             (opt) => opt.value === value
-                                        )?.render ??
+                                        )?.render ? 
+                                        _.find(
+                                            options,
+                                            (opt) => opt.value === value
+                                        )?.render :
                                             _.find(
                                                 options,
                                                 (opt) => opt.value === value
@@ -313,6 +322,7 @@ const Wrapper = styled.div<selectProps>`
     width: 100%;
     position: relative;
     height: 40px;
+    margin-bottom: 40px ;
     &.submitting {
         opacity: 0.5;
         pointer-events: none;

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { User } from '../types'
+import { Pet, User } from '../types'
 import { IonHeader, IonToolbar, IonTitle } from '@ionic/react'
 import styled from 'styled-components'
 
@@ -7,9 +7,11 @@ import { Image2x } from '../components'
 import { useCookies } from 'react-cookie'
 import { MainMenu } from '../components/system'
 import { MinUserFragment } from '../components/operations/__generated__/minUser.generated'
+import { DashboardPetFragment } from '../components/operations/__generated__/dashboardPet.generated'
 
 export type IUserContext ={
     setPage: (page: Page)=> void,
+    updatePets: (pets: DashboardPetFragment[])=> void
 
 } & Record<string, any>
 
@@ -19,6 +21,8 @@ type Page = {
 
 const defaultValue: IUserContext = {
   setPage: ()=> {},
+  updatePets: ()=> {}
+  
 }
 const UserContext = React.createContext<IUserContext>(defaultValue)
 
@@ -30,6 +34,7 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     const [pageName, setPageName] = useState("") 
     const [cookie] = useCookies(["jwt", "user"]);
     const [visible, setVisible] = useState(true) 
+    const [pets, setPets] = useState<DashboardPetFragment[]>([]) 
     const [user, setUser] = useState<MinUserFragment | null>(null)
     const [menuOpen,setMenuOpen ]= useState(false)
     const setPage = ({name, visible = true}: Page)=> {
@@ -37,12 +42,16 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
         setVisible(visible)
     }
 
+    const updatePets = (pets: DashboardPetFragment[])=> {
+        console.log(pets.length)
+        setPets(pets)
+    }
     useEffect(()=> {
         setUser(cookie.user)
     }, [cookie.user])
 
     
-    const value = useMemo(() => ({...defaultValue, setPage, visible}), [])
+    const value = useMemo(() => ({...defaultValue,pets ,updatePets , setPage, visible}), [visible, pets])
 
   return <UserContext.Provider value={value}>
     <CustomIonHeader visible={visible}  className='MainHeader'>

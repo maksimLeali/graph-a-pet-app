@@ -17,7 +17,7 @@ export const Home: React.FC = () => {
     const [dateTo, setDateTo] = useState(dayjs(dateFrom).add(14, "days").toISOString())
     const [pets, setPets] = useState<DashboardPetFragment[]>([]);
     const [activePet,setActivePet] = useState(0)
-    const { setPage } = useUserContext()
+    const { setPage, updatePets } = useUserContext()
     const [appointments , setAppointments]= useState<AppointmentFragment[]>()
     useEffect(()=> {
         setPage({ name: "Home"})
@@ -35,6 +35,7 @@ export const Home: React.FC = () => {
                 && getUserDashboard.dashboard.ownerships.items.length){
                     const pets = getUserDashboard.dashboard.ownerships.items.map((item)=> item!.pet)
                     setPets(pets)
+                    updatePets(pets)
                     
                 }
             }

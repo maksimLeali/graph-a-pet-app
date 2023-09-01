@@ -62,7 +62,17 @@
         "logout_modal": {
           "title":"Stai per uscire",
           "text":"Sicuro di voler uscire dall'app?"
-        }
+        },
+        "year": "Anno",
+        "month": "Mese",
+        "day": "Giorno",
+        "hour": "Ora",
+        "minute": "Minuto",
+        "years": "Anni",
+        "months": "Mesi",
+        "days": "Giorni",
+        "hours": "Ore",
+        "minutes": "Minuti"
       },
       "actions": {
         "accept": "Accetta",
@@ -106,6 +116,11 @@
         "from_to": "Dalle {{from}} alle {{to}}",
         "add_event": "Aggiungi evento",
         "name": "Nome evento",
+        "date_from": "Data inizio",
+        "boster_date_from": "Data inizio del richiamo",
+        "date_time_from" : "Data e ora inizio",
+        "booster_date_time_from" : "Data e ora inizio del richiamo",
+        "pet": "Per chi?",
         "general": {
           "no_events": "Nessun appuntamento"
         }

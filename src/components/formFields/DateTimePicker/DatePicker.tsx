@@ -324,7 +324,7 @@ export const DatePicker: React.FC<props> = ({
     return (
         <>
             <YearSelectionHeader>
-                <ColumnTitle className="columnTitle">{'Year'}</ColumnTitle>
+                <ColumnTitle className="columnTitle">{t('system.year')}</ColumnTitle>
                 
                 <YearList ref={yearListRef}>
                     {Array.from(
@@ -358,7 +358,7 @@ export const DatePicker: React.FC<props> = ({
             </YearSelectionHeader>
             <DatePickerColumns>
                 <Column>
-                    <ColumnTitle className="columnTitle">Days</ColumnTitle>
+                    <ColumnTitle className="columnTitle">{t('system.day')}</ColumnTitle>
                     <Columnitems ref={datePickerColumnsRef}>
                         {Array.from(
                             {
@@ -390,7 +390,7 @@ export const DatePicker: React.FC<props> = ({
                     </Columnitems>
                 </Column>
                 <Column>
-                    <ColumnTitle className="columnTitle">Month</ColumnTitle>
+                    <ColumnTitle className="columnTitle">{t('system.month')}</ColumnTitle>
                     <Columnitems ref={monthPickerColumnsRef}>
                         {Array.from(
                             {

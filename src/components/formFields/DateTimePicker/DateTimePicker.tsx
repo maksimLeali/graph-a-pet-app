@@ -194,7 +194,6 @@ export const DateTimePicker: React.FC<props> = ({
     };
 
     useEffect(() => {
-        console.log("maxHour ", maxHour);
         const value = getValues(name);
         if (!value) return;
         setSelectedYear(dayjs(value).year());
