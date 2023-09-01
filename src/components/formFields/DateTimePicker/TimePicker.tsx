@@ -57,11 +57,11 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 const containerHeight =
                     minutePickerColumnsRef.current.offsetHeight;
                 const selectedDayOffsetTop = selectedDayElement.offsetTop;
-                // const selectedDayHeight = selectedDayElement.offsetHeight;
+                const selectedDayHeight = selectedDayElement.offsetHeight;
 
                 // Calculate the scroll position to center the selected day
                 const scrollPosition =
-                    selectedDayOffsetTop - containerHeight / 2;
+                    selectedDayOffsetTop - containerHeight / 2 - selectedDayHeight;
                 minutePickerColumnsRef.current?.scrollTo({
                     top: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
@@ -90,11 +90,11 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 const containerHeight =
                     hourPickerColumnsRef.current.offsetHeight;
                 const selectedHourOffsetTop = selectedHourElement.offsetTop;
-                // const selectedHourHeight = selectedHourElement.offsetHeight;
+                const selectedHourHeight = selectedHourElement.offsetHeight;
 
                 // Calculate the scroll position to center the selected day
                 const scrollPosition =
-                    selectedHourOffsetTop - containerHeight / 2;
+                    selectedHourOffsetTop - containerHeight / 2 - selectedHourHeight;
                 hourPickerColumnsRef.current?.scrollTo({
                     top: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
@@ -124,7 +124,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
             {/* Remove YearSelectionHeader */}
             <TimePickerColumns>
                 <Column>
-                    <ColumnTitle>Hours</ColumnTitle>
+                    <ColumnTitle className="columnTitle">Hours</ColumnTitle>
                     <ColumnItems ref={hourPickerColumnsRef}>
                         {Array(maxHour - minHour + 1)
                             .fill("")
@@ -133,7 +133,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                                 return (
                                     <ColumnItem
                                         key={index}
-                                        className={`${
+                                        className={`columnItem ${
                                             selectedHour == index + minMinute
                                                 ? "selected"
                                                 : ""
@@ -151,7 +151,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     </ColumnItems>
                 </Column>
                 <Column>
-                    <ColumnTitle>Minutes</ColumnTitle>
+                    <ColumnTitle className="columnTitle">Minutes</ColumnTitle>
                     <ColumnItems ref={minutePickerColumnsRef}>
                         {Array(maxMinute - minMinute + 1)
                             .fill("")
@@ -160,7 +160,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                                 return (
                                     <ColumnItem
                                         key={index}
-                                        className={`${
+                                        className={`columnItem ${
                                             selectedMinute == index + minMinute
                                                 ? "selected"
                                                 : ""
@@ -231,13 +231,10 @@ const ColumnItem = styled.div`
     border-radius: 4px;
     scroll-snap-align: center;
     cursor: pointer;
-    color: #0008;
 
     margin-bottom: 5px;
     font-size: 4rem;
-    &.selected {
-        color: #000;
-    }
+
 `;
 
 const Actions = styled.div`

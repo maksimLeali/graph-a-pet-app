@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import {
+    DateTimePicker,
     Option,
     SelectInput,
     TextAreaInput,
@@ -34,6 +35,7 @@ export const AddEventForm = () => {
         >
             <TextInput name="data.name" textLabel="events.name" bgColor="light" />
             <TextAreaInput name="data.description" textLabel="events.notes" bgColor="light" />
+            <DateTimePicker name="test" ntTextLabel="test" type="dateTime" bgColor="light" />
             <SelectInput name="data.type" options={options} bgColor="light" textLabel="events.type" />
         </Form>
     );

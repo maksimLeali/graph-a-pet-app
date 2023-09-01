@@ -52,11 +52,17 @@ export const TextInput: React.FC<props> = ({
   const [compiled, setCompiled] = useState(false);
   const [error, setError] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
   const [showPsw, setShowPsw] = useState(false);
   const {
     register,
     formState: { errors , isSubmitting},
   } = useFormContext();
+
+  const setFocus=()=>{
+    if(!ref.current)return
+    (ref.current.children[0] as any).focus()
+  }
 
   useEffect(() => {
     setError(errors[name] != undefined);
@@ -74,6 +80,7 @@ export const TextInput: React.FC<props> = ({
         color={color}
         focusColor={focusColor}
         htmlFor={name}
+        onClick={()=>setFocus()}
         className={`${focused ? "focused" : ""} ${compiled ? "compiled" : ""} ${
           error ? "error" : ""
         }`}
@@ -84,6 +91,7 @@ export const TextInput: React.FC<props> = ({
       <InputWrapper ref={ref} color={color}>
         <StyledInput
           id={name}
+          
           onFocus={() => setFocused(true)}
           inputMode={inputMode}
           type={type == "password" ? (showPsw ? "text" : "password") : type}

@@ -19,22 +19,26 @@ type props = {
     color?: string;
     focusColor?: string;
     disabledColor?: string;
+    pkBgColor?: string;
+    pkSelectedColor?: string;
+    pkTxtColor?: string;
+    pkLabelColor?: string;
     minDate?: string;
     maxDate?: string;
     textColor?: string;
     type?: "date" | "dateTime" | "time";
     errorText?: string;
     icon?: IconName;
-    maxHour?:number
-    minHour?:number
-    maxMinute?:number
-    minMinute?:number
+    maxHour?: number;
+    minHour?: number;
+    maxMinute?: number;
+    minMinute?: number;
     registerOptions?: RegisterOptions;
     errorColor?: string;
     bgColor?: string;
 };
 
-export const DateTimePicker : React.FC<props> = ({
+export const DateTimePicker: React.FC<props> = ({
     textColor = "dark",
     ntTextLabel,
     textLabel,
@@ -45,9 +49,13 @@ export const DateTimePicker : React.FC<props> = ({
     focusColor = "primary",
     disabledColor = "lightGray",
     errorColor = "danger",
-    minDate= dayjs().subtract(30,'y').startOf( 'y').toISOString(),
+    pkTxtColor = "medium",
+    pkSelectedColor = "primary",
+    pkBgColor = "light-tint",
+    pkLabelColor = "dark",
+    minDate = dayjs().subtract(30, "y").startOf("y").toISOString(),
     // minDate = "2021-08-05T04:30:00.00Z",
-    maxDate=dayjs().add(5,'y').endOf('year').toISOString(),
+    maxDate = dayjs().add(5, "y").endOf("year").toISOString(),
     // maxDate = "2021-08-11T22:39:00.00Z",
     minHour,
     minMinute,
@@ -69,8 +77,8 @@ export const DateTimePicker : React.FC<props> = ({
     const [selectedYear, setSelectedYear] = useState<number | undefined>();
     const [selectedMonth, setSelectedMonth] = useState<number | undefined>();
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
-    const [ selectedMinute, setSelectedMinute ] = useState< number| undefined>()
-    const [ selectedHour, setSelectedHour ] = useState< number| undefined>()
+    const [selectedMinute, setSelectedMinute] = useState<number | undefined>();
+    const [selectedHour, setSelectedHour] = useState<number | undefined>();
     const {
         register,
         formState: { errors, isSubmitting },
@@ -78,19 +86,32 @@ export const DateTimePicker : React.FC<props> = ({
         setValue,
     } = useFormContext();
 
-    const selectedDate = useMemo(()=>{ 
-        
-        if (type == 'date' || type=='dateTime' &&( !selectedDay || selectedMonth == undefined || !selectedYear)) return;
-        if(type == 'time' || type=='dateTime' &&( selectedHour == undefined || selectedMinute == undefined) ) return
+    const selectedDate = useMemo(() => {
+        if (
+            type == "date" ||
+            (type == "dateTime" &&
+                (!selectedDay || selectedMonth == undefined || !selectedYear))
+        )
+            return;
+        if (
+            type == "time" ||
+            (type == "dateTime" &&
+                (selectedHour == undefined || selectedMinute == undefined))
+        )
+            return;
         return dayjs()
-                .set("y", selectedYear ?? 1999)
-                .set("month", selectedMonth ?? 0)
-                .set("date", selectedDay?? 1)
-                .set('hour', selectedHour ?? 0)
-                .set('minute', selectedMinute ?? 0)
-        
-    }, [selectedDay, selectedMonth, selectedYear, selectedHour, selectedMinute])
-
+            .set("y", selectedYear ?? 1999)
+            .set("month", selectedMonth ?? 0)
+            .set("date", selectedDay ?? 1)
+            .set("hour", selectedHour ?? 0)
+            .set("minute", selectedMinute ?? 0);
+    }, [
+        selectedDay,
+        selectedMonth,
+        selectedYear,
+        selectedHour,
+        selectedMinute,
+    ]);
 
     useEffect(() => {
         setError(errors[name] != undefined);
@@ -114,34 +135,30 @@ export const DateTimePicker : React.FC<props> = ({
         }
     });
 
-
     const reset = () => {
         const value = getValues(name);
-        console.log(value != null, 'resetting')
-        if (value){
+        console.log(value != null, "resetting");
+        if (value) {
             setSelectedYear(dayjs(value).year());
             setSelectedMonth(dayjs(value).month());
             setSelectedDay(dayjs(value).date());
             setSelectedHour(dayjs(value).hour());
             setSelectedMinute(dayjs(value).minute());
-            
-        }else {
+        } else {
             setSelectedDay(undefined);
             setSelectedMonth(undefined);
             setSelectedYear(undefined);
-            setSelectedHour(undefined)
-            setSelectedMinute(undefined)
+            setSelectedHour(undefined);
+            setSelectedMinute(undefined);
         }
-        if(type == 'dateTime'){
-            if(showTimePicker){
+        if (type == "dateTime") {
+            if (showTimePicker) {
                 setShowDatePicker(true);
                 setShowTimePicker(false);
-                
-            }else{
-
+            } else {
                 setShowDatePicker(false);
             }
-        }else{
+        } else {
             setShowTimePicker(false);
             setShowDatePicker(false);
         }
@@ -150,36 +167,34 @@ export const DateTimePicker : React.FC<props> = ({
     const confirmDate = () => {
         if (!selectedDay || selectedMonth == undefined || !selectedYear) return;
         setShowDatePicker(false);
-        if(type == 'date'){
-            setValue(
-                name,
-                selectedDate!.toDate()
-                    
-            );
+        if (type == "date") {
+            setValue(name, selectedDate!.toDate());
             setCompiled(true);
-            return
+            return;
         }
-        setShowTimePicker(true)
+        setShowTimePicker(true);
     };
     const confirmTime = () => {
-        if (selectedHour == undefined || selectedMinute == undefined ) return;
-        console.log('type', type)
-        console.log(selectedDate )
-            
-            setValue(
-                name,
-                type == 'time' ? dayjs().set('hour', selectedHour!).set('minute', selectedMinute).toDate() :selectedDate!.toDate()
-                );
-        
-            
+        if (selectedHour == undefined || selectedMinute == undefined) return;
+        console.log("type", type);
+        console.log(selectedDate);
+
+        setValue(
+            name,
+            type == "time"
+                ? dayjs()
+                      .set("hour", selectedHour!)
+                      .set("minute", selectedMinute)
+                      .toDate()
+                : selectedDate!.toDate()
+        );
+
         setCompiled(true);
         setShowTimePicker(false);
     };
 
-
-
     useEffect(() => {
-        console.log('maxHour ', maxHour)
+        console.log("maxHour ", maxHour);
         const value = getValues(name);
         if (!value) return;
         setSelectedYear(dayjs(value).year());
@@ -189,10 +204,14 @@ export const DateTimePicker : React.FC<props> = ({
         setSelectedMinute(dayjs(value).minute());
     }, []);
 
-
-  
     return (
-        <Wrapper className={`${isSubmitting ? "submitting" : ""}`}>
+        <Wrapper
+            className={`${isSubmitting ? "submitting" : ""}`}
+            pkBgColor={pkBgColor}
+            pkTxtColor={pkTxtColor}
+            pkSelectedColor={pkSelectedColor}
+            pkLabelColor={pkLabelColor}
+        >
             <InputLabel
                 color={color}
                 focusColor={focusColor}
@@ -220,18 +239,18 @@ export const DateTimePicker : React.FC<props> = ({
                     onFocus={(e) => {
                         e.preventDefault();
                         setFocused(true);
-                        if(type != 'time' ){
+                        if (type != "time") {
                             setShowDatePicker(true); // Show DatePicker on focus
-                        }else {
+                        } else {
                             setShowTimePicker(true); // Show DatePicker on focus
                         }
                     }}
                     onClick={(e) => {
                         e.preventDefault();
                         setFocused(true);
-                        if(type != 'time' ){
+                        if (type != "time") {
                             setShowDatePicker(true); // Show DatePicker on focus
-                        }else {
+                        } else {
                             setShowTimePicker(true); // Show DatePicker on focus
                         } // Show DatePicker on click
                     }}
@@ -251,14 +270,16 @@ export const DateTimePicker : React.FC<props> = ({
                         ...registerOptions,
                     })}
                 >
-                    <span>{getValues(name) 
-                            ? type == 'date' 
-                                ? dayjs(getValues(name)).format('ll')
-                                : type == 'time' 
-                                    ? dayjs(getValues(name)).format('HH:mm')
-                                    : dayjs(getValues(name)).format('ll, HH:mm')
-                            : null}</span>
-                    </StyledInput>
+                    <span>
+                        {getValues(name)
+                            ? type == "date"
+                                ? dayjs(getValues(name)).format("ll")
+                                : type == "time"
+                                ? dayjs(getValues(name)).format("HH:mm")
+                                : dayjs(getValues(name)).format("ll, HH:mm")
+                            : null}
+                    </span>
+                </StyledInput>
                 {icon ? (
                     <Icon
                         name={icon}
@@ -289,8 +310,8 @@ export const DateTimePicker : React.FC<props> = ({
             )}
             {/* Hidden DatePicker */}
             {showDatePicker && (
-                <DatePickerContainer ref={datePickerRef}>
-                     <DatePicker
+                <DatePickerContainer className="picker" ref={datePickerRef}>
+                    <DatePicker
                         minDate={minDate}
                         maxDate={maxDate}
                         selectedDay={selectedDay}
@@ -302,30 +323,63 @@ export const DateTimePicker : React.FC<props> = ({
                         showDatePicker={showDatePicker}
                         reset={reset}
                         confirm={confirmDate}
-                    /> 
-                    
+                    />
                 </DatePickerContainer>
             )}
             {showTimePicker && (
-                <DatePickerContainer ref={timePickerRef}>
-                     <TimePicker 
+                <DatePickerContainer className="picker" ref={timePickerRef}>
+                    <TimePicker
                         selectedHour={selectedHour}
                         selectedMinute={selectedMinute}
                         showTimePicker={showTimePicker}
-                        handleSelectHour={(v)=> { setSelectedHour(v)}}
-                        handleSelectMinute={(v)=> { setSelectedMinute(v)}}
+                        handleSelectHour={(v) => {
+                            setSelectedHour(v);
+                        }}
+                        handleSelectMinute={(v) => {
+                            setSelectedMinute(v);
+                        }}
                         reset={reset}
                         confirm={confirmTime}
-                        maxHour={ maxHour ? maxHour : dayjs(maxDate).isSame(selectedDate) ? dayjs(maxDate).get('hour') : 23 }
-                        maxMinute={maxMinute ? maxMinute : dayjs(maxDate).isSame(selectedDate) ? dayjs(maxDate).get('minute') : 59 }
-                        minHour={minHour ? minHour : dayjs(minDate).isSame(selectedDate) ? dayjs(minDate).get('hour') :  0 }
-                        minMinute={minMinute ? minMinute : dayjs(minDate).isSame(selectedDate) ? dayjs(minDate).get('minute') : 0 }
+                        maxHour={
+                            maxHour
+                                ? maxHour
+                                : dayjs(maxDate).isSame(selectedDate)
+                                ? dayjs(maxDate).get("hour")
+                                : 23
+                        }
+                        maxMinute={
+                            maxMinute
+                                ? maxMinute
+                                : dayjs(maxDate).isSame(selectedDate)
+                                ? dayjs(maxDate).get("minute")
+                                : 59
+                        }
+                        minHour={
+                            minHour
+                                ? minHour
+                                : dayjs(minDate).isSame(selectedDate)
+                                ? dayjs(minDate).get("hour")
+                                : 0
+                        }
+                        minMinute={
+                            minMinute
+                                ? minMinute
+                                : dayjs(minDate).isSame(selectedDate)
+                                ? dayjs(minDate).get("minute")
+                                : 0
+                        }
                     />
-                    
                 </DatePickerContainer>
             )}
         </Wrapper>
     );
+};
+
+type mainWrapperColors = {
+    pkTxtColor: string;
+    pkBgColor: string;
+    pkSelectedColor: string;
+    pkLabelColor: string;
 };
 
 type wrapperProps = {
@@ -341,13 +395,30 @@ type labelProps = {
     focusColor: string;
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<mainWrapperColors>`
     width: 100%;
     position: relative;
     margin-bottom: 40px;
     &.submitting {
         opacity: 0.5;
         pointer-events: none;
+    }
+    .picker {
+        background-color: var(--ion-color-${({ pkBgColor }) => pkBgColor});
+        color: var(--ion-color-${({ pkTxtColor }) => pkTxtColor});
+        .columnTitle {
+            color: var(--ion-color-${({ pkLabelColor }) => pkLabelColor});
+        }
+        .columnItem {
+            opacity: 0.8;
+            color: var(--ion-color-${({ pkTxtColor }) => pkTxtColor});
+            &.selected {
+                opacity: 1;
+                color: var(
+                    --ion-color-${({ pkSelectedColor }) => pkSelectedColor}
+                );
+            }
+        }
     }
 `;
 
@@ -480,6 +551,6 @@ const DatePickerContainer = styled.div`
     background-color: white;
     color: #000;
     border: 1px solid lightgray;
-    z-index: 3;
-    padding: 10px;
+    z-index: 10;
+    padding: 20px 10px 10px 10px;
 `;

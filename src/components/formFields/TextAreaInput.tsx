@@ -77,10 +77,8 @@ export const TextAreaInput: React.FC<props> = ({
     );
 
     const setFocus = () => {
-        if (!ref.current) return;
-        const editDiv = ref.current.querySelector(`#${name}`) as HTMLElement;
-        if (editDiv) {
-            editDiv.focus();
+        if(editableRef.current){
+            (editableRef.current as any).el.current.focus()
         }
     };
 
@@ -102,7 +100,7 @@ export const TextAreaInput: React.FC<props> = ({
                 color={color}
                 focusColor={focusColor}
                 htmlFor={name}
-                onClick={setFocus}
+                onClick={()=> {console.log('******'); setFocus()}}
                 className={`${focused ? "focused" : ""} ${
                     compiled ? "compiled" : ""
                 } ${error ? "error" : ""}`}
@@ -113,8 +111,9 @@ export const TextAreaInput: React.FC<props> = ({
             <InputWrapper ref={ref} color={color}>
                 <Editable
                     id={name}
+                    ref={(editableRef)as any}
                     textcolor={textColor}
-                    bgColor={bgColor}
+                    bgcolor={bgColor}
                     onChange={onContentBlur}
                     onFocus={() => setFocused(true)}
                     onBlur={onContentBlur}
@@ -236,7 +235,7 @@ const FocusBox = styled.span<focusCircleProps>`
     }
 `;
 
-const Editable = styled(ContentEditable)<{ textcolor: string, bgColor?: string }>`
+const Editable = styled(ContentEditable)<{ textcolor: string, bgcolor?: string }>`
     height: 100%;
     width: 100%;
     min-height: 38px;
@@ -251,9 +250,9 @@ const Editable = styled(ContentEditable)<{ textcolor: string, bgColor?: string }
     line-height: 2rem;
     padding-top: 8px;
     outline: 0px solid transparent;
-    background-color: ${({ bgColor }) =>
-        bgColor
-            ? `var(--ion-color-${bgColor})`
+    background-color: ${({ bgcolor }) =>
+        bgcolor
+            ? `var(--ion-color-${bgcolor})`
             : "var(--ion-background-color)"};
     
     &:-webkit-autofill,

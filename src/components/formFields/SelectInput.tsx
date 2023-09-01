@@ -97,6 +97,7 @@ export const SelectInput: React.FC<props> = ({
                     compiled ? "compiled" : ""
                 }`}
                 htmlFor={name}
+                onClick={()=>setFocused(!focused)}
             >
                 {textLabel ? t(textLabel) : ntTextLabel}
             </InputLabel>
@@ -110,7 +111,7 @@ export const SelectInput: React.FC<props> = ({
                     <LabelContainer
                         bgColor={bgColor}
                         className="label-container"
-                        onClick={() => setFocused(!focused)}
+                        onClick={() => setFocused(true)}
                     >
                         {currentValue ? (
                             _.find(options, (opt) => opt.value === currentValue)

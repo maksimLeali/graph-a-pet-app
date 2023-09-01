@@ -98,13 +98,11 @@ export const DatePicker: React.FC<props> = ({
                 const containerHeight =
                     datePickerColumnsRef.current.offsetHeight;
                 const selectedDayOffsetTop = selectedDayElement.offsetTop;
-                const selectedDayHeight = selectedDayElement.offsetHeight;
 
                 // Calculate the scroll position to center the selected day
                 const scrollPosition =
                     selectedDayOffsetTop -
-                    containerHeight / 2 -
-                    selectedDayHeight;
+                    containerHeight
                 datePickerColumnsRef.current?.scrollTo({
                     top: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
@@ -133,13 +131,11 @@ export const DatePicker: React.FC<props> = ({
                 const containerHeight =
                     monthPickerColumnsRef.current.offsetHeight;
                 const selectedDayOffsetTop = selectedMonthElement.offsetTop;
-                const selectedDayHeight = selectedMonthElement.offsetHeight;
 
                 // Calculate the scroll position to center the selected day
                 const scrollPosition =
                     selectedDayOffsetTop -
-                    containerHeight / 2 -
-                    selectedDayHeight;
+                    containerHeight ;
                 monthPickerColumnsRef.current.scrollTo({
                     top: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
@@ -328,7 +324,8 @@ export const DatePicker: React.FC<props> = ({
     return (
         <>
             <YearSelectionHeader>
-                <Icon name="arrowBack" color="dark" />
+                <ColumnTitle className="columnTitle">{'Year'}</ColumnTitle>
+                
                 <YearList ref={yearListRef}>
                     {Array.from(
                         {
@@ -347,7 +344,7 @@ export const DatePicker: React.FC<props> = ({
                             return (
                                 <span
                                     key={i}
-                                    className={`${selected ? "selected" : ""} ${
+                                    className={`columnItem ${selected ? "selected" : ""} ${
                                         year == todayYear ? "today" : ""
                                     }`}
                                     onClick={() => handleYearSelect(year)}
@@ -358,11 +355,10 @@ export const DatePicker: React.FC<props> = ({
                         }
                     )}
                 </YearList>
-                <Icon name="arrowForward" color="dark" />
             </YearSelectionHeader>
             <DatePickerColumns>
                 <Column>
-                    <ColumnTitle>Days</ColumnTitle>
+                    <ColumnTitle className="columnTitle">Days</ColumnTitle>
                     <Columnitems ref={datePickerColumnsRef}>
                         {Array.from(
                             {
@@ -373,7 +369,7 @@ export const DatePicker: React.FC<props> = ({
                                 return (
                                     <ColumnItem
                                         key={index + offset}
-                                        className={`${
+                                        className={`columnItem ${
                                             index + offset === selectedDay
                                                 ? "selected"
                                                 : ""
@@ -394,7 +390,7 @@ export const DatePicker: React.FC<props> = ({
                     </Columnitems>
                 </Column>
                 <Column>
-                    <ColumnTitle>Month</ColumnTitle>
+                    <ColumnTitle className="columnTitle">Month</ColumnTitle>
                     <Columnitems ref={monthPickerColumnsRef}>
                         {Array.from(
                             {
@@ -405,7 +401,7 @@ export const DatePicker: React.FC<props> = ({
                                 return (
                                     <ColumnItem
                                         key={index + offset}
-                                        className={`${
+                                        className={`columnItem ${
                                             index + offset === selectedMonth
                                                 ? "selected"
                                                 : ""
@@ -451,6 +447,7 @@ export const DatePicker: React.FC<props> = ({
 const YearSelectionHeader = styled.div`
     display: flex;
     align-items: center;
+    flex-direction:column;
     justify-content: space-between;
     font-size: 1.4rem;
     font-weight: bold;
@@ -469,12 +466,12 @@ const YearList = styled.div`
     position: relative;
     > span {
         scroll-snap-align: center;
-        color: #000;
-        opacity: 0.5;
+
+        
         font-size: 2.2rem;
         width: 60px;
         &.selected {
-            opacity: 1;
+        
         }
     }
 `;
@@ -511,13 +508,10 @@ const ColumnItem = styled.div`
     border-radius: 4px;
     scroll-snap-align: center;
     cursor: pointer;
-    color: #0008;
 
     margin-bottom: 5px;
     font-size: 4rem;
-    &.selected {
-        color: #000;
-    }
+
 `;
 
 const Actions = styled.div`
