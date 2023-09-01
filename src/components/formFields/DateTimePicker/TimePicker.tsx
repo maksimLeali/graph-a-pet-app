@@ -5,15 +5,14 @@ import { IonButton } from "@ionic/react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 
-
 type TimePickerProps = {
     selectedHour?: number;
     selectedMinute?: number;
     showTimePicker: boolean;
-    maxHour?:number
-    minHour?:number
-    maxMinute?:number
-    minMinute?:number
+    maxHour?: number;
+    minHour?: number;
+    maxMinute?: number;
+    minMinute?: number;
     handleSelectHour: (hour?: number) => void;
     handleSelectMinute: (minute?: number) => void;
     reset: () => void;
@@ -24,23 +23,21 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     selectedHour,
     selectedMinute,
     showTimePicker,
-    maxHour=12,
-    minHour=3,
-    maxMinute=42,
-    minMinute=2,
+    maxHour = 23,
+    minHour = 0,
+    maxMinute = 59,
+    minMinute = 0,
     handleSelectHour,
     handleSelectMinute,
     reset,
     confirm,
 }) => {
-
     const minutePickerColumnsRef = useRef<HTMLDivElement | null>(null);
     const hourPickerColumnsRef = useRef<HTMLDivElement | null>(null);
-    const nowMinute = useMemo(()=> dayjs().minute() , [])
-    const nowHour = useMemo(()=> dayjs().hour() , [])
-    const {t} = useTranslation()
-
-
+    const nowMinute = useMemo(() => dayjs().minute(), []);
+    const nowHour = useMemo(() => dayjs().hour(), []);
+    const { t } = useTranslation();
+  
     const centerSelectedMinute = useCallback(
         (smooth = true) => {
             if (!showTimePicker) return;
@@ -64,8 +61,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
                 // Calculate the scroll position to center the selected day
                 const scrollPosition =
-                    selectedDayOffsetTop -
-                    containerHeight / 2 ;
+                    selectedDayOffsetTop - containerHeight / 2;
                 minutePickerColumnsRef.current?.scrollTo({
                     top: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
@@ -77,7 +73,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     const centerSelectedHour = useCallback(
         (smooth = true) => {
             if (!showTimePicker) return;
-
+            
             if (!hourPickerColumnsRef.current) {
                 setTimeout(() => {
                     centerSelectedMinute();
@@ -90,6 +86,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 ) as HTMLDivElement) ||
                 hourPickerColumnsRef.current.querySelector(".now");
             if (selectedHourElement) {
+                
                 const containerHeight =
                     hourPickerColumnsRef.current.offsetHeight;
                 const selectedHourOffsetTop = selectedHourElement.offsetTop;
@@ -97,8 +94,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
                 // Calculate the scroll position to center the selected day
                 const scrollPosition =
-                    selectedHourOffsetTop -
-                    containerHeight / 2 ;
+                    selectedHourOffsetTop - containerHeight / 2;
                 hourPickerColumnsRef.current?.scrollTo({
                     top: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
@@ -107,7 +103,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
         },
         [selectedHour, hourPickerColumnsRef, showTimePicker]
     );
-    
+
     useEffect(() => {
         centerSelectedHour();
     }, [selectedHour]);
@@ -130,43 +126,57 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 <Column>
                     <ColumnTitle>Hours</ColumnTitle>
                     <ColumnItems ref={hourPickerColumnsRef}>
-                    {
-                        Array(maxHour-minHour + 1).fill('').map((_, index)=> {
-                            console.log('i, index', _,index)
-                            
-                            const isNow = index == nowHour
-                            return <ColumnItem 
+                        {Array(maxHour - minHour + 1)
+                            .fill("")
+                            .map((_, index) => {
+                                const isNow = index == nowHour;
+                                return (
+                                    <ColumnItem
+                                        key={index}
                                         className={`${
-                                            selectedHour == index + minMinute ? 'selected' : ''
-                                        } ${
-                                            isNow ? 'now' : ''
-                                        }`}
-                                        onClick={()=>handleSelectHour(index + minMinute)}
-                                        >
-                                { (index + minHour).toString().padStart(2, '0')}
-                            </ColumnItem>
-                        })
-                        }
+                                            selectedHour == index + minMinute
+                                                ? "selected"
+                                                : ""
+                                        } ${isNow ? "now" : ""}`}
+                                        onClick={() =>
+                                            handleSelectHour(index + minMinute)
+                                        }
+                                    >
+                                        {(index + minHour)
+                                            .toString()
+                                            .padStart(2, "0")}
+                                    </ColumnItem>
+                                );
+                            })}
                     </ColumnItems>
                 </Column>
                 <Column>
                     <ColumnTitle>Minutes</ColumnTitle>
                     <ColumnItems ref={minutePickerColumnsRef}>
-                        {
-                        Array(maxMinute - minMinute +1).fill('').map((i, index)=> {
-                            const isNow = index == nowMinute
-                            return <ColumnItem
-                            className={`${
-                                selectedMinute == index + minMinute? 'selected' : ''
-                            } ${
-                                isNow ? 'now' : ''
-                            }`}
-                            onClick={()=>handleSelectMinute(index+minMinute)}
-                                >
-                                { (index + minMinute ).toString().padStart(2, '0')}
-                            </ColumnItem>
-                        })
-                        }
+                        {Array(maxMinute - minMinute + 1)
+                            .fill("")
+                            .map((i, index) => {
+                                const isNow = index == nowMinute;
+                                return (
+                                    <ColumnItem
+                                        key={index}
+                                        className={`${
+                                            selectedMinute == index + minMinute
+                                                ? "selected"
+                                                : ""
+                                        } ${isNow ? "now" : ""}`}
+                                        onClick={() =>
+                                            handleSelectMinute(
+                                                index + minMinute
+                                            )
+                                        }
+                                    >
+                                        {(index + minMinute)
+                                            .toString()
+                                            .padStart(2, "0")}
+                                    </ColumnItem>
+                                );
+                            })}
                     </ColumnItems>
                 </Column>
             </TimePickerColumns>
@@ -177,7 +187,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 <IonButton
                     color="primary"
                     onClick={confirm}
-                    disabled={!selectedHour || selectedMinute === undefined}
+                    disabled={selectedHour === undefined || selectedMinute === undefined}
                 >
                     {t("actions.confirm")}
                 </IonButton>

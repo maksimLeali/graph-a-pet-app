@@ -64,7 +64,7 @@ export const Login: React.FC = ()  => {
                         textLabel="auth.email"
                     />
                     <TextInput required type='password' name="password" textLabel="auth.password" />
-                    <DateTimePicker name="test" ntTextLabel="test" required />
+                    <DateTimePicker name="test" ntTextLabel="test" required type="dateTime"  />
                     <SubmitInput color="primary">{t('auth.login')} </SubmitInput>
                 </Form>
             </FormProvider>

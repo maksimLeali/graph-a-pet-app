@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RegisterOptions, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -22,7 +22,7 @@ type props = {
     minDate?: string;
     maxDate?: string;
     textColor?: string;
-    // type?: "date" | "dateTime" | "time";
+    type?: "date" | "dateTime" | "time";
     errorText?: string;
     icon?: IconName;
     maxHour?:number
@@ -41,14 +41,14 @@ export const DateTimePicker : React.FC<props> = ({
     color = "medium",
     required = false,
     registerOptions,
-    // type = "date",
+    type = "date",
     focusColor = "primary",
     disabledColor = "lightGray",
     errorColor = "danger",
-    // minDate= dayjs().subtract(30,'y').startOf( 'y').toISOString(),
-    minDate = "2021-08-05T00:00:00.00Z",
-    // maxDate=dayjs().add(5,'y').endOf('year').toISOString(),
-    maxDate = "2021-08-11T23:59:00.00Z",
+    minDate= dayjs().subtract(30,'y').startOf( 'y').toISOString(),
+    // minDate = "2021-08-05T04:30:00.00Z",
+    maxDate=dayjs().add(5,'y').endOf('year').toISOString(),
+    // maxDate = "2021-08-11T22:39:00.00Z",
     minHour,
     minMinute,
     maxHour,
@@ -61,15 +61,36 @@ export const DateTimePicker : React.FC<props> = ({
     const [focused, setFocused] = useState(false);
     const [compiled, setCompiled] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showTimePicker, setShowTimePicker] = useState(false);
     const [error, setError] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const datePickerRef = useRef<HTMLDivElement>(null);
+    const timePickerRef = useRef<HTMLDivElement>(null);
+    const [selectedYear, setSelectedYear] = useState<number | undefined>();
+    const [selectedMonth, setSelectedMonth] = useState<number | undefined>();
+    const [selectedDay, setSelectedDay] = useState<number | undefined>();
+    const [ selectedMinute, setSelectedMinute ] = useState< number| undefined>()
+    const [ selectedHour, setSelectedHour ] = useState< number| undefined>()
     const {
         register,
         formState: { errors, isSubmitting },
         getValues,
         setValue,
     } = useFormContext();
+
+    const selectedDate = useMemo(()=>{ 
+        
+        if (type == 'date' || type=='dateTime' &&( !selectedDay || selectedMonth == undefined || !selectedYear)) return;
+        if(type == 'time' || type=='dateTime' &&( selectedHour == undefined || selectedMinute == undefined) ) return
+        return dayjs()
+                .set("y", selectedYear ?? 1999)
+                .set("month", selectedMonth ?? 0)
+                .set("date", selectedDay?? 1)
+                .set('hour', selectedHour ?? 0)
+                .set('minute', selectedMinute ?? 0)
+        
+    }, [selectedDay, selectedMonth, selectedYear, selectedHour, selectedMinute])
+
 
     useEffect(() => {
         setError(errors[name] != undefined);
@@ -87,44 +108,89 @@ export const DateTimePicker : React.FC<props> = ({
             reset();
         }
     });
+    useOnClickOutside(timePickerRef, () => {
+        if (showTimePicker) {
+            reset();
+        }
+    });
+
 
     const reset = () => {
-        setSelectedDay(undefined);
-        setSelectedMonth(undefined);
-        setSelectedYear(undefined);
-        setSelectedHour(undefined)
-        setSelectedMinute(undefined)
-        setShowDatePicker(false);
+        const value = getValues(name);
+        console.log(value != null, 'resetting')
+        if (value){
+            setSelectedYear(dayjs(value).year());
+            setSelectedMonth(dayjs(value).month());
+            setSelectedDay(dayjs(value).date());
+            setSelectedHour(dayjs(value).hour());
+            setSelectedMinute(dayjs(value).minute());
+            
+        }else {
+            setSelectedDay(undefined);
+            setSelectedMonth(undefined);
+            setSelectedYear(undefined);
+            setSelectedHour(undefined)
+            setSelectedMinute(undefined)
+        }
+        if(type == 'dateTime'){
+            if(showTimePicker){
+                setShowDatePicker(true);
+                setShowTimePicker(false);
+                
+            }else{
+
+                setShowDatePicker(false);
+            }
+        }else{
+            setShowTimePicker(false);
+            setShowDatePicker(false);
+        }
     };
 
-    const confirm = () => {
+    const confirmDate = () => {
         if (!selectedDay || selectedMonth == undefined || !selectedYear) return;
-        setValue(
-            name,
-            dayjs()
-                .set("y", selectedYear)
-                .set("month", selectedMonth)
-                .set("date", selectedDay)
-                .format("ll")
-        );
-        setCompiled(true);
         setShowDatePicker(false);
+        if(type == 'date'){
+            setValue(
+                name,
+                selectedDate!.toDate()
+                    
+            );
+            setCompiled(true);
+            return
+        }
+        setShowTimePicker(true)
+    };
+    const confirmTime = () => {
+        if (selectedHour == undefined || selectedMinute == undefined ) return;
+        console.log('type', type)
+        console.log(selectedDate )
+            
+            setValue(
+                name,
+                type == 'time' ? dayjs().set('hour', selectedHour!).set('minute', selectedMinute).toDate() :selectedDate!.toDate()
+                );
+        
+            
+        setCompiled(true);
+        setShowTimePicker(false);
     };
 
-    const [selectedYear, setSelectedYear] = useState<number | undefined>();
-    const [selectedMonth, setSelectedMonth] = useState<number | undefined>();
-    const [selectedDay, setSelectedDay] = useState<number | undefined>();
-    const [ selectedMinute, setSelectedMinute ] = useState< number| undefined>()
-    const [ selectedHour, setSelectedHour ] = useState< number| undefined>()
+
 
     useEffect(() => {
+        console.log('maxHour ', maxHour)
         const value = getValues(name);
         if (!value) return;
         setSelectedYear(dayjs(value).year());
         setSelectedMonth(dayjs(value).month());
         setSelectedDay(dayjs(value).date());
+        setSelectedHour(dayjs(value).hour());
+        setSelectedMinute(dayjs(value).minute());
     }, []);
 
+
+  
     return (
         <Wrapper className={`${isSubmitting ? "submitting" : ""}`}>
             <InputLabel
@@ -154,12 +220,20 @@ export const DateTimePicker : React.FC<props> = ({
                     onFocus={(e) => {
                         e.preventDefault();
                         setFocused(true);
-                        setShowDatePicker(true); // Show DatePicker on focus
+                        if(type != 'time' ){
+                            setShowDatePicker(true); // Show DatePicker on focus
+                        }else {
+                            setShowTimePicker(true); // Show DatePicker on focus
+                        }
                     }}
                     onClick={(e) => {
                         e.preventDefault();
                         setFocused(true);
-                        setShowDatePicker(true); // Show DatePicker on click
+                        if(type != 'time' ){
+                            setShowDatePicker(true); // Show DatePicker on focus
+                        }else {
+                            setShowTimePicker(true); // Show DatePicker on focus
+                        } // Show DatePicker on click
                     }}
                     min={minDate}
                     max={maxDate}
@@ -177,7 +251,13 @@ export const DateTimePicker : React.FC<props> = ({
                         ...registerOptions,
                     })}
                 >
-                    <span>{getValues(name)}</span>
+                    <span>{getValues(name) 
+                            ? type == 'date' 
+                                ? dayjs(getValues(name)).format('ll')
+                                : type == 'time' 
+                                    ? dayjs(getValues(name)).format('HH:mm')
+                                    : dayjs(getValues(name)).format('ll, HH:mm')
+                            : null}</span>
                     </StyledInput>
                 {icon ? (
                     <Icon
@@ -210,7 +290,7 @@ export const DateTimePicker : React.FC<props> = ({
             {/* Hidden DatePicker */}
             {showDatePicker && (
                 <DatePickerContainer ref={datePickerRef}>
-                    {/* <DatePicker
+                     <DatePicker
                         minDate={minDate}
                         maxDate={maxDate}
                         selectedDay={selectedDay}
@@ -221,17 +301,27 @@ export const DateTimePicker : React.FC<props> = ({
                         handleSelectYear={setSelectedYear}
                         showDatePicker={showDatePicker}
                         reset={reset}
-                        confirm={confirm}
-                    /> */}
-                    <TimePicker 
+                        confirm={confirmDate}
+                    /> 
+                    
+                </DatePickerContainer>
+            )}
+            {showTimePicker && (
+                <DatePickerContainer ref={timePickerRef}>
+                     <TimePicker 
                         selectedHour={selectedHour}
                         selectedMinute={selectedMinute}
-                        showTimePicker={showDatePicker}
+                        showTimePicker={showTimePicker}
                         handleSelectHour={(v)=> { setSelectedHour(v)}}
                         handleSelectMinute={(v)=> { setSelectedMinute(v)}}
                         reset={reset}
-                        confirm={confirm}
+                        confirm={confirmTime}
+                        maxHour={ maxHour ? maxHour : dayjs(maxDate).isSame(selectedDate) ? dayjs(maxDate).get('hour') : 23 }
+                        maxMinute={maxMinute ? maxMinute : dayjs(maxDate).isSame(selectedDate) ? dayjs(maxDate).get('minute') : 59 }
+                        minHour={minHour ? minHour : dayjs(minDate).isSame(selectedDate) ? dayjs(minDate).get('hour') :  0 }
+                        minMinute={minMinute ? minMinute : dayjs(minDate).isSame(selectedDate) ? dayjs(minDate).get('minute') : 0 }
                     />
+                    
                 </DatePickerContainer>
             )}
         </Wrapper>
