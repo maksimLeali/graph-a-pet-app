@@ -14,6 +14,7 @@ import dayjs from 'dayjs'
 export type IUserContext ={
     setPage: (page: Page)=> void,
     updatePets: (pets: DashboardPetFragment[])=> void
+    refetchDashboard: ()=> void;
     pets: (DashboardPetFragment & { owner : boolean }) [];
     ownedPets: (DashboardPetFragment & { owner : boolean }) [];
     loanPets: (DashboardPetFragment & { owner : boolean }) [];
@@ -28,6 +29,7 @@ type Page = {
 const defaultValue: IUserContext = {
   setPage: ()=> {},
   updatePets: ()=> {},
+  refetchDashboard: ()=> {},
   pets: [],
   loanPets: [],
   ownedPets: [],
@@ -51,6 +53,9 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     const [user, setUser] = useState<MinUserFragment | null>(null)
     const [menuOpen,setMenuOpen ]= useState(false)
 
+    const refetchDashboard = ()=> {
+        getUserDashboardQuery()
+    }
 
     const setPage = ({name, visible = true}: Page)=> {
         setPageName(name);
@@ -60,6 +65,7 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
         setVisible(visible)
     }
     const [getUserDashboardQuery, {loading = false }] = useGetUserDashboardLazyQuery({
+        fetchPolicy: 'no-cache',
         variables: {
             date_from: dateFrom,
             date_to: dateTo,
@@ -92,7 +98,7 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     }, [cookie.user])
 
     
-    const value = useMemo(() => ({...defaultValue,pets, loading, loanPets, ownedPets , setPage, visible}), [visible, pets])
+    const value = useMemo(() => ({...defaultValue,pets, loading, loanPets, ownedPets , setPage,refetchDashboard, visible}), [visible, pets])
 
   return <UserContext.Provider value={value}>
     <CustomIonHeader visible={visible}  className='MainHeader'>

@@ -15,7 +15,7 @@ import { MutationCreateTreatmentArgs } from "../../../types";
 import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
 
 export const CalendarEvents: React.FC = () => {
-    const { setPage } = useUserContext();
+    const { setPage, refetchDashboard } = useUserContext();
     const [appointments, setAppointments] = useState<
         Maybe<AppointmentFragment>[]
     >([]);
@@ -24,7 +24,8 @@ export const CalendarEvents: React.FC = () => {
     const [fromDate,setFromDate] = useState(dayjs().startOf('month').startOf('week').toISOString())
     const [toDate,setToDate] = useState(dayjs().endOf('month').endOf('week').toISOString())
 
-    const [getMyAppointments, {loading, refetch}] = useListMyTreatmentsLazyQuery({
+    const [getMyAppointments, {loading,refetch }] = useListMyTreatmentsLazyQuery({
+        fetchPolicy: "no-cache" ,
         variables: {
             commonSearch: {
                 page_size: 50,
@@ -80,63 +81,18 @@ export const CalendarEvents: React.FC = () => {
             }
             setAppointments(listMyTreatments.items);
         },
-    });
+        
+    },);
 
     const [createTreatment, {loading: creationLoading}] = useCreateTreatmentMutation({
         onCompleted:({createTreatment})=> {
             if(!createTreatment || createTreatment.error ){
                 return
             }
-            refetch({
-                commonSearch: {
-                    page_size: 50,
-                    order_by: 'date',
-                    order_direction: 'desc',
-                    filters: {
-                        ranges: [
-                            {
-                                key: "date",
-                                value: {
-                                    min: fromDate,
-                                    max: toDate,
-                                },
-                            },
-                        ],
-                        join: [
-                            {
-                                key: "health_cards",
-                                value: {
-                                    join: [
-                                        {
-                                            key: "pets",
-                                            value: {
-                                                join: [
-                                                    {
-                                                        key: "ownerships",
-                                                        value: {
-                                                            lists: [
-                                                                {
-                                                                    key: "custody_level",
-                                                                    value: [
-                                                                        "OWNER",
-                                                                        "SUB_OWNER",
-                                                                        "PET_SITTER",
-                                                                    ],
-                                                                },
-                                                            ],
-                                                        },
-                                                    },
-                                                ],
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                        ],
-                    },
-                },
-            })
-        }
+            getMyAppointments()
+            refetchDashboard()
+            closeModal()
+        },
     })
 
     const methods = useForm<MutationCreateTreatmentArgs & {notes : string}>({ mode: "onSubmit" });
@@ -146,14 +102,14 @@ export const CalendarEvents: React.FC = () => {
     const createEvent = ()=> {
         const {data, notes } = methods.getValues()
         createTreatment({variables: { treatment : { health_card_id: data.health_card_id, name: data.name, type: data.type, date: data.date, logs: [notes] , ...(data.booster_date ? { booster_date : data.booster_date } : {}) }  }})
-
+        
     }
 
     const openAddCalendarModal= useCallback(()=> {
         openModal({
             onClose:()=> {closeModal()},
             onCancel: ()=> {closeModal()},
-            onSubmit:(data)=>{createEvent()},
+            onConfirm:()=>{ createEvent()},
             children: 
                 <FormProvider {...methods} >
                     
@@ -171,7 +127,7 @@ export const CalendarEvents: React.FC = () => {
     return (
         <IonContent fullscreen>
             <CustomCalendar appointments={appointments} setDayEvents={(events)=> setEvents(events)} onStartDateChange={(v)=> {setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
-            {events && <AppointmentsList loading={loading} appointments={events as AppointmentFragment[]}/>}
+            {events  && <AppointmentsList loading={loading} appointments={events as AppointmentFragment[]}/>}
             <AddButton onClick={openAddCalendarModal}>
                 <Icon name="addCircleOutline" color="dark-tint" size ="50px" />
             </AddButton>

@@ -21,7 +21,7 @@ export const AppointmentsList: React.FC<props> =({appointments=[], loading= fals
             </SkeletonTextes>
             <SkeletonTag className="skeleton"/>
         </SkeletonMinAppointment> }
-        {appointments.length > 0 && appointments.map(appointment=> { return <MinAppointment key={appointment?.id} appointment={appointment}/>}) }
+        {appointments.length > 0 && !loading  && appointments.map(appointment=> { return <MinAppointment key={appointment?.id} appointment={appointment}/>}) }
         { !loading && !appointments.length &&  <span dangerouslySetInnerHTML={{ __html: t('events.general.no_events') ?? ''} } /> }  
     </Container>
 }

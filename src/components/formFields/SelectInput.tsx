@@ -209,7 +209,7 @@ export const SelectInput: React.FC<props> = ({
                                 onClick={() => setFocused(!focused)}
                             >
                                 {value ? (
-                                    <p>
+                                    <>
                                         {_.find(
                                             options,
                                             (opt) => opt.value === value
@@ -218,11 +218,16 @@ export const SelectInput: React.FC<props> = ({
                                             options,
                                             (opt) => opt.value === value
                                         )?.render :
-                                            _.find(
-                                                options,
-                                                (opt) => opt.value === value
-                                            )?.label}
-                                    </p>
+                                            <p>{
+                                                _.find(
+                                                    
+                                                    options,
+                                                    (opt) => opt.value === value
+                                                    )?.label
+                                                }
+                                            </p>
+                                            }
+                                           </> 
                                 ) : (
                                     <></>
                                 )}

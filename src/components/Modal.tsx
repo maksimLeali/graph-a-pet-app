@@ -11,7 +11,6 @@ export type ModalProps = {
     onClose: () => void;
     onCancel?: () => void;
     onConfirm?: () => void;
-    onSubmit?: ( data : Record<string, any> )=> void
     bgColor?: string;
     txtColor?: string;
     children?: React.ReactNode ;
@@ -28,7 +27,6 @@ export const Modal: React.FC<ModalProps> = ({
     onClose,
     onCancel,
     onConfirm,
-    onSubmit,
     bgColor = "var(--ion-color-light)",
     txtColor = "var(--ion-color-dark)",
     children,
@@ -84,11 +82,6 @@ export const Modal: React.FC<ModalProps> = ({
                     ))}
                     {onConfirm !== null && onConfirm !== undefined && (
                         <IonButton color="primary" onClick={onConfirm}>
-                            {t("actions.confirm")}
-                        </IonButton>
-                    )}
-                    {onSubmit !== null && onSubmit !== undefined && (
-                        <IonButton color="primary" onClick={onSubmit}>
                             {t("actions.confirm")}
                         </IonButton>
                     )}
