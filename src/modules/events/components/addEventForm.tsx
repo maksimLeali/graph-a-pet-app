@@ -14,8 +14,9 @@ import { treatmentsColors } from "../../../utils";
 import dayjs from "dayjs";
 import { useUserContext } from "../../../contexts";
 import { useEffect } from "react";
-import { DashboardPetFragment } from "../../home/operations/__generated__/dashboardPet.generated";
+
 import _ from "lodash";
+import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
 
 export const AddEventForm = () => {
     const { pets } = useUserContext();
