@@ -2,7 +2,7 @@ import { RegisterOptions, Controller, useFormContext } from "react-hook-form";
 import { I18NKey } from "../../i18n";
 import { Icon, IconName } from "../";
 import styled from "styled-components";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOnClickOutside } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
@@ -83,10 +83,6 @@ export const SelectInput: React.FC<props> = ({
         );
     }, [rowsPerList, optionsRef.current]);
 
-
-    useEffect(()=> {
-        console.log(options)
-    },[])
 
     return (
         <Wrapper

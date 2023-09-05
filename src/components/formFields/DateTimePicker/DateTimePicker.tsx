@@ -104,7 +104,8 @@ export const DateTimePicker: React.FC<props> = ({
             .set("month", selectedMonth ?? 0)
             .set("date", selectedDay ?? 1)
             .set("hour", selectedHour ?? 0)
-            .set("minute", selectedMinute ?? 0);
+            .set("minute", selectedMinute ?? 0)
+            .set('seconds', 0);
     }, [
         selectedDay,
         selectedMonth,
@@ -137,7 +138,6 @@ export const DateTimePicker: React.FC<props> = ({
 
     const reset = () => {
         const value = getValues(name);
-        console.log(value != null, "resetting");
         if (value) {
             setSelectedYear(dayjs(value).year());
             setSelectedMonth(dayjs(value).month());
@@ -176,9 +176,6 @@ export const DateTimePicker: React.FC<props> = ({
     };
     const confirmTime = () => {
         if (selectedHour == undefined || selectedMinute == undefined) return;
-        console.log("type", type);
-        console.log(selectedDate);
-
         setValue(
             name,
             type == "time"

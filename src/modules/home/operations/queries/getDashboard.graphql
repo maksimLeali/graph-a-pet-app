@@ -1,9 +1,10 @@
 query getUserDashboard( $date_from: String!, $date_to: String! ) {
 	getUserDashboard {
 		dashboard {
-			ownerships(commonSearch: { filters : {fixed: [{key: "custody_level", value: "OWNER"}]}}) {
+			ownerships {
 				items {
 					id
+					custody_level
 					pet {
 						...DashboardPet
 					}

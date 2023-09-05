@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { Pet, User } from '../types'
+import { CustodyLevel, Pet, User } from '../types'
 import { IonHeader, IonToolbar, IonTitle } from '@ionic/react'
 import styled from 'styled-components'
 
@@ -8,10 +8,16 @@ import { useCookies } from 'react-cookie'
 import { MainMenu } from '../components/system'
 import { MinUserFragment } from '../components/operations/__generated__/minUser.generated'
 import { DashboardPetFragment } from '../components/operations/__generated__/dashboardPet.generated'
+import { useGetUserDashboardLazyQuery } from '../modules/home/operations/__generated__/getDashboard.generated'
+import dayjs from 'dayjs'
 
 export type IUserContext ={
     setPage: (page: Page)=> void,
     updatePets: (pets: DashboardPetFragment[])=> void
+    pets: (DashboardPetFragment & { owner : boolean }) [];
+    ownedPets: (DashboardPetFragment & { owner : boolean }) [];
+    loanPets: (DashboardPetFragment & { owner : boolean }) [];
+    loading: boolean
 
 } & Record<string, any>
 
@@ -21,7 +27,11 @@ type Page = {
 
 const defaultValue: IUserContext = {
   setPage: ()=> {},
-  updatePets: ()=> {}
+  updatePets: ()=> {},
+  pets: [],
+  loanPets: [],
+  ownedPets: [],
+  loading: false
   
 }
 const UserContext = React.createContext<IUserContext>(defaultValue)
@@ -34,24 +44,55 @@ export const UserContextProvider: React.FC< Props & Record<string, unknown>> = (
     const [pageName, setPageName] = useState("") 
     const [cookie] = useCookies(["jwt", "user"]);
     const [visible, setVisible] = useState(true) 
-    const [pets, setPets] = useState<DashboardPetFragment[]>([]) 
+    const [alreadyRequested, setAlreadyRequested] = useState(false)
+    const [pets, setPets] = useState<(DashboardPetFragment & { owner : boolean })[]>([]) 
+    const [dateFrom, setDateFrom ] = useState(dayjs().startOf('w').toISOString())
+    const [dateTo, setDateTo] = useState(dayjs(dateFrom).add(14, "days").toISOString())
     const [user, setUser] = useState<MinUserFragment | null>(null)
     const [menuOpen,setMenuOpen ]= useState(false)
+
+
     const setPage = ({name, visible = true}: Page)=> {
         setPageName(name);
+        if(!alreadyRequested ){
+            getUserDashboardQuery()
+        }
         setVisible(visible)
     }
+    const [getUserDashboardQuery, {loading = false }] = useGetUserDashboardLazyQuery({
+        variables: {
+            date_from: dateFrom,
+            date_to: dateTo,
+        },
+        onCompleted: ({ getUserDashboard }) => {
+            setAlreadyRequested(true)
+            if(getUserDashboard.dashboard ){
+              if(getUserDashboard.dashboard.ownerships 
+                && getUserDashboard.dashboard.ownerships.items 
+                && getUserDashboard.dashboard.ownerships.items.length){
+                    const pets = getUserDashboard.dashboard.ownerships.items.map((item)=> ({...item!.pet , owner : item?.custody_level == CustodyLevel.Owner }))
+                    setPets(pets)
+                    
+                }
+            }
+            return;
+        },
+        
+    });
 
-    const updatePets = (pets: DashboardPetFragment[])=> {
-        console.log(pets.length)
-        setPets(pets)
-    }
+    const ownedPets = useMemo(()=> {
+        return pets.filter(pet=> pet.owner)
+    }, [pets])
+    const loanPets = useMemo(()=> {
+        return pets.filter(pet=> !pet.owner)
+    }, [pets])
+
     useEffect(()=> {
         setUser(cookie.user)
     }, [cookie.user])
 
     
-    const value = useMemo(() => ({...defaultValue,pets ,updatePets , setPage, visible}), [visible, pets])
+    const value = useMemo(() => ({...defaultValue,pets, loading, loanPets, ownedPets , setPage, visible}), [visible, pets])
 
   return <UserContext.Provider value={value}>
     <CustomIonHeader visible={visible}  className='MainHeader'>

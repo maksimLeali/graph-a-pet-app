@@ -15,18 +15,25 @@ import dayjs from "dayjs";
 import { useUserContext } from "../../../contexts";
 import { useEffect } from "react";
 import { DashboardPetFragment } from "../../home/operations/__generated__/dashboardPet.generated";
+import _ from "lodash";
 
 export const AddEventForm = () => {
-    const {pets } = useUserContext();
+    const { pets } = useUserContext();
     const { t } = useTranslation();
 
-    const petsOptions: Option[] = pets.map((pet: DashboardPetFragment)=> {
-        console.log(pet.health_card!.id)
-        return {
-            key: pet.health_card!.id,
-            label: pet.name
-        }
-    }) 
+    const petsOptions: Option[] = pets
+        .sort((a, b) => {
+            if (a.owner && !b.owner) return -1;
+            if (!a.owner && b.owner) return 1;
+            return 0;
+        })
+        .map((pet: DashboardPetFragment) => {
+            return {
+                value: pet.health_card!.id,
+                label: pet.name,
+                render: <span>{pet.name}</span>,
+            };
+        });
 
     const typeOptions: Option[] = Object.values(TreatmentType).map((key) => ({
         value: key,
@@ -40,21 +47,49 @@ export const AddEventForm = () => {
         ),
     }));
 
-    
-
     return (
         <Form
             onSubmit={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
             }}
-            >
-            <SelectInput name="data.pet" options={petsOptions} bgColor="light" textLabel="events.pet" />
-            <TextInput name="data.name" textLabel="events.name" bgColor="light" />
-            <TextAreaInput name="data.description" textLabel="events.notes" bgColor="light" />
-            <DateTimePicker name="data.date_from" textLabel="events.date_time_from" type="dateTime" bgColor="light" minDate={dayjs().toISOString()} />
-            <DateTimePicker name="data.booster_date_from" textLabel="events.booster_date_time_from" type="dateTime" bgColor="light" minDate={dayjs().toISOString()} />
-            <SelectInput name="data.type" options={typeOptions} bgColor="light" textLabel="events.type" />
+        >
+            <SelectInput
+                name="data.health_card_id"
+                options={petsOptions}
+                bgColor="light"
+                textLabel="events.pet"
+            />
+            <TextInput
+                name="data.name"
+                textLabel="events.name"
+                bgColor="light"
+            />
+            <SelectInput 
+            name="data.type" 
+            options={typeOptions} 
+            bgColor="light" 
+            textLabel="events.type" 
+            />
+            <DateTimePicker
+                name="data.date"
+                textLabel="events.date_time_from"
+                type="dateTime"
+                bgColor="light"
+                minDate={dayjs().toISOString()}
+            />
+            <DateTimePicker
+                name="data.booster_date"
+                textLabel="events.booster_date_time_from"
+                type="dateTime"
+                bgColor="light"
+                minDate={dayjs().toISOString()}
+            />
+            <TextAreaInput
+                name="notes"
+                textLabel="events.notes"
+                bgColor="light"
+            />
         </Form>
     );
 };
@@ -62,4 +97,6 @@ export const AddEventForm = () => {
 const Form = styled.div`
     width: 100%;
     padding: 20px;
+    overflow-y: scroll;
+    max-height: 600px;
 `;

@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { AddEventForm } from "../components/addEventForm";
 import { FormProvider, useForm } from "react-hook-form";
 import { MutationCreateTreatmentArgs } from "../../../types";
+import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
 
 export const CalendarEvents: React.FC = () => {
     const { setPage } = useUserContext();
@@ -23,7 +24,7 @@ export const CalendarEvents: React.FC = () => {
     const [fromDate,setFromDate] = useState(dayjs().startOf('month').startOf('week').toISOString())
     const [toDate,setToDate] = useState(dayjs().endOf('month').endOf('week').toISOString())
 
-    const [getMyAppointments, {loading}] = useListMyTreatmentsLazyQuery({
+    const [getMyAppointments, {loading, refetch}] = useListMyTreatmentsLazyQuery({
         variables: {
             commonSearch: {
                 page_size: 50,
@@ -81,12 +82,71 @@ export const CalendarEvents: React.FC = () => {
         },
     });
 
-    const methods = useForm<MutationCreateTreatmentArgs>({ mode: "onSubmit" });
+    const [createTreatment, {loading: creationLoading}] = useCreateTreatmentMutation({
+        onCompleted:({createTreatment})=> {
+            if(!createTreatment || createTreatment.error ){
+                return
+            }
+            refetch({
+                commonSearch: {
+                    page_size: 50,
+                    order_by: 'date',
+                    order_direction: 'desc',
+                    filters: {
+                        ranges: [
+                            {
+                                key: "date",
+                                value: {
+                                    min: fromDate,
+                                    max: toDate,
+                                },
+                            },
+                        ],
+                        join: [
+                            {
+                                key: "health_cards",
+                                value: {
+                                    join: [
+                                        {
+                                            key: "pets",
+                                            value: {
+                                                join: [
+                                                    {
+                                                        key: "ownerships",
+                                                        value: {
+                                                            lists: [
+                                                                {
+                                                                    key: "custody_level",
+                                                                    value: [
+                                                                        "OWNER",
+                                                                        "SUB_OWNER",
+                                                                        "PET_SITTER",
+                                                                    ],
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                },
+            })
+        }
+    })
+
+    const methods = useForm<MutationCreateTreatmentArgs & {notes : string}>({ mode: "onSubmit" });
     const { openModal, closeModal } = useModal()
 
 
     const createEvent = ()=> {
-        console.log(methods.getValues());
+        const {data, notes } = methods.getValues()
+        createTreatment({variables: { treatment : { health_card_id: data.health_card_id, name: data.name, type: data.type, date: data.date, logs: [notes] , ...(data.booster_date ? { booster_date : data.booster_date } : {}) }  }})
+
     }
 
     const openAddCalendarModal= useCallback(()=> {
