@@ -56,7 +56,7 @@ export const DateTimePicker: React.FC<props> = ({
     minDate = dayjs().subtract(30, "y").startOf("y").toISOString(),
     // minDate = "2021-08-05T04:30:00.00Z",
     maxDate = dayjs().add(5, "y").endOf("year").toISOString(),
-    // maxDate = "2021-08-11T22:39:00.00Z",
+    // maxDate = "2024-08-11T22:39:00.00Z",
     minHour,
     minMinute,
     maxHour,

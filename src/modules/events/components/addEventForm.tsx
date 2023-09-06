@@ -84,7 +84,7 @@ export const AddEventForm = () => {
                 textLabel="events.booster_date_time_from"
                 type="dateTime"
                 bgColor="light"
-                minDate={dayjs().toISOString()}
+                maxDate={dayjs().toISOString()}
             />
             <TextAreaInput
                 name="notes"

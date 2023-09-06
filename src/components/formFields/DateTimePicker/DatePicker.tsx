@@ -252,7 +252,11 @@ export const DatePicker: React.FC<props> = ({
     const getMaxMonthLength = useCallback(() => {
         if (maxYear == minYear)
             return dayjs(maxDate).diff(dayjs(minDate), "months") + 1;
-        if (!selectedYear) return 12;
+        if (!selectedYear) {
+            if (![minYear, maxYear].includes(todayYear)) return 12;
+            if (todayYear == maxYear) return dayjs(maxDate).month() + 1;
+            return dayjs(minDate).endOf("year").diff(dayjs(minDate), "months") + 1;
+        }
         if (![minYear, maxYear].includes(selectedYear)) return 12;
 
         if (selectedYear == maxYear) return dayjs(maxDate).month() + 1;
@@ -267,8 +271,20 @@ export const DatePicker: React.FC<props> = ({
                 return dayjs(minDate).date();
             return 1;
         }
-        if (!selectedYear) return 1;
-        if (selectedMonth == undefined) return 1;
+        if (!selectedYear){ 
+            if(selectedMonth == undefined){
+
+                return dayjs(minDate).date();
+            }
+            if (![maxYear, minYear].includes(todayYear)) return 1;
+            if(todayYear == maxYear)  return 1;
+            if(minMonth != todayMonth) return 1            
+            return dayjs(minDate).date();
+        }
+        if (selectedMonth == undefined) {
+
+            return dayjs(minDate).date();
+        };
 
         if (![maxYear, minYear].includes(selectedYear)) return 1;
         // -- qua includo anche il caso di maxMonth == selected month in quanto l'offset di giorni per la tada massim è comunque di 1 che sia o meno il mese massimo
@@ -282,7 +298,11 @@ export const DatePicker: React.FC<props> = ({
 
     const getMonthOffset = () => {
         if (maxYear == minYear) return dayjs(minDate).month();
-        if (!selectedYear) return 0;
+        if (!selectedYear) {
+            if (![maxYear, minYear].includes(todayYear)) return 0;
+            if (todayYear == maxYear) return 0;
+            return dayjs(minDate).month();
+        };
         if (![maxYear, minYear].includes(selectedYear)) return 0;
         if (selectedYear == maxYear) return 0;
         return dayjs(minDate).month();
