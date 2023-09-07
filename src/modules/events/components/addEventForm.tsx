@@ -77,16 +77,14 @@ export const AddEventForm = () => {
                 textLabel="events.date_time_from"
                 type="dateTime"
                 bgColor="light"
-                minDate={dayjs().add(-4,'year').toISOString()}
-                maxDate={dayjs().add(-1,'year').toISOString()}
-                
+                minDate={dayjs().toISOString()}
             />
             <DateTimePicker
                 name="data.booster_date"
                 textLabel="events.booster_date_time_from"
                 type="dateTime"
                 bgColor="light"
-                maxDate={dayjs().toISOString()}
+                minDate={dayjs().toISOString()}
             />
             <TextAreaInput
                 name="notes"
