@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Icon } from "../../icons";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { IonButton } from "@ionic/react";
 import { useTranslation } from "react-i18next";
@@ -47,6 +47,10 @@ export const DatePicker: React.FC<props> = ({
     const datePickerColumnsRef = useRef<HTMLDivElement | null>(null);
     const monthPickerColumnsRef = useRef<HTMLDivElement | null>(null);
     
+    const [phantomDay, setPhantomDay] = useState<number>()
+    const [phantomMonth, setPhantomMonth] = useState<number>()
+    const [phantomYear, setPhantomYear] = useState<number>()
+
     const {t} = useTranslation()
     
     const centerSelectedYear = useCallback(
@@ -145,6 +149,43 @@ export const DatePicker: React.FC<props> = ({
         [selectedMonth, monthPickerColumnsRef, showDatePicker]
     );
 
+
+    const phantomYearHandler = (year?: number )=> {
+        if(year) return setPhantomYear(year)
+        if(minYear < todayYear && maxYear > todayYear ){
+            return setPhantomYear (todayYear)
+        }
+            return setPhantomYear(minYear)
+    }
+    const phantomMonthHandler = (month?: number )=> {
+        
+        if(month != undefined ) return setPhantomMonth(month)
+        if(![minYear, maxYear].includes(phantomYear!)){
+            return setPhantomMonth(todayMonth)
+        }
+        if(phantomYear == minYear) {
+            if (minMonth > todayMonth) return setPhantomMonth(minMonth)
+            return setPhantomMonth(todayMonth)
+        }
+        if(maxMonth < todayMonth) return setPhantomMonth(maxMonth)
+        return setPhantomMonth(todayMonth)
+    }
+
+    const phantomDayHandler = (day?: number)=>{
+        if(day) return setPhantomDay(day)
+        if(![minYear, maxYear].includes(phantomYear!)){
+            return setPhantomDay(todayDay)
+        }
+        if(minYear == phantomYear ){
+            if(minMonth < phantomMonth!) return setPhantomDay(todayDay)
+            if(todayDay <  minDay ) return setPhantomDay( minDay)
+            return setPhantomDay(todayDay)
+        }
+        if(maxMonth > phantomMonth!) return setPhantomDay(todayDay)
+        if( todayDay > maxDay  ) return setPhantomDay(maxDay)
+        return setPhantomDay(todayDay)
+    }
+
     const handleYearSelect = (year: number) => {
         if (selectedMonth!==undefined && year !== selectedYear) {
             if(year == minYear && selectedMonth < minMonth ){
@@ -154,7 +195,9 @@ export const DatePicker: React.FC<props> = ({
                 handleMonthSelect(undefined)
             }
         };
+        
         handleSelectYear(year);
+        phantomYearHandler(year);
     };
 
     const handleMonthSelect = (month: number | undefined) => {
@@ -167,9 +210,12 @@ export const DatePicker: React.FC<props> = ({
             }
         }
         if(!month)handleSelectDay(undefined)
+
         handleSelectMonth(month);
+        phantomMonthHandler(month)
     };
     const handleDaySelect = (date: number | undefined) => {
+        if(date) setPhantomDay(date)
         handleSelectDay(date);
     };
 
@@ -209,14 +255,32 @@ export const DatePicker: React.FC<props> = ({
                 .set("date", maxDay)
                 .date();
         }
-        if (!selectedYear && !selectedMonth)
+        if (!selectedYear && !selectedMonth){
+            if(![minYear, maxYear].includes(todayYear)) return dayjs().endOf("month").date()
+            if(minYear == todayYear){
+                console.log('here')
+                if(minMonth == todayMonth){ 
+                    
+                    return dayjs().set('year', minYear).set('month', minMonth).endOf('month').diff(dayjs(`${minYear}-${minMonth +1}-${minDay}`), 'days') +1
+                }
+                
+                return dayjs(`${maxYear}-${maxMonth +1}-${maxDay}`).date()
+            }
+            if(maxMonth == todayMonth) return dayjs(`${maxYear}-${maxMonth +1}-${maxDay}`).date()
             return dayjs().endOf("month").date();
+        }
 
-        if (!selectedYear)
+        if (!selectedYear){
+            if(maxMonth == selectedMonth) return dayjs(`${maxYear}-${maxMonth +1}-${maxDay}`).date()
             return dayjs().set("month", selectedMonth!).endOf("month").date();
+        }
 
-        if (selectedMonth == undefined)
+        if (selectedMonth == undefined){
+            if(![minYear, maxYear].includes(selectedYear)) return dayjs(``).endOf('month').date()
+            if(minMonth == todayMonth) return dayjs(`${maxYear}-${maxMonth +1}-${maxDay}`).endOf('month').diff(dayjs(`${maxYear}-${maxMonth +1}-${maxDay}`), 'days') +1
+            if(maxMonth == todayMonth) return dayjs(`${maxYear}-${maxMonth +1}-${maxDay}`).date()
             return dayjs().set("year", selectedYear!).endOf("month").date();
+        }
 
         if (![minYear, maxYear].includes(selectedYear))
             return dayjs()
@@ -266,7 +330,7 @@ export const DatePicker: React.FC<props> = ({
     const getDaysOffset = () => {
         if (maxYear == minYear) {
             if (maxMonth == minMonth)
-                return dayjs(maxDate).diff(dayjs(minDate), "days");
+                return dayjs(minDate).date()
             if (!selectedMonth || selectedMonth == minMonth)
                 return dayjs(minDate).date();
             return 1;
@@ -341,6 +405,26 @@ export const DatePicker: React.FC<props> = ({
         }
     }, [showDatePicker]);
 
+    useEffect(()=> {
+        console.log('min', minDate, minYear)
+        console.log('max', maxDate, maxYear)
+        phantomYearHandler()
+        phantomMonthHandler()
+        phantomDayHandler()
+    },[]) 
+
+    useEffect(()=> {
+        console.log('phantom year = ', phantomYear)
+    }, [phantomYear])
+
+    useEffect(()=> {
+        console.log('phantom month = ', phantomMonth)
+    }, [phantomMonth])
+
+    useEffect(()=> {
+        console.log('phantom day = ', phantomDay)
+    }, [phantomDay])
+
     return (
         <>
             <YearSelectionHeader>
@@ -350,15 +434,11 @@ export const DatePicker: React.FC<props> = ({
                     {Array.from(
                         {
                             length:
-                                dayjs(maxDate)
-                                    .endOf("year")
-                                    .diff(dayjs(minDate).startOf("year"), "y") +
-                                1,
+                                maxYear - minYear +1 ,
                         },
                         (_, i) => {
-                            const year = dayjs()
-                                .add(i - dayjs().diff(minDate, "y"), "years")
-                                .year();
+                            console.log(dayjs().diff(minDate, "y"))
+                            const year = minYear + i
                             const selected = year == selectedYear;
 
                             return (
