@@ -356,25 +356,13 @@ export const DatePicker: React.FC<props> = ({
         }
     }, [showDatePicker]);
 
+    
+
     useEffect(() => {
-        console.log("min", minDate, minYear);
-        console.log("max", maxDate, maxYear);
         phantomYearHandler();
         phantomMonthHandler();
         phantomDayHandler();
     }, []);
-
-    useEffect(() => {
-        console.log("phantom year = ", phantomYear);
-    }, [phantomYear]);
-
-    useEffect(() => {
-        console.log("phantom month = ", phantomMonth);
-    }, [phantomMonth]);
-
-    useEffect(() => {
-        console.log("phantom day = ", phantomDay);
-    }, [phantomDay]);
 
     return (
         <>
@@ -389,7 +377,6 @@ export const DatePicker: React.FC<props> = ({
                             length: maxYear - minYear + 1,
                         },
                         (_, i) => {
-                            console.log(dayjs().diff(minDate, "y"));
                             const year = minYear + i;
                             const selected = year == selectedYear;
 

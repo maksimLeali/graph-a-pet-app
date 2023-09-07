@@ -89,6 +89,10 @@ export const CalendarEvents: React.FC = () => {
             if(!createTreatment || createTreatment.error ){
                 return
             }
+            methods.setValue('data.date', undefined!)
+            methods.setValue('data.name', undefined!)
+            methods.setValue('data.type', undefined!)
+            methods.setValue('data.health_card_id', undefined!)
             getMyAppointments()
             refetchDashboard()
             closeModal()

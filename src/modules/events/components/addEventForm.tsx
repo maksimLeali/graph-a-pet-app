@@ -78,6 +78,7 @@ export const AddEventForm = () => {
                 type="dateTime"
                 bgColor="light"
                 minDate={dayjs().toISOString()}
+                
             />
             <DateTimePicker
                 name="data.booster_date"

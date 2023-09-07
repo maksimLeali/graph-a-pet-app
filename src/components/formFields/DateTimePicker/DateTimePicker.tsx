@@ -86,6 +86,19 @@ export const DateTimePicker: React.FC<props> = ({
         setValue,
     } = useFormContext();
 
+
+    useEffect(()=> {
+        console.log('changed', getValues(name))
+        if(!getValues(name)){
+            setCompiled(false);
+            setSelectedDay (undefined)
+            setSelectedYear (undefined)
+            setSelectedMonth (undefined)
+            setSelectedHour (undefined)
+            setSelectedMinute (undefined)
+        }
+    },[ getValues(name)])
+
     const selectedDate = useMemo(() => {
         if (
             type == "date" ||
