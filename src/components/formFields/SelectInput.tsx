@@ -68,8 +68,16 @@ export const SelectInput: React.FC<props> = ({
 
     const {
         formState: { isSubmitting },
-        control
+        control,
+        getValues
     } = useFormContext();
+
+    useEffect(()=> {
+        console.log('changed', getValues(name))
+        if(!getValues(name)){
+            setCompiled(false);
+        }
+    },[ getValues(name)])
 
     useEffect(() => {
         const itemsHeight =

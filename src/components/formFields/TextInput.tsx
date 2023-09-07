@@ -56,9 +56,17 @@ export const TextInput: React.FC<props> = ({
   const [showPsw, setShowPsw] = useState(false);
   const {
     register,
+    getValues,
     formState: { errors , isSubmitting},
   } = useFormContext();
 
+
+  useEffect(()=> {
+    console.log('changed', getValues(name))
+    if(!getValues(name)){
+        setCompiled(false);
+    }
+},[ getValues(name)])
   const setFocus=()=>{
     if(!ref.current)return
     (ref.current.children[0] as any).focus()
