@@ -21,6 +21,7 @@ type props = {
     color?: string;
     focusColor?: string;
     disabledColor?: string;
+    disabled?: boolean;
     hoverColor?: string;
     textColor?: string;
     errorText?: string;
@@ -45,6 +46,7 @@ export const SelectInput: React.FC<props> = ({
     disabledColor = "medium",
     textColor = "dark",
     errorText = "danger",
+    disabled= false,
     rowsPerList = 7,
     onSelected,
     registerOptions,
@@ -110,6 +112,7 @@ export const SelectInput: React.FC<props> = ({
                 onClick={()=>setFocused(!focused)}
             >
                 {textLabel ? t(textLabel) : ntTextLabel}
+                {required && !compiled && ' *'}
             </InputLabel>
 
             {onSelected ? (

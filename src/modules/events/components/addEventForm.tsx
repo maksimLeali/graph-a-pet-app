@@ -59,17 +59,20 @@ export const AddEventForm = () => {
                 name="data.health_card_id"
                 options={petsOptions}
                 bgColor="light"
+                required
                 textLabel="events.pet"
             />
             <TextInput
                 name="data.name"
                 textLabel="events.name"
                 bgColor="light"
+                required
             />
             <SelectInput 
             name="data.type" 
             options={typeOptions} 
             bgColor="light" 
+            required
             textLabel="events.type" 
             />
             <DateTimePicker
@@ -77,6 +80,7 @@ export const AddEventForm = () => {
                 textLabel="events.date_time_from"
                 type="dateTime"
                 bgColor="light"
+                required
                 minDate={dayjs().toISOString()}
                 
             />

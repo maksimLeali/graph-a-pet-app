@@ -90,6 +90,9 @@ export const CalendarEvents: React.FC = () => {
                 return
             }
             methods.setValue('data.date', undefined!)
+            methods.setValue('data.date', undefined!)
+            methods.setValue('data.booster_date', undefined!)
+            methods.setValue('notes', undefined!)
             methods.setValue('data.name', undefined!)
             methods.setValue('data.type', undefined!)
             methods.setValue('data.health_card_id', undefined!)
@@ -105,7 +108,12 @@ export const CalendarEvents: React.FC = () => {
 
     const createEvent = ()=> {
         const {data, notes } = methods.getValues()
-        createTreatment({variables: { treatment : { health_card_id: data.health_card_id, name: data.name, type: data.type, date: data.date, logs: [notes] , ...(data.booster_date ? { booster_date : data.booster_date } : {}) }  }})
+        console.log(methods.formState)
+        console.log('submitting')
+        methods.handleSubmit((data)=> {
+            console.log('data', data)
+            //createTreatment({variables: { treatment : { health_card_id: data.health_card_id, name: data.name, type: data.type, date: data.date, logs: [notes] , ...(data.booster_date ? { booster_date : data.booster_date } : {}) }  }})
+        })
         
     }
 

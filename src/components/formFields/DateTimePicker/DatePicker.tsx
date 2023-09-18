@@ -45,9 +45,9 @@ export const DatePicker: React.FC<props> = ({
     const datePickerColumnsRef = useRef<HTMLDivElement | null>(null);
     const monthPickerColumnsRef = useRef<HTMLDivElement | null>(null);
 
-    const [phantomDay, setPhantomDay] = useState<number>();
-    const [phantomMonth, setPhantomMonth] = useState<number>();
-    const [phantomYear, setPhantomYear] = useState<number>();
+    const [pseudoDay, setpseudoDay] = useState<number>();
+    const [pseudoMonth, setpseudoMonth] = useState<number>();
+    const [pseudoYear, setpseudoYear] = useState<number>();
 
     const { t } = useTranslation();
 
@@ -143,39 +143,39 @@ export const DatePicker: React.FC<props> = ({
         [selectedMonth, monthPickerColumnsRef, showDatePicker]
     );
 
-    const phantomYearHandler = (year?: number) => {
-        if (year) return setPhantomYear(year);
+    const pseudoYearHandler = (year?: number) => {
+        if (year) return setpseudoYear(year);
         if (minYear < todayYear && maxYear > todayYear) {
-            return setPhantomYear(todayYear);
+            return setpseudoYear(todayYear);
         }
-        return setPhantomYear(minYear);
+        return setpseudoYear(minYear);
     };
-    const phantomMonthHandler = (month?: number) => {
-        if (month != undefined) return setPhantomMonth(month);
-        if (![minYear, maxYear].includes(phantomYear!)) {
-            return setPhantomMonth(todayMonth);
+    const pseudoMonthHandler = (month?: number) => {
+        if (month != undefined) return setpseudoMonth(month);
+        if (![minYear, maxYear].includes(pseudoYear!)) {
+            return setpseudoMonth(todayMonth);
         }
-        if (phantomYear == minYear) {
-            if (minMonth > todayMonth) return setPhantomMonth(minMonth);
-            return setPhantomMonth(todayMonth);
+        if (pseudoYear == minYear) {
+            if (minMonth > todayMonth) return setpseudoMonth(minMonth);
+            return setpseudoMonth(todayMonth);
         }
-        if (maxMonth < todayMonth) return setPhantomMonth(maxMonth);
-        return setPhantomMonth(todayMonth);
+        if (maxMonth < todayMonth) return setpseudoMonth(maxMonth);
+        return setpseudoMonth(todayMonth);
     };
 
-    const phantomDayHandler = (day?: number) => {
-        if (day) return setPhantomDay(day);
-        if (![minYear, maxYear].includes(phantomYear!)) {
-            return setPhantomDay(todayDay);
+    const pseudoDayHandler = (day?: number) => {
+        if (day) return setpseudoDay(day);
+        if (![minYear, maxYear].includes(pseudoYear!)) {
+            return setpseudoDay(todayDay);
         }
-        if (minYear == phantomYear) {
-            if (minMonth < phantomMonth!) return setPhantomDay(todayDay);
-            if (todayDay < minDay) return setPhantomDay(minDay);
-            return setPhantomDay(todayDay);
+        if (minYear == pseudoYear) {
+            if (minMonth < pseudoMonth!) return setpseudoDay(todayDay);
+            if (todayDay < minDay) return setpseudoDay(minDay);
+            return setpseudoDay(todayDay);
         }
-        if (maxMonth > phantomMonth!) return setPhantomDay(todayDay);
-        if (todayDay > maxDay) return setPhantomDay(maxDay);
-        return setPhantomDay(todayDay);
+        if (maxMonth > pseudoMonth!) return setpseudoDay(todayDay);
+        if (todayDay > maxDay) return setpseudoDay(maxDay);
+        return setpseudoDay(todayDay);
     };
 
     const handleYearSelect = (year: number) => {
@@ -189,7 +189,7 @@ export const DatePicker: React.FC<props> = ({
         }
 
         handleSelectYear(year);
-        phantomYearHandler(year);
+        pseudoYearHandler(year);
     };
 
     const handleMonthSelect = (month: number | undefined) => {
@@ -216,15 +216,15 @@ export const DatePicker: React.FC<props> = ({
         if (!month) handleSelectDay(undefined);
 
         handleSelectMonth(month);
-        phantomMonthHandler(month);
+        pseudoMonthHandler(month);
     };
     const handleDaySelect = (date: number | undefined) => {
-        if (date) setPhantomDay(date);
+        if (date) setpseudoDay(date);
         handleSelectDay(date);
     };
 
     const getMaxDateLength = useCallback(() => {
-        if (!phantomYear || phantomMonth == undefined) return 30;
+        if (!pseudoYear || pseudoMonth == undefined) return 30;
         if (maxYear == minYear) {
             if (maxMonth == minMonth) {
                 return (
@@ -241,7 +241,7 @@ export const DatePicker: React.FC<props> = ({
                         ) + 1
                 );
             }
-            if (minMonth == phantomMonth)
+            if (minMonth == pseudoMonth)
                 return (
                     dayjs()
                         .set("year", minYear)
@@ -258,69 +258,69 @@ export const DatePicker: React.FC<props> = ({
 
             return dayjs()
                 .set("year", minYear)
-                .set("month",phantomMonth)
+                .set("month",pseudoMonth)
                 .set("date", maxDay)
                 .date();
         }
-        if (![minYear, maxYear].includes(phantomYear!))
+        if (![minYear, maxYear].includes(pseudoYear!))
             return dayjs()
-                .set("year", phantomYear!)
-                .set("month", phantomMonth!)
+                .set("year", pseudoYear!)
+                .set("month", pseudoMonth!)
                 .endOf("month")
                 .date();
 
-        if (phantomYear == minYear) {
-            if (phantomMonth == minMonth) {
+        if (pseudoYear == minYear) {
+            if (pseudoMonth == minMonth) {
                 return (
                     dayjs(minDate).endOf("month").diff(dayjs(minDate), "days") +
                     1
                 );
             }
             return dayjs()
-                .set("year", phantomYear!)
-                .set("month", phantomMonth!)
+                .set("year", pseudoYear!)
+                .set("month", pseudoMonth!)
                 .endOf("month")
                 .date();
         }
 
-        if (phantomMonth == maxMonth) return dayjs(maxDate).date();
+        if (pseudoMonth == maxMonth) return dayjs(maxDate).date();
         return dayjs()
-            .set("year", phantomYear!)
-            .set("month", phantomMonth!)
+            .set("year", pseudoYear!)
+            .set("month", pseudoMonth!)
             .endOf("month")
             .date();
-    }, [phantomMonth, phantomYear]);
+    }, [pseudoMonth, pseudoYear]);
 
     const getMaxMonthLength = useCallback(() => {
-        if(!phantomYear) return 12
+        if(!pseudoYear) return 12
         if (maxYear == minYear)
             return dayjs(maxDate).diff(dayjs(minDate), "months") + 1;
        
-        if (![minYear, maxYear].includes(phantomYear)) return 12;
+        if (![minYear, maxYear].includes(pseudoYear)) return 12;
 
-        if (phantomYear == maxYear) return dayjs(maxDate).month() + 1;
+        if (pseudoYear == maxYear) return dayjs(maxDate).month() + 1;
         return dayjs(minDate).endOf("year").diff(dayjs(minDate), "months") + 1;
-    }, [phantomYear]);
+    }, [pseudoYear]);
 
     const getDaysOffset = () => {
-        if(!phantomYear || phantomMonth == undefined) return 1
+        if(!pseudoYear || pseudoMonth == undefined) return 1
         if (maxYear == minYear) {
             if (maxMonth == minMonth) return dayjs(minDate).date();
             if (!selectedMonth || selectedMonth == minMonth)
                 return dayjs(minDate).date();
             return 1;
         }
-        if (![maxYear, minYear].includes(phantomYear)) return 1;
-        if (phantomYear == maxYear) return 1;
-        if (phantomMonth != minMonth) return 1;
+        if (![maxYear, minYear].includes(pseudoYear)) return 1;
+        if (pseudoYear == maxYear) return 1;
+        if (pseudoMonth != minMonth) return 1;
         return dayjs(minDate).date();
     };
 
     const getMonthOffset = () => {
-        if (!phantomYear ) return 0
+        if (!pseudoYear ) return 0
         if (maxYear == minYear) return dayjs(minDate).month();
-        if (![maxYear, minYear].includes(phantomYear)) return 0;
-        if (phantomYear == maxYear) return 0;
+        if (![maxYear, minYear].includes(pseudoYear)) return 0;
+        if (pseudoYear == maxYear) return 0;
         return dayjs(minDate).month();
     };
 
@@ -359,9 +359,9 @@ export const DatePicker: React.FC<props> = ({
     
 
     useEffect(() => {
-        phantomYearHandler();
-        phantomMonthHandler();
-        phantomDayHandler();
+        pseudoYearHandler();
+        pseudoMonthHandler();
+        pseudoDayHandler();
     }, []);
 
     return (
@@ -396,41 +396,7 @@ export const DatePicker: React.FC<props> = ({
                 </YearList>
             </YearSelectionHeader>
             <DatePickerColumns>
-                <Column>
-                    <ColumnTitle className="columnTitle">
-                        {t("system.day")}
-                    </ColumnTitle>
-                    <Columnitems ref={datePickerColumnsRef}>
-                        {Array.from(
-                            {
-                                length: getMaxDateLength(),
-                            },
-                            (_, index) => {
-                                const offset = getDaysOffset();
-                                return (
-                                    <ColumnItem
-                                        key={index + offset}
-                                        className={`columnItem ${
-                                            index + offset === selectedDay
-                                                ? "selected"
-                                                : ""
-                                        } ${
-                                            index + offset == todayDay
-                                                ? "today"
-                                                : ""
-                                        }`}
-                                        onClick={() =>
-                                            handleDaySelect(index + offset)
-                                        }
-                                    >
-                                        {index + offset}
-                                    </ColumnItem>
-                                );
-                            }
-                        )}
-                    </Columnitems>
-                </Column>
-                <Column>
+            <Column>
                     <ColumnTitle className="columnTitle">
                         {t("system.month")}
                     </ColumnTitle>
@@ -466,6 +432,43 @@ export const DatePicker: React.FC<props> = ({
                         )}
                     </Columnitems>
                 </Column>
+                <Column>
+                    <ColumnTitle className="columnTitle">
+                        {t("system.day")}
+                    </ColumnTitle>
+                    <Columnitems ref={datePickerColumnsRef}>
+                        {Array.from(
+                            {
+                                length: getMaxDateLength(),
+                            },
+                            (_, index) => {
+                                const offset = getDaysOffset();
+                                return (
+                                    <DayItem>
+                                    <span>{dayjs(`${pseudoYear}-${(pseudoMonth ?? 0 )+1}-${index+offset}`).format('ddd')}</span>
+                                    <ColumnItem
+                                        key={index + offset}
+                                        className={`columnItem ${
+                                            index + offset === selectedDay
+                                                ? "selected"
+                                                : ""
+                                        } ${
+                                            index + offset == todayDay
+                                                ? "today"
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            handleDaySelect(index + offset)
+                                        }
+                                    >
+                                        {index + offset}
+                                    </ColumnItem>
+                                    </DayItem>
+                                );
+                            }
+                        )}
+                    </Columnitems>
+                </Column>
             </DatePickerColumns>
             <Actions>
                 <IonButton color="danger" fill="outline" onClick={reset}>
@@ -480,7 +483,7 @@ export const DatePicker: React.FC<props> = ({
                         selectedMonth == undefined
                     }
                 >
-                    {t("actions.confirm")}{" "}
+                    {t("actions.confirm")}
                 </IonButton>
             </Actions>
         </>
@@ -520,26 +523,30 @@ const YearList = styled.div`
 const DatePickerColumns = styled.div`
     display: flex;
     gap: 20px;
+    flex-direction: column;
     justify-content: space-around;
 `;
 
 const Column = styled.div`
     display: flex;
     flex-direction: column;
+
+
 `;
 
 const ColumnTitle = styled.div`
     font-weight: bold;
     font-size: 2.2rem;
     margin-bottom: 8px;
+    text-align: center;
 `;
 const Columnitems = styled.div`
     display: flex;
-    flex-direction: column;
+    
     max-height: 250px;
     overflow-y: scroll;
     scroll-snap-type: y proximity;
-    padding: calc(100% / 2 + 65px) 0;
+    
 `;
 
 const ColumnItem = styled.div`
@@ -553,6 +560,12 @@ const ColumnItem = styled.div`
     margin-bottom: 5px;
     font-size: 4rem;
 `;
+
+const DayItem = styled.div`
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+`
 
 const Actions = styled.div`
     display: flex;

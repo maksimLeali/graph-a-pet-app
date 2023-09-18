@@ -4,7 +4,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Icon, SubmitInput, TextInput } from "../../../components";
+import { DateTimePicker, Icon, SubmitInput, TextInput } from "../../../components";
 import { MutationLoginArgs } from "../../../types";
 import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useHistory } from "react-router";
@@ -63,6 +63,7 @@ export const Login: React.FC = ()  => {
                         textLabel="auth.email"
                     />
                     <TextInput required type='password' name="password" textLabel="auth.password" />
+                    <DateTimePicker name="test"  />
                     <SubmitInput color="primary">{t('auth.login')} </SubmitInput>
                 </Form>
             </FormProvider>
