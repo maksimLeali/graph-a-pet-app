@@ -84,7 +84,7 @@ export const DatePicker: React.FC<props> = ({
     const centerSelectedDay = useCallback(
         (smooth = true) => {
             if (!showDatePicker) return;
-
+    
             if (!datePickerColumnsRef.current) {
                 setTimeout(() => {
                     centerSelectedDay();
@@ -97,14 +97,15 @@ export const DatePicker: React.FC<props> = ({
                 ) as HTMLDivElement) ||
                 datePickerColumnsRef.current.querySelector(".today");
             if (selectedDayElement) {
-                const containerHeight =
-                    datePickerColumnsRef.current.offsetHeight;
-                const selectedDayOffsetTop = selectedDayElement.offsetTop;
-
+                const containerWidth =
+                    datePickerColumnsRef.current.offsetWidth;
+                const selectedDayOffsetLeft = selectedDayElement.offsetLeft;
+    
                 // Calculate the scroll position to center the selected day
-                const scrollPosition = selectedDayOffsetTop - containerHeight;
-                datePickerColumnsRef.current?.scrollTo({
-                    top: scrollPosition,
+                const scrollPosition =
+                    selectedDayOffsetLeft - containerWidth / 2;
+                datePickerColumnsRef.current.scrollTo({
+                    left: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
                 });
             }
@@ -115,7 +116,7 @@ export const DatePicker: React.FC<props> = ({
     const centerSelectedMonth = useCallback(
         (smooth = true) => {
             if (!showDatePicker) return;
-
+    
             if (!monthPickerColumnsRef.current) {
                 setTimeout(() => {
                     centerSelectedMonth();
@@ -128,14 +129,15 @@ export const DatePicker: React.FC<props> = ({
                 ) as HTMLDivElement) ||
                 monthPickerColumnsRef.current.querySelector(".today");
             if (selectedMonthElement) {
-                const containerHeight =
-                    monthPickerColumnsRef.current.offsetHeight;
-                const selectedDayOffsetTop = selectedMonthElement.offsetTop;
-
-                // Calculate the scroll position to center the selected day
-                const scrollPosition = selectedDayOffsetTop - containerHeight;
+                const containerWidth =
+                    monthPickerColumnsRef.current.offsetWidth;
+                const selectedMonthOffsetLeft = selectedMonthElement.offsetLeft;
+    
+                // Calculate the scroll position to center the selected month
+                const scrollPosition =
+                    selectedMonthOffsetLeft - containerWidth / 2;
                 monthPickerColumnsRef.current.scrollTo({
-                    top: scrollPosition,
+                    left: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
                 });
             }
