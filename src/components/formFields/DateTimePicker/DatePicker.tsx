@@ -103,7 +103,7 @@ export const DatePicker: React.FC<props> = ({
     
                 // Calculate the scroll position to center the selected day
                 const scrollPosition =
-                    selectedDayOffsetLeft - containerWidth / 2;
+                    selectedDayOffsetLeft - (containerWidth / 2) +20; 
                 datePickerColumnsRef.current.scrollTo({
                     left: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
@@ -135,7 +135,7 @@ export const DatePicker: React.FC<props> = ({
     
                 // Calculate the scroll position to center the selected month
                 const scrollPosition =
-                    selectedMonthOffsetLeft - containerWidth / 2;
+                    selectedMonthOffsetLeft - (containerWidth / 2 )+ 30; 
                 monthPickerColumnsRef.current.scrollTo({
                     left: scrollPosition,
                     behavior: smooth ? "smooth" : undefined,
