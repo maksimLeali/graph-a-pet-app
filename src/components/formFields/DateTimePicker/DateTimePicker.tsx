@@ -105,13 +105,24 @@ export const DateTimePicker: React.FC<props> = ({
             (type == "dateTime" &&
                 (!selectedDay || selectedMonth == undefined || !selectedYear))
         )
-            return;
+        
+            return dayjs()
+            .set("y", selectedYear ?? 1999)
+            .set("month", selectedMonth ?? 0)
+            .set("date", selectedDay ?? 1)
+            ;
         if (
             type == "time" ||
             (type == "dateTime" &&
                 (selectedHour == undefined || selectedMinute == undefined))
+
         )
-            return;
+            return
+            dayjs()
+            .set("hour", selectedHour ?? 0)
+            .set("minute", selectedMinute ?? 0)
+            .set('seconds', 0);
+            ; 
         return dayjs()
             .set("y", selectedYear ?? 1999)
             .set("month", selectedMonth ?? 0)
@@ -177,10 +188,16 @@ export const DateTimePicker: React.FC<props> = ({
         }
     };
 
+
+    useEffect(()=> {
+        console.log('changed selectedDate', selectedDate)
+    }, [selectedDate])
+
     const confirmDate = () => {
         if (!selectedDay || selectedMonth == undefined || !selectedYear) return;
         setShowDatePicker(false);
         if (type == "date") {
+            console.log(selectedDate!.toDate())
             setValue(name, selectedDate!.toDate());
             setCompiled(true);
             return;
@@ -282,10 +299,10 @@ export const DateTimePicker: React.FC<props> = ({
                     <span>
                         {getValues(name)
                             ? type == "date"
-                                ? dayjs(getValues(name)).format("ll")
+                                ? dayjs(getValues(name)).format("dddd ll")
                                 : type == "time"
                                 ? dayjs(getValues(name)).format("HH:mm")
-                                : dayjs(getValues(name)).format("ll, HH:mm")
+                                : dayjs(getValues(name)).format("dddd ll, HH:mm")
                             : null}
                     </span>
                 </StyledInput>

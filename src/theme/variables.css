@@ -8,6 +8,9 @@ body, html {
   -ms-overflow-style: none;
   scrollbar-width: none;
   font-size: 10px;
+  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Karla', sans-serif;
+  
 }
 html * {
   font-size: 1.6rem;

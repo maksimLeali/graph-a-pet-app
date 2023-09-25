@@ -86,6 +86,7 @@ export const CalendarEvents: React.FC = () => {
 
     const [createTreatment, {loading: creationLoading}] = useCreateTreatmentMutation({
         onCompleted:({createTreatment})=> {
+            console.log(createTreatment)
             if(!createTreatment || createTreatment.error ){
                 return
             }
@@ -106,16 +107,10 @@ export const CalendarEvents: React.FC = () => {
     const { openModal, closeModal } = useModal()
 
 
-    const createEvent = ()=> {
-        const {data, notes } = methods.getValues()
-        console.log(methods.formState)
-        console.log('submitting')
-        methods.handleSubmit((data)=> {
-            console.log('data', data)
-            //createTreatment({variables: { treatment : { health_card_id: data.health_card_id, name: data.name, type: data.type, date: data.date, logs: [notes] , ...(data.booster_date ? { booster_date : data.booster_date } : {}) }  }})
-        })
-        
-    }
+    const createEvent = 
+    methods.handleSubmit((data )=> {
+        createTreatment({variables: { treatment : { health_card_id: data.data.health_card_id, name: data.data.name, type: data.data.type, date: data.data.date, logs: [data.notes] , ...(data.data.booster_date ? { booster_date : data.data.booster_date } : {}) }  }})
+    })
 
     const openAddCalendarModal= useCallback(()=> {
         openModal({

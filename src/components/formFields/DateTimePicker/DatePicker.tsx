@@ -222,6 +222,7 @@ export const DatePicker: React.FC<props> = ({
     };
     const handleDaySelect = (date: number | undefined) => {
         if (date) setpseudoDay(date);
+        console.log('date', date)
         handleSelectDay(date);
     };
 
