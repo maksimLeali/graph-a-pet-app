@@ -508,7 +508,7 @@ const YearList = styled.div`
     display: flex;
     gap: 8px;
     max-width: calc(100% - 80px);
-    padding: 10px 120px;
+    padding: 10px 180px;
     box-sizing: border-box;
     scroll-snap-type: x proximity;
     overflow-x: scroll;
@@ -548,6 +548,7 @@ const Columnitems = styled.div`
     
     max-height: 250px;
     overflow-y: scroll;
+    padding: 10px 180px;
     scroll-snap-type: y proximity;
     
 `;
@@ -555,6 +556,7 @@ const Columnitems = styled.div`
 const ColumnItem = styled.div`
     padding: 5px 10px;
     height: 50px;
+    
     text-transform: capitalize;
     border-radius: 4px;
     scroll-snap-align: center;
