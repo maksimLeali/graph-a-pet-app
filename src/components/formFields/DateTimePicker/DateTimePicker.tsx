@@ -88,7 +88,6 @@ export const DateTimePicker: React.FC<props> = ({
 
 
     useEffect(()=> {
-        console.log('changed', getValues(name))
         if(!getValues(name)){
             setCompiled(false);
             setSelectedDay (undefined)
@@ -188,16 +187,10 @@ export const DateTimePicker: React.FC<props> = ({
         }
     };
 
-
-    useEffect(()=> {
-        console.log('changed selectedDate', selectedDate)
-    }, [selectedDate])
-
     const confirmDate = () => {
         if (!selectedDay || selectedMonth == undefined || !selectedYear) return;
         setShowDatePicker(false);
         if (type == "date") {
-            console.log(selectedDate!.toDate())
             setValue(name, selectedDate!.toDate());
             setCompiled(true);
             return;
@@ -430,6 +423,7 @@ const Wrapper = styled.div<mainWrapperColors>`
         pointer-events: none;
     }
     .picker {
+        overflow-x: hidden;
         background-color: var(--ion-color-${({ pkBgColor }) => pkBgColor});
         color: var(--ion-color-${({ pkTxtColor }) => pkTxtColor});
         .columnTitle {

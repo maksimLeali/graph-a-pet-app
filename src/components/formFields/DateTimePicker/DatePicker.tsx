@@ -68,7 +68,7 @@ export const DatePicker: React.FC<props> = ({
             if (selectedYearElement) {
                 const containerWidth = yearListRef.current.offsetWidth;
                 const selectedYearOffsetLeft = selectedYearElement.offsetLeft;
-
+                
                 // Calculate the scroll position to center the selected year
                 const scrollPosition =
                     selectedYearOffsetLeft - containerWidth / 2;
@@ -79,6 +79,40 @@ export const DatePicker: React.FC<props> = ({
             }
         },
         [selectedDay, yearListRef, showDatePicker]
+    );
+
+    const centerSelectedMonth = useCallback(
+        (smooth = true) => {
+            if (!showDatePicker) return;
+    
+            if (!monthPickerColumnsRef.current) {
+                setTimeout(() => {
+                    centerSelectedMonth();
+                }, 100);
+                return;
+            }
+            const selectedMonthElement =
+                (monthPickerColumnsRef.current.querySelector(
+                    ".selected"
+                ) as HTMLDivElement) ||
+                monthPickerColumnsRef.current.querySelector(".today");
+            
+            if (selectedMonthElement) {
+                const containerWidth =
+                    monthPickerColumnsRef.current.offsetWidth;
+
+                const selectedMonthOffsetLeft = selectedMonthElement.offsetLeft;
+                // Calculate the scroll position to center the selected month
+                const scrollPosition =
+                    selectedMonthOffsetLeft - (containerWidth / 2 )+ 30;
+                
+                monthPickerColumnsRef.current.scrollTo({
+                    left: scrollPosition,
+                    behavior: smooth ? "smooth" : undefined,
+                });
+            }
+        },
+        [selectedMonth, monthPickerColumnsRef, showDatePicker]
     );
 
     const centerSelectedDay = useCallback(
@@ -111,38 +145,6 @@ export const DatePicker: React.FC<props> = ({
             }
         },
         [selectedDay, datePickerColumnsRef, showDatePicker]
-    );
-
-    const centerSelectedMonth = useCallback(
-        (smooth = true) => {
-            if (!showDatePicker) return;
-    
-            if (!monthPickerColumnsRef.current) {
-                setTimeout(() => {
-                    centerSelectedMonth();
-                }, 100);
-                return;
-            }
-            const selectedMonthElement =
-                (monthPickerColumnsRef.current.querySelector(
-                    ".selected"
-                ) as HTMLDivElement) ||
-                monthPickerColumnsRef.current.querySelector(".today");
-            if (selectedMonthElement) {
-                const containerWidth =
-                    monthPickerColumnsRef.current.offsetWidth;
-                const selectedMonthOffsetLeft = selectedMonthElement.offsetLeft;
-    
-                // Calculate the scroll position to center the selected month
-                const scrollPosition =
-                    selectedMonthOffsetLeft - (containerWidth / 2 )+ 30; 
-                monthPickerColumnsRef.current.scrollTo({
-                    left: scrollPosition,
-                    behavior: smooth ? "smooth" : undefined,
-                });
-            }
-        },
-        [selectedMonth, monthPickerColumnsRef, showDatePicker]
     );
 
     const pseudoYearHandler = (year?: number) => {
@@ -222,7 +224,6 @@ export const DatePicker: React.FC<props> = ({
     };
     const handleDaySelect = (date: number | undefined) => {
         if (date) setpseudoDay(date);
-        console.log('date', date)
         handleSelectDay(date);
     };
 
@@ -447,9 +448,7 @@ export const DatePicker: React.FC<props> = ({
                             (_, index) => {
                                 const offset = getDaysOffset();
                                 return (
-                                    <DayItem>
-                                    <span>{dayjs(`${pseudoYear}-${(pseudoMonth ?? 0 )+1}-${index+offset}`).format('ddd')}</span>
-                                    <ColumnItem
+                                    <DayItem 
                                         key={index + offset}
                                         className={`columnItem ${
                                             index + offset === selectedDay
@@ -460,6 +459,10 @@ export const DatePicker: React.FC<props> = ({
                                                 ? "today"
                                                 : ""
                                         }`}
+                                    >
+                                    <span>{dayjs(`${pseudoYear}-${(pseudoMonth ?? 0 )+1}-${index+offset}`).format('ddd')}</span>
+                                    <ColumnItem
+                                       
                                         onClick={() =>
                                             handleDaySelect(index + offset)
                                         }
@@ -553,7 +556,7 @@ const Columnitems = styled.div`
     
 `;
 
-const ColumnItem = styled.div`
+const ColumnItem = styled.span`
     padding: 5px 10px;
     height: 50px;
     

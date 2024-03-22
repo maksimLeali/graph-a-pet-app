@@ -81,7 +81,7 @@ export const AddEventForm = () => {
                 type="dateTime"
                 bgColor="light"
                 required
-                minDate={dayjs().toISOString()}
+                // minDate={dayjs().toISOString()}
                 
             />
             <DateTimePicker
@@ -89,7 +89,7 @@ export const AddEventForm = () => {
                 textLabel="events.booster_date_time_from"
                 type="dateTime"
                 bgColor="light"
-                minDate={dayjs().toISOString()}
+                // minDate={dayjs().toISOString()}
             />
             <TextAreaInput
                 name="notes"
