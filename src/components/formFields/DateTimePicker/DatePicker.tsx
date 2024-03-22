@@ -360,7 +360,13 @@ export const DatePicker: React.FC<props> = ({
         }
     }, [showDatePicker]);
 
-    
+    useEffect(()=>{
+        centerSelectedMonth(false)
+    },[monthPickerColumnsRef.current?.offsetWidth])
+
+    useEffect(()=>{
+        centerSelectedDay(false)
+    },[datePickerColumnsRef.current?.offsetWidth])
 
     useEffect(() => {
         pseudoYearHandler();
