@@ -98,7 +98,7 @@ const ConfirmLogout = ()=> {
 
 const MenuBackground = styled.div`
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     background-color: var(--ion-trasparent-bg-shade);
     position: fixed;
     display: flex;
