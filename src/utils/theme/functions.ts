@@ -8,7 +8,7 @@ type Theme = { [key: string]: any }
  */
 
 
-const uw = (val: number) => `calc(1vw * 100 / 48 * ${val})`
+const uw = (val: number) => `calc(var(--max-grid-size) / var(--grid-columns-number) * ${val})`
 
 export const $uw = (val: number) => ({ }) => uw(val);
 

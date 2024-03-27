@@ -17,7 +17,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
     
     return (
         <ModalContextProvider>
-            <Main>
+            <Main className="debug">
                 {nodes}
                 <BottomMenu>
                     {mainManuitems.map((item, i) => 
