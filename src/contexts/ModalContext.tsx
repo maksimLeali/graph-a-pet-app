@@ -39,7 +39,8 @@ export const ModalContextProvider: React.FC<
 
     const value = useMemo(()=>( {...defaultValue, openModal, closeModal }), [])
     return (
-        <ModalContext.Provider value={value}> { modal && <Modal open={open} {...modal}/>} 
+        <ModalContext.Provider value={value}> 
+        { modal && <Modal open={open} {...modal}/>} 
         {children}
         </ModalContext.Provider>
     );

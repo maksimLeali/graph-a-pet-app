@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useGetOrCreateLazyQuery } from "../operations/__generated__/getOrCreateCode.generated";
 import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
 import { PetMinSubOwnerFragment } from "../../../components/operations/__generated__/petMinSubOwner.generated";
+import { $break_point } from "../../../utils/theme/functions";
 
 type props = {
     pets: DashboardPetFragment[];
@@ -272,16 +273,16 @@ const ActionChip = styled.span`
     z-index: 2;
     font-size: 2.1rem;
     padding: 0 12px;
-    @media only screen and (max-width: 420px) {
+    ${$break_point(420)} {
         height: 75px;
         gap: 8px;
         font-size: 1.7rem;
     }
-    @media only screen and (max-width: 380px) {
+    ${$break_point(380)}{
         height: 65px;
         font-size: 1.6rem;
     }
-    @media only screen and (max-width: 350px) {
+    ${$break_point(350)}{
         height: 55px;
         font-size: 1.5rem;
     }
@@ -296,25 +297,25 @@ const ActionChip = styled.span`
     }
     &.top {
         top: 24%;
-        @media only screen and (max-width: 420px) {
+        ${$break_point(420)} {
             top: 28%;
         }
-        @media only screen and (max-width: 380px) {
+        ${$break_point(380)}{
             top: 30%;
         }
-        @media only screen and (max-width: 350px) {
+        ${$break_point(350)}{
             top: 32%;
         }
     }
     &.bottom {
         top: calc(24% + 93px);
-        @media only screen and (max-width: 420px) {
+        ${$break_point(420)} {
             top: calc(28% + 79px);
         }
-        @media only screen and (max-width: 380px) {
+        ${$break_point(380)}{
             top: calc(30% + 69px);
         }
-        @media only screen and (max-width: 350px) {
+        ${$break_point(350)}{
             top: calc(32% + 59px);
         }
     }
