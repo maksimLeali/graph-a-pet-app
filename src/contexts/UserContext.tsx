@@ -10,6 +10,7 @@ import { MinUserFragment } from "../components/operations/__generated__/minUser.
 import { DashboardPetFragment } from "../components/operations/__generated__/dashboardPet.generated";
 import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
+import { $uw } from "../utils/theme/functions";
 
 export type IUserContext = {
 	setPage: (page: Page) => void;
@@ -176,10 +177,13 @@ export const useUserContext = () => useContext(UserContext);
 const CustomIonHeader = styled(IonHeader)<{ visible: boolean }>`
 	position: absolute;
 	top: ${({ visible }) => (visible ? "0" : "-100%")};
-	height: 64px;
+	height: ${$uw(5)};
 	max-width: var(--max-width);
-	margin-left: auto;
 	left: calc(50% - 240px);
+    padding: ${$uw(.75)};
+    box-sizing: border-box;
+    background-color: var(--ion-toolbar-background);
+    display: flex;
 	@media only screen and (max-width: 480px) {
 		left: 0;
 	}
@@ -192,15 +196,13 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean }>`
 `;
 
 const MainImage = styled.div`
-	width: 50px;
-	height: 50px;
-	position: absolute;
-	right: 20px;
+	width:${$uw(3.5)};
+	aspect-ratio:1;
+	position:relative;
+    box-sizing: border-box;
 	z-index: 10;
-	top: 6px;
 	border: 2px solid var(--ion-color-primary);
-	/* background-color: var(--ion-color-primary); */
-	border-radius: 40px;
+	border-radius: ${$uw(4)};
 	> .img2x {
 		width: 100%;
 		height: 100%;
