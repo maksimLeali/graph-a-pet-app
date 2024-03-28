@@ -87,9 +87,17 @@ const Action = styled.button`
 	justify-content: center;
 	border-radius: 100%;
 	&.remove {
-		background-color: var(--ion-color-danger);
+		border: 5px solid var(--ion-color-danger);
+		color: var(--ion-color-danger);
+		background-color: unset;
+		font-weight: 800;
+		font-size: 2.5rem;
 	}
 	&.add {
-		background-color: var(--ion-color-primary);
+		border: 5px solid var(--ion-color-primary);
+		color: var(--ion-color-primary);
+		background-color: unset;
+		font-weight: 800;
+		font-size: 2.5rem;
 	}
 `;
