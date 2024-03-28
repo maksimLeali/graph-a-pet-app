@@ -1,4 +1,3 @@
-
 import { $cssTRBL, $uw } from "../../utils/theme/functions";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -10,7 +9,7 @@ gsap.registerPlugin(GSAPDraggable);
 
 export const DebugGrid: React.FC = () => {
 	const [gridHeight, setGridHeigth] = useState(6);
-    const {gridVisible} = useUserContext()
+	const { gridVisible } = useUserContext();
 	useGSAP(() => {
 		GSAPDraggable.create("#debugGrid", { bounds: "#mainWrapper" });
 	}, []);
@@ -26,12 +25,18 @@ export const DebugGrid: React.FC = () => {
 				onClick={() => {
 					editGridHeight(-1);
 				}}
+                onMouseUp={() => {
+					editGridHeight(-1);
+				}}
 				className="remove"
 			>
 				-
 			</Action>
 			<Action
 				onClick={() => {
+					editGridHeight(1);
+				}}
+				onMouseUp={() => {
 					editGridHeight(1);
 				}}
 				className="add"
