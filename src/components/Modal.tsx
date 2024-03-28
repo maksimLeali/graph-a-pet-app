@@ -113,14 +113,14 @@ const ModalBg = styled.div`
         animation: overMenuOpen .5s ease-in-out;
         z-index: 202;
         opacity:1;
-        height: 100vh;
+        height: 100dvh;
     }
 `;
 
 const ModalBox = styled.div<{ bgColor: string; txtColor: string }>`
     max-width: var(--max-width);
     width: 100%;
-    max-height:90vh;
+    max-height:90dvh;
     border-radius: 4px;
     color: ${({ txtColor }) => txtColor};
     background-color: ${({ bgColor }) => bgColor}!important;
