@@ -2,7 +2,7 @@ import { $cssTRBL, $uw } from "../../utils/theme/functions";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Draggable as GSAPDraggable } from "gsap/dist/Draggable";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { useUserContext } from "../../contexts";
 gsap.registerPlugin(GSAPDraggable);
@@ -15,6 +15,7 @@ export const DebugGrid: React.FC = () => {
 	}, []);
 
 	const editGridHeight = (num: number) => {
+		console.log("handlig");
 		if (gridHeight + num < 6) return;
 		setGridHeigth(gridHeight + num);
 	};
@@ -22,10 +23,12 @@ export const DebugGrid: React.FC = () => {
 	return (
 		<Container id="debugGrid" gridHeight={gridHeight} visible={gridVisible}>
 			<Action
-				onClick={() => {
+				onClick={(e) => {
+					e.preventDefault();
 					editGridHeight(-1);
 				}}
-                onMouseUp={() => {
+				onTouchEnd={(e) => {
+					e.preventDefault();
 					editGridHeight(-1);
 				}}
 				className="remove"
@@ -33,10 +36,13 @@ export const DebugGrid: React.FC = () => {
 				-
 			</Action>
 			<Action
-				onClick={() => {
+				onClick={(e) => {
+					console.log("click click");
+					e.preventDefault();
 					editGridHeight(1);
 				}}
-				onMouseUp={() => {
+				onTouchEnd={(e) => {
+					e.preventDefault();
 					editGridHeight(1);
 				}}
 				className="add"
@@ -71,7 +77,7 @@ const Container = styled.div<{ gridHeight: number; visible: boolean }>`
 		linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
 `;
 
-const Action = styled.span`
+const Action = styled.button`
 	width: ${$uw(2)};
 	height: ${$uw(2)};
 	box-sizing: border-box;
