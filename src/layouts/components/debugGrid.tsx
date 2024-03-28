@@ -15,7 +15,6 @@ export const DebugGrid: React.FC = () => {
 	}, []);
 
 	const editGridHeight = (num: number) => {
-		console.log("handlig");
 		if (gridHeight + num < 6) return;
 		setGridHeigth(gridHeight + num);
 	};
@@ -37,7 +36,6 @@ export const DebugGrid: React.FC = () => {
 			</Action>
 			<Action
 				onClick={(e) => {
-					console.log("click click");
 					e.preventDefault();
 					editGridHeight(1);
 				}}
