@@ -1,3 +1,4 @@
+
 import { $cssTRBL, $uw } from "../../utils/theme/functions";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -42,7 +43,7 @@ export const DebugGrid: React.FC = () => {
 };
 
 const Container = styled.div<{ gridHeight: number; visible: boolean }>`
-	width: var(--max-width);
+	width: var(--max-grid-size);
 	height: ${({ gridHeight }) => $uw(gridHeight)};
 	position: absolute;
 	top: 0;

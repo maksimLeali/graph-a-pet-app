@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { $cssTRBL, $uw } from "../utils/theme/functions"
 
 export const WeeksSkeleton:React.FC = ()=> {
     return <FakeWeekContainer>
@@ -17,8 +18,8 @@ width: 100%;
 `
 
 const FakeWeek = styled.div`
-    height:72px;
-    padding: 5px 10px 10px;
+    height: ${$uw(5)};
+    padding: ${$cssTRBL(1, 0, 1, 1)};
     box-sizing: border-box;
     border-bottom: 1px solid;
     border-top: 1px solid;
@@ -28,8 +29,9 @@ const FakeWeek = styled.div`
 `  
 
 const SkeletonDay = styled.div`
-    width: calc((100% - 70px )/ 7 );
-    flex: 0 0 calc((100% - 70px) / 7 );
+    width: ${$uw(3.2)};
+    flex: 0 0 ${$uw(3.2)};
+    margin-right: calc(${$uw(9.6)} / 8);
     border-radius:10px;
-    height:46px;
+    height:${$uw(3)};
 `   
