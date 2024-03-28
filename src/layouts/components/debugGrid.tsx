@@ -52,7 +52,7 @@ const Container = styled.div<{ gridHeight: number; visible: boolean }>`
 	height: ${({ gridHeight }) => $uw(gridHeight)};
 	position: absolute;
 	top: 0;
-	z-index: ${({ visible }) => (visible ? 999 : -1)};
+	z-index: ${({ visible }) => (visible ? 999 : `-1!important`)};
 	opacity: ${({ visible }) => (visible ? 1 : 0)};
 	marggin-left: auto;
 	display: flex;
