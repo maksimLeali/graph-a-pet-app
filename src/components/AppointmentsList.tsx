@@ -1,79 +1,142 @@
 import { useTranslation } from "react-i18next";
 import { Maybe } from "../types";
-import { AppointmentFragment } from "./operations/__generated__/appointment.generated"
+import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import styled from "styled-components";
 import { MinAppointment } from "./";
-
+import { useEffect, useMemo } from "react";
+import _ from "lodash";
+import dayjs from "dayjs";
+import { $uw } from "../utils/theme/functions";
 type props = {
-    appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
-    loading?: boolean
-}
+	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
+	loading?: boolean;
+	
+};
 
-export const AppointmentsList: React.FC<props> =({appointments=[], loading= false})=> {
-    const {t} = useTranslation()
-    return <Container>
-        {loading && <SkeletonMinAppointment  > 
-            <SkeletonIcon className="skeleton"/> 
-            <SkeletonTextes>
-                
-                <SkeletonP className="skeleton title" />
-                <SkeletonP className="skeleton"/>
-            </SkeletonTextes>
-            <SkeletonTag className="skeleton"/>
-        </SkeletonMinAppointment> }
-        {appointments.length > 0 && !loading  && appointments.map(appointment=> { return <MinAppointment key={appointment?.id} appointment={appointment}/>}) }
-        { !loading && !appointments.length &&  <span dangerouslySetInnerHTML={{ __html: t('events.general.no_events') ?? ''} } /> }  
-    </Container>
-}
+export const AppointmentsList: React.FC<props> = ({
+	appointments = [],
+	loading = false,
+}) => {
+	const { t } = useTranslation();
+
+	const groupedAppointments = useMemo(() => {
+		return _.groupBy(appointments, (item) => item!.date.split("T")[0]);
+	}, [appointments]);
+
+	const appointmentsDates = useMemo(() => {
+		return _.sortBy(
+			Object.keys(groupedAppointments),
+			(date) => new Date(date)
+		);
+	}, [groupedAppointments]);
+
+	useEffect(() => {
+		console.log("grouped ", groupedAppointments);
+		if (!groupedAppointments) return;
+	}, [groupedAppointments, appointments]);
+
+	return (
+		<Container>
+			{loading && (
+				<SkeletonMinAppointment>
+					<SkeletonIcon className="skeleton" />
+					<SkeletonTextes>
+						<SkeletonP className="skeleton title" />
+						<SkeletonP className="skeleton" />
+					</SkeletonTextes>
+					<SkeletonTag className="skeleton" />
+				</SkeletonMinAppointment>
+			)}
+			{/* {appointments.length > 0 &&
+				!loading &&
+				appointments.map((appointment) => {
+					return (
+						<MinAppointment
+							key={appointment?.id}
+							appointment={appointment}
+						/>
+					);
+				})} */}
+			{appointmentsDates.length > 0 &&
+				!loading &&
+				appointmentsDates.map((date) => {
+					return (
+						<>
+							<p className="group_date">
+								{dayjs(date).format("dddd D MMMM")}
+							</p>
+						
+							{groupedAppointments[date].map((appointment) => {
+								return (
+									<MinAppointment
+										key={appointment?.id}
+										appointment={appointment}
+									/>
+								);
+							})}
+						</>
+					);
+				})}
+			{!loading && !appointments.length && (
+				<span
+					dangerouslySetInnerHTML={{
+						__html: t("events.general.no_events") ?? "",
+					}}
+				/>
+			)}
+		</Container>
+	);
+};
 
 const Container = styled.div`
-    
-    width:100%;
-    display:flex;
-    flex-direction: column;
-    padding: 20px 12px;
-    align-items:center;
-`
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 20px 12px;
+	align-items: center;
+	.group_date {
+		width: 100%;
+		border-bottom: 1px solid var(--ion-color-medium);
+		padding-bottom: ${$uw(1)};
+	}
+`;
 
 const SkeletonMinAppointment = styled.div`
-    width: calc(100% - 40px);
-    height: 50px;
-    display:flex;
-    padding: 10px;
-    height: 60px;
-    justify-content: space-between;
-    align-items: center;
-    
-`
+	width: ${$uw(28)};
+	height: ${$uw(4)};
+	display: flex;
+	margin-top: ${$uw(4.5)};
+	padding: 14px;
+	justify-content: space-between;
+	align-items: center;
+`;
 
-const SkeletonIcon= styled.div`
-    width: 38px;
-    height: 38px;
-    border-radius: 50px;;
-`
+const SkeletonIcon = styled.div`
+	width: 38px;
+	height: 38px;
+	border-radius: 50px;
+`;
 
-const SkeletonTextes= styled.div`
-    width: calc(100% - 150px);
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 7px;
-    height:100%;
-    
-`
+const SkeletonTextes = styled.div`
+	width: calc(100% - 150px);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 7px;
+	height: 100%;
+`;
 
-const SkeletonP= styled.div`
-    height: 10px;
-    width: 100%;
-    &.title {
-        
-        width: 120px;
-        height: 16px;
-    }
-`
+const SkeletonP = styled.div`
+	height: 10px;
+	width: 100%;
+	&.title {
+		width: 120px;
+		height: 16px;
+	}
+`;
 
-const SkeletonTag= styled.div`
-    width: 80px;
-    height: 26px;
-    border-radius: 20px;
-`
+const SkeletonTag = styled.div`
+	width: 80px;
+	height: 26px;
+	border-radius: 20px;
+`;

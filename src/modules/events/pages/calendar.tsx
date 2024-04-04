@@ -15,146 +15,189 @@ import { MutationCreateTreatmentArgs } from "../../../types";
 import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
 
 export const CalendarEvents: React.FC = () => {
-    const { setPage, refetchDashboard } = useUserContext();
-    const [appointments, setAppointments] = useState<
-        Maybe<AppointmentFragment>[]
-    >([]);
-    const [events, setEvents] = useState<AppointmentFragment[]|Maybe<AppointmentFragment>[] | undefined>([])
+	const { setPage, refetchDashboard } = useUserContext();
+	const [appointments, setAppointments] = useState<
+		Maybe<AppointmentFragment>[]
+	>([]);
+	const [events, setEvents] = useState<
+		AppointmentFragment[] | Maybe<AppointmentFragment>[] | undefined
+	>([]);
 
-    const [fromDate,setFromDate] = useState(dayjs().startOf('month').startOf('week').toISOString())
-    const [toDate,setToDate] = useState(dayjs().endOf('month').endOf('week').toISOString())
+	const [fromDate, setFromDate] = useState(
+		dayjs().startOf("month").startOf("week").toISOString()
+	);
+	const [toDate, setToDate] = useState(
+		dayjs().endOf("month").endOf("week").toISOString()
+	);
 
-    const [getMyAppointments, {loading,refetch }] = useListMyTreatmentsLazyQuery({
-        fetchPolicy: "no-cache" ,
-        variables: {
-            commonSearch: {
-                page_size: 50,
-                order_by: 'date',
-                order_direction: 'desc',
-                filters: {
-                    ranges: [
-                        {
-                            key: "date",
-                            value: {
-                                min: fromDate,
-                                max: toDate,
-                            },
-                        },
-                    ],
-                    join: [
-                        {
-                            key: "health_cards",
-                            value: {
-                                join: [
-                                    {
-                                        key: "pets",
-                                        value: {
-                                            join: [
-                                                {
-                                                    key: "ownerships",
-                                                    value: {
-                                                        lists: [
-                                                            {
-                                                                key: "custody_level",
-                                                                value: [
-                                                                    "OWNER",
-                                                                    "SUB_OWNER",
-                                                                    "PET_SITTER",
-                                                                ],
-                                                            },
-                                                        ],
-                                                    },
-                                                },
-                                            ],
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            },
-        },
-        onCompleted: ({ listMyTreatments }) => {
-            if (!listMyTreatments?.items?.length || listMyTreatments.error) {
-                return;
-            }
-            setAppointments(listMyTreatments.items);
-        },
-        
-    },);
+	const [getMyAppointments, { loading, refetch }] =
+		useListMyTreatmentsLazyQuery({
+			fetchPolicy: "no-cache",
+			variables: {
+				commonSearch: {
+					page_size: 50,
+					order_by: "date",
+					order_direction: "desc",
+					filters: {
+						ranges: [
+							{
+								key: "date",
+								value: {
+									min: fromDate,
+									max: toDate,
+								},
+							},
+						],
+						join: [
+							{
+								key: "health_cards",
+								value: {
+									join: [
+										{
+											key: "pets",
+											value: {
+												join: [
+													{
+														key: "ownerships",
+														value: {
+															lists: [
+																{
+																	key: "custody_level",
+																	value: [
+																		"OWNER",
+																		"SUB_OWNER",
+																		"PET_SITTER",
+																	],
+																},
+															],
+														},
+													},
+												],
+											},
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+			},
+			onCompleted: ({ listMyTreatments }) => {
+				if (
+					!listMyTreatments?.items?.length ||
+					listMyTreatments.error
+				) {
+					return;
+				}
+				setAppointments(listMyTreatments.items);
+			},
+		});
 
-    const [createTreatment, {loading: creationLoading}] = useCreateTreatmentMutation({
-        onCompleted:({createTreatment})=> {
-            console.log(createTreatment)
-            if(!createTreatment || createTreatment.error ){
-                return
-            }
-            methods.setValue('data.date', undefined!)
-            methods.setValue('data.date', undefined!)
-            methods.setValue('data.booster_date', undefined!)
-            methods.setValue('notes', undefined!)
-            methods.setValue('data.name', undefined!)
-            methods.setValue('data.type', undefined!)
-            methods.setValue('data.health_card_id', undefined!)
-            getMyAppointments()
-            refetchDashboard()
-            closeModal()
-        },
-    })
+	const [createTreatment, { loading: creationLoading }] =
+		useCreateTreatmentMutation({
+			onCompleted: ({ createTreatment }) => {
+				console.log(createTreatment);
+				if (!createTreatment || createTreatment.error) {
+					return;
+				}
+				methods.setValue("data.date", undefined!);
+				methods.setValue("data.date", undefined!);
+				methods.setValue("data.booster_date", undefined!);
+				methods.setValue("notes", undefined!);
+				methods.setValue("data.name", undefined!);
+				methods.setValue("data.type", undefined!);
+				methods.setValue("data.health_card_id", undefined!);
+				getMyAppointments();
+				refetchDashboard();
+				closeModal();
+			},
+		});
 
-    const methods = useForm<MutationCreateTreatmentArgs & {notes : string}>({ mode: "onSubmit" });
-    const { openModal, closeModal } = useModal()
+	const methods = useForm<MutationCreateTreatmentArgs & { notes: string }>({
+		mode: "onSubmit",
+	});
+	const { openModal, closeModal } = useModal();
 
+	const createEvent = methods.handleSubmit((data) => {
+		createTreatment({
+			variables: {
+				treatment: {
+					health_card_id: data.data.health_card_id,
+					name: data.data.name,
+					type: data.data.type,
+					date: data.data.date,
+					logs: [data.notes],
+					...(data.data.booster_date
+						? { booster_date: data.data.booster_date }
+						: {}),
+				},
+			},
+		});
+	});
 
-    const createEvent = 
-    methods.handleSubmit((data )=> {
-        createTreatment({variables: { treatment : { health_card_id: data.data.health_card_id, name: data.data.name, type: data.data.type, date: data.data.date, logs: [data.notes] , ...(data.data.booster_date ? { booster_date : data.data.booster_date } : {}) }  }})
-    })
+	const openAddCalendarModal = useCallback(() => {
+		openModal({
+			onClose: () => {
+				closeModal();
+			},
+			onCancel: () => {
+				closeModal();
+			},
+			onConfirm: () => {
+				createEvent();
+			},
+			children: (
+				<FormProvider {...methods}>
+					<AddEventForm />
+				</FormProvider>
+			),
+		});
+	}, []);
 
-    const openAddCalendarModal= useCallback(()=> {
-        openModal({
-            onClose:()=> {closeModal()},
-            onCancel: ()=> {closeModal()},
-            onConfirm:()=>{ createEvent()},
-            children: 
-                <FormProvider {...methods} >
-                    
-                        <AddEventForm />
-                    
-                </FormProvider>
-        })
-    }, [])
+	useEffect(() => {
+		setPage({ visible: true, name: "Events" });
+		getMyAppointments();
+	}, []);
 
-    useEffect(() => {
-        setPage({ visible: true, name: "Events" });
-        getMyAppointments();
-    }, []);
-
-    return (
-        <IonContent fullscreen>
-            <CustomCalendar appointments={appointments} setDayEvents={(events)=> setEvents(events)} onStartDateChange={(v)=> {setAppointments([]); setFromDate(dayjs(v).startOf('week').toISOString()); setToDate(dayjs(v).add(1,'week').endOf('month').toISOString())}} />
-            {events  && <AppointmentsList loading={loading} appointments={events as AppointmentFragment[]}/>}
-            <AddButton onClick={openAddCalendarModal}>
-                <Icon name="addCircleOutline" color="dark-tint" size ="50px" />
-            </AddButton>
-        </IonContent>
-    );
+	return (
+		<IonContent fullscreen>
+			<CustomCalendar
+				appointments={appointments}
+				setDayEvents={(events) => setEvents(events)}
+				onStartDateChange={(v) => {
+					setAppointments([]);
+					setFromDate(dayjs(v).startOf("week").toISOString());
+					setToDate(
+						dayjs(v).add(1, "week").endOf("month").toISOString()
+					);
+				}}
+			/>
+			{events && (
+				<AppointmentsList
+					loading={loading}
+					appointments={events as AppointmentFragment[]}
+					dateSelected={ dayjs(fromDate).year() > 1990}
+				/>
+			)}
+			<AddButton onClick={openAddCalendarModal}>
+				<Icon name="addCircleOutline" color="dark-tint" size="50px" />
+			</AddButton>
+		</IonContent>
+	);
 };
 
-
 const AddButton = styled.div`
-    width:60px;
-    height: 60px;
-    padding: 5px;
-    border-radius: 30px;
-    position: fixed;
-    bottom: 130px; 
-    left: calc(50% + var(--max-width)/2 - 84px);
-    background-color: var(--ion-color-light-shade);
-    box-sizing: border-box;
-    @media only screen and (max-width: 420px) {
-        right: 24px; 
-        left: unset;
-    }
-`
+	width: 60px;
+	height: 60px;
+	padding: 5px;
+	border-radius: 30px;
+	position: fixed;
+	bottom: 130px;
+	left: calc(50% + var(--max-width) / 2 - 84px);
+	background-color: var(--ion-color-light-shade);
+	box-sizing: border-box;
+	@media only screen and (max-width: 420px) {
+		right: 24px;
+		left: unset;
+	}
+`;

@@ -172,7 +172,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
 	width: 100%;
 	display: flex;
-	margin-bottom: 60px;
+	margin-bottom: ${$uw(4)};
 	flex-direction: column;
 	box-sizing: border-box;
 	position: relative;
@@ -296,6 +296,7 @@ const ActionChip = styled.span`
 const Title = styled.h2`
 	padding: 0 ${$uw(2)};
 	height: ${$uw(3)};
+	margin: 0;
 	display: flex;
 	justify-content: center;
 	align-items: center;
