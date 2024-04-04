@@ -176,7 +176,6 @@ export const CalendarEvents: React.FC = () => {
 				<AppointmentsList
 					loading={loading}
 					appointments={events as AppointmentFragment[]}
-					dateSelected={ dayjs(fromDate).year() > 1990}
 				/>
 			)}
 			<AddButton onClick={openAddCalendarModal}>
