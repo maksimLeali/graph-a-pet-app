@@ -13,6 +13,7 @@ import { AddEventForm } from "../components/addEventForm";
 import { FormProvider, useForm } from "react-hook-form";
 import { MutationCreateTreatmentArgs } from "../../../types";
 import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
+import { useTranslation } from "react-i18next";
 
 export const CalendarEvents: React.FC = () => {
 	const { setPage, refetchDashboard } = useUserContext();
@@ -22,13 +23,15 @@ export const CalendarEvents: React.FC = () => {
 	const [events, setEvents] = useState<
 		AppointmentFragment[] | Maybe<AppointmentFragment>[] | undefined
 	>([]);
-
+	const [dateSelected, setDateSelected] = useState<Date>();
 	const [fromDate, setFromDate] = useState(
 		dayjs().startOf("month").startOf("week").toISOString()
 	);
 	const [toDate, setToDate] = useState(
 		dayjs().endOf("month").endOf("week").toISOString()
 	);
+
+	const { t } = useTranslation();
 
 	const [getMyAppointments, { loading, refetch }] =
 		useListMyTreatmentsLazyQuery({
@@ -93,6 +96,14 @@ export const CalendarEvents: React.FC = () => {
 			},
 		});
 
+	useEffect(() => {
+		methods.setValue(
+			"date_date",
+			dateSelected
+				? dayjs(dateSelected).toISOString()
+				: undefined!
+		);
+	}, [dateSelected]);
 	const [createTreatment, { loading: creationLoading }] =
 		useCreateTreatmentMutation({
 			onCompleted: ({ createTreatment }) => {
@@ -100,9 +111,9 @@ export const CalendarEvents: React.FC = () => {
 				if (!createTreatment || createTreatment.error) {
 					return;
 				}
-				methods.setValue("data.date", undefined!);
-				methods.setValue("data.date", undefined!);
-				methods.setValue("data.booster_date", undefined!);
+				
+				methods.setValue("date_date", undefined!);
+				methods.setValue("date_time", undefined!);
 				methods.setValue("notes", undefined!);
 				methods.setValue("data.name", undefined!);
 				methods.setValue("data.type", undefined!);
@@ -113,19 +124,21 @@ export const CalendarEvents: React.FC = () => {
 			},
 		});
 
-	const methods = useForm<MutationCreateTreatmentArgs & { notes: string }>({
+	const methods = useForm<MutationCreateTreatmentArgs & { notes: string, date_date: string, date_time: string}>({
 		mode: "onSubmit",
 	});
 	const { openModal, closeModal } = useModal();
 
 	const createEvent = methods.handleSubmit((data) => {
+		const time = dayjs(data.date_time)
+		const date = dayjs(data.date_date).set('hour', time.hour()).set("minute", time.minute()).toISOString()
 		createTreatment({
 			variables: {
 				treatment: {
 					health_card_id: data.data.health_card_id,
 					name: data.data.name,
 					type: data.data.type,
-					date: data.data.date,
+					date,
 					logs: [data.notes],
 					...(data.data.booster_date
 						? { booster_date: data.data.booster_date }
@@ -163,6 +176,7 @@ export const CalendarEvents: React.FC = () => {
 		<IonContent fullscreen>
 			<CustomCalendar
 				appointments={appointments}
+				onDateSelected={(date) => setDateSelected(date)}
 				setDayEvents={(events) => setEvents(events)}
 				onStartDateChange={(v) => {
 					setAppointments([]);
@@ -172,31 +186,22 @@ export const CalendarEvents: React.FC = () => {
 					);
 				}}
 			/>
+			<AddEventCta onClick={openAddCalendarModal}>
+				{t("events.add_event")}
+			</AddEventCta>
 			{events && (
 				<AppointmentsList
 					loading={loading}
 					appointments={events as AppointmentFragment[]}
 				/>
 			)}
-			<AddButton onClick={openAddCalendarModal}>
-				<Icon name="addCircleOutline" color="dark-tint" size="50px" />
-			</AddButton>
 		</IonContent>
 	);
 };
 
-const AddButton = styled.div`
-	width: 60px;
-	height: 60px;
-	padding: 5px;
-	border-radius: 30px;
-	position: fixed;
-	bottom: 130px;
-	left: calc(50% + var(--max-width) / 2 - 84px);
-	background-color: var(--ion-color-light-shade);
-	box-sizing: border-box;
-	@media only screen and (max-width: 420px) {
-		right: 24px;
-		left: unset;
-	}
+const AddEventCta = styled.div`
+	width: 100%;
+	color: var(--ion-color-primary);
+	text-decoration: underline;
+	text-align: end;
 `;

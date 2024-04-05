@@ -11,12 +11,14 @@ type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
 	onStartDateChange: (startDate: Date) => void;
 	setDayEvents: (events: AppointmentFragment[]) => void;
+	onDateSelected: (date?:Date)=> void
 };
 
 export const CustomCalendar: React.FC<props> = ({
 	appointments = [],
 	onStartDateChange,
 	setDayEvents,
+	onDateSelected,
 }) => {
 	const [activeStartDate, setActiveStartDate] = useState(
 		dayjs().startOf("month").toDate()
@@ -64,7 +66,6 @@ export const CustomCalendar: React.FC<props> = ({
 	);
 
 	const dayEvents = useMemo(() => {
-		console.log("*************", selectedDay);
 		const selected = dayjs(selectedDay);
 		if (!selectedDay || selected.year() < 1990) return periodsWithEvents.map((p) => p.event);
 		return periodsWithEvents
@@ -76,6 +77,13 @@ export const CustomCalendar: React.FC<props> = ({
 			.map((p) => p.event);
 	}, [periodsWithEvents, selectedDay]);
 
+	useEffect(()=>{
+		if(selectedDay && selectedDay?.getFullYear() > 1990){
+			onDateSelected(selectedDay)
+			return
+		}
+		onDateSelected(undefined)
+	}, [selectedDay])
 	useEffect(() => {
 		if (dayEvents?.length) {
 			setDayEvents(dayEvents as AppointmentFragment[]);

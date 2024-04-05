@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 import _ from "lodash";
 import dayjs from "dayjs";
 import { $uw } from "../utils/theme/functions";
+import React from "react";
 type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
 	loading?: boolean;
@@ -36,9 +37,9 @@ export const AppointmentsList: React.FC<props> = ({
 	}, [groupedAppointments, appointments]);
 
 	return (
-		<Container>
+		<Container >
 			{loading && (
-				<SkeletonMinAppointment>
+				<SkeletonMinAppointment key={'twst'}>
 					<SkeletonIcon className="skeleton" />
 					<SkeletonTextes>
 						<SkeletonP className="skeleton title" />
@@ -59,22 +60,22 @@ export const AppointmentsList: React.FC<props> = ({
 				})} */}
 			{appointmentsDates.length > 0 &&
 				!loading &&
-				appointmentsDates.map((date) => {
+				appointmentsDates.map((date, i) => {
 					return (
-						<>
-							<p className="group_date">
+						<React.Fragment key={`${i}-${date}`} >
+							<p  className="group_date">
 								{dayjs(date).format("dddd D MMMM")}
 							</p>
 						
-							{groupedAppointments[date].map((appointment) => {
+							{groupedAppointments[date].map((appointment, i) => {
 								return (
 									<MinAppointment
-										key={appointment?.id}
+										key={`${i}-${appointment?.id}`}
 										appointment={appointment}
 									/>
 								);
 							})}
-						</>
+						</React.Fragment>
 					);
 				})}
 			{!loading && !appointments.length && (
