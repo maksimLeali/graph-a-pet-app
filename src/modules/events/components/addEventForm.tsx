@@ -85,7 +85,7 @@ export const AddEventForm = () => {
 			/>
 			<DateTimePicker
 				name="date_time"
-				textLabel="events.time_from"
+				textLabel="events.time"
 				type="time"
 				className="main_time"
 				bgColor="light"
@@ -109,9 +109,9 @@ const Form = styled.div`
 	flex-wrap: wrap;
   justify-content: space-between;
 	.main_date {
-		width: 65%;
+		width: 55%;
 	}
 	.main_time {
-		width: 30%;
+		width: 40%;
 	}
 `;

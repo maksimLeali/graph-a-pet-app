@@ -118,6 +118,7 @@
         "name": "Nome evento",
         "date_from": "Data inizio",
         "time_from": "Ora inizio",
+        "time": "Ora",
         "boster_date_from": "Data inizio del richiamo",
         "date_time_from" : "Data e ora inizio",
         "booster_date_time_from" : "Data e ora inizio del richiamo",

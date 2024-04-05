@@ -14,6 +14,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { MutationCreateTreatmentArgs } from "../../../types";
 import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
 import { useTranslation } from "react-i18next";
+import { $uw } from "../../../utils/theme/functions";
 
 export const CalendarEvents: React.FC = () => {
 	const { setPage, refetchDashboard } = useUserContext();
@@ -99,9 +100,7 @@ export const CalendarEvents: React.FC = () => {
 	useEffect(() => {
 		methods.setValue(
 			"date_date",
-			dateSelected
-				? dayjs(dateSelected).toISOString()
-				: undefined!
+			dateSelected ? dayjs(dateSelected).toISOString() : undefined!
 		);
 	}, [dateSelected]);
 	const [createTreatment, { loading: creationLoading }] =
@@ -111,7 +110,7 @@ export const CalendarEvents: React.FC = () => {
 				if (!createTreatment || createTreatment.error) {
 					return;
 				}
-				
+
 				methods.setValue("date_date", undefined!);
 				methods.setValue("date_time", undefined!);
 				methods.setValue("notes", undefined!);
@@ -124,14 +123,23 @@ export const CalendarEvents: React.FC = () => {
 			},
 		});
 
-	const methods = useForm<MutationCreateTreatmentArgs & { notes: string, date_date: string, date_time: string}>({
+	const methods = useForm<
+		MutationCreateTreatmentArgs & {
+			notes: string;
+			date_date: string;
+			date_time: string;
+		}
+	>({
 		mode: "onSubmit",
 	});
 	const { openModal, closeModal } = useModal();
 
 	const createEvent = methods.handleSubmit((data) => {
-		const time = dayjs(data.date_time)
-		const date = dayjs(data.date_date).set('hour', time.hour()).set("minute", time.minute()).toISOString()
+		const time = dayjs(data.date_time);
+		const date = dayjs(data.date_date)
+			.set("hour", time.hour())
+			.set("minute", time.minute())
+			.toISOString();
 		createTreatment({
 			variables: {
 				treatment: {
@@ -204,4 +212,5 @@ const AddEventCta = styled.div`
 	color: var(--ion-color-primary);
 	text-decoration: underline;
 	text-align: end;
+	padding: 0 ${$uw(2)};
 `;
