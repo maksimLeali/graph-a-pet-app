@@ -31,14 +31,14 @@ export const Image2x: React.FC<props> = ({
 		const width = ref.current?.offsetWidth ?? 0;
 		const height = ref.current?.offsetHeight ?? 0;
 
-        // if(width==0 && height == 0) return;
+        if(width==0 && height == 0) return;
 		const srcTemp = `${baseUrl}/${width}x${height}${fit ? "/fit" : ""}${
 			parameters.length > 0 ? "?" + parameters.join("&") : ""
 		}`;
 		console.log(srcTemp);
 		setSrc(srcTemp);
 		setSrc2x(
-			`${baseUrl}/${width * 2}x${height}${fit ? "/fit" : ""}${
+			`${baseUrl}/${width * 2}x${height* 2}${fit ? "/fit" : ""}${
 				parameters.length > 0 ? "?" + parameters.join("&") : ""
 			}`
 		);
