@@ -1,0 +1,40 @@
+fragment FullPet on Pet {
+	name
+	id
+	main_picture {
+		id
+		main_color {
+			color
+			contrast
+		}
+		main_colors {
+			color
+			contrast
+		}
+		url
+		ref_id
+	}
+	pictures {
+		items {
+			id
+			main_color {
+				color
+				contrast
+			}
+			url
+			ref_id
+		}
+	}
+	ownerships {
+		items {
+			...petMinSubOwner
+		}
+	}
+	weight_kg
+	birthday
+	gender
+	body {
+		breed
+		family
+	}
+}

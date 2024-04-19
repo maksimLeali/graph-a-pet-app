@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { useGetTreatmentLazyQuery } from "../operations/__generated__/getAppointment.generated";
 import { FullTreatmentFragment } from "../../../components/operations/__generated__/fullTreatment.generated";
 import { IonContent } from "@ionic/react";
-import { Icon, SpecialIcon } from "../../../components";
+import { SpecialIcon } from "../../../components";
 import { useTranslation } from "react-i18next";
 import { SpecialIconName } from "../../../components/SpecialIcons/SpecialIcons";
 import { treatmentsColors } from "../../../utils";
@@ -16,7 +16,7 @@ type props = {
 
 export const EventDetails: React.FC<props> = ()=> {
     const { id } = useParams<{ id: string }>();
-    const [actionsOpen, setActionsOpen] = useState(false)
+
     const { setPage } = useUserContext();
     const [event,setEvent] = useState<FullTreatmentFragment>();
     const {t} = useTranslation()
@@ -57,15 +57,7 @@ export const EventDetails: React.FC<props> = ()=> {
                 : <h4>{t('events.general.no_events')}</h4>
             }
             </Logs>
-        <Actions>
-            
-            <IconsWrapper className={`${actionsOpen ? 'open' : ''}`}>
-                <Icon name="ellipsisVerticalOutline" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
-                <Icon name="createOutline" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
-                <Icon name="copyOutline" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
-                <Icon name="trash" color="danger" size="24px" onMouseUp={()=> {setActionsOpen(!actionsOpen)}} />
-            </IconsWrapper>
-        </Actions>
+        
     </IonContent>
 }
 
@@ -132,35 +124,6 @@ const Logs = styled.div`
     }
 `
 
-const Actions = styled.div`
-    width: 100%;
-    position:absolute;
-    bottom: 40px;
-    right: 24px;  
-`
-
-const IconsWrapper = styled.div`
-    width:38px;
-    max-height: 38px;
-    height: 300px;
-    margin-left: auto;
-    border: 2px solid var(--ion-color-medium);
-    background-color: var(--ion-color-light-tint);
-    padding: 2px;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center ;
-    justify-content: space-between ;
-    overflow-y: hidden;
-    box-shadow: var(--ion-color-light-shade) 0px 1px 4px, var(--ion-color-light-shade) 0px 0px 0px 3px;
-    box-sizing: border-box;
-    transition: max-height .5s ease-in;
-    &.open{
-        max-height: calc(45px * 4);
-    }
-
-`
 
 const SkeletonP = styled.div`
     width: 100px;
