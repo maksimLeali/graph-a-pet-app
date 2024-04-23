@@ -9,6 +9,7 @@ RUN yarn
 # ==== BUILD =====
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
 # Build the app
+run yarn fetch:graphql
 RUN yarn generate
 RUN yarn build
 # ==== RUN =======
