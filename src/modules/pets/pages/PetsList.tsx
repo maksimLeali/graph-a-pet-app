@@ -30,4 +30,6 @@ export const PetsList: React.FC = () => {
 const List = styled.div`
 	width: 100%;
 	padding: ${$cssTRBL(4, 1)};
+    position: relative;
+    z-index: 0;
 `;

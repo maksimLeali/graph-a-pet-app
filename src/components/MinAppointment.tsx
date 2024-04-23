@@ -8,13 +8,17 @@ import { treatmentsColors } from "../utils";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { $cssTRBL, $uw } from "../utils/theme/functions";
+import gsap from "gsap";
+import { useEffect, useRef } from "react";
+
+
 
 type props = {
 	appointment: AppointmentFragment | Maybe<AppointmentFragment>;
 };
 
 export const MinAppointment: React.FC<props> = ({ appointment }) => {
-	console.log(appointment);
+	
 	const { t } = useTranslation();
 	const translatedDuration: Record<TreatmentDuration, number> = {
 		[TreatmentDuration.TenMinutes]: 10,
@@ -25,12 +29,27 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
 		[TreatmentDuration.TwoHours]: 120,
 		[TreatmentDuration.ThreeQuarter]: 45,
 	};
+	const element = useRef<HTMLAnchorElement>(null)
+	useEffect(() => {
+		gsap.fromTo(
+		  element.current,
+		  { opacity: 0, y: -20 },
+		  {
+			opacity: 1,
+			y: 0,
+			duration: .8,
+			ease: "bounce.out",
+			delay: 0.2
+		  }
+		);
+	  }, []);
 
 	return (
 		<Container
 			to={`/events/${appointment?.id}`}
 			aria-label={`${appointment?.name} ${appointment?.type}`}
 			className="item-shadow"
+			ref={element}
 		>
 			<IconWrapper className="icon-wrapper">
 				<SpecialIcon
@@ -82,6 +101,7 @@ const Container = styled(Link)`
 	box-sizing: border-box;
 	display: flex;
 	border-radius: 10px;
+	opacity: 0;
 	padding: ${$cssTRBL(0.5, 1)};
 	align-items: center;
 	text-decoration: none;

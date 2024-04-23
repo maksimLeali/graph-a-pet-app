@@ -8,10 +8,20 @@ import _ from "lodash";
 import dayjs from "dayjs";
 import { $uw } from "../utils/theme/functions";
 import React from "react";
+import gsap from "gsap";
+
 type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
 	loading?: boolean;
-	
+};
+
+const animateGroupDate = (element: any) => {
+	if (!element) return;
+	gsap.fromTo(
+		element,
+		{ opacity: 0 },
+		{ opacity: 1, duration: .8, ease: "power2.out" }
+	);
 };
 
 export const AppointmentsList: React.FC<props> = ({
@@ -37,9 +47,9 @@ export const AppointmentsList: React.FC<props> = ({
 	}, [groupedAppointments, appointments]);
 
 	return (
-		<Container >
+		<Container>
 			{loading && (
-				<SkeletonMinAppointment key={'twst'}>
+				<SkeletonMinAppointment key={"twst"}>
 					<SkeletonIcon className="skeleton" />
 					<SkeletonTextes>
 						<SkeletonP className="skeleton title" />
@@ -62,11 +72,14 @@ export const AppointmentsList: React.FC<props> = ({
 				!loading &&
 				appointmentsDates.map((date, i) => {
 					return (
-						<React.Fragment key={`${i}-${date}`} >
-							<p  className="group_date">
+						<React.Fragment key={`${i}-${date}`}>
+							<p
+								className="group_date"
+								ref={(el) => animateGroupDate(el)}
+							>
 								{dayjs(date).format("dddd D MMMM")}
 							</p>
-						
+
 							{groupedAppointments[date].map((appointment, i) => {
 								return (
 									<MinAppointment
@@ -96,6 +109,7 @@ const Container = styled.div`
 	padding: 20px 12px;
 	align-items: center;
 	.group_date {
+		opacity: 0;
 		width: 100%;
 		border-bottom: 1px solid var(--ion-color-medium);
 		padding-bottom: ${$uw(1)};
