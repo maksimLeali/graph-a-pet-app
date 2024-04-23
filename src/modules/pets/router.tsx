@@ -1,5 +1,5 @@
 import { Redirect, Route, useRouteMatch } from "react-router-dom";
-import { Sharing } from ".";
+import { PetsList, Sharing } from ".";
 
 export const PetsRouter = () => {
     const { path } = useRouteMatch();
@@ -7,6 +7,9 @@ export const PetsRouter = () => {
         <>
             <Route path={`${path}/sharing/:code`} >
                 <Sharing />
+            </Route>
+            <Route path={`${path}`} >
+                <PetsList />
             </Route>
             <Route exact path={`${path}/sharing`} strict>
                 <Redirect to={`${path}`} />

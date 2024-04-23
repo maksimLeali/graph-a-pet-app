@@ -23,8 +23,6 @@ export const Home: React.FC = () => {
         
     }, [])
     
-    
-
     useEffect(()=> {
         if(pets.length){
             searchAppointments()

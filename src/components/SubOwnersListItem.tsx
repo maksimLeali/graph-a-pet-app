@@ -24,6 +24,7 @@ export const SubOwnerListItem: React.FC<props> = ({
 				{ownership?.user?.profile_picture && (
 					<Image2x
 						lazy
+                        rounded
 						id={ownership.user.profile_picture.id}
 						alt={`${ownership.user.first_name} ${ownership.user.last_name} picture`}
 					/>

@@ -1,4 +1,4 @@
-import { Redirect, Route, useRouteMatch } from "react-router-dom";
+import { Route, useRouteMatch } from "react-router-dom";
 import { CalendarEvents, EventDetails } from ".";
 
 export const EventsRouter = () => {

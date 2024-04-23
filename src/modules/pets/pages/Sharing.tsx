@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import styled from "styled-components";
 import { useUserContext } from "../../../contexts";
@@ -8,9 +8,8 @@ import { Image2x, SubOwnerList, SubOwnerListItem } from "../../../components";
 import { useCheckCodeMutation } from "../operations/__generated__/checkCode.generated";
 import { useGetPetLazyQuery } from "../operations/__generated__/getSinglePet.generated";
 import { CustodyLevel } from "../../../types";
-import { IonButton } from "@ionic/react";
+
 import _ from "lodash";
-import { CustodyLevelSelector } from "../components/CustodyLevelSelector";
 import { ShareBox } from "../components";
 import { useCookies } from "react-cookie";
 import { useLinkPetToMeMutation } from "../operations/__generated__/linkPetToMe.generated";

@@ -64,7 +64,7 @@ const Container = styled.div<{ gridHeight: number; visible: boolean }>`
 	padding: ${$cssTRBL(2)};
 	
     border-bottom: 1px solid var(--grid-color) ;
-    border-right: 1px solid var(--grid-color) ;
+    border-right: 2px solid var(--grid-color) ;
 	background-size: calc(var(--max-grid-size) / var(--grid-columns-number))
 		calc(var(--max-grid-size) / var(--grid-columns-number));
 	background-image: linear-gradient(

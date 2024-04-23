@@ -153,7 +153,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 					onClick={() => setMenuOpen(true)}
 				>
 					{user && user.profile_picture ? (
-						<Image2x id={user.profile_picture.id} />
+						<Image2x rounded id={user.profile_picture.id} />
 					) : (
 						<></>
 					)}

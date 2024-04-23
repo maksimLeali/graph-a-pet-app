@@ -120,6 +120,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 						<Image2x
 							id={pet.main_picture!.id}
 							key={i}
+							rounded
 							alt={`${pet.name} picture`}
 							className={`${i == prev ? "deactivated" : ""} ${
 								i == active ? "active" : ""
