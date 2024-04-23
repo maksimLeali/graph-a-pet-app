@@ -3,14 +3,14 @@ import { useCookies } from "react-cookie";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import { useModal, useUserContext } from "../../contexts";
+import { useUserContext } from "../../contexts";
 import { useOnClickOutside } from "../../hooks";
 import { Toggle } from "../formFields";
 import { Icon } from "../icons";
 import { toast } from "react-hot-toast";
 import { Modal, ModalProps } from "../Modal";
 import { UserRole } from "../../types";
-import { $uw } from "../../utils/theme/functions";
+import { $cssTRBL, $uw } from "../../utils/theme/functions";
 
 type props = {
 	open: boolean;
@@ -169,7 +169,7 @@ const Container = styled.div`
 	position: absolute;
 	max-width: var(--max-width);
 	bottom: -100%;
-	padding: 20px 12px;
+	padding: ${$cssTRBL(2,0, 1)};
 	background-color: var(--ion-color-light);
 	box-sizing: border-box;
 	border-radius: 4px 4px 0 0;
@@ -181,12 +181,11 @@ const Container = styled.div`
 
 const MainOptions = styled.div`
 	width: 100%;
-	padding: 0;
 	display: flex;
 	flex-direction: column;
 	border-bottom: 1px solid var(--ion-color-dark);
-	gap: 10px;
-	margin-bottom: 20px;
+	
+	margin-bottom: ${$uw(1)};
 	font-size: 1.6rem;
 `;
 const ActionOptions = styled.div`
@@ -196,16 +195,16 @@ const ActionOptions = styled.div`
 	flex-direction: column;
 	border-bottom: 1px solid var(--ion-color-dark);
 	font-size: 1.6rem;
-	gap: 10px;
-	margin-bottom: 20px;
+
+	margin-bottom: ${$uw(1)};
 `;
 const Option = styled.a`
 	width: 100%;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 20px;
-	padding-bottom: 12px;
+	gap: ${$uw(1)};
+	padding: ${$cssTRBL(0, 1, 1)};
 	box-sizing: border-box;
 	text-decoration: none;
 	color: inherit;
@@ -221,9 +220,9 @@ const FakeOption = styled.div`
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 20px;
+	gap: ${$uw(1)};
 	cursor: pointer;
-	padding-bottom: 12px;
+	padding: ${$cssTRBL(0, 1, 1)};
 	box-sizing: border-box;
 	text-decoration: none;
 	color: inherit;
@@ -239,16 +238,17 @@ const ToggleOption = styled.div`
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 20px;
-	padding-bottom: 12px;
+	
+	padding-right: ${$uw(2)};
 	box-sizing: border-box;
-	margin-bottom: ${$uw(2)};
+	margin-bottom: ${$uw(1)};
+	margin-top: ${$uw(2)};
 	&.modeSelector {
 		justify-content: flex-end;
 	}
 	&.gridSelector {
 		justify-content: flex-end;
-        margin-bottom: 0;
+		margin-bottom: 0;
 	}
 	> span {
 		color: var(--ion-color-dark);
@@ -259,7 +259,7 @@ const LogoutContainer = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	padding: 0 12px;
+	margin-bottom: ${$uw(2)};
 	> p {
 		text-align: center;
 		font-size: 1.6rem;

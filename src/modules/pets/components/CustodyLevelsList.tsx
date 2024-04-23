@@ -6,6 +6,7 @@ import { CustodyLevel } from "../../../types";
 import { custodyLevelColors, enumKeys } from "../../../utils";
 import _, { indexOf } from "lodash";
 import { useTranslation } from "react-i18next";
+import { $cssTRBL } from "../../../utils/theme/functions";
 
 type props = {
     current: CustodyLevel;
@@ -24,12 +25,12 @@ export const CustodyLevelsList:React.FC<props> = ({ onClick, current})=> {
 )}
 
 const ChipsContainer = styled.div`
-       width: 100%;
+    width: 100%;
     display: flex;
-    justify-content: space-around;
-    gap: 20px;
+    justify-content: space-between;
+    
     flex-wrap: wrap;
-    padding: 10px 30px;
+    padding: ${$cssTRBL(0 , 2)};
     box-sizing:border-box;
     
 `

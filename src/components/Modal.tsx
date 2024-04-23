@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Icon, } from ".";
 import { useOnClickOutside } from "../hooks";
 import { useEffect, useRef, useState } from "react";
+import { $cssTRBL, $uw } from "../utils/theme/functions";
 
 
 export type ModalProps = {
@@ -103,7 +104,6 @@ const ModalBg = styled.div`
     opacity: 0;
     top: 0;
     left: 0;
-    padding: 40px 10px;
     transition: opacity .5s ease-in-out;
     box-sizing: border-box;
     &.inited {
@@ -124,16 +124,22 @@ const ModalBox = styled.div<{ bgColor: string; txtColor: string }>`
     border-radius: 4px;
     color: ${({ txtColor }) => txtColor};
     background-color: ${({ bgColor }) => bgColor}!important;
+    padding: ${$cssTRBL(2, 0)};
 `;
 
 const CloseContainer = styled.div`
     width: 100%;
     height: fit-content;
-    padding: 10px 5px;
-    height: 50px;
+    height: ${$uw(2)};
+    margin-bottom: ${$uw(2)};
+    padding: ${$cssTRBL(0,2)};
     box-sizing: border-box;
     display: flex;
     justify-content: flex-end;
+    > * {
+        width: ${$uw(2)};
+        height: ${$uw(2)};
+    }
 `;
 
 const CustomIonButton = styled(IonButton)<{ txtColor?: string }>`
@@ -143,11 +149,8 @@ const CustomIonButton = styled(IonButton)<{ txtColor?: string }>`
 const Actions = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 20px;
+    padding: ${$cssTRBL(0,2)};
     > *:first-child {
         justify-self: flex-start;
-    }
-    > ion-button {
-        padding: 4px 12px;
     }
 `;

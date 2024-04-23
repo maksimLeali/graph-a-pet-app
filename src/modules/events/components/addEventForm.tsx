@@ -16,6 +16,7 @@ import { useUserContext } from "../../../contexts";
 
 import _ from "lodash";
 import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
+import { $cssTRBL } from "../../../utils/theme/functions";
 
 export const AddEventForm = () => {
 	const { pets } = useUserContext();
@@ -80,7 +81,7 @@ export const AddEventForm = () => {
 				type="date"
 				className="main_date"
 				bgColor="light"
-        required
+				required
 				minDate={dayjs().toISOString()}
 			/>
 			<DateTimePicker
@@ -89,7 +90,7 @@ export const AddEventForm = () => {
 				type="time"
 				className="main_time"
 				bgColor="light"
-        required
+				required
 			/>
 			<TextAreaInput
 				name="notes"
@@ -102,12 +103,12 @@ export const AddEventForm = () => {
 
 const Form = styled.div`
 	width: 100%;
-	padding: 20px;
 	overflow-y: scroll;
 	max-height: 600px;
 	display: flex;
+	padding: ${$cssTRBL(0, 2)};
 	flex-wrap: wrap;
-  justify-content: space-between;
+	justify-content: space-between;
 	.main_date {
 		width: 55%;
 	}
