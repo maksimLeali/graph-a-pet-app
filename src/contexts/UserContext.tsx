@@ -20,8 +20,8 @@ export type IUserContext = {
 	ownedPets: (DashboardPetFragment & { owner: boolean })[];
 	loanPets: (DashboardPetFragment & { owner: boolean })[];
 	loading: boolean;
-    gridVisible: boolean;
-    handleGridVisibility: (v: boolean)=> void;
+	gridVisible: boolean;
+	handleGridVisibility: (v: boolean) => void;
 } & Record<string, any>;
 
 type Page = {
@@ -37,8 +37,8 @@ const defaultValue: IUserContext = {
 	loanPets: [],
 	ownedPets: [],
 	loading: false,
-    gridVisible: false,
-    handleGridVisibility: ()=> {}
+	gridVisible: false,
+	handleGridVisibility: () => {},
 };
 const UserContext = React.createContext<IUserContext>(defaultValue);
 
@@ -52,7 +52,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [pageName, setPageName] = useState("");
 	const [cookie] = useCookies(["jwt", "user"]);
 	const [visible, setVisible] = useState(true);
-    const [gridVisible, setGridVisible] = useState(false)
+	const [gridVisible, setGridVisible] = useState(false);
 	const [alreadyRequested, setAlreadyRequested] = useState(false);
 	const [pets, setPets] = useState<
 		(DashboardPetFragment & { owner: boolean })[]
@@ -65,7 +65,6 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	);
 	const [user, setUser] = useState<MinUserFragment | null>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
-
 
 	const refetchDashboard = () => {
 		getUserDashboardQuery();
@@ -120,11 +119,10 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 		setUser(cookie.user);
 	}, [cookie.user]);
 
-
-    const handleGridVisibility=  (v: boolean)=>{
-        console.log('change visibility of grid to', v)
-        setGridVisible(v);
-    }
+	const handleGridVisibility = (v: boolean) => {
+		console.log("change visibility of grid to", v);
+		setGridVisible(v);
+	};
 
 	const value = useMemo(
 		() => ({
@@ -136,8 +134,8 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 			setPage,
 			refetchDashboard,
 			visible,
-            gridVisible,
-            handleGridVisibility
+			gridVisible,
+			handleGridVisibility,
 		}),
 		[visible, pets, gridVisible]
 	);
@@ -180,10 +178,13 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean }>`
 	height: ${$uw(5)};
 	max-width: var(--max-width);
 	left: calc(50% - 240px);
-    padding: ${$uw(.75)};
-    box-sizing: border-box;
-    background-color: var(--ion-toolbar-background);
-    display: flex;
+	padding: ${$uw(0.75)};
+	box-sizing: border-box;
+	background-color: var(--ion-background-color);
+	display: flex;
+	.dark & {
+		background-color: var(--ion-toolbar-background);
+	}
 	@media only screen and (max-width: 480px) {
 		left: 0;
 	}
@@ -196,10 +197,10 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean }>`
 `;
 
 const MainImage = styled.div`
-	width:${$uw(3.5)};
-	aspect-ratio:1;
-	position:relative;
-    box-sizing: border-box;
+	width: ${$uw(3.5)};
+	aspect-ratio: 1;
+	position: relative;
+	box-sizing: border-box;
 	z-index: 10;
 	border: 2px solid var(--ion-color-primary);
 	border-radius: ${$uw(4)};

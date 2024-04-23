@@ -11,14 +11,11 @@ import { $cssTRBL, $uw } from "../utils/theme/functions";
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 
-
-
 type props = {
 	appointment: AppointmentFragment | Maybe<AppointmentFragment>;
 };
 
 export const MinAppointment: React.FC<props> = ({ appointment }) => {
-	
 	const { t } = useTranslation();
 	const translatedDuration: Record<TreatmentDuration, number> = {
 		[TreatmentDuration.TenMinutes]: 10,
@@ -29,20 +26,20 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
 		[TreatmentDuration.TwoHours]: 120,
 		[TreatmentDuration.ThreeQuarter]: 45,
 	};
-	const element = useRef<HTMLAnchorElement>(null)
+	const element = useRef<HTMLAnchorElement>(null);
 	useEffect(() => {
 		gsap.fromTo(
-		  element.current,
-		  { opacity: 0, y: -20 },
-		  {
-			opacity: 1,
-			y: 0,
-			duration: .8,
-			ease: "bounce.out",
-			delay: 0.2
-		  }
+			element.current,
+			{ opacity: 0, y: -20 },
+			{
+				opacity: 1,
+				y: 0,
+				duration: 0.8,
+				ease: "expo.in",
+				
+			}
 		);
-	  }, []);
+	}, []);
 
 	return (
 		<Container
