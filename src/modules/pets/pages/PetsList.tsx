@@ -15,8 +15,8 @@ export const PetsList: React.FC = () => {
 	return (
 		<IonContent fullscreen>
 			<List>
-				{[ownedPets[0]].map((pet, i) => {
-				// {[...ownedPets, ...loanPets].map((pet, i) => {
+				
+				{[...ownedPets, ...loanPets].map((pet, i) => {
 					return pet ? (
 						<PetItem key={pet.id} pet={pet} index={i} />
 					) : (
