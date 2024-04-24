@@ -1,44 +1,45 @@
-
 import styled from "styled-components";
 import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
 import { $cssTRBL, $uw } from "../../../utils/theme/functions";
 import { useEffect, useRef, useState } from "react";
 import { Image2x } from "../../../components";
 import gsap from "gsap";
+
 type Prop = {
 	pet: DashboardPetFragment;
-	index: number
+	index: number;
 };
 
-export const PetItem: React.FC<Prop> = ({ pet , index }) => {
-	const [ready, setReady] = useState(false)
+export const PetItem: React.FC<Prop> = ({ pet, index }) => {
+	const [ready, setReady] = useState(false);
+	const [imageReady, setImageReady] = useState(false);
 	const itemRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-	  // Using GSAP to animate the entire PetItem component
-	  gsap.fromTo(
-		itemRef.current,
-		{ opacity: 0, x: "-100px" }, // From left of 100px outside the screen
-		{ opacity: 1, x: 0, duration: 0.6, delay: 0.2 + index / 10} // To original position with opacity transition
-	  );
-	}, []);
-
-	setTimeout(() => {
-		setReady(true);
-	}, 1);
-
+		if (imageReady) {
+			console.log("ready");
+			// Using GSAP to animate the entire PetItem component
+			gsap.fromTo(
+				itemRef.current,
+				{ opacity: 0, x: "-100px" }, // From left of 100px outside the screen
+				{ opacity: 1, x: 0, duration: 0.6, delay: 0.2 + index / 10 } // To original position with opacity transition
+			);
+		}
+	}, [imageReady, index]);
+	setTimeout(()=>{
+		setReady(true)
+	}, 100)
 	return (
-	  <Container ref={itemRef} bgColor={pet.main_picture?.main_color?.color}>
-			<ImageWrapper>
-				{ready && (
-					<Image2x
-						lazy
-						alt={`${pet.name} picture`}
-						id={pet.main_picture!.id}
-					/>
-				)}
+		<Container ref={itemRef} bgColor={pet.main_picture?.main_color?.color}>
+			{ready &&<ImageWrapper>
+				<Image2x
+					lazy
+					alt={`${pet.name} picture`}
+					id={pet.main_picture!.id}
+					onLoad={() => setImageReady(true)} // Set ready state to true when image is loaded
+				/>
 				<Name>{pet.name} </Name>
-			</ImageWrapper>
+			</ImageWrapper>}
 		</Container>
 	);
 };
@@ -48,6 +49,7 @@ const Container = styled.div<{ bgColor?: string }>`
 	background-color: ${({ bgColor }) => bgColor || "var(--ion-color-primary)"};
 	height: ${$uw(11)};
 	margin-bottom: ${$uw(4)};
+	opacity: 0;
 	border-radius: 4px;
 `;
 

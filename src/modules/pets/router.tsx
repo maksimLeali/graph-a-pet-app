@@ -8,7 +8,7 @@ export const PetsRouter = () => {
             <Route path={`${path}/sharing/:code`} >
                 <Sharing />
             </Route>
-            <Route path={`${path}`} >
+            <Route exact path={`${path}`} >
                 <PetsList />
             </Route>
             <Route exact path={`${path}/sharing`} strict>

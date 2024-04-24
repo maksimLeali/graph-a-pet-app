@@ -10,6 +10,7 @@ type props = {
 	rounded?: boolean;
 	className?: string;
 	lazy?: boolean;
+	onLoad?: ()=> void
 };
 
 export const Image2x: React.FC<props> = ({
@@ -18,6 +19,7 @@ export const Image2x: React.FC<props> = ({
 	fit = false,
 	rounded = false,
 	className,
+	onLoad,
 	lazy,
 }) => {
 	const [src, setSrc] = useState<string>();
@@ -56,6 +58,7 @@ export const Image2x: React.FC<props> = ({
 						alt={alt ?? `${id}`}
 						srcSet={`${src2x} 2x`}
 						loading={lazy ? "lazy" : "eager"}
+						onLoad={()=>onLoad && onLoad()}
 					/>
 				)}
 		</ImageContainer>
