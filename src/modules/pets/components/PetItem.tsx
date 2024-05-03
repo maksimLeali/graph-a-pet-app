@@ -39,18 +39,21 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 						id={pet.main_picture!.id}
 						onLoad={() => setImageReady(true)} // Set ready state to true when image is loaded
 					/>
-					<Name>{pet.name} </Name>
+
+					<Name>
+						<IconContainer className="icon-container" />
+						{pet.name}{" "}
+					</Name>
 				</ImageWrapper>
 			)}
 			<InfoBox>
-				<BodyInfo>
-					<IconContainer className="icon-container" />
-					<span>{dayjs().diff(pet.birthday, "years")} Anni</span>
-					<span>{pet.weight_kg} Kg</span>
-				</BodyInfo>
 				<span>
 					{t(`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`)}
 				</span>
+				<BodyInfo>
+					<span>{dayjs().diff(pet.birthday, "years")} Anni</span>
+					<span>{pet.weight_kg} Kg</span>
+				</BodyInfo>
 				<span></span>
 				<span></span>
 			</InfoBox>
@@ -118,7 +121,7 @@ const InfoBox = styled.div`
 
 const IconContainer = styled.div`
 	width: ${$uw(2)};
-	height: 100%;
+	height: ${$uw(2)};
 	display: block;
 	border-radius: 100px;
 	background-color: #fff;
