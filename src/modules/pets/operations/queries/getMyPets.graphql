@@ -1,7 +1,0 @@
-query getMyPets {
-	listMyPets {
-		items {
-			...MinPet
-		}
-	}
-}
