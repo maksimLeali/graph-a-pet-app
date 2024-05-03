@@ -28,18 +28,14 @@ export const Image2x: React.FC<props> = ({
 	const { webpSupported } = useAppContext();
 	
 	useEffect(() => {
-		console.log(id)
 		const baseUrl = `${config.baseUrl?.replace("graphql", "media")}/${id}`;
-		console.log(baseUrl)
 		const parameters = [...(webpSupported ? ["format=webp"] : [])];
 		const width = ref.current?.offsetWidth ?? 0;
 		const height = ref.current?.offsetHeight ?? 0;
-		console.log(width, height)
         if(width==0 && height == 0) return;
 		const srcTemp = `${baseUrl}/${width}x${height}${fit ? "/fit" : ""}${
 			parameters.length > 0 ? "?" + parameters.join("&") : ""
 		}`;
-		console.log(srcTemp);
 		setSrc(srcTemp);
 		setSrc2x(
 			`${baseUrl}/${width * 2}x${height* 2}${fit ? "/fit" : ""}${

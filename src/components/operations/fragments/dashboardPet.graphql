@@ -1,59 +1,32 @@
 fragment DashboardPet on Pet {
-    name
-    id
-    ownerships(commonSearch: {
-        filters: {
-            lists: [{
-                key: "custody_level",
-                value : [ "SUB_OWNER", "PET_SITTER"]
-            }]
-        }
-    }){
-        items {
-        ...petMinSubOwner
-        }
-        
-    }
-    main_picture{
-        id
-        main_color{
-            color
-            contrast
-        }
-        main_colors{
-            color
-            contrast
-        }
-        url
-        ref_id
-    }
-    health_card {
-        id
-        treatments(
-            commonSearch: {
-                order_by: "date"
-                order_direction: "asc"
-                filters: {
-                    ranges: [
-                        {
-                            key: "date"
-                            value: { min: $date_from, max: $date_to }
-                        }
-                    ]
-                }
-            }
-        ) {
-            items {
-                id
-                date
-                name
-                type
-            }
-            success
-            error {
-                code
-                message
-            }
-        }
-    }
+	...MinPet
+	health_card {
+		id
+		treatments(
+			commonSearch: {
+				order_by: "date"
+				order_direction: "asc"
+				filters: {
+					ranges: [
+						{
+							key: "date"
+							value: { min: $date_from, max: $date_to }
+						}
+					]
+				}
+			}
+		) {
+			items {
+				id
+				date
+				name
+				type
+			}
+			success
+			error {
+				code
+				message
+			}
+		}
+	}
 }

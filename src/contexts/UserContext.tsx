@@ -57,12 +57,9 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [pets, setPets] = useState<
 		(DashboardPetFragment & { owner: boolean })[]
 	>([]);
-	const [dateFrom, setDateFrom] = useState(
-		dayjs().startOf("w").toISOString()
-	);
-	const [dateTo, setDateTo] = useState(
-		dayjs(dateFrom).add(14, "days").toISOString()
-	);
+	const dateFrom = dayjs().startOf("w").toISOString()
+	const dateTo =  dayjs(dateFrom).add(14, "days").toISOString()
+	
 	const [user, setUser] = useState<MinUserFragment | null>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 
@@ -120,7 +117,6 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	}, [cookie.user]);
 
 	const handleGridVisibility = (v: boolean) => {
-		console.log("change visibility of grid to", v);
 		setGridVisible(v);
 	};
 

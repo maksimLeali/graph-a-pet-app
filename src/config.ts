@@ -1,6 +1,6 @@
 import { environment } from './environments/environment'
 
-
+console.log(import.meta.env)
 
 export const config = {
   baseUrl: environment.baseUrl ?? 'https://graph-a-pet.makso.me/graphql',

@@ -638,10 +638,16 @@ export type Pet = {
   intollerance?: Maybe<Array<Maybe<Scalars['String']>>>;
   disciplines?: Maybe<Array<Maybe<Scalars['String']>>>;
   main_picture?: Maybe<Media>;
+  pictures?: Maybe<PaginatedMedias>;
 };
 
 
 export type PetOwnershipsArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type PetPicturesArgs = {
   commonSearch?: Maybe<CommonSearch>;
 };
 
@@ -729,6 +735,7 @@ export type Query = {
   listUsers: PaginatedUsers;
   getUser: UserResult;
   listPets: PaginatedPets;
+  listMyPets: PaginatedPets;
   getPet: PetResult;
   me: UserResult;
   getOwnership: OwnershipResult;
@@ -765,6 +772,11 @@ export type QueryGetUserArgs = {
 
 
 export type QueryListPetsArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type QueryListMyPetsArgs = {
   commonSearch?: Maybe<CommonSearch>;
 };
 

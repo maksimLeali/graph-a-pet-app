@@ -1,10 +1,7 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache, from, gql, ApolloLink} from '@apollo/client'
+import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache, ApolloLink} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
-import { onError } from 'apollo-link-error'
-import { useCookies } from 'react-cookie'
 import App from './App';
 import './i18n'
 import _ from 'lodash'
