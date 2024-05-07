@@ -52,11 +52,15 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 			<InfoBox className="info-box">
 				<Name>
 					<IconContainer className="icon-container" />
-					{pet.name}
+					<span>
+						<p>{pet.name}</p>
+						<span>
+							{t(
+								`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`
+							)}
+						</span>
+					</span>
 				</Name>
-				<span>
-					{t(`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`)}
-				</span>
 
 				<InfoRow>
 					<span
@@ -135,10 +139,19 @@ const Name = styled.div`
 	align-items: end;
 	width: 100%;
 	font-size: 2rem;
-	margin-bottom: ${$uw(0.5)};
+	margin-bottom: ${$uw(1)};
 	font-weight: 600;
 
 	color: var(--ion-color-white);
+	span {
+		span {
+			font-weight: 400;
+			font-size: 1.3rem;
+		}
+		* {
+			margin: 0;
+		}
+	}
 `;
 
 const InfoBox = styled.div`
