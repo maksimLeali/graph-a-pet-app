@@ -40,7 +40,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 			color={pet.main_picture?.main_color?.contrast}
 		>
 			{ready && (
-				<ImageWrapper>
+				<ImageWrapper className="image-wrapper">
 					<Image2x
 						lazy
 						alt={`${pet.name} picture`}
@@ -101,6 +101,10 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 	display: flex;
 	border-radius: 4px;
 	position: relative;
+	.image-wrapper {
+		border: 3px solid
+			${({ bgColor }) => bgColor || "var(--ion-color-primary)"};
+	}
 	.icon-container {
 		border: 1px solid
 			${({ bgColor }) => bgColor || "var(--ion-color-primary)"};
@@ -142,7 +146,7 @@ const InfoBox = styled.div`
 	padding: ${$uw(1)};
 	width: 100%;
 	height: 100%;
-	border-radius: 99px;
+	border-radius: 99px 20px 20px 99px;
 	padding-left: ${$uw(14)};
 	flex-wrap: wrap;
 	flex-direction: column;
