@@ -735,7 +735,6 @@ export type Query = {
   listUsers: PaginatedUsers;
   getUser: UserResult;
   listPets: PaginatedPets;
-  listMyPets: PaginatedPets;
   getPet: PetResult;
   me: UserResult;
   getOwnership: OwnershipResult;
@@ -772,11 +771,6 @@ export type QueryGetUserArgs = {
 
 
 export type QueryListPetsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryListMyPetsArgs = {
   commonSearch?: Maybe<CommonSearch>;
 };
 

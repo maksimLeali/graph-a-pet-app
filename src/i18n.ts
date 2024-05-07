@@ -3,7 +3,6 @@ import { initReactI18next } from 'react-i18next'
 import _ from 'lodash'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-
 import 'dayjs/locale/it'
 
 import translations from './i18n/translations.json'
@@ -28,6 +27,7 @@ i18n.use(initReactI18next).init({
   lng,
   interpolation: {
     escapeValue: false,
+    
   },
 })
 

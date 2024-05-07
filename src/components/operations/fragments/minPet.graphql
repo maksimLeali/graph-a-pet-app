@@ -25,5 +25,8 @@ fragment MinPet on Pet {
     body{
         breed
         family
+        coat{
+            length
+        }
     }
 }

@@ -121,11 +121,21 @@
         "sub_owner_short": "Aff.",
         "pet_sitter": "Pet Sitter",
         "pet_sitter_short": "P.sit",
+        "age_years_one": "<b>{{count}}</b> anno",
+        "age_years_other": "<b>{{count}}</b> anni",
+        "weight_kg": "<b>{{weight_kg}}</b> Kg",
+        "coat_lenght": "Pelo: <b>{{lenght}}</b>",
         "subowner": "Affidatario",
         "petsitter": "Pet Sitter",
         "accept_as": "Accetta come:",
         "desc_sub_owner": "Un <b>Affidatario</b> si occupa dell'animale come il padrone.<br/>Di solito è un <b>famigliare</b> o un <b>Amico</b>",
         "desc_pet_sitter": "Un <b>Pet Sitter</b> si occupa dell'animale per <b>lavoro</b>",
+        "coat_lenghts": {
+          "SHORT": "Corto", 
+          "MEDIUM": "Medio", 
+          "LENGHT": "Lungo", 
+          "HAIRLESS": "Nessuno"
+        },
         "breeds": {
           "incrocio": "Incrocio",
           "affenpinscher": "Affenpinscher",
