@@ -39,13 +39,13 @@ export const WeeksView: React.FC<props> = ({
 
 	const dayEvents = useMemo(() => {
 		const selected = dayjs(selectedDay);
+		console.log("selected: ", selected);
 		return _(periodsWithEvents)
 			.filter(({ from, to }) =>
-				selected
+				selectedDay
 					? selected.endOf("day").isAfter(from) &&
 					  selected.startOf("day").isBefore(to)
-					: dayjs(now).endOf("day").isAfter(from) &&
-					  dayjs(now).startOf("day").isBefore(to)
+					: true
 			)
 			.orderBy((item) => item.event!.date, ["asc"])
 			.map((p) => p.event)
@@ -83,6 +83,14 @@ export const WeeksView: React.FC<props> = ({
 								<span
 									key={i}
 									onClick={() => {
+										if (
+											dayjs(date).isSame(
+												dayjs(selectedDay)
+											)
+										) {
+											setSelectedDay(undefined);
+											return;
+										}
 										setSelectedDay(date.toDate());
 									}}
 									className={`${isNow ? "now" : ""} ${
@@ -120,7 +128,7 @@ const Container = styled.div`
 `;
 
 const WeeksContainer = styled.div`
-	height: ${$uw(5)};
+	height: ${$uw(6)};
 	overflow-x: scroll;
 	padding: ${$cssTRBL(1, 0, 1, 1)};
 	display: flex;
@@ -144,10 +152,10 @@ const DateContainer = styled.div`
 	flex: 0 0 ${$uw(3.2)};
 	margin-right: calc(${$uw(9.6)} / 8);
 	> span {
-        text-align: center;
+		text-align: center;
 		display: flex;
 		border-radius: 10px;
-        height: ${$uw(3)};
+		height: ${$uw(3)};
 		font-size: 1.4rem;
 		box-sizing: border-box;
 		align-items: center;
@@ -177,7 +185,7 @@ const CircleContainer = styled.div`
 	justify-content: flex-end;
 	padding-right: 5px;
 	gap: 1px;
-	bottom: 0;
+	margin-top: ${$uw(0.5)};
 `;
 
 const Circle = styled.div<{ color: string }>`
@@ -186,5 +194,4 @@ const Circle = styled.div<{ color: string }>`
 	border: 1px solid var(--ion-color-dark);
 	border-radius: 10px;
 	background-color: ${(props) => props.color};
-	margin-top: 0.2em;
 `;
