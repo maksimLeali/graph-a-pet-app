@@ -22,6 +22,7 @@ fragment MinPet on Pet {
     weight_kg
     birthday
     gender
+    neutered
     body{
         breed
         family
