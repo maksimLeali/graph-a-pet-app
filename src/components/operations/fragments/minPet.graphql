@@ -17,7 +17,7 @@ fragment MinPet on Pet {
     ownerships {
         items {
             ...petMinSubOwner
-            }
+        }
     }
     weight_kg
     birthday
