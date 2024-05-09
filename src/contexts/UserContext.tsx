@@ -147,13 +147,11 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 					className="skeleton"
 					onClick={() => setMenuOpen(true)}
 				>
-					<UserPlaceholder />
-
-					{/* {user && user.profile_picture ? (
+					{user && user.profile_picture ? (
 						<Image2x rounded id={user.profile_picture.id} />
 					) : (
 						<UserPlaceholder />
-					)} */}
+					)}
 				</MainImage>
 			</CustomIonHeader>
 			<MainBody className={!visible ? "noUserMenu" : ""}>
