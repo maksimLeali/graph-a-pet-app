@@ -216,7 +216,6 @@ const MainImage = styled.div`
 
 const MainBody = styled.div`
 	width: 100%;
-
 	position: relative;
 	height: 100%;
 	&.noUserMenu {
