@@ -9,6 +9,7 @@ export {WeeksView} from './WeeksView'
 export {MinAppointment} from './MinAppointment'
 export {AppointmentsList} from './AppointmentsList'
 export {WeeksSkeleton} from './WeeksSkeleton'
+export { UserPlaceholder } from './UserPlaceholder'
 export * from './SpecialIcons'
 export * from "./formFields";
 export * from './icons' 

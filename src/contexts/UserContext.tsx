@@ -11,6 +11,7 @@ import { DashboardPetFragment } from "../components/operations/__generated__/das
 import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
 import { $uw } from "../utils/theme/functions";
+import { UserPlaceholder } from "../components";
 
 export type IUserContext = {
 	setPage: (page: Page) => void;
@@ -57,9 +58,9 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [pets, setPets] = useState<
 		(DashboardPetFragment & { owner: boolean })[]
 	>([]);
-	const dateFrom = dayjs().startOf("w").toISOString()
-	const dateTo =  dayjs(dateFrom).add(14, "days").toISOString()
-	
+	const dateFrom = dayjs().startOf("w").toISOString();
+	const dateTo = dayjs(dateFrom).add(14, "days").toISOString();
+
 	const [user, setUser] = useState<MinUserFragment | null>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 
@@ -146,11 +147,13 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 					className="skeleton"
 					onClick={() => setMenuOpen(true)}
 				>
-					{user && user.profile_picture ? (
+					<UserPlaceholder />
+
+					{/* {user && user.profile_picture ? (
 						<Image2x rounded id={user.profile_picture.id} />
 					) : (
-						<></>
-					)}
+						<UserPlaceholder />
+					)} */}
 				</MainImage>
 			</CustomIonHeader>
 			<MainBody className={!visible ? "noUserMenu" : ""}>
@@ -194,14 +197,21 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean }>`
 
 const MainImage = styled.div`
 	width: ${$uw(3.5)};
+	flex: 0 0 ${$uw(3.5)};
 	aspect-ratio: 1;
 	position: relative;
 	box-sizing: border-box;
 	z-index: 10;
+	overflow: hidden;
 	border: 2px solid var(--ion-color-primary);
 	border-radius: ${$uw(4)};
 	> .img2x {
 		width: 100%;
+		height: 100%;
+	}
+	> .avatar {
+		width: 100%;
+
 		height: 100%;
 	}
 `;

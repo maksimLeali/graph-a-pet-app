@@ -1,0 +1,15 @@
+mutation verify($email: String!, $code: String!) {
+  verifyUser(email: $email, code: $code) {
+    token
+    success
+    error{
+      code
+      message
+      extra
+    }
+    user{
+      ...minUser
+      
+    }
+  }
+}

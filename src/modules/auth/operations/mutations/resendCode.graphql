@@ -1,0 +1,10 @@
+mutation resendCode($email:String!){
+	resendCode(email:$email){
+		success
+		error{
+			message
+			code
+			extra
+		}
+	}
+}

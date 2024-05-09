@@ -7,12 +7,16 @@
         "email": "E-mail",
         "first_name": "Nome",
         "last_name": "Cognome",
+        "code": "Inserisci il codice che ti è arrivato via email",
         "confirm_password": "Conferma password",
         "insert_password": "Inserisci password",
         "insert_new_password": "Inserisci new password",
         "insert_code": "Inserisci code",
         "forgot_password_link": "Forgot password?",
         "login": "Accedi",
+        "code_not_recived": "Controlla la tua mail, anche nello spam",
+        "resend_code": "Invia nuova email",
+        "send_code": "Invia codice",
         "password_recovery": "Recupera password",
         "password_recovery_text": "Inserisci la tua email per impostare una nuova password",
         "password_recovery_email_text": "Inserisci il codice ricevuto nella tua email",
@@ -66,6 +70,7 @@
           "pet_updated": "Dati Pet aggiornati con successo",
           "login": "Accesso effettuato",
           "logout": "Uscita effettuata con successo",
+          "signup": "Reggistrazione completata, controlla la tua mail",
           "pet_linked_succesfully": "Animale aggiunto correttamente"
         },
         "errors": {
@@ -75,6 +80,7 @@
           "user": "Errore nel caricamento utente",
           "fetch": "Errore nel reperimento dati",
           "invalid_email": "Email non valida",
+          "code": "codice inserito non valido",
           "password_mismatch": "Le password non coincidono",
           "required": "Campo obbligatorio",
           "no_pet_found": "Nessun animale è stato trovato"

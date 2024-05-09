@@ -69,6 +69,8 @@ export type Code = {
   id: Scalars['ID'];
   code: Scalars['String'];
   ref_id: Scalars['ID'];
+  scope: Scalars['String'];
+  valid: Scalars['Boolean'];
   ref_table: Scalars['String'];
   created_by: Scalars['String'];
   created_at: Scalars['String'];
@@ -218,6 +220,12 @@ export enum Gender {
   NotSaid = 'NOT_SAID'
 }
 
+export type GenericResult = {
+  __typename?: 'GenericResult';
+  success: Scalars['Boolean'];
+  error?: Maybe<Error>;
+};
+
 export type HealthCard = {
   __typename?: 'HealthCard';
   id: Scalars['ID'];
@@ -344,6 +352,8 @@ export type Mutation = {
   checkCode: CodeValidationResult;
   restoreMemoriae: RestoredResult;
   respondToReport: ReportResult;
+  verifyUser: NewTokenResult;
+  resendCode: GenericResult;
 };
 
 
@@ -498,6 +508,17 @@ export type MutationRestoreMemoriaeArgs = {
 export type MutationRespondToReportArgs = {
   id: Scalars['ID'];
   reporter: ReporterCreate;
+};
+
+
+export type MutationVerifyUserArgs = {
+  email: Scalars['String'];
+  code?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationResendCodeArgs = {
+  email: Scalars['String'];
 };
 
 export type NewOwnership = {
@@ -735,6 +756,7 @@ export type Query = {
   listUsers: PaginatedUsers;
   getUser: UserResult;
   listPets: PaginatedPets;
+  listMyPets: PaginatedPets;
   getPet: PetResult;
   me: UserResult;
   getOwnership: OwnershipResult;
@@ -771,6 +793,11 @@ export type QueryGetUserArgs = {
 
 
 export type QueryListPetsArgs = {
+  commonSearch?: Maybe<CommonSearch>;
+};
+
+
+export type QueryListMyPetsArgs = {
   commonSearch?: Maybe<CommonSearch>;
 };
 
