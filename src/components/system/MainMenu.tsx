@@ -43,10 +43,14 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 	}, []);
 
 	const exit = useCallback(() => {
-		removeCookies("jwt");
-		removeCookies("user");
+		Object.keys(cookies).forEach(cookieName => {
+			if (cookieName.startsWith("user") || cookieName.startsWith("jwt")) {
+				removeCookies(cookieName as "user" | "jwt");
+			}
+		});
+	
 		toast.success(t("messages.success.logout"));
-
+	
 		setTimeout(() => {
 			history.push("/auth");
 		}, 15000);
