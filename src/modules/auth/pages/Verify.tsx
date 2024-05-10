@@ -10,8 +10,7 @@ import {
 	SubmitInput,
 	TextInput,
 } from "../../../components";
-import { MutationLoginArgs, MutationVerifyUserArgs } from "../../../types";
-import { useLoginMutation } from "../operations/__generated__/login.generated";
+import {  MutationVerifyUserArgs } from "../../../types";
 import { useHistory } from "react-router";
 
 import { Link } from "react-router-dom";
@@ -112,7 +111,7 @@ export const Verify: React.FC = () => {
 const Container = styled.div`
 	display: flex;
 	align-items: center;
-	justify-content: center;
+
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
@@ -123,7 +122,9 @@ const Container = styled.div`
 	h4 {
 		color: var(--ion-color-dark);
 		align-self: flex-start;
-		margin-bottom: ${$uw(4)};
+		margin-top: ${$uw(10)};
+		padding-left: ${$uw(1)};
+		margin-bottom: ${$uw(6)};
 	}
 `;
 
@@ -133,20 +134,23 @@ const Form = styled.form`
 	display: flex;
 	flex-direction: column;
 	padding-top: 30px;
-	margin-bottom: ${$uw(4)};
+	margin-bottom: ${$uw(2)};
 `;
 
 const InfoBox = styled.div`
 	width: 100%;
 	color: var(--ion-color-dark);
 	padding: 10px 24px;
-	margin-bottom: ${$uw(4)};
+	margin-bottom: ${$uw(6)};
+	&:last-child {
+		margin-bottom: auto;
+	}
 	> span {
 		display: flex;
 		width: 100%;
 		font-size: 1.8rem;
 		gap: 5px;
-		margin-bottom: ${$uw(2)};
+
 		> a {
 			text-decoration: none;
 			display: flex;

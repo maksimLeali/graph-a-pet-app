@@ -12,7 +12,7 @@ export const AuthLayout:React.FC<{children?: React.ReactNode}> = ({children})=> 
 
 const Auth = styled.div`
     width: 100%;
-    height: 100%;
+    height: 100dvh;
     overflow-y:scroll ;
     max-width: var(--max-width);
     margin-left:auto; 
