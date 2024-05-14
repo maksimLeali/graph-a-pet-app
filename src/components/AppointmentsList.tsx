@@ -20,7 +20,7 @@ const animateGroupDate = (element: any) => {
 	gsap.fromTo(
 		element,
 		{ opacity: 0 },
-		{ opacity: 1, duration: .8, ease: "power2.out" }
+		{ opacity: 1, duration: 0.8, ease: "power2.out" }
 	);
 };
 
@@ -40,11 +40,6 @@ export const AppointmentsList: React.FC<props> = ({
 			(date) => new Date(date)
 		);
 	}, [groupedAppointments]);
-
-	useEffect(() => {
-		console.log("grouped ", groupedAppointments);
-		if (!groupedAppointments) return;
-	}, [groupedAppointments, appointments]);
 
 	return (
 		<Container>

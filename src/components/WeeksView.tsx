@@ -39,7 +39,7 @@ export const WeeksView: React.FC<props> = ({
 
 	const dayEvents = useMemo(() => {
 		const selected = dayjs(selectedDay);
-		console.log("selected: ", selected);
+		
 		return _(periodsWithEvents)
 			.filter(({ from, to }) =>
 				selectedDay

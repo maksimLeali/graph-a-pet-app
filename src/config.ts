@@ -1,9 +1,12 @@
-import { environment } from './environments/environment'
 
-console.log(import.meta.env)
+
+const env = import.meta.env
+
 
 export const config = {
-  baseUrl: environment.baseUrl ?? 'https://graph-a-pet.makso.me/graphql',
-  environment: environment.environment ?? 'development' ,
-  defaultLanguage: 'it',
+  baseUrl: env.VITE_BASE_URL ?? 'https://graph-a-pet.makso.me/graphql',
+  environment: env.MODE ?? 'development' ,
+  defaultLanguage: env.VITE_DEFAULT_LANGUAGE ??  'it',
 }
+
+console.log(config)

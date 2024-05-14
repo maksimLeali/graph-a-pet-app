@@ -61,10 +61,14 @@ export const TextInput: React.FC<props> = ({
 	} = useFormContext();
 
 	useEffect(() => {
+		console.log("value of ", name, "=", getValues(name));
 		if (!getValues(name)) {
 			setCompiled(false);
+			return;
 		}
+		setCompiled(true);
 	}, [getValues(name)]);
+
 	const setFocus = () => {
 		if (!ref.current) return;
 		(ref.current.children[0] as any).focus();

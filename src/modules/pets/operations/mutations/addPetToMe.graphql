@@ -1,0 +1,9 @@
+mutation addPetToMe($data: PetCreate!, $custodyLevel: CustodyLevel) {
+	addPetToMe(pet: $data, custodyLevel: $custodyLevel ) {
+		data {
+			pet {
+				...MinPet
+			}
+		}
+	}
+}

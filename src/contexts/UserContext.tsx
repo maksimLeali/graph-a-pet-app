@@ -22,6 +22,7 @@ export type IUserContext = {
 	loanPets: (DashboardPetFragment & { owner: boolean })[];
 	loading: boolean;
 	gridVisible: boolean;
+	user: Pick<MinUserFragment, 'first_name' | 'last_name' | "email" >;
 	handleGridVisibility: (v: boolean) => void;
 } & Record<string, any>;
 
@@ -39,6 +40,7 @@ const defaultValue: IUserContext = {
 	ownedPets: [],
 	loading: false,
 	gridVisible: false,
+	user: {email: "",  first_name:"", last_name: "" },  
 	handleGridVisibility: () => {},
 };
 const UserContext = React.createContext<IUserContext>(defaultValue);
@@ -53,6 +55,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [pageName, setPageName] = useState("");
 	const [cookie] = useCookies(["jwt", "user"]);
 	const [visible, setVisible] = useState(true);
+
 	const [gridVisible, setGridVisible] = useState(false);
 	const [alreadyRequested, setAlreadyRequested] = useState(false);
 	const [pets, setPets] = useState<
@@ -75,36 +78,35 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 		}
 		setVisible(visible);
 	};
-	const [getUserDashboardQuery, { loading = false }] =
-		useGetUserDashboardLazyQuery({
-			fetchPolicy: "no-cache",
-			variables: {
-				date_from: dateFrom,
-				date_to: dateTo,
-			},
-			onCompleted: ({ getUserDashboard }) => {
-				setAlreadyRequested(true);
-				if (getUserDashboard.dashboard) {
-					if (
-						getUserDashboard.dashboard.ownerships &&
-						getUserDashboard.dashboard.ownerships.items &&
-						getUserDashboard.dashboard.ownerships.items.length
-					) {
-						const pets =
-							getUserDashboard.dashboard.ownerships.items.map(
-								(item) => ({
-									...item!.pet,
-									owner:
-										item?.custody_level ==
-										CustodyLevel.Owner,
-								})
-							);
-						setPets(pets);
-					}
+
+	const [getUserDashboardQuery, { loading }] = useGetUserDashboardLazyQuery({
+		fetchPolicy: "no-cache",
+		variables: {
+			date_from: dateFrom,
+			date_to: dateTo,
+		},
+		onCompleted: ({ getUserDashboard }) => {
+			setAlreadyRequested(true);
+			if (getUserDashboard.dashboard) {
+				if (
+					getUserDashboard.dashboard.ownerships &&
+					getUserDashboard.dashboard.ownerships.items &&
+					getUserDashboard.dashboard.ownerships.items.length
+				) {
+					const pets =
+						getUserDashboard.dashboard.ownerships.items.map(
+							(item) => ({
+								...item!.pet,
+								owner:
+									item?.custody_level == CustodyLevel.Owner,
+							})
+						);
+					setPets(pets);
 				}
-				return;
-			},
-		});
+			}
+			return;
+		},
+	});
 
 	const ownedPets = useMemo(() => {
 		return pets.filter((pet) => pet.owner);
@@ -133,8 +135,9 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 			visible,
 			gridVisible,
 			handleGridVisibility,
+			user: {first_name: user?.first_name ?? '', last_name: user?.last_name ?? '' , email: user?.email ?? '' },
 		}),
-		[visible, pets, gridVisible]
+		[visible, pets, gridVisible, loading, loanPets, ownedPets, user]
 	);
 
 	return (

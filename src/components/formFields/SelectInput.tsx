@@ -75,10 +75,12 @@ export const SelectInput: React.FC<props> = ({
     } = useFormContext();
 
     useEffect(()=> {
-        console.log('changed', getValues(name))
+        
         if(!getValues(name)){
             setCompiled(false);
+            return
         }
+        setCompiled(true)
     },[ getValues(name)])
 
     useEffect(() => {

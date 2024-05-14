@@ -27,6 +27,10 @@ export const Home: React.FC = () => {
 		}
 	}, [activePet, pets]);
 
+	useEffect(() => {
+		console.log("loafing: ", loading);
+	}, [loading]);
+
 	const searchAppointments = useCallback(() => {
 		// const pet=pets[activePet]
 		setAppointments(
@@ -64,14 +68,15 @@ export const Home: React.FC = () => {
 	return (
 		<IonContent fullscreen>
 			{loading && <SkeletonBox />}
-			{!loading && (!pets || !pets.length) && (
-				<EmptyContainer>
-					<h4> Nessun cucciolo</h4>{" "}
-				</EmptyContainer>
-			)}
-			{pets && pets.length > 0 && !loading && (
+			{pets && pets.length > 0 && (
 				<Pets pets={pets} onActiveChange={(v) => setActivePet(v)} />
 			)}
+			{!loading &&  !pets?.length && (
+				<EmptyContainer>
+					<h4> Nessun cucciolo</h4>
+				</EmptyContainer>
+			)}
+			
 
 			<WeeksView
 				appointments={appointments}

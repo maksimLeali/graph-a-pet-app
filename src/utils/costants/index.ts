@@ -1,0 +1,1 @@
+export { BREEDS } from './breeds'
