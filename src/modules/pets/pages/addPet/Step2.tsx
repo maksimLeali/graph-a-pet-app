@@ -11,6 +11,7 @@ import {
 	TextInput,
 	Option,
 	SubmitInput,
+	FileInput,
 } from "@components";
 import { useUserContext } from "@contexts";
 import { $cssTRBL, $uw } from "@theme";
@@ -75,6 +76,7 @@ export const Step2 = React.memo(() => {
 							textLabel="pets.add_pet_page.step_2.insert_breed"
 						/>
 					</Row>
+					<FileInput name="file" />
 
 					<SubmitInput color="primary">
 						{t("pets.add_pet_page.step_2.continue")}

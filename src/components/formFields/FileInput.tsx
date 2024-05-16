@@ -1,11 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  RegisterOptions,
-  useFormContext,
-} from "react-hook-form";
+
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-
 
 import { useOnClickOutside } from "@hooks";
 import { I18NKey } from "@i18n";
@@ -20,30 +16,25 @@ type props = {
 	focusColor?: string;
 	disabledColor?: string;
 	textColor?: string;
-	type?: "text" | "password";
-	inputMode?: "text" | "email";
 	errorText?: string;
 	pattern?: RegExp;
-	icon?: IconName;
-	registerOptions?: RegisterOptions;
+
+
 	errorColor?: string;
 	bgColor?: string;
 };
 
-export const TextInput: React.FC<props> = ({
+export const FileInput: React.FC<props> = ({
 	textColor = "dark",
 	ntTextLabel,
 	textLabel,
 	color = "medium",
 	required = false,
-	registerOptions,
-	type = "text",
-	inputMode = "text",
 	focusColor = "primary",
 	disabledColor = "lightGray",
 	errorColor = "danger",
 	bgColor,
-	icon,
+
 	name,
 }: props) => {
 	const { t } = useTranslation();
@@ -53,29 +44,11 @@ export const TextInput: React.FC<props> = ({
 	const ref = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLDivElement>(null);
 	const [showPsw, setShowPsw] = useState(false);
-	const {
-		register,
-		getValues,
-		formState: { errors, isSubmitting },
-	} = useFormContext();
-
-	useEffect(() => {
-		console.log("value of ", name, "=", getValues(name));
-		if (!getValues(name)) {
-			setCompiled(false);
-			return;
-		}
-		setCompiled(true);
-	}, [getValues(name)]);
 
 	const setFocus = () => {
 		if (!ref.current) return;
 		(ref.current.children[0] as any).focus();
 	};
-
-	useEffect(() => {
-		setError(errors[name] != undefined);
-	}, [errors[name]]);
 
 	useOnClickOutside(ref, () => {
 		setFocused(false);
@@ -84,7 +57,7 @@ export const TextInput: React.FC<props> = ({
 		hide.classList.remove("hide");
 	});
 	return (
-		<Wrapper className={`${isSubmitting ? "submitting" : ""}`}>
+		<Wrapper>
 			<InputLabel
 				color={color}
 				focusColor={focusColor}
@@ -101,58 +74,22 @@ export const TextInput: React.FC<props> = ({
 				<StyledInput
 					id={name}
 					onFocus={() => setFocused(true)}
-					inputMode={inputMode}
-					type={
-						type == "password"
-							? showPsw
-								? "text"
-								: "password"
-							: type
-					}
+					type="file"
 					textColor={textColor}
 					bgColor={bgColor}
-					{...register(name, {
-						onChange: (v) => {
-							setCompiled(v.target.value.length > 0);
-						},
-						required: {
-							value: required,
-							message: "messages.errors.required",
-						},
-						...registerOptions,
-					})}
 				/>
-				{/* {type == 'password' || icon ? <IonIcon name="alert-circle-outline" size="large" color="primary"  />: ''} */}
-				{type == "password" ? (
-					<Icon
-						name={showPsw ? "eyeOff" : "eye"}
-						onClick={() => setShowPsw(!showPsw)}
-						color={
-							error
-								? "danger"
-								: focused || compiled
-								? "primary"
-								: "medium"
-						}
-					/>
-				) : (
-					""
-				)}
-				{icon ? (
-					<Icon
-						name={icon}
-						size="14px"
-						color={
-							error
-								? "danger"
-								: focused || compiled
-								? "primary"
-								: "medium"
-						}
-					/>
-				) : (
-					""
-				)}
+				<Icon
+					name="folderOutline"
+					size="14px"
+					color={
+						error
+							? "danger"
+							: focused || compiled
+							? "primary"
+							: "medium"
+					}
+				/>
+
 				<FocusBox
 					color={color}
 					focusColor={focusColor}
@@ -161,11 +98,6 @@ export const TextInput: React.FC<props> = ({
 					} ${error ? "error" : ""}`}
 				/>
 			</InputWrapper>
-			{errors[name]?.message ? (
-				<ErrorSpan>{t(errors[name]?.message as I18NKey)}</ErrorSpan>
-			) : (
-				""
-			)}
 		</Wrapper>
 	);
 };
@@ -295,7 +227,7 @@ const StyledInput = styled.input<{ textColor: string; bgColor?: string }>`
 	&:-webkit-autofill:focus,
 	.dark &:-webkit-autofill:focus,
 	&:-webkit-autofill:active .dark &:-webkit-autofill:active {
-		-webkit-box-shadow: 0 0 0 30px var(--ion-background-color) inset !important;
+		-webkit-box-shadow: 0 0 0 30px white inset !important;
 		color: var(--ion-color-${({ textColor }) => textColor});
 		-webkit-text-fill-color: var(
 			--ion-color-${({ textColor }) => textColor}
