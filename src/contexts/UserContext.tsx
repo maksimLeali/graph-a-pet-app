@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { CustodyLevel, Pet, User } from "../types";
 import { IonHeader, IonToolbar, IonTitle } from "@ionic/react";
 import styled from "styled-components";
-
-import { Image2x } from "../components";
-import { useCookies } from "react-cookie";
-import { MainMenu } from "../components/system";
-import { MinUserFragment } from "../components/operations/__generated__/minUser.generated";
-import { DashboardPetFragment } from "../components/operations/__generated__/dashboardPet.generated";
-import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
-import { $uw } from "../utils/theme/functions";
-import { UserPlaceholder } from "../components";
+import { useCookies } from "react-cookie";
+
+import { CustodyLevel } from "@types";
+
+import { MainMenu, Image2x } from "@components";
+import { MinUserFragment } from "@graphql_generated/minUser.generated";
+import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated";
+import { $uw } from "@theme";
+import { UserPlaceholder } from "@components";
+import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
 
 export type IUserContext = {
 	setPage: (page: Page) => void;
@@ -22,7 +22,7 @@ export type IUserContext = {
 	loanPets: (DashboardPetFragment & { owner: boolean })[];
 	loading: boolean;
 	gridVisible: boolean;
-	user: Pick<MinUserFragment, 'first_name' | 'last_name' | "email" >;
+	user: Pick<MinUserFragment, "first_name" | "last_name" | "email">;
 	handleGridVisibility: (v: boolean) => void;
 } & Record<string, any>;
 
@@ -40,7 +40,7 @@ const defaultValue: IUserContext = {
 	ownedPets: [],
 	loading: false,
 	gridVisible: false,
-	user: {email: "",  first_name:"", last_name: "" },  
+	user: { email: "", first_name: "", last_name: "" },
 	handleGridVisibility: () => {},
 };
 const UserContext = React.createContext<IUserContext>(defaultValue);
@@ -135,7 +135,11 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 			visible,
 			gridVisible,
 			handleGridVisibility,
-			user: {first_name: user?.first_name ?? '', last_name: user?.last_name ?? '' , email: user?.email ?? '' },
+			user: {
+				first_name: user?.first_name ?? "",
+				last_name: user?.last_name ?? "",
+				email: user?.email ?? "",
+			},
 		}),
 		[visible, pets, gridVisible, loading, loanPets, ownedPets, user]
 	);

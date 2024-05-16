@@ -1,17 +1,14 @@
 import { IonContent } from "@ionic/react";
 import styled from "styled-components";
 import { Pets, SkeletonBox } from "../components";
-import {
-	useGetUserDashboardLazyQuery,
-	useGetUserDashboardQuery,
-} from "../operations/__generated__/getDashboard.generated";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
-import { useUserContext } from "../../../contexts";
-import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
-import { WeeksView } from "../../../components";
-import { AppointmentFragment } from "../../../components/operations/__generated__/appointment.generated";
-import { $uw } from "../../../utils/theme/functions";
+
+import { AppointmentFragment } from "@graphql_generated/appointment.generated";
+
+import { useUserContext } from "@contexts";
+import { WeeksView } from "@components";
+import { $uw } from "@theme";
 
 export const Home: React.FC = () => {
 	const [activePet, setActivePet] = useState(0);
@@ -32,7 +29,6 @@ export const Home: React.FC = () => {
 	}, [loading]);
 
 	const searchAppointments = useCallback(() => {
-		// const pet=pets[activePet]
 		setAppointments(
 			pets.length
 				? pets

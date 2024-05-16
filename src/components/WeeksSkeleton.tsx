@@ -1,5 +1,6 @@
 import styled from "styled-components"
-import { $cssTRBL, $uw } from "../utils/theme/functions"
+
+import { $cssTRBL, $uw } from "@theme"
 
 export const WeeksSkeleton:React.FC = ()=> {
     return <FakeWeekContainer>

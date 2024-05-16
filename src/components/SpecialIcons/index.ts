@@ -1,2 +1,3 @@
-export { SpecialIcon } from './SpecialIcon'
-export { IconSelect, iconNames  } from './SpecialIcons'
+
+export * from './SpecialIcons'
+export * from './SpecialIcon'

@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import styled from "styled-components";
-import { useUserContext } from "../../../contexts";
 import { useTranslation } from "react-i18next";
-import { Image2x, SubOwnerList, SubOwnerListItem } from "../../../components";
+import _ from "lodash";
+import { useCookies } from "react-cookie";
+import { toast } from "react-hot-toast";
+
 import { useCheckCodeMutation } from "../operations/__generated__/checkCode.generated";
 import { useGetPetLazyQuery } from "../operations/__generated__/getSinglePet.generated";
-import { CustodyLevel } from "../../../types";
-
-import _ from "lodash";
-import { ShareBox } from "../components";
-import { useCookies } from "react-cookie";
 import { useLinkPetToMeMutation } from "../operations/__generated__/linkPetToMe.generated";
-import { toast } from "react-hot-toast";
-import { MinPetFragment } from "../../../components/operations/__generated__/minPet.generated";
-import { PetMinSubOwnerFragment } from "../../../components/operations/__generated__/petMinSubOwner.generated";
+import { MinPetFragment } from "@graphql_generated/minPet.generated";
+import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
+
+import { Image2x, SubOwnerList, SubOwnerListItem } from "@components";
+import { CustodyLevel } from "@types";
+import { ShareBox } from "../components";
+import { useUserContext } from "@contexts";
 
 
 export const Sharing: React.FC = () => {

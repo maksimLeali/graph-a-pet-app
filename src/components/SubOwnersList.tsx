@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import { SubOwnerListItem } from "./";
-
 import { useTranslation } from "react-i18next";
 
-import { PetMinSubOwnerFragment } from "./operations/__generated__/petMinSubOwner.generated";
+import { SubOwnerListItem } from "@components";
+import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
 
 
 type props = {

@@ -1,5 +1,6 @@
 import React from "react";
-import styled, { CSSObject } from "styled-components";
+import styled from "styled-components";
+
 type Props = {
   value: boolean;
   onChange: () => void;

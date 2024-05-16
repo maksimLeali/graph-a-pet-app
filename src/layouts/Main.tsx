@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { ModalContextProvider } from "../contexts";
+
+import { ModalContextProvider } from "@contexts";
 import { BottomMenu, DebugGrid } from "./components";
-import { useCallback, useEffect, useState } from "react";
+
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 	children: nodes,

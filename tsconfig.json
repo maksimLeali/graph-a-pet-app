@@ -14,7 +14,20 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+        "@config": ["./src/config"],
+        "@components": ["./src/components"],
+        "@contexts": ["./src/contexts"],
+        "@graphql_generated/*": ["./src/components/operations/__generated__/*"],
+        "@hooks": ["./src/hooks"],
+        "@i18n": ["./src/i18n"],
+        "@images": ["./src/images"],
+        "@layouts": ["./src/layouts"],
+        "@theme": ["./src/utils/theme"],
+        "@types": ["./src/types"],
+        "@utils": ["./src/utils"],
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

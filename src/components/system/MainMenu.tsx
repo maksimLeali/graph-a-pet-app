@@ -3,14 +3,14 @@ import { useCookies } from "react-cookie";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import { useUserContext } from "../../contexts";
-import { useOnClickOutside } from "../../hooks";
-import { Toggle } from "../formFields";
-import { Icon } from "../icons";
 import { toast } from "react-hot-toast";
-import { Modal, ModalProps } from "../Modal";
-import { UserRole } from "../../types";
-import { $cssTRBL, $uw } from "../../utils/theme/functions";
+
+
+import { useOnClickOutside } from "@hooks";
+import { useUserContext } from "@contexts";
+import { Icon, Toggle, Modal, ModalProps } from "@components";
+import { UserRole } from "@types";
+import { $cssTRBL, $uw } from "@theme";
 
 type props = {
 	open: boolean;

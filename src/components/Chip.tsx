@@ -1,7 +1,4 @@
-import { useEffect } from "react"
 import styled from "styled-components"
-
-
 
 type props = {
     label:string,

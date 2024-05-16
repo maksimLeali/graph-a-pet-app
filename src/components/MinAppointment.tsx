@@ -1,15 +1,15 @@
 import dayjs from "dayjs";
 import styled from "styled-components";
-import { Maybe, TreatmentDuration } from "../types";
-import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
-import { SpecialIcon } from "./SpecialIcons";
-import { SpecialIconName } from "./SpecialIcons/SpecialIcons";
-import { treatmentsColors } from "../utils";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { $cssTRBL, $uw } from "../utils/theme/functions";
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
+
+import { SpecialIconName, SpecialIcon } from "@components";
+import { treatmentsColors } from "@utils";
+import { AppointmentFragment } from "@graphql_generated/appointment.generated";
+import { Maybe, TreatmentDuration } from "@types";
+import { $cssTRBL, $uw } from "@theme";
 
 type props = {
 	appointment: AppointmentFragment | Maybe<AppointmentFragment>;
@@ -36,7 +36,6 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
 				y: 0,
 				duration: 0.8,
 				ease: "expo.in",
-				
 			}
 		);
 	}, []);

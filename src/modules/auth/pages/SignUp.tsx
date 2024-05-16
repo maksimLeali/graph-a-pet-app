@@ -5,11 +5,12 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { Icon, SubmitInput, TextInput } from "../../../components";
+import _ from "lodash";
 
 import { useSignUpMutation } from "../operations/__generated__/signup.generated";
-import _ from "lodash";
-import { UserCreate } from "../../../types";
+
+import { Icon, SubmitInput, TextInput } from "@components";
+import { UserCreate } from "@types";
 
 export const SignUp = () => {
 	const methods = useForm<UserCreate>({ mode: "onSubmit" });

@@ -1,10 +1,11 @@
 import { IonButton } from "@ionic/react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Icon, } from ".";
-import { useOnClickOutside } from "../hooks";
 import { useEffect, useRef, useState } from "react";
-import { $cssTRBL, $uw } from "../utils/theme/functions";
+
+import { $cssTRBL, $uw } from "@theme";
+import { Icon, } from "@components";
+import { useOnClickOutside } from "@hooks";
 
 
 export type ModalProps = {

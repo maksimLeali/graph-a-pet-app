@@ -1,14 +1,15 @@
 import styled from "styled-components";
-import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
-import { $uw } from "../../../utils/theme/functions";
 import { useEffect, useRef, useState } from "react";
-import { Image2x } from "../../../components";
+import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
 import gsap from "gsap";
 import dayjs from "dayjs";
-import { Icon } from "../../../components";
 import { useTranslation } from "react-i18next";
 
-import { gendersColor } from "../../../utils";
+import { $uw } from "@theme";
+import { Image2x, Icon } from "@components";
+import { gendersColor } from "@utils";
+
+
 type Prop = {
 	pet: DashboardPetFragment;
 	index: number;

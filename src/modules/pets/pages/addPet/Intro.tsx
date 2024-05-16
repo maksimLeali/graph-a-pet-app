@@ -1,9 +1,10 @@
 import { IonButton, IonContent } from "@ionic/react";
 import React, { useEffect } from "react";
-import { useUserContext } from "../../../../contexts";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { $cssTRBL, $uw } from "../../../../utils/theme/functions";
+
+import { useUserContext } from "@contexts";
+import { $cssTRBL, $uw } from "@theme";
 
 export const IntroPage = React.memo(({}) => {
 	const { setPage, user } = useUserContext();

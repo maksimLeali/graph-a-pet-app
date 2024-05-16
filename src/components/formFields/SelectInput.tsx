@@ -1,11 +1,13 @@
 import { RegisterOptions, Controller, useFormContext } from "react-hook-form";
-import { I18NKey } from "../../i18n";
-import { Icon, IconName } from "../";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import { useOnClickOutside } from "../../hooks";
 import { useTranslation } from "react-i18next";
 import _ from "lodash";
+
+import { useOnClickOutside } from "@hooks";
+import { I18NKey } from "@i18n";
+import { Icon, IconName } from "@components";
+
 export type Option = {
     value: any;
     label: string;

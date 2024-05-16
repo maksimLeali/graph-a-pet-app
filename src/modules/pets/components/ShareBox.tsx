@@ -3,8 +3,9 @@ import { t } from "i18next";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
+
 import { CustodyLevelSelector } from ".";
-import { CustodyLevel } from "../../../types";
+import { CustodyLevel } from "@types";
 
 type props = {
     onConfirm :(v: CustodyLevel)=> void,

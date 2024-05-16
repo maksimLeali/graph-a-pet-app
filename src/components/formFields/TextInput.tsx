@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import {
-	RegisterOptions,
-	useFormContext,
-	UseFormRegister,
+  RegisterOptions,
+  useFormContext,
+
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { useOnClickOutside } from "../../hooks";
-import { I18NKey } from "../../i18n";
 
-import { IconName, Icon } from "../icons";
-import { IonIcon } from "@ionic/react";
+
+import { useOnClickOutside } from "@hooks";
+import { I18NKey } from "@i18n";
+import { IconName, Icon } from "@components";
 
 type props = {
 	name: string;

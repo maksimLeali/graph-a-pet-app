@@ -1,15 +1,15 @@
-import { IonButton, IonIcon } from "@ionic/react";
 import { useCookies } from "react-cookie";
 import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { DateTimePicker, Icon, SubmitInput, TextInput } from "../../../components";
-import { MutationLoginArgs } from "../../../types";
-import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { useHistory } from "react-router";
-
 import { Link } from "react-router-dom";
+
+import { useLoginMutation } from "../operations/__generated__/login.generated";
+
+import { Icon, SubmitInput, TextInput } from "@components";
+import { MutationLoginArgs } from "@types";
 
 
 export const Login: React.FC = ()  => {

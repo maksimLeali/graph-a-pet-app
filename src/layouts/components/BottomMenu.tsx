@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { Icon, IconName } from "../../components";
 import { Link } from "react-router-dom";
-import { $cssTRBL, $uw } from "../../utils/theme/functions";
+
+import { $cssTRBL, $uw } from "@theme";
+import { Icon, IconName } from "@components";
 
 export const BottomMenu= () => {
 

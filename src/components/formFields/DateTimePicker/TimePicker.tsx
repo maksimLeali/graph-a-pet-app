@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Icon } from "../../icons";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { IonButton } from "@ionic/react";
 import { useTranslation } from "react-i18next";

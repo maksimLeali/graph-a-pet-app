@@ -1,11 +1,12 @@
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
-import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
-import { Maybe } from "../types";
 import _ from "lodash";
-import { AppointmentsList, WeeksSkeleton } from "./";
-import { $cssTRBL, $uw } from "../utils/theme/functions";
+import styled from "styled-components";
+
+import { AppointmentFragment } from "@graphql_generated/appointment.generated";
+import { Maybe } from "@types";
+import { AppointmentsList, WeeksSkeleton } from "@components";
+import { $cssTRBL, $uw } from "@theme";
 
 type props = {
 	fromDate: Date;

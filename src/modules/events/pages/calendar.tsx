@@ -1,20 +1,21 @@
 import { IonContent } from "@ionic/react";
 import styled from "styled-components";
-import { AppointmentsList, CustomCalendar, Icon } from "../../../components";
-import "react-calendar/dist/Calendar.css";
-import { useUserContext, useModal } from "../../../contexts";
-
-import { useCallback, useEffect, useState } from "react";
-import { useListMyTreatmentsLazyQuery } from "../operations/__generated__/getMyAppointments.generated";
-import { AppointmentFragment } from "../../../components/operations/__generated__/appointment.generated";
-import { Maybe } from "graphql/jsutils/Maybe";
 import dayjs from "dayjs";
-import { AddEventForm } from "../components/addEventForm";
 import { FormProvider, useForm } from "react-hook-form";
-import { MutationCreateTreatmentArgs } from "../../../types";
-import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { $uw } from "../../../utils/theme/functions";
+import "react-calendar/dist/Calendar.css";
+import { Maybe } from "graphql/jsutils/Maybe";
+
+import { AppointmentFragment } from "@graphql_generated/appointment.generated";
+import { useListMyTreatmentsLazyQuery } from "../operations/__generated__/getMyAppointments.generated";
+import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
+
+import { useUserContext, useModal } from "@contexts";
+import { AppointmentsList, CustomCalendar} from "@components";
+import { AddEventForm } from "../components/addEventForm";
+import { MutationCreateTreatmentArgs } from "@types";
+import { $uw } from "@theme";
 
 export const CalendarEvents: React.FC = () => {
 	const { setPage, refetchDashboard } = useUserContext();

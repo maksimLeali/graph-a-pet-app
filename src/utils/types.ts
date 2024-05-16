@@ -1,7 +1,7 @@
 // https://newbedev.com/typescript-deep-keyof-of-a-nested-object
 
-import { I18NKey } from "../i18n"
-import { Maybe } from "../types"
+import { I18NKey } from "@i18n"
+import { Maybe } from "@types"
 
 type Join<K, P> = K extends string | number
   ? P extends string | number

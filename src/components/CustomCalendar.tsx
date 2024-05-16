@@ -1,11 +1,12 @@
 import Calendar from "react-calendar";
 import styled from "styled-components";
-import { useSwipe } from "../hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
-import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import { Maybe } from "graphql/jsutils/Maybe";
 import _ from "lodash";
+
+import { useSwipe } from "@hooks";
+import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 
 type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];

@@ -4,20 +4,21 @@ import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+
+import { useVerifyMutation } from "../operations/__generated__/verifyUser.generated";
+import { useResendCodeMutation } from "../operations/__generated__/resendCode.generated";
+
 import {
 	DateTimePicker,
 	Icon,
 	SubmitInput,
 	TextInput,
-} from "../../../components";
-import {  MutationVerifyUserArgs } from "../../../types";
-import { useHistory } from "react-router";
-
-import { Link } from "react-router-dom";
-import { useVerifyMutation } from "../operations/__generated__/verifyUser.generated";
-import { $uw } from "../../../utils/theme/functions";
-import { useResendCodeMutation } from "../operations/__generated__/resendCode.generated";
-import { useState } from "react";
+} from "@components";
+import {  MutationVerifyUserArgs } from "@types";
+import { $uw } from "@theme";
 
 export const Verify: React.FC = () => {
 	const methods = useForm<MutationVerifyUserArgs>({

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Icon } from "../../icons";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { IonButton } from "@ionic/react";

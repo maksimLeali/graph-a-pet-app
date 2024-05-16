@@ -1,12 +1,12 @@
-import { t } from "i18next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { Chip } from "../../../components";
-import { CustodyLevel } from "../../../types";
-import { custodyLevelColors, enumKeys } from "../../../utils";
-import _, { indexOf } from "lodash";
+import _ from "lodash";
 import { useTranslation } from "react-i18next";
-import { $cssTRBL } from "../../../utils/theme/functions";
+
+import { Chip } from "@components";
+import { CustodyLevel } from "@types";
+import { custodyLevelColors, enumKeys } from "@utils";
+import { $cssTRBL } from "@theme";
 
 type props = {
     current: CustodyLevel;

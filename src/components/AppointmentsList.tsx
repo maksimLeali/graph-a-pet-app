@@ -1,14 +1,17 @@
 import { useTranslation } from "react-i18next";
-import { Maybe } from "../types";
-import { AppointmentFragment } from "./operations/__generated__/appointment.generated";
 import styled from "styled-components";
-import { MinAppointment } from "./";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import _ from "lodash";
 import dayjs from "dayjs";
-import { $uw } from "../utils/theme/functions";
 import React from "react";
 import gsap from "gsap";
+
+import { Maybe } from "@types";
+import { AppointmentFragment } from "@graphql_generated/appointment.generated";
+
+import { MinAppointment } from "@components";
+import { $uw } from "@theme";
+
 
 type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];

@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RegisterOptions, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { useOnClickOutside } from "../../../hooks";
+import { useOnClickOutside } from "@hooks";
 import { I18NKey } from "../../../i18n";
 
 import { IconName, Icon } from "../../icons";
 import dayjs from "dayjs";
-import { IonButton } from "@ionic/react";
+
 import { DatePicker } from "./DatePicker";
 import { TimePicker } from "./TimePicker";
 

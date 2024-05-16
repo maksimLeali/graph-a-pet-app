@@ -1,22 +1,23 @@
 import styled from "styled-components";
+import dayjs from "dayjs";
+import _ from "lodash";
+import { useTranslation } from "react-i18next";
+
+import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated";
+
+import { useUserContext } from "@contexts";
+import { treatmentsColors } from "@utils";
 import {
 	DateTimePicker,
 	Option,
 	SelectInput,
 	TextAreaInput,
 	TextInput,
-} from "../../../components";
-import { TreatmentType } from "../../../types";
-import { useTranslation } from "react-i18next";
+	SpecialIconName,
+} from "@components";
+import { TreatmentType } from "@types";
 import { EventOption } from "./EventOption";
-import { SpecialIconName } from "../../../components/SpecialIcons/SpecialIcons";
-import { treatmentsColors } from "../../../utils";
-import dayjs from "dayjs";
-import { useUserContext } from "../../../contexts";
-
-import _ from "lodash";
-import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
-import { $cssTRBL } from "../../../utils/theme/functions";
+import { $cssTRBL } from "@theme";
 
 export const AddEventForm = () => {
 	const { pets } = useUserContext();

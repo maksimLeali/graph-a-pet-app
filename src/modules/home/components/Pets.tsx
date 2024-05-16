@@ -1,14 +1,15 @@
 import styled from "styled-components";
-import { Icon, Image2x } from "../../../components";
 import { useCallback, useEffect, useState } from "react";
-import { useSwipe } from "../../../hooks";
-import { SubOwnerList } from "../../../components";
-import { useModal } from "../../../contexts/ModalContext";
 import { useTranslation } from "react-i18next";
+
 import { useGetOrCreateLazyQuery } from "../operations/__generated__/getOrCreateCode.generated";
-import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
-import { PetMinSubOwnerFragment } from "../../../components/operations/__generated__/petMinSubOwner.generated";
-import { $break_point, $cssTRBL, $uw } from "../../../utils/theme/functions";
+import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated";
+import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
+
+import { SubOwnerList, Icon, Image2x } from "@components";
+import { useSwipe } from "@hooks";
+import { useModal } from "@contexts";
+import { $break_point, $cssTRBL, $uw } from "@theme";
 
 type props = {
 	pets: DashboardPetFragment[];

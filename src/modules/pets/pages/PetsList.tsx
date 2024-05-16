@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { useUserContext } from "../../../contexts";
 import { useEffect } from "react";
 import { IonContent } from "@ionic/react";
-import { $cssTRBL, $uw } from "../../../utils/theme/functions";
-import { PetItem } from "../components/PetItem";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+
+import { PetItem } from "../components/PetItem";
+import { useUserContext } from "@contexts";
+import { $cssTRBL } from "@theme";
 
 export const PetsList: React.FC = () => {
 	const { setPage, ownedPets, loanPets, loading } = useUserContext();

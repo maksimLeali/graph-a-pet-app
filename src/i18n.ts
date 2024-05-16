@@ -6,7 +6,7 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import 'dayjs/locale/it'
 
 import translations from './i18n/translations.json'
-import { config } from './config'
+import { config } from '@config'
 import { Paths } from './utils/types'
 
 const lng = localStorage.getItem('lang') || 'it'

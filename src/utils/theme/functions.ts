@@ -22,6 +22,8 @@ export const $uw = (val: number) => ({ }) => uw(val);
  */
 export const $color = (color: string) => ({ theme }: { theme: Theme }) => theme.colors[color]
 
+
+
 /**
  * return 4 valures like css ordered by top, right, bottom and left in the unit mesure uw
  * @param {number} top - if only this params is passed every other will have the same
@@ -42,5 +44,7 @@ export const $cssTRBL = (
     bottom: number = top,
     left: number = right
 ) => () => `${uw(top)} ${uw(right)} ${uw(bottom)} ${uw(left)}`
+
+
 
 export const $break_point = (val: number) => ({ }) => `@media only screen and (max-width: ${val}px)`;

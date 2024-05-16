@@ -2,14 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
     RegisterOptions,
     useFormContext,
-    UseFormRegister,
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { useOnClickOutside } from "../../hooks";
-import { I18NKey } from "../../i18n";
 import sanitizeHtml from "sanitize-html";
 import ContentEditable from "react-contenteditable";
+
+import { useOnClickOutside } from "@hooks";
+import { I18NKey } from "@i18n";
+
 type props = {
     name: string;
     required?: boolean;

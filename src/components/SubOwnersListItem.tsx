@@ -1,12 +1,10 @@
 import styled from "styled-components";
-import { Chip, Icon, Image2x } from ".";
-
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 
-import { custodyLevelColors } from "../utils";
-import { PetMinSubOwnerFragment } from "./operations/__generated__/petMinSubOwner.generated";
-import { $cssTRBL, $uw } from "../utils/theme/functions";
+import { Chip, Image2x } from "@components";
+import { custodyLevelColors } from "@utils";
+import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
+import { $cssTRBL, $uw } from "@theme";
 
 type props = {
 	ownership: PetMinSubOwnerFragment;

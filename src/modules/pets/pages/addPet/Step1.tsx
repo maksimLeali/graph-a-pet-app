@@ -1,21 +1,20 @@
 import { IonContent } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { useUserContext } from "../../../../contexts";
 import { FormProvider, useForm } from "react-hook-form";
+import { useCookies } from "react-cookie";
+import { useHistory } from "react-router";
+import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
-import { Gender, PetCreate, PetFamily } from "../../../../types";
+import { Gender, PetCreate, PetFamily } from "@types";
 import {
 	SelectInput,
 	TextInput,
 	Option,
 	SubmitInput,
-	Toggle,
-} from "../../../../components";
-import styled from "styled-components";
-import { $cssTRBL, $uw } from "../../../../utils/theme/functions";
-import { useTranslation } from "react-i18next";
-import { useCookies } from "react-cookie";
-import { useHistory } from "react-router";
+} from "@components";
+import { $cssTRBL, $uw } from "@theme";
+import { useUserContext } from "@contexts";
 
 export const Step1 = React.memo(() => {
 	const { setPage } = useUserContext();

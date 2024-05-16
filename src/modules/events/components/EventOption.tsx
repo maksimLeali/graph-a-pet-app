@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import { SpecialIconName } from "../../../components/SpecialIcons/SpecialIcons"
-import { SpecialIcon } from "../../../components"
+
+import { SpecialIconName, SpecialIcon } from "@components"
 
 type props ={
     iconName: SpecialIconName,

@@ -1,5 +1,5 @@
-import { IconName } from "../components";
-import { CustodyLevel, TreatmentType, Gender } from "../types";
+import { IconName } from "@components";
+import { CustodyLevel, TreatmentType, Gender } from "@types";
 
 export const custodyLevelColors: Record<CustodyLevel, string> = {
     OWNER: 'primary',

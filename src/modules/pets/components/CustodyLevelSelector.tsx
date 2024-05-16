@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { custodyLevelColors, enumKeys } from "../../../utils";
-import { CustodyLevel } from "../../../types";
-import { Chip, Icon } from "../../../components";
 import { useTranslation } from "react-i18next";
-import { useModal } from "../../../contexts";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
+import { custodyLevelColors } from "@utils";
+import { CustodyLevel } from "@types";
+import { Chip, Icon } from "@components";
+import { useModal } from "@contexts";
 import { CustodyLevelsList } from "./";
 
 type props = {

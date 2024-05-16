@@ -1,10 +1,12 @@
-import { $break_point, $cssTRBL, $uw } from "../../utils/theme/functions";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Draggable as GSAPDraggable } from "gsap/dist/Draggable";
 import { useState } from "react";
 import styled from "styled-components";
-import { useUserContext } from "../../contexts";
+
+import { useUserContext } from "@contexts";
+import { $break_point, $cssTRBL, $uw } from "@theme";
+
 gsap.registerPlugin(GSAPDraggable);
 
 export const DebugGrid: React.FC = () => {
