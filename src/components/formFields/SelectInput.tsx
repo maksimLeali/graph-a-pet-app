@@ -225,7 +225,7 @@ export const SelectInput: React.FC<props> = ({
 				<Controller
 					name={name}
 					control={control}
-					render={({ field: { onChange, value, name } }) => (
+					render={({ field: { onChange, value,ref, name } }) => (
 						<InputWrapper ref={ref} className="inputWrapper ">
 							<InvisibleInput
 								id={name}
@@ -291,7 +291,7 @@ export const SelectInput: React.FC<props> = ({
 								className={`options-container ${
 									focused ? "focused" : ""
 								} ${compiled ? "compiled" : ""} ${
-									forceOptionsUp || up ? "up" : ""
+									up ? "up" : ""
 								}`}
 								ref={optionsRef}
 							>
@@ -310,7 +310,6 @@ export const SelectInput: React.FC<props> = ({
 												setCompiled(true);
 
 												onChange(option.value);
-                                                console.log(value)
 											}}
 										>
 											{option.render ? (
