@@ -7,12 +7,7 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import { Gender, PetCreate, PetFamily } from "@types";
-import {
-	SelectInput,
-	TextInput,
-	Option,
-	SubmitInput,
-} from "@components";
+import { SelectInput, TextInput, Option, SubmitInput } from "@components";
 import { $cssTRBL, $uw } from "@theme";
 import { useUserContext } from "@contexts";
 
@@ -83,6 +78,7 @@ export const Step1 = React.memo(() => {
 							name="family"
 							options={familyOptions}
 							required
+							forceOptionsUp
 							textLabel="pets.add_pet_page.step_1.insert_family"
 						/>
 					</Row>

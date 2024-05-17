@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { useOnClickOutside } from "@hooks";
 import { I18NKey } from "@i18n";
-import { IconName, Icon } from "@components";
+import {  Icon } from "@components";
 
 type props = {
 	name: string;
@@ -43,7 +43,6 @@ export const FileInput: React.FC<props> = ({
 	const [error, setError] = useState(false);
 	const ref = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLDivElement>(null);
-	const [showPsw, setShowPsw] = useState(false);
 
 	const setFocus = () => {
 		if (!ref.current) return;
