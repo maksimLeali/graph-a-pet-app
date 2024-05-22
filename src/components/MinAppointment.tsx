@@ -9,7 +9,7 @@ import { SpecialIconName, SpecialIcon } from "@components";
 import { treatmentsColors } from "@utils";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { Maybe, TreatmentDuration } from "@types";
-import { $cssTRBL, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
 	appointment: AppointmentFragment | Maybe<AppointmentFragment>;
@@ -101,8 +101,8 @@ const Container = styled(Link)`
 	padding: ${$cssTRBL(0.5, 1)};
 	align-items: center;
 	text-decoration: none;
-	background-color: var(--ion-color-light-shade);
-	background-color: var(--ion-color-light-tint);
+	background-color: ${$color('light-shade')};
+	background-color: ${$color('light-tint')};
 	justify-content: space-between;
 `;
 
@@ -125,20 +125,19 @@ const Body = styled.div`
 
 const CustomSpan = styled.span`
 	font-size: 1.2rem;
-	color: var(--ion-color-dark);
+	color: ${$color('dark')};
 `;
 
 const PetName = styled.span<{ color?: string }>`
 	padding: 3px 12px;
-	color: var(--ion-color-light);
+	color: ${$color('light')};
 	border-radius: 20px;
 	font-weight: 600;
 	font-size: 1.7rem;
 	.dark & {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 	}
-	background-color: ${({ color }) =>
-		color ? color : "var(--ion-color-primary)"};
+	background-color: ${({ color }) => $color(color ?? 'primary')};
 `;
 
 const IconWrapper = styled.div`
@@ -148,8 +147,8 @@ const IconWrapper = styled.div`
 	display: flex;
 	z-index: 1;
 	padding: 10px;
-	background-color: var(--ion-color-light-tint);
-	background-color: var(--ion-color-light-shade);
+	background-color: ${$color('light-tint')};
+	background-color: ${$color('light-shade')};
 	box-sizing: border-box;
 	align-items: center;
 

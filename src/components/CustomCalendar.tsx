@@ -7,6 +7,7 @@ import _ from "lodash";
 
 import { useSwipe } from "@hooks";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
+import { $color } from "@theme";
 
 type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
@@ -55,7 +56,7 @@ export const CustomCalendar: React.FC<props> = ({
 				.map((ev) => ({
 					color:
 						ev?.health_card?.pet.main_picture?.main_color?.color ??
-						"var(--ion-color-primary)",
+						"primary",
 					from: dayjs(ev?.date).startOf("day"),
 					to: dayjs(ev?.date).endOf("day"),
 					event: ev,
@@ -156,7 +157,7 @@ const Container = styled.div`
 `;
 
 const MyCalendar = styled(Calendar)`
-	background-color: var(--ion-background-color);
+	background-color: ${$color('background-color')};
 	width: 100%;
 	border: none;
 	padding: 40px 12px;
@@ -165,7 +166,7 @@ const MyCalendar = styled(Calendar)`
 		margin: 0 2.14%;
 		aspect-ratio: 1/1;
 		&.react-calendar__month-view__days__day--weekend {
-			color: var(--ion-color-primary);
+			color: ${$color('primary')};
 		}
 		&.react-calendar__month-view__days__day--neighboringMonth {
 			opacity: 0.5;
@@ -179,41 +180,39 @@ const MyCalendar = styled(Calendar)`
 		}
 	}
 	.react-calendar__month-view__weekdays__weekday--weekend {
-		color: var(--ion-color-primary);
+		color: ${$color('primary')};
 	}
 
 	.react-calendar__tile--active,
 	.react-calendar__tile--hasActive {
 		> .tile-container {
 			span {
-				background-color: var(
-					--ion-color-primary-trasparent
-				) !important;
+				background-color: ${$color('primary-trasparent')} !important;
 			}
 		}
 	}
 	.react-calendar__tile--now {
 		> .tile-container {
 			> span {
-				background-color: var(--ion-color-secondary);
-				color: var(--ion-color-light);
+				background-color: ${$color('secondary')};
+				color: ${$color('light')};
 				.dark & {
-					color: var(--ion-color-dark);
+					color: ${$color('dark')};
 				}
 			}
 		}
 	}
 
 	.react-calendar__navigation__label {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 		&:hover,
 		&:focus,
 		&:disabled {
-			background-color: var(--ion-color-secondary-trasparent) !important;
+			background-color: ${$color('secondary-trasparent')} !important;
 		}
 	}
 	.react-calendar__tile {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 		position: relative;
 		> .tile-container {
 			display: none;
@@ -250,9 +249,9 @@ const CircleContainer = styled.div`
 const Circle = styled.div<{ color: string }>`
 	width: 8px;
 	height: 8px;
-	border: 1px solid var(--ion-color-dark-shade);
+	border: 1px solid ${$color('dark-shade')};
 	border-radius: 10px;
-	background-color: ${(props) => props.color};
+	background-color: ${({color}) => $color(color)};
 	margin-top: 0.2em;
 `;
 
@@ -264,7 +263,7 @@ const TileContainer = styled.div`
 	justify-content: center;
 	align-items: center;
 	> span {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 		display: flex;
 		justify-content: center;
 		align-items: center;

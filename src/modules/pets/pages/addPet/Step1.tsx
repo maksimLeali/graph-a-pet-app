@@ -33,7 +33,6 @@ export const Step1 = React.memo(() => {
 		setPage({ name: "step 1 di 3" });
 	}, []);
 
-
 	const genderOptions: Option[] = Object.values(Gender).map((key) => ({
 		value: key,
 		label: t(`pets.gender_${key.toLowerCase()}`),
@@ -62,8 +61,6 @@ export const Step1 = React.memo(() => {
 							name="name"
 							required
 							textLabel="pets.add_pet_page.step_1.insert_name"
-							
-							
 						/>
 					</Row>
 					<Row>

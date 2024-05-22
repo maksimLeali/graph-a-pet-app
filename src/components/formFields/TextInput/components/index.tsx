@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { $color } from "../../../../utils/theme/functions";
 
 type wrapperProps = {
 	color: string;
@@ -14,16 +15,16 @@ export const Wrapper = styled.div<wrapperProps>`
 	position: relative;
 	margin-bottom: 40px;
 	> .label {
-		color: var(--ion-color-${({ color }) => color});
+		color: ${({ color }) => $color(color)};
 	}
 	> .input-wrapper {
-		background-color: var(--ion-color-${({ color }) => color});
+		background-color: ${({ color }) => $color(color)};
 		> input {
-			color: var(--ion-color-${({ textColor }) => textColor});
+			color: ${({ textColor }) => $color(textColor)};
 			background-color: ${({ bgColor }) =>
 				bgColor
-					? `var(--ion-color-${bgColor})`
-					: "var(--ion-background-color)"};
+					? `${$color(bgColor)}`
+					: `${$color("background-color")}`};
 			&:-webkit-autofill,
 			.dark &:-webkit-autofill,
 			&:-webkit-autofill:hover,
@@ -31,16 +32,14 @@ export const Wrapper = styled.div<wrapperProps>`
 			&:-webkit-autofill:focus,
 			.dark &:-webkit-autofill:focus,
 			&:-webkit-autofill:active .dark &:-webkit-autofill:active {
-				-webkit-box-shadow: 0 0 0 30px var(--ion-background-color) inset !important;
-				color: var(--ion-color-${({ textColor }) => textColor});
-				-webkit-text-fill-color: var(
-					--ion-color-${({ textColor }) => textColor}
-				);
+				-webkit-box-shadow: 0 0 0 30px ${$color("background-color")} inset !important;
+				color: ${({ textColor }) => $color(textColor)};
+				-webkit-text-fill-color: ${({ textColor }) => $color(textColor)};
 			}
 		}
 	}
 	.error-span {
-		color: var(--ion-color-${({ errorColor }) => errorColor});
+		color:  ${({ errorColor }) => $color(errorColor)};
 	}
 	&.submitting,
 	&.disabled {
@@ -50,32 +49,26 @@ export const Wrapper = styled.div<wrapperProps>`
 	&.compiled,
 	&.focused {
 		> .label {
-			color: var(--ion-color-${({ focusColor }) => focusColor});
+			color: ${({ focusColor }) => $color(focusColor)};
 		}
 		.focus-box {
-			background-color: var(
-				--ion-color-${({ focusColor }) => focusColor}
-			);
+			background-color:  ${({ focusColor }) => $color(focusColor)};
 		}
 	}
 	&.disabled {
 		> .label {
-			color: var(--ion-color-${({ disabledColor }) => disabledColor});
+			color:  ${({ disabledColor }) => $color(disabledColor)};
 		}
 		.focus-box {
-			background-color: var(
-				--ion-color-${({ disabledColor }) => disabledColor}
-			);
+			background-color: ${({ disabledColor }) => $color(disabledColor)};
 		}
 	}
 	&.error {
 		> .label {
-			color: var(--ion-color-${({ errorColor }) => errorColor});
+			color: ${({ errorColor }) => $color(errorColor)};
 		}
 		.focus-box {
-			background-color: var(
-				--ion-color-${({ errorColor }) => errorColor}
-			);
+			background-color:${({ errorColor }) => $color(errorColor)};
 		}
 	}
 `;

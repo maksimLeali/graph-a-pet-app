@@ -1,4 +1,11 @@
+import { ColorKeys, colors, isColorKey } from "./colors";
+
+
+
 type Theme = { [key: string]: any }
+
+
+
 
 /**
  * 
@@ -6,21 +13,26 @@ type Theme = { [key: string]: any }
  *              in this case the screen is divideb by 48  
  * @returns 
  */
-
-
 const uw = (val: number) => `calc(var(--max-grid-size) / var(--grid-columns-number) * ${val})`
 
 export const $uw = (val: number) => ({ }) => uw(val);
 
 /**
  * Get color from the theme based on the provided color name.
- * @param {string} color - The name of the color to retrieve from the theme.
- *                         Should be one of the keys in the 'light' or 'dark' theme.
+ * @param {string} color - The name of the color to retrieve from the theme or the hexadecimal.
+ *                       
  * @example
- * // Returns "#F7ECE1" for light theme and "#0c0d12" for dark theme
- * $color('black')
- */
-export const $color = (color: string) => ({ theme }: { theme: Theme }) => theme.colors[color]
+ * // Returns "var(--ion-color-medium)" 
+ * $color('medium')
+ * 
+ * @example
+ * // return "#323477"
+ * $color("#323477")
+ */ 
+export const $color = (color: ColorKeys |string) =>   { 
+    if(isColorKey(color)) return colors[color]
+    return color
+}
 
 
 

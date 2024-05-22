@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { $color } from "@theme"
 
 type props = {
     label:string,
@@ -18,19 +19,19 @@ const Container = styled.div<{color: string}>`
     width: fit-content;
     padding: 5px 24px;
     border-radius: 30px;
-    background-color: ${({ color})=>   `var(--ion-color-${color})`};
-    border : 2px solid ${({ color})=>   `var(--ion-color-${color})`} ; 
+    background-color: ${({ color})=> $color(color)};
+    border : 2px solid ${({ color})=> $color(color)}; ; 
     > span {
-        color: var(--ion-color-light);
+        color: ${$color('light')};
         
         .dark & {
-            color:  var(--ion-color-dark);
+            color:  ${$color('dark')};
         }
     }
     &.invert {
-        background-color:  var(--ion-color-light)  ;
+        background-color: ${$color('light')};
         > span {
-            color:  var(--ion-color-dark);
+            color:  ${$color('dark')};
         }
 
     }
