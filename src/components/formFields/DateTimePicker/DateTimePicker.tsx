@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 
 import { DatePicker } from "./DatePicker";
 import { TimePicker } from "./TimePicker";
-import { $color } from "@theme";
+import { $color, $uw } from "@theme";
 
 type props = {
 	bgColor?: string;
@@ -57,9 +57,7 @@ export const DateTimePicker: React.FC<props> = ({
 	pkBgColor = "light-tint",
 	pkLabelColor = "dark",
 	minDate = dayjs().subtract(30, "y").startOf("y").toISOString(),
-	// minDate = "2021-08-05T04:30:00.00Z",
 	maxDate = dayjs().add(5, "years").endOf("y").toISOString(),
-	// maxDate = "2024-08-11T22:39:00.00Z",
 	minHour,
 	minMinute,
 	maxHour,
@@ -516,7 +514,7 @@ const FocusBox = styled.span<focusCircleProps>`
 		max-height: 100%;
 	}
 	&.error {
-		background-color: ${$color("danger")};
+		background-color: ${$color('danger')};
 	}
 `;
 
@@ -552,7 +550,7 @@ const StyledInput = styled.div<{ textColor: string; bgColor?: string }>`
 `;
 
 const ErrorSpan = styled.span`
-	color: ${$color('danger')};
+	color: ${$color("danger")};
 	font-size: 1.6rem;
 `;
 
@@ -564,10 +562,8 @@ const DatePickerContainer = styled.div`
 	left: 50%;
 	transform: translate(-50%, -50%);
 	width: 80%;
-	max-width: calc(
-		var(--max-width) - 40px
-	); /* Adjust the maximum width as needed */
-	background-color: ${$color('white')};
+	max-width: ${$uw(30)};
+	background-color: ${$color("white")};
 	color: #000;
 	border: 1px solid lightgray;
 	z-index: 10;

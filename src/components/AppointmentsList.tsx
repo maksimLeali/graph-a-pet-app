@@ -12,7 +12,6 @@ import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { MinAppointment } from "@components";
 import { $color, $uw } from "@theme";
 
-
 type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
 	loading?: boolean;
@@ -109,8 +108,9 @@ const Container = styled.div`
 	.group_date {
 		opacity: 0;
 		width: 100%;
-		border-bottom: 1px solid ${$color('medium')};
-		padding-bottom: ${$uw(1)};
+		border-bottom: 1px solid ${$color("medium")};
+		padding-bottom: ${$uw(1)};		 
+		text-transform: capitalize;
 	}
 `;
 
