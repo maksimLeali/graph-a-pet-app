@@ -109,7 +109,9 @@ const Container = styled.div`
 		opacity: 0;
 		width: 100%;
 		border-bottom: 1px solid ${$color("medium")};
-		padding-bottom: ${$uw(1)};		 
+		padding-bottom: ${$uw(1)};
+	}
+	.group_date::first-letter {
 		text-transform: capitalize;
 	}
 `;

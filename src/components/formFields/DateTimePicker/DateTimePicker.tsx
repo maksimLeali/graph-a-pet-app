@@ -561,8 +561,7 @@ const DatePickerContainer = styled.div`
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	width: 80%;
-	max-width: ${$uw(30)};
+	width: ${$uw(30)};
 	background-color: ${$color("white")};
 	color: #000;
 	border: 1px solid lightgray;
