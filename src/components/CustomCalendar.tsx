@@ -13,7 +13,7 @@ type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
 	onStartDateChange: (startDate: Date) => void;
 	setDayEvents: (events: AppointmentFragment[]) => void;
-	onDateSelected: (date?:Date)=> void
+	onDateSelected: (date?: Date) => void;
 };
 
 export const CustomCalendar: React.FC<props> = ({
@@ -69,7 +69,8 @@ export const CustomCalendar: React.FC<props> = ({
 
 	const dayEvents = useMemo(() => {
 		const selected = dayjs(selectedDay);
-		if (!selectedDay || selected.year() < 1990) return periodsWithEvents.map((p) => p.event);
+		if (!selectedDay || selected.year() < 1990)
+			return periodsWithEvents.map((p) => p.event);
 		return periodsWithEvents
 			.filter(
 				({ from, to }) =>
@@ -79,13 +80,13 @@ export const CustomCalendar: React.FC<props> = ({
 			.map((p) => p.event);
 	}, [periodsWithEvents, selectedDay]);
 
-	useEffect(()=>{
-		if(selectedDay && selectedDay?.getFullYear() > 1990){
-			onDateSelected(selectedDay)
-			return
+	useEffect(() => {
+		if (selectedDay && selectedDay?.getFullYear() > 1990) {
+			onDateSelected(selectedDay);
+			return;
 		}
-		onDateSelected(undefined)
-	}, [selectedDay])
+		onDateSelected(undefined);
+	}, [selectedDay]);
 	useEffect(() => {
 		if (dayEvents?.length) {
 			setDayEvents(dayEvents as AppointmentFragment[]);
@@ -157,7 +158,7 @@ const Container = styled.div`
 `;
 
 const MyCalendar = styled(Calendar)`
-	background-color: ${$color('background-color')};
+	background-color: ${$color("background-color")};
 	width: 100%;
 	border: none;
 	padding: 40px 12px;
@@ -166,7 +167,7 @@ const MyCalendar = styled(Calendar)`
 		margin: 0 2.14%;
 		aspect-ratio: 1/1;
 		&.react-calendar__month-view__days__day--weekend {
-			color: ${$color('primary')};
+			color: ${$color("primary")};
 		}
 		&.react-calendar__month-view__days__day--neighboringMonth {
 			opacity: 0.5;
@@ -180,39 +181,61 @@ const MyCalendar = styled(Calendar)`
 		}
 	}
 	.react-calendar__month-view__weekdays__weekday--weekend {
-		color: ${$color('primary')};
+		color: ${$color("primary")};
 	}
 
 	.react-calendar__tile--active,
 	.react-calendar__tile--hasActive {
 		> .tile-container {
 			span {
-				background-color: ${$color('primary-trasparent')} !important;
+				background-color: ${$color("primary-trasparent")} !important;
 			}
 		}
 	}
 	.react-calendar__tile--now {
+		background-color: ${$color("secondary")};
+		abbr {
+			color: ${$color("light")}!important;
+			.dark & {
+				color: ${$color("dark")}!important;
+			}
+		}
 		> .tile-container {
 			> span {
-				background-color: ${$color('secondary')};
-				color: ${$color('light')};
+				background-color: ${$color("secondary")};
+				color: ${$color("light")}!important;
 				.dark & {
-					color: ${$color('dark')};
+					color: ${$color("dark")}!important;
 				}
 			}
 		}
 	}
 
+	.react-calendar__navigation__arrow {
+		color: ${$color("dark")};
+	}
+	.react-calendar__tile--hasActive {
+		background-color: ${$color("primary-trasparent")};
+	}
+
+	.react-calendar__navigation
+		button:enabled:hover.react-calendar__navigation__arrow,
+	.react-calendar__navigation
+		button:enabled:focus.react-calendar__navigation__arrow {
+		background-color: unset !important;
+	}
+
 	.react-calendar__navigation__label {
-		color: ${$color('dark')};
+		color: ${$color("dark")};
+		text-transform: capitalize;
 		&:hover,
 		&:focus,
 		&:disabled {
-			background-color: ${$color('secondary-trasparent')} !important;
+			background-color: ${$color("secondary-trasparent")} !important;
 		}
 	}
 	.react-calendar__tile {
-		color: ${$color('dark')};
+		color: ${$color("dark")};
 		position: relative;
 		> .tile-container {
 			display: none;
@@ -249,9 +272,9 @@ const CircleContainer = styled.div`
 const Circle = styled.div<{ color: string }>`
 	width: 8px;
 	height: 8px;
-	border: 1px solid ${$color('dark-shade')};
+	border: 1px solid ${$color("dark-shade")};
 	border-radius: 10px;
-	background-color: ${({color}) => $color(color)};
+	background-color: ${({ color }) => $color(color)};
 	margin-top: 0.2em;
 `;
 
@@ -263,7 +286,7 @@ const TileContainer = styled.div`
 	justify-content: center;
 	align-items: center;
 	> span {
-		color: ${$color('dark')};
+		color: ${$color("dark")};
 		display: flex;
 		justify-content: center;
 		align-items: center;
