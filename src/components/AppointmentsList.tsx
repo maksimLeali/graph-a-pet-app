@@ -10,7 +10,7 @@ import { Maybe } from "@types";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 
 import { MinAppointment } from "@components";
-import { $uw } from "@theme";
+import { $color, $uw } from "@theme";
 
 
 type props = {
@@ -109,7 +109,7 @@ const Container = styled.div`
 	.group_date {
 		opacity: 0;
 		width: 100%;
-		border-bottom: 1px solid var(--ion-color-medium);
+		border-bottom: 1px solid ${$color('medium')};
 		padding-bottom: ${$uw(1)};
 	}
 `;

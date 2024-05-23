@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 import { PetItem } from "../components/PetItem";
 import { useUserContext } from "@contexts";
-import { $cssTRBL } from "@theme";
+import { $color, $cssTRBL } from "@theme";
 
 export const PetsList: React.FC = () => {
 	const { setPage, ownedPets, loanPets, loading } = useUserContext();
@@ -46,7 +46,7 @@ const List = styled.div`
 const AddPetCta = styled(Link)`
 	width: 100%;
 	display: block;
-	color: var(--ion-color-primary);
+	color: ${$color('primary')};
 	text-decoration: underline;
 	text-align: end;
 	padding: ${$cssTRBL(0, 2, 1, 2)};

@@ -5,7 +5,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { useUserContext } from "@contexts";
-import { $break_point, $cssTRBL, $uw } from "@theme";
+import { $break_point, $color, $cssTRBL, $uw } from "@theme";
 
 gsap.registerPlugin(GSAPDraggable);
 
@@ -105,12 +105,12 @@ const Action = styled.button`
         border-width: 1px;
     }
 	&.remove {
-		border-color: var(--ion-color-danger);
-		color: var(--ion-color-danger);
+		border-color: ${$color('danger')};
+		color: ${$color('danger')};
 	}
 	&.add {
-		border-color: var(--ion-color-primary);
-		color: var(--ion-color-primary);
+		border-color: ${$color('primary')};
+		color: ${$color('primary')};
 
 	}
 `;

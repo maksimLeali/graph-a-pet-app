@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { Maybe } from "@types";
 import { AppointmentsList, WeeksSkeleton } from "@components";
-import { $cssTRBL, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
 	fromDate: Date;
@@ -28,7 +28,7 @@ export const WeeksView: React.FC<props> = ({
 				.map((ev) => ({
 					color:
 						ev?.health_card?.pet.main_picture?.main_color?.color ??
-						"var(--ion-color-primary)",
+						"primary",
 					from: dayjs(ev?.date).startOf("day"),
 					to: dayjs(ev?.date).endOf("day"),
 					event: ev,
@@ -40,7 +40,7 @@ export const WeeksView: React.FC<props> = ({
 
 	const dayEvents = useMemo(() => {
 		const selected = dayjs(selectedDay);
-		
+
 		return _(periodsWithEvents)
 			.filter(({ from, to }) =>
 				selectedDay
@@ -138,7 +138,7 @@ const WeeksContainer = styled.div`
 	width: 100%;
 	border-top: 1px solid;
 	border-bottom: 1px solid;
-	border-color: var(--ion-color-medium);
+	border-color: ${$color('medium')};
 	box-sizing: border-box;
 
 	&::-webkit-scrollbar {
@@ -161,19 +161,19 @@ const DateContainer = styled.div`
 		box-sizing: border-box;
 		align-items: center;
 		justify-content: center;
-		color: var(--ion-color-dark);
+		color:  ${$color('dark')};
 		&.now {
-			background-color: var(--ion-color-secondary);
-			color: var(--ion-color-light);
+			background-color: ${$color('secondary')};
+			color: ${$color('light')};
 			.dark & {
-				color: var(--ion-color-dark);
+				color: ${$color('dark')};
 			}
 		}
 		&.selected {
-			background-color: var(--ion-color-primary);
-			color: var(--ion-color-light);
+			background-color: ${$color('primary')};
+			color: ${$color('light')};
 			.dark & {
-				color: var(--ion-color-dark);
+				color: ${$color('dark')};
 			}
 		}
 	}
@@ -192,7 +192,7 @@ const CircleContainer = styled.div`
 const Circle = styled.div<{ color: string }>`
 	width: 8px;
 	height: 8px;
-	border: 1px solid var(--ion-color-dark);
+	border: 1px solid ${$color('dark')};
 	border-radius: 10px;
-	background-color: ${(props) => props.color};
+	background-color: ${({color}) => $color(color)};
 `;

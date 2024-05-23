@@ -83,7 +83,7 @@ export const AddEventForm = () => {
 				className="main_date"
 				bgColor="light"
 				required
-				minDate={dayjs().toISOString()}
+				
 			/>
 			<DateTimePicker
 				name="date_time"

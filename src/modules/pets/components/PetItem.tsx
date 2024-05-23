@@ -5,7 +5,7 @@ import gsap from "gsap";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
-import { $uw } from "@theme";
+import { $color, $uw } from "@theme";
 import { Image2x, Icon } from "@components";
 import { gendersColor } from "@utils";
 
@@ -66,7 +66,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 					<IconContainer className="icon-container">
 						<Icon
 							size="100%"
-							customColor={gendersColor[pet.gender].color}
+							color={gendersColor[pet.gender].color}
 							name={gendersColor[pet.gender].iconName}
 						></Icon>
 					</IconContainer>
@@ -127,20 +127,17 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 	border-radius: 4px;
 	position: relative;
 	.image-wrapper {
-		border: 3px solid
-			${({ bgColor }) => bgColor || "var(--ion-color-primary)"};
+		border: 3px solid ${({ bgColor }) =>$color(bgColor || "primary")};
 	}
 	.icon-container {
-		border: 1px solid
-			${({ bgColor }) => bgColor || "var(--ion-color-primary)"};
+		border: 1px solid ${({ bgColor }) =>$color(bgColor || "primary")};
 		box-shadow: 0 0 0 1px #fff;
 	}
 	.info-box {
-		background-color: ${({ bgColor }) =>
-			bgColor || "var(--ion-color-primary)"};
+		background-color: ${({ bgColor }) =>$color(bgColor || "primary")};
 	}
 	span {
-		${({ color }) => (color ? `color: ${color}` : "")}
+		${({ color }) => (color ? `color: ${$color(color)};` : "")}
 	}
 `;
 

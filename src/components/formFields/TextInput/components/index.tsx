@@ -111,7 +111,7 @@ export const InputWrapper = styled.div`
 `;
 
 export const FocusBox = styled.span`
-	background-color: var(--ion-color-medium);
+	background-color: ${$color('medium')};
 	position: absolute;
 	display: block;
 	z-index: 1;
@@ -133,7 +133,7 @@ export const FocusBox = styled.span`
 		max-height: 100%;
 	}
 	&.error {
-		background-color: var(--ion-color-danger);
+		background-color: ${$color('danger')};
 	}
 `;
 

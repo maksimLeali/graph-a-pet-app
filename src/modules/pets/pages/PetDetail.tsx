@@ -16,6 +16,7 @@ import { ShareBox } from "../components";
 import { Image2x, SubOwnerList, SubOwnerListItem } from "@components";
 import { useUserContext } from "@contexts";
 import { CustodyLevel } from "@types";
+import { $color } from "@theme";
 
 
 export const PetDetails: React.FC = () => {
@@ -205,7 +206,7 @@ const ImageWrapper = styled.div`
     width: 100%;
     max-width: 180px;
     aspect-ratio: 1/1;
-    border: 2px solid var(--ion-color-primary);
+    border: 2px solid ${$color('primary')};
     border-radius: 260px;
     margin-bottom: 20px;
     overflow-y: hidden;
@@ -224,7 +225,7 @@ const NameBox = styled.div`
     padding: 5px 24px;
     border-radius: 30px;
     box-sizing: border-box;
-    background-color: var(--ion-color-primary);
+    background-color: ${$color('primary')};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,7 +238,7 @@ const NameBox = styled.div`
 const FillBox = styled.span`
     width: 100%;
     height: 100%;
-    background-color: var(--ion-color-primary);
+    background-color: ${$color('primary')};
 `;
 const InfoBox = styled.div`
     grid-column: 2;
@@ -250,7 +251,7 @@ const InfoBox = styled.div`
     gap: 10px;
     > span {
         text-align: center;
-        color: var(--ion-color-dark);
+        color: ${$color('dark')};
     }
     &.info1 {
         align-self: flex-start;
@@ -270,10 +271,10 @@ const InfoChip = styled.span`
     padding: 5px;
     height: 30px;
     border-radius: 30px;
-    background-color: var(--ion-color-primary);
-    color: var(--ion-color-light) !important;
+    background-color: ${$color('primary')};
+    color: ${$color('light')} !important;
     .dark & {
-        color: var(--ion-color-dark) !important;
+        color: ${$color('dark')} !important;
     }
 `;
 

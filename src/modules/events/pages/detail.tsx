@@ -10,6 +10,7 @@ import { FullTreatmentFragment } from "@graphql_generated/fullTreatment.generate
 import { useUserContext } from "@contexts";
 import { SpecialIconName, SpecialIcon } from "@components";
 import { treatmentsColors } from "@utils";
+import { $color } from "@theme";
 
 type props = {};
 
@@ -70,7 +71,7 @@ export const EventDetails: React.FC<props> = () => {
 
 const Header = styled.div`
 	width: calc(100% - 2px);
-	border: 2px solid var(--ion-color-light-shade);
+	border: 2px solid ${$color('light-shade')};
 	border-top: 0;
 	border-left: 0;
 	border-radius: 0 0 8px 0;
@@ -107,8 +108,8 @@ const IconWrapper = styled.div`
 	height: fit-content;
 	z-index: 1;
 	padding: 10px;
-	background-color: var(--ion-color-light-tint);
-	background-color: var(--ion-color-light-shade);
+	background-color: ${$color('light-tint')};
+	background-color: ${$color('light-shade')};
 	box-sizing: border-box;
 	align-items: center;
 	justify-content: center;
@@ -121,7 +122,7 @@ const Logs = styled.div`
 	width: 100%;
 	> p {
 		padding: 24px 12px;
-		border-bottom: 1px solid var(--ion-color-dark);
+		border-bottom: 1px solid ${$color('dark')};
 		margin-bottom: 16px;
 	}
 

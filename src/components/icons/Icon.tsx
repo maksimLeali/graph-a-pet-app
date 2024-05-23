@@ -4,6 +4,7 @@ import styled, { CSSObject } from "styled-components";
 import * as Icons from 'ionicons/icons'
 
 import { IconName } from "./iconName";
+import { $color } from "../../utils/theme/functions";
 
 
 type Props = {
@@ -11,7 +12,6 @@ type Props = {
     color?: string,
     size?: string
     className?: string,
-    customColor?: string,
     mode?: 'ios' | 'md'
     dropShadow?: boolean,
     reverse?: boolean,
@@ -20,10 +20,10 @@ type Props = {
     onMouseUp?: ()=> void
 
 }
-export const Icon: React.FC<Props>= ({mode="md",customColor, name, color="dark", time="1s", size="24px", className, reverse= false, onClick, onMouseUp, dropShadow=false}) => {
+export const Icon: React.FC<Props>= ({mode="md", name, color="dark", time="1s", size="24px", className, reverse= false, onClick, onMouseUp, dropShadow=false}) => {
  
     return (
-        <Container customColor={customColor} dropShadow={dropShadow} onMouseUp={onMouseUp? onMouseUp : ()=> {}} onClick={onClick ? ()=> onClick() : ()=>{}} time={time} size={size} className={`icon-wrapper ${className}`} iconColor={color} reverse={reverse}>
+        <Container  dropShadow={dropShadow} onMouseUp={onMouseUp? onMouseUp : ()=> {}} onClick={onClick ? ()=> onClick() : ()=>{}} time={time} size={size} className={`icon-wrapper ${className}`} iconColor={color} reverse={reverse}>
            
             <IonIcon mode={mode} size="large" icon={Icons[name]}  />
         </Container>
@@ -36,7 +36,6 @@ type ContainerProps = {
     reverse: boolean,
     dropShadow: boolean,
     time: string,
-    customColor?: string,
 }
 
 const Container = styled.div<ContainerProps>`
@@ -44,14 +43,12 @@ const Container = styled.div<ContainerProps>`
     width: ${({size})=> size ? `${size}` : ''};
     height: ${({size})=> size ? `${size}` : ''};
     > * {
-        color:${({iconColor, customColor})=> customColor ? customColor : `var(--ion-color-${ iconColor})`} !important ;
+        color:${({iconColor})=> $color(iconColor)} !important ;
         width: 100%;
         height: 100%;
         aspect-ratio:1;
         
         ${({dropShadow})=> dropShadow ? 'filter: drop-shadow(0px 4px 2px #000 );' : ''}
-        /* ${({dropShadow})=> dropShadow ? 'filter: drop-shadow(1px 1px 2px var(--ion-color-primary-shade)) ;' : ''} */
-        /* ${({dropShadow})=> dropShadow ? 'filter: dropShadow(0 10px 3px var(--ion-color-dark)) ' : ''} */
         ${({reverse})=> reverse? `transform: ScaleX(-1);` : ''}
         transition: color ${({time})=> time} ease-in, transform ${({time})=> time} ease-in;
     }

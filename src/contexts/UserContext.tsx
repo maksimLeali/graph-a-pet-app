@@ -9,7 +9,7 @@ import { CustodyLevel } from "@types";
 import { MainMenu, Image2x } from "@components";
 import { MinUserFragment } from "@graphql_generated/minUser.generated";
 import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated";
-import { $uw } from "@theme";
+import { $color, $uw } from "@theme";
 import { UserPlaceholder } from "@components";
 import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
 
@@ -184,10 +184,10 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean }>`
 	left: calc(50% - 240px);
 	padding: ${$uw(0.75)};
 	box-sizing: border-box;
-	background-color: var(--ion-background-color);
+	background-color: ${$color('background-color')};
 	display: flex;
 	.dark & {
-		background-color: var(--ion-toolbar-background);
+		background-color: ${$color('toolbar-background')};
 	}
 	@media only screen and (max-width: 480px) {
 		left: 0;
@@ -208,7 +208,7 @@ const MainImage = styled.div`
 	box-sizing: border-box;
 	z-index: 10;
 	overflow: hidden;
-	border: 2px solid var(--ion-color-primary);
+	border: 2px solid ${$color('primary')};
 	border-radius: ${$uw(4)};
 	> .img2x {
 		width: 100%;

@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-import { $cssTRBL, $uw } from "@theme"
+import { $color, $cssTRBL, $uw } from "@theme"
 
 export const WeeksSkeleton:React.FC = ()=> {
     return <FakeWeekContainer>
@@ -24,7 +24,7 @@ const FakeWeek = styled.div`
     box-sizing: border-box;
     border-bottom: 1px solid;
     border-top: 1px solid;
-    border-color: var(--ion-color-medium);
+    border-color: ${$color('medium')};
     display: flex;
     justify-content: space-between;
 `  

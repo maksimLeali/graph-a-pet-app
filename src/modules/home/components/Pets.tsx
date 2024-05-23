@@ -9,7 +9,7 @@ import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.genera
 import { SubOwnerList, Icon, Image2x } from "@components";
 import { useSwipe } from "@hooks";
 import { useModal } from "@contexts";
-import { $break_point, $cssTRBL, $uw } from "@theme";
+import { $break_point, $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
 	pets: DashboardPetFragment[];
@@ -108,11 +108,11 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 			onTouchMove={handleTouchMove}
 			mainColor={
 				pets[active]?.main_picture?.main_color?.color ??
-				"var(--ion-color-primary)"
+				"primary"
 			}
 			contrast={
 				pets[active]?.main_picture?.main_color?.contrast ??
-				"var(--ion-color-white)"
+				"white"
 			}
 		>
 			<BoxContainer>
@@ -130,24 +130,24 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 					))}
 				</PetsBox>
 				<ActionChip className="top left" onClick={() => modalOpen()}>
-					<Icon name="peopleOutline" color="var(--ion-color-dark)" />
+					<Icon name="peopleOutline" color="dark" />
 					<span>{"Affidatari"}</span>
 				</ActionChip>
 				<ActionChip className="top right">
-					<Icon name="bookOutline" color="var(--ion-color-dark)" />
+					<Icon name="bookOutline" color="dark" />
 					<span>{"Libretto"}</span>
 				</ActionChip>
 				<ActionChip className="bottom left">
 					<Icon
 						name="informationCircleOutline"
-						color="var(--ion-color-dark)"
+						color="dark"
 					/>
 					<span>{"Profilo"}</span>
 				</ActionChip>
 				<ActionChip className="bottom right" onClick={() => share()}>
 					<Icon
 						name="shareOutline"
-						color="var(--ion-color-dark)"
+						color="dark"
 						mode="md"
 					/>
 					<span>{"Share"}</span>
@@ -183,31 +183,24 @@ const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
 	> * {
 		> * {
 			transition: color 1s ease-in, background-color 1s ease-in;
-			color: ${({ contrast }) =>
-				contrast ? contrast : "var(--ion-color-primary)"};
-			background-color: ${({ mainColor }) =>
-				mainColor ? mainColor : "var(--ion-color-primary)"};
+			color: ${({ contrast }) => $color(contrast ?? "primary")};
+			background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
 			&::after {
 				transition: color 1s ease-in, background-color 1s ease-in;
-				color: ${({ contrast }) =>
-					contrast ? contrast : "var(--ion-color-primary)"};
-				background-color: ${({ mainColor }) =>
-					mainColor ? mainColor : "var(--ion-color-primary)"};
+				color: ${({ contrast }) => $color(contrast ?? "primary")};
+				background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
 			}
 			&.pet-box {
 				transition: color 1s ease-in, background-color 1s ease-in;
-				border: 3px solid var(--ion-background-color);
-				background-color: ${({ mainColor }) =>
-					mainColor ? mainColor : "var(--ion-color-primary)"};
+				border: 3px solid ${$color('background-color')};
+				background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
 			}
 		}
 	}
 	> h2 {
 		transition: color 1s ease-in, background-color 1s ease-in;
-		color: ${({ contrast }) =>
-			contrast ? contrast : "var(--ion-color-primary)"};
-		background-color: ${({ mainColor }) =>
-			mainColor ? mainColor : "var(--ion-color-primary)"};
+		color: ${({ contrast }) => $color(contrast ?? "primary")};
+		background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
 	}
 	* {
 		transition: color 1s ease-in, background-color 1s ease-in;
@@ -322,7 +315,7 @@ const PetDot = styled.span`
 	height: ${$uw(2)};
 	padding: ${$uw(0.7)};
 	box-sizing: border-box;
-	background-color: var(--ion-background-color);
+	background-color: ${$color('background-color')};
 	transition: padding 0.2s ease-out;
 	&:after {
 		display: flex;
@@ -331,11 +324,11 @@ const PetDot = styled.span`
 		height: 100%;
 
 		border-radius: 15px;
-		border: 1px solid var(--ion-color-dark);
+		border: 1px solid ${$color('dark')};
 	}
 	&.active::after {
 		content: "";
-		border: 2px solid var(--ion-color-dark);
+		border: 2px solid ${$color('dark')};
 	}
 	&.active {
 		padding: ${$uw(0.2)};

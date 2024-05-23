@@ -7,6 +7,7 @@ import { CustodyLevel } from "@types";
 import { Chip, Icon } from "@components";
 import { useModal } from "@contexts";
 import { CustodyLevelsList } from "./";
+import { $color } from "@theme";
 
 type props = {
     current: CustodyLevel;
@@ -48,7 +49,7 @@ const Container = styled.div`
     align-items: center;
     > p {
         margin: 0;
-        color: var(--ion-color-dark);
+        color: ${$color('dark')};
         &:last-child{
 
             text-align:center ;

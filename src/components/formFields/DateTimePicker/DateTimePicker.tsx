@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 
 import { DatePicker } from "./DatePicker";
 import { TimePicker } from "./TimePicker";
+import { $color } from "@theme";
 
 type props = {
 	bgColor?: string;
@@ -228,15 +229,15 @@ export const DateTimePicker: React.FC<props> = ({
 		setSelectedHour(dayjs(value).hour());
 		setSelectedMinute(dayjs(value).minute());
 	}, []);
-    
-    const openPicker = useCallback(()=>{
-        setFocused(true);
-        if (type != "time") {
-            setShowDatePicker(true); // Show DatePicker on focus
-        } else {
-            setShowTimePicker(true); // Show TimePicker on focus
-        }
-    },[type])
+
+	const openPicker = useCallback(() => {
+		setFocused(true);
+		if (type != "time") {
+			setShowDatePicker(true); // Show DatePicker on focus
+		} else {
+			setShowTimePicker(true); // Show TimePicker on focus
+		}
+	}, [type]);
 
 	return (
 		<Wrapper
@@ -252,11 +253,11 @@ export const DateTimePicker: React.FC<props> = ({
 				htmlFor={name}
 				onFocus={(e) => {
 					e.preventDefault();
-					openPicker()
+					openPicker();
 				}}
 				onClick={(e) => {
 					e.preventDefault();
-					openPicker() // Show DatePicker on click
+					openPicker(); // Show DatePicker on click
 				}}
 				className={`${focused || showDatePicker ? "focused" : ""} ${
 					compiled ? "compiled" : ""
@@ -270,11 +271,11 @@ export const DateTimePicker: React.FC<props> = ({
 					id={name}
 					onFocus={(e) => {
 						e.preventDefault();
-						openPicker()
+						openPicker();
 					}}
 					onClick={(e) => {
 						e.preventDefault();
-						openPicker()
+						openPicker();
 					}}
 					min={minDate}
 					max={maxDate}
@@ -429,19 +430,17 @@ const Wrapper = styled.div<mainWrapperColors>`
 	}
 	.picker {
 		overflow-x: hidden;
-		background-color: var(--ion-color-${({ pkBgColor }) => pkBgColor});
-		color: var(--ion-color-${({ pkTxtColor }) => pkTxtColor});
+		background-color: ${({ pkBgColor }) => $color(pkBgColor)};
+		color: ${({ pkTxtColor }) => $color(pkTxtColor)};
 		.columnTitle {
-			color: var(--ion-color-${({ pkLabelColor }) => pkLabelColor});
+			color: ${({ pkLabelColor }) => $color(pkLabelColor)};
 		}
 		.columnItem {
 			opacity: 0.8;
-			color: var(--ion-color-${({ pkTxtColor }) => pkTxtColor});
+			color: ${({ pkTxtColor }) => $color(pkTxtColor)};
 			&.selected {
 				opacity: 1;
-				color: var(
-					--ion-color-${({ pkSelectedColor }) => pkSelectedColor}
-				);
+				color: ${({ pkSelectedColor }) => $color(pkSelectedColor)};
 			}
 		}
 	}
@@ -453,28 +452,28 @@ const InputLabel = styled.label<labelProps>`
 	left: 20px;
 	top: 2px;
 	font-size: 2rem;
-	color: var(--ion-color-${({ color }) => color});
+	color: ${({ color }) => $color(color)};
 	transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
 		font-size 0.5s ease-in;
 	&.focused {
 		font-size: 1.8rem;
 		top: -25px;
 		left: 0px;
-		color: var(--ion-color-${({ focusColor }) => focusColor});
+		color: ${({ focusColor }) => $color(focusColor)};
 	}
 	&.compiled {
 		font-size: 1.8rem;
 		top: -25px;
 		left: 0px;
-		color: var(--ion-color-${({ focusColor }) => focusColor});
+		color: ${({ focusColor }) => $color(focusColor)};
 	}
 	&.error {
-		color: var(--ion-color-danger);
+		color: ${$color("danger")};
 	}
 `;
 
 const InputWrapper = styled.div<wrapperProps>`
-	background-color: var(--ion-color-${({ color }) => color});
+	background-color: ${({ color }) => $color(color)};
 	position: relative;
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
@@ -492,7 +491,7 @@ const InputWrapper = styled.div<wrapperProps>`
 `;
 
 const FocusBox = styled.span<focusCircleProps>`
-	background-color: var(--ion-color-medium);
+	background-color: ${$color("medium")};
 	position: absolute;
 	display: block;
 	z-index: 1;
@@ -505,19 +504,19 @@ const FocusBox = styled.span<focusCircleProps>`
 	transition: background-color 1s cubic-bezier(1, 0.07, 1, 0.12) 0s,
 		width 0.5s ease-out, max-height 0.5s ease-out;
 	&.focused {
-		background-color: var(--ion-color-${({ focusColor }) => focusColor});
+		background-color: ${({ focusColor }) => $color(focusColor)};
 		width: 100%;
 		max-height: 100%;
 		transition: background-color 1s cubic-bezier(0.02, 1.17, 0, 0.97) 0s,
 			width 0.5s ease-out, max-height 0.5s ease-out;
 	}
 	&.compiled {
-		background-color: var(--ion-color-${({ focusColor }) => focusColor});
+		background-color: ${({ focusColor }) => $color(focusColor)};
 		width: 100%;
 		max-height: 100%;
 	}
 	&.error {
-		background-color: var(--ion-color-danger);
+		background-color: ${$color("danger")};
 	}
 `;
 
@@ -527,7 +526,7 @@ const StyledInput = styled.div<{ textColor: string; bgColor?: string }>`
 	position: relative;
 	z-index: 2;
 	background-image: none;
-	color: var(--ion-color-${({ textColor }) => textColor});
+	color: ${({ textColor }) => $color(textColor)};
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	font-size: 1.6rem;
@@ -537,10 +536,7 @@ const StyledInput = styled.div<{ textColor: string; bgColor?: string }>`
 	box-sizing: border-box;
 	padding-left: 20px;
 	padding-bottom: 10px;
-	background-color: ${({ bgColor }) =>
-		bgColor
-			? `var(--ion-color-${bgColor})`
-			: "var(--ion-background-color)"};
+	background-color: ${({ bgColor }) => $color(bgColor ?? "background-color")};
 
 	&:-webkit-autofill,
 	.dark &:-webkit-autofill,
@@ -550,15 +546,13 @@ const StyledInput = styled.div<{ textColor: string; bgColor?: string }>`
 	.dark &:-webkit-autofill:focus,
 	&:-webkit-autofill:active .dark &:-webkit-autofill:active {
 		-webkit-box-shadow: 0 0 0 30px white inset !important;
-		color: var(--ion-color-${({ textColor }) => textColor});
-		-webkit-text-fill-color: var(
-			--ion-color-${({ textColor }) => textColor}
-		);
+		color: ${({ textColor }) => $color(textColor)};
+		-webkit-text-fill-color: ${({ textColor }) => $color(textColor)};
 	}
 `;
 
 const ErrorSpan = styled.span`
-	color: var(--ion-color-danger);
+	color: ${$color('danger')};
 	font-size: 1.6rem;
 `;
 
@@ -573,7 +567,7 @@ const DatePickerContainer = styled.div`
 	max-width: calc(
 		var(--max-width) - 40px
 	); /* Adjust the maximum width as needed */
-	background-color: white;
+	background-color: ${$color('white')};
 	color: #000;
 	border: 1px solid lightgray;
 	z-index: 10;

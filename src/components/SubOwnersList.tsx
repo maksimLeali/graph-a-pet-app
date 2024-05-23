@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { SubOwnerListItem } from "@components";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
+import { $color } from "@theme";
 
 
 type props = {
@@ -34,7 +35,7 @@ const List = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    border-top: 1px solid var(--ion-color-medium);
+    border-top: 1px solid ${$color('medium')};
     max-height:calc(90vh - 140px);
     overflow-y: scroll;
     flex-flow: wrap;
@@ -50,7 +51,7 @@ const List = styled.div`
 
 const Item = styled.div`
     width: 100%;
-    border-bottom: 1px solid var(--ion-color-medium);
+    border-bottom: 1px solid ${$color('medium')};
     height: 90px;
     display: flex;
     justify-content:flex-start;
@@ -84,5 +85,5 @@ const Gradient = styled.div`
     height:50px;
     position: sticky;
     bottom:-2px;
-    background: linear-gradient(to top, var(--ion-color-light) , var(--ion-trasparent));
+    background: linear-gradient(to top, ${$color('light')} , ${$color('trasparent')});
 `

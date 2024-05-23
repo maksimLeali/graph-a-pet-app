@@ -11,6 +11,7 @@ import { useSignUpMutation } from "../operations/__generated__/signup.generated"
 
 import { Icon, SubmitInput, TextInput } from "@components";
 import { UserCreate } from "@types";
+import { $color } from "@theme";
 
 export const SignUp = () => {
 	const methods = useForm<UserCreate>({ mode: "onSubmit" });
@@ -131,7 +132,7 @@ const Form = styled.form`
 
 const InfoBox = styled.div`
 	width: 100%;
-	color: var(--ion-color-dark);
+	color: ${$color('dark')};
 	padding: 10px 24px;
 	> span {
 		display: flex;

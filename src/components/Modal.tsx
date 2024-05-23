@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 
-import { $cssTRBL, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 import { Icon, } from "@components";
 import { useOnClickOutside } from "@hooks";
 
@@ -29,8 +29,8 @@ export const Modal: React.FC<ModalProps> = ({
     onClose,
     onCancel,
     onConfirm,
-    bgColor = "var(--ion-color-light)",
-    txtColor = "var(--ion-color-dark)",
+    bgColor = "light",
+    txtColor = "dark",
     children,
     customActions = [],
 }) => {
@@ -96,7 +96,7 @@ export const Modal: React.FC<ModalProps> = ({
 const ModalBg = styled.div`
     width: 100vw;
     height:0;
-    background-color: var(--ion-trasparent-bg);
+    background-color: ${$color('trasparent-bg')};
     position: fixed;
     display: flex;
     align-items: center;
@@ -123,8 +123,8 @@ const ModalBox = styled.div<{ bgColor: string; txtColor: string }>`
     width: 100%;
     max-height:90dvh;
     border-radius: 4px;
-    color: ${({ txtColor }) => txtColor};
-    background-color: ${({ bgColor }) => bgColor}!important;
+    color: ${({ txtColor }) => $color(txtColor)};
+    background-color: ${({ bgColor }) => $color(bgColor)}!important;
     padding: ${$cssTRBL(2, 0)};
 `;
 
@@ -144,7 +144,7 @@ const CloseContainer = styled.div`
 `;
 
 const CustomIonButton = styled(IonButton)<{ txtColor?: string }>`
-    color: ${({ txtColor }) => txtColor ?? "var(--ion-color-light)"};
+    color: ${({ txtColor }) => $color( txtColor ?? "light")};
 `;
 
 const Actions = styled.div`

@@ -10,7 +10,7 @@ import { useOnClickOutside } from "@hooks";
 import { useUserContext } from "@contexts";
 import { Icon, Toggle, Modal, ModalProps } from "@components";
 import { UserRole } from "@types";
-import { $cssTRBL, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
 	open: boolean;
@@ -148,7 +148,7 @@ const ConfirmLogout = () => {
 const MenuBackground = styled.div`
 	width: 100vw;
 	height: 100dvh;
-	background-color: var(--ion-trasparent-bg-shade);
+	background-color: ${$color('trasparent-bg-shade')};
 	position: fixed;
 	display: flex;
 	align-items: center;
@@ -174,7 +174,7 @@ const Container = styled.div`
 	max-width: var(--max-width);
 	bottom: -100%;
 	padding: ${$cssTRBL(2,0, 1)};
-	background-color: var(--ion-color-light);
+	background-color: ${$color('light')};
 	box-sizing: border-box;
 	border-radius: 4px 4px 0 0;
 	transition: bottom 0.5s ease-in-out;
@@ -187,8 +187,7 @@ const MainOptions = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	border-bottom: 1px solid var(--ion-color-dark);
-	
+	border-bottom: 1px solid ${$color('dark')};
 	margin-bottom: ${$uw(1)};
 	font-size: 1.6rem;
 `;
@@ -197,7 +196,7 @@ const ActionOptions = styled.div`
 	padding: 0;
 	display: flex;
 	flex-direction: column;
-	border-bottom: 1px solid var(--ion-color-dark);
+	border-bottom: 1px solid ${$color('dark')};
 	font-size: 1.6rem;
 
 	margin-bottom: ${$uw(1)};
@@ -216,7 +215,7 @@ const Option = styled.a`
 		justify-content: flex-end;
 	}
 	> span {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 	}
 `;
 const FakeOption = styled.div`
@@ -234,7 +233,7 @@ const FakeOption = styled.div`
 		justify-content: flex-end;
 	}
 	> span {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 	}
 `;
 const ToggleOption = styled.div`
@@ -255,7 +254,7 @@ const ToggleOption = styled.div`
 		margin-bottom: 0;
 	}
 	> span {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 	}
 `;
 

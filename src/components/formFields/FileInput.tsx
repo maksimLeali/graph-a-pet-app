@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useOnClickOutside } from "@hooks";
 import { I18NKey } from "@i18n";
 import {  Icon } from "@components";
+import { $color } from "@theme";
 
 type props = {
 	name: string;
@@ -130,28 +131,28 @@ const InputLabel = styled.label<labelProps>`
 	left: 20px;
 	top: 2px;
 	font-size: 2rem;
-	color: var(--ion-color-${({ color }) => color});
+	color: ${({ color }) => $color(color)};
 	transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
 		font-size 0.5s ease-in;
 	&.focused {
 		font-size: 1.8rem;
 		top: -25px;
 		left: 0px;
-		color: var(--ion-color-${({ focusColor }) => focusColor});
+		color: ${({ focusColor }) => $color(focusColor)};
 	}
 	&.compiled {
 		font-size: 1.8rem;
 		top: -25px;
 		left: 0px;
-		color: var(--ion-color-${({ focusColor }) => focusColor});
+		color: ${({ focusColor }) => $color(focusColor)};
 	}
 	&.error {
-		color: var(--ion-color-danger);
+		color: ${$color('danger')};
 	}
 `;
 
 const InputWrapper = styled.div<wrapperProps>`
-	background-color: var(--ion-color-${({ color }) => color});
+	background-color: ${({ color }) => $color(color)};
 	position: relative;
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
@@ -169,7 +170,7 @@ const InputWrapper = styled.div<wrapperProps>`
 `;
 
 const FocusBox = styled.span<focusCircleProps>`
-	background-color: var(--ion-color-medium);
+	background-color: ${$color('medium')};
 	position: absolute;
 	display: block;
 	z-index: 1;
@@ -182,7 +183,7 @@ const FocusBox = styled.span<focusCircleProps>`
 	transition: background-color 1s cubic-bezier(1, 0.07, 1, 0.12) 0s,
 		width 0.5s ease-out, max-height 0.5s ease-out;
 	&.focused {
-		background-color: var(--ion-color-${({ focusColor }) => focusColor});
+		background-color: ${({ focusColor }) => $color(focusColor)};
 		width: 100%;
 		max-height: 100%;
 		transition: background-color 1s cubic-bezier(0.02, 1.17, 0, 0.97) 0s,

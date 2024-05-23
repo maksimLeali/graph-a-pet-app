@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Chip, Image2x } from "@components";
 import { custodyLevelColors } from "@utils";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
-import { $cssTRBL, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
 	ownership: PetMinSubOwnerFragment;
@@ -48,7 +48,7 @@ export const SubOwnerListItem: React.FC<props> = ({
 
 const Item = styled.div`
 	width: 100%;
-	border-bottom: 1px solid var(--ion-color-medium);
+	border-bottom: 1px solid ${$color('medium')};
 	height: ${$uw(5)};
 	padding: ${$cssTRBL(0, 2)};
 	display: flex;

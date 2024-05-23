@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import { $cssTRBL, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 import { Icon, IconName } from "@components";
 
 export const BottomMenu= () => {
@@ -44,13 +44,13 @@ const Container = styled.div`
 	border-radius: 10px 10px 0 0;
 	width: 100%;
 	max-width: var(--max-width);
-	background-color: var(--ion-color-light);
-	box-shadow: 0 -1px 2px 0px var(--ion-color-medium);
+	background-color: ${$color('light')};
+	box-shadow: 0 -1px 2px 0px ${$color('medium')};
 	display: flex;
 	justify-content: space-between;
 	padding: ${$cssTRBL(2, 4)};
 	box-sizing: border-box;
 	.dark & {
-		background-color: var(--ion-color-step-50);
+		background-color: ${$color('step-50')};
 	}
 `;

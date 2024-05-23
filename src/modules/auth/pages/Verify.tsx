@@ -18,7 +18,7 @@ import {
 	TextInput,
 } from "@components";
 import {  MutationVerifyUserArgs } from "@types";
-import { $uw } from "@theme";
+import { $color, $uw } from "@theme";
 
 export const Verify: React.FC = () => {
 	const methods = useForm<MutationVerifyUserArgs>({
@@ -121,7 +121,7 @@ const Container = styled.div`
 		height: 30px;
 	}
 	h4 {
-		color: var(--ion-color-dark);
+		color: ${$color('dark')};
 		align-self: flex-start;
 		margin-top: ${$uw(10)};
 		padding-left: ${$uw(1)};
@@ -140,7 +140,7 @@ const Form = styled.form`
 
 const InfoBox = styled.div`
 	width: 100%;
-	color: var(--ion-color-dark);
+	color: ${$color('dark')};
 	padding: 10px 24px;
 	margin-bottom: ${$uw(6)};
 	&:last-child {

@@ -1,3 +1,4 @@
+import { $color } from "@theme";
 import React from "react";
 import styled from "styled-components";
 
@@ -17,8 +18,8 @@ export const Toggle: React.FC<Props> = ({
   btnSize = "25px",
   leftElement,
   rigthElement,
-  barColor="--ion-color-medium",
-  btnColor="--ion-color-dark"
+  barColor="medium",
+  btnColor="dark"
 }) => {
   return (
     <Container size={`calc(${btnSize} * 2 )`}>
@@ -41,7 +42,7 @@ position: relative;
 `
 
 const Wrapper = styled.div<{bgColor: string}>`
-  background-color: var(${({bgColor})=> bgColor});
+  background-color: ${({bgColor})=> $color(bgColor)};
   border-radius: 100px;
   height: 25px;
   width:100%;
@@ -61,7 +62,7 @@ type StateProps = {
 
 const StateBtn = styled.div<StateProps>`
   width: ${({ size }) => size};
-  background-color: var(${({bgColor})=> bgColor});
+  background-color: ${({bgColor})=> $color(bgColor)};
   height: ${({ size }) => size};
   border-radius: 100px;
   position: absolute;

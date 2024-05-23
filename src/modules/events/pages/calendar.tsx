@@ -15,7 +15,7 @@ import { useUserContext, useModal } from "@contexts";
 import { AppointmentsList, CustomCalendar} from "@components";
 import { AddEventForm } from "../components/addEventForm";
 import { MutationCreateTreatmentArgs } from "@types";
-import { $uw } from "@theme";
+import { $color, $uw } from "@theme";
 
 export const CalendarEvents: React.FC = () => {
 	const { setPage, refetchDashboard } = useUserContext();
@@ -210,7 +210,7 @@ export const CalendarEvents: React.FC = () => {
 
 const AddEventCta = styled.div`
 	width: 100%;
-	color: var(--ion-color-primary);
+	color: ${$color('primary')};
 	text-decoration: underline;
 	text-align: end;
 	padding: 0 ${$uw(2)};
