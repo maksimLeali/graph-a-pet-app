@@ -174,8 +174,8 @@ export const SelectInput: React.FC<props> = ({
 								: options.length * 50
 						}
 						className={`options-container ${
-							focused ? "focused" : ""
-						} ${compiled ? "compiled" : ""} ${
+							focused ? "focused" : ""} ${
+							compiled ? "compiled" : ""} ${
 							up || forceOptionsUp ? "up" : ""
 						}`}
 						ref={optionsRef}
@@ -289,9 +289,9 @@ export const SelectInput: React.FC<props> = ({
 										: options.length * 50
 								}
 								className={`options-container ${
-									focused ? "focused" : ""
-								} ${compiled ? "compiled" : ""} ${
-									up ? "up" : ""
+									focused ? "focused" : ""} ${
+									compiled ? "compiled" : ""} ${
+										up || forceOptionsUp ? "up" : ""
 								}`}
 								ref={optionsRef}
 							>

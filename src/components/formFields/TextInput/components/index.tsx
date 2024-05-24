@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { $color } from "../../../../utils/theme/functions";
+import { $color, $uw } from "@theme";
 
 type wrapperProps = {
 	color: string;
@@ -13,7 +13,8 @@ type wrapperProps = {
 export const Wrapper = styled.div<wrapperProps>`
 	width: 100%;
 	position: relative;
-	margin-bottom: 40px;
+	height: ${$uw(4)};
+	margin-bottom: ${$uw(2)};
 	> .label {
 		color: ${({ color }) => $color(color)};
 	}
@@ -32,14 +33,16 @@ export const Wrapper = styled.div<wrapperProps>`
 			&:-webkit-autofill:focus,
 			.dark &:-webkit-autofill:focus,
 			&:-webkit-autofill:active .dark &:-webkit-autofill:active {
-				-webkit-box-shadow: 0 0 0 30px ${$color("background-color")} inset !important;
+				-webkit-box-shadow: 0 0 0 30px ${$color("background-color")}
+					inset !important;
 				color: ${({ textColor }) => $color(textColor)};
-				-webkit-text-fill-color: ${({ textColor }) => $color(textColor)};
+				-webkit-text-fill-color: ${({ textColor }) =>
+					$color(textColor)};
 			}
 		}
 	}
 	.error-span {
-		color:  ${({ errorColor }) => $color(errorColor)};
+		color: ${({ errorColor }) => $color(errorColor)};
 	}
 	&.submitting,
 	&.disabled {
@@ -52,12 +55,12 @@ export const Wrapper = styled.div<wrapperProps>`
 			color: ${({ focusColor }) => $color(focusColor)};
 		}
 		.focus-box {
-			background-color:  ${({ focusColor }) => $color(focusColor)};
+			background-color: ${({ focusColor }) => $color(focusColor)};
 		}
 	}
 	&.disabled {
 		> .label {
-			color:  ${({ disabledColor }) => $color(disabledColor)};
+			color: ${({ disabledColor }) => $color(disabledColor)};
 		}
 		.focus-box {
 			background-color: ${({ disabledColor }) => $color(disabledColor)};
@@ -68,7 +71,7 @@ export const Wrapper = styled.div<wrapperProps>`
 			color: ${({ errorColor }) => $color(errorColor)};
 		}
 		.focus-box {
-			background-color:${({ errorColor }) => $color(errorColor)};
+			background-color: ${({ errorColor }) => $color(errorColor)};
 		}
 	}
 `;
@@ -76,19 +79,15 @@ export const Wrapper = styled.div<wrapperProps>`
 export const InputLabel = styled.label`
 	z-index: 2;
 	position: absolute;
-	left: 20px;
+	left: ${$uw(1)};
 	top: 2px;
 	font-size: 2rem;
 	transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
 		font-size 0.5s ease-in;
-	&.focused {
-		font-size: 1.8rem;
-		top: -25px;
-		left: 0px;
-	}
+	&.focused,
 	&.compiled {
 		font-size: 1.8rem;
-		top: -25px;
+		top: ${$uw(-2)};
 		left: 0px;
 	}
 `;
@@ -98,8 +97,8 @@ export const InputWrapper = styled.div`
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
 	border-top-right-radius: 0;
-	height: 38px;
-	margin-bottom: 12px;
+	height: ${$uw(2.5)};
+	margin-bottom: ${$uw(1)};
 	overflow: hidden;
 	z-index: 1;
 	> .icon-wrapper {
@@ -111,7 +110,7 @@ export const InputWrapper = styled.div`
 `;
 
 export const FocusBox = styled.span`
-	background-color: ${$color('medium')};
+	background-color: ${$color("medium")};
 	position: absolute;
 	display: block;
 	z-index: 1;
@@ -133,7 +132,7 @@ export const FocusBox = styled.span`
 		max-height: 100%;
 	}
 	&.error {
-		background-color: ${$color('danger')};
+		background-color: ${$color("danger")};
 	}
 `;
 
@@ -150,8 +149,8 @@ export const StyledInput = styled.input`
 	height: 100%;
 	width: 100%;
 	box-sizing: border-box;
-	padding-left: 20px;
-	padding-bottom: 10px;
+	padding-left: ${$uw(1)};
+	padding-bottom: ${$uw(1)};
 `;
 
 export const ErrorSpan = styled.span`

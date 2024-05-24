@@ -13,26 +13,10 @@ import {
 	StyledInput,
 	ErrorSpan,
 } from "./components";
+import { CommonProps, HookFormProps } from "./components/types";
 
-type HookFormInputProps = {
-	name: string;
-	textLabel?: string;
-	ntTextLabel?: string;
-	required?: boolean;
-	type?: "text" | "password";
-	inputMode?: "text" | "email";
-	focusColor?: string;
-	disabledColor?: string;
-	textColor?: string;
-	errorColor?: string;
-	bgColor?: string;
-	icon?: IconName;
-	color?: string;
-	disabled?: boolean;
-	registerOptions?: RegisterOptions;
-};
 
-export const HookFormInput: React.FC<HookFormInputProps> = ({
+export const HookFormInput: React.FC<HookFormProps & CommonProps> = ({
 	textLabel,
 	ntTextLabel,
 	required = false,

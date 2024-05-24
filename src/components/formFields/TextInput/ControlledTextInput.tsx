@@ -11,28 +11,10 @@ import {
 	StyledInput,
 	ErrorSpan,
 } from "./components";
+import { CommonProps, ControlledProps } from "./components/types";
 
-type ControlledInputProps = {
-	name?: string;
-	value?: string;
-	onChange: (value: string) => void;
-	textLabel?: string;
-	ntTextLabel?: string;
-	required?: boolean;
-	type?: "text" | "password";
-	inputMode?: "text" | "email";
-	color?: string;
-	focusColor?: string;
-	disabledColor?: string;
-	textColor?: string;
-	errorColor?: string;
-	bgColor?: string;
-	icon?: IconName;
-	disabled?: boolean;
-	error?: string;
-};
 
-export const ControlledTextInput: React.FC<ControlledInputProps> = ({
+export const ControlledTextInput: React.FC<ControlledProps & CommonProps> = ({
 	value,
 	onChange,
 	textLabel,
