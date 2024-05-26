@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import  _ from 'lodash'
+
 import { useOnClickOutside } from "@hooks";
 import {
 	FocusBox,
@@ -119,12 +119,11 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
                             onClick={() => setFocused(!focused)}
                         >
                             {value
-                                ? _.find(options, (opt) => opt.value === value)
+                                ? options.find( (opt) => opt.value === value)
                                       ?.render || (
                                       <p>
                                           {
-                                              _.find(
-                                                  options,
+                                              options.find(
                                                   (opt) => opt.value === value
                                               )?.label
                                           }
@@ -134,7 +133,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
                         </LabelContainer>
                         <IconContainer bgColor={bgColor}>
                             <Icon
-                                size="30px"
+                                size="26px"
                                 time=".5s"
                                 onMouseUp={() => setFocused(!focused)}
                                 className={`selectIcon ${classes}`}
@@ -152,7 +151,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
                             }`}
                             ref={optionsRef}
                         >
-                            {_.map(options, (option, i) => (
+                            {options.map( (option, i) => (
                                 <Option
                                     key={i}
                                     className="option"

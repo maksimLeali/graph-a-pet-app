@@ -255,6 +255,7 @@ export type HealthCardUpdate = {
 };
 
 
+/** just see */
 export type Join = {
   key: Scalars['String'];
   value: DeepFilters;

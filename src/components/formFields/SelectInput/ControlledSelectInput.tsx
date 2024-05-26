@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import _ from "lodash";
+
 import { Icon } from "@components";
 import {
 	FocusBox,
@@ -103,12 +103,11 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 					onClick={() => setFocused(!focused)}
 				>
 					{currentValue
-						? _.find(options, (opt) => opt.value === currentValue)
+						? options.find( (opt) => opt.value === currentValue)
 								?.render || (
 								<p>
 									{
-										_.find(
-											options,
+										options.find(
 											(opt) => opt.value === currentValue
 										)?.label
 									}
@@ -118,7 +117,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 				</LabelContainer>
 				<IconContainer bgColor={bgColor}>
 					<Icon
-						size="30px"
+						size="26px"
 						time=".5s"
 						onMouseUp={() => setFocused(!focused)}
 						className={`selectIcon ${
@@ -140,7 +139,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
                     }`}
 					ref={optionsRef}
 				>
-					{_.map(options, (option, i) => (
+					{options.map((option, i) => (
 						<Option
 							key={i}
 							className="option"

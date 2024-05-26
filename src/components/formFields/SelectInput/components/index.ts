@@ -21,7 +21,7 @@ export const InvisibleInput = styled.input`
 export const Wrapper = styled.div<selectProps>`
 	width: 100%;
 	position: relative;
-	height: 40px;
+	height: ${$uw(3)};
 	margin-bottom: 40px;
     
 	&.submitting, &.disabled {
@@ -101,27 +101,22 @@ export const Wrapper = styled.div<selectProps>`
 export const InputLabel = styled.label`
 	z-index: 3;
 	position: absolute;
-	left: 20px;
+	left: ${$uw(1)};
 	top: 2px;
 	font-size: 2rem;
 
 	transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
 		font-size 0.5s ease-in;
-	&.focused {
+	&.focused, &.compiled {
 		font-size: 1.8rem;
-		top: -25px;
-		left: 0px;
-	}
-	&.compiled {
-		font-size: 1.8rem;
-		top: -25px;
+		top: ${$uw(-1.5)};
 		left: 0px;
 	}
 `;
 
 export const InputWrapper = styled.div`
 	width: 100%;
-	height: 40px;
+	height: ${$uw(2.5)};
 	padding-bottom: 2px;
 	padding-left: 2px;
 	box-sizing: border-box;
@@ -134,9 +129,9 @@ export const LabelContainer = styled.div<{ bgColor?: string }>`
 	height: 100%;
 	position: relative;
 	z-index: 2;
-	width: calc(100% - 40px);
+	width: calc(100% -  ${$uw(2.5)} );
 	font-size: 1.3rem;
-	padding-left: 20px;
+	padding-left: ${$uw(1)};
 
 	background-color: ${({ bgColor }) =>
         bgColor
@@ -152,7 +147,7 @@ export const LabelContainer = styled.div<{ bgColor?: string }>`
 `;
 
 export const IconContainer = styled.div<{ bgColor?: string }>`
-	width: 38px;
+	width: calc( ${$uw(2.5)} - 2px);
 	position: relative;
 	z-index: 2;
 	display: flex;
@@ -198,7 +193,7 @@ export const FocusBox = styled.span`
 `;
 
 export const OptionsContainer = styled.div<{ maxHeight: number }>`
-	width: calc(100% - 40px);
+	width: calc(100% - ${$uw(3)});
 	position: absolute;
 	z-index: 4;
 	top: 100%;

@@ -31,7 +31,7 @@ export type CommonProps = {
     icon?: IconName;
     errorColor?: string;
     bgColor?: string;
-    error: string;
+    error?: string;
 };
 
 // Mutually exclusive props type
