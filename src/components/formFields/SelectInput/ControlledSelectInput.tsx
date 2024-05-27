@@ -129,8 +129,8 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 				<OptionsContainer
 					maxHeight={
 						options.length > rowsPerList
-							? rowsPerList * 50
-							: options.length * 50
+							? rowsPerList * 3.5
+							: options.length * 3.5
 					}
 					className={`options-container ${
                         focused ? "focused" : ""} ${

@@ -18,12 +18,27 @@ export const InvisibleInput = styled.input`
 	opacity: 0;
 `;
 
+
 export const Wrapper = styled.div<selectProps>`
 	width: 100%;
 	position: relative;
 	height: ${$uw(3)};
-	margin-bottom: 40px;
-    
+	margin-bottom:  ${$uw(3)};
+    .fake-input{
+		&:-webkit-autofill,
+			.dark &:-webkit-autofill,
+			&:-webkit-autofill:hover,
+			.dark &:-webkit-autofill:hover,
+			&:-webkit-autofill:focus,
+			.dark &:-webkit-autofill:focus,
+			&:-webkit-autofill:active .dark &:-webkit-autofill:active {
+				-webkit-box-shadow: 0 0 0 30px ${$color("background-color")}
+					inset !important;
+				color: ${({ textColor }) => $color(textColor)};
+				-webkit-text-fill-color: ${({ textColor }) =>
+					$color(textColor)};
+			}
+	}
 	&.submitting, &.disabled {
 		opacity: 0.5;
 		pointer-events: none;
@@ -109,14 +124,14 @@ export const InputLabel = styled.label`
 		font-size 0.5s ease-in;
 	&.focused, &.compiled {
 		font-size: 1.8rem;
-		top: ${$uw(-1.5)};
+		top: ${$uw(-2)};
 		left: 0px;
 	}
 `;
 
 export const InputWrapper = styled.div`
 	width: 100%;
-	height: ${$uw(2.5)};
+	height: ${$uw(3)};
 	padding-bottom: 2px;
 	padding-left: 2px;
 	box-sizing: border-box;
@@ -129,7 +144,7 @@ export const LabelContainer = styled.div<{ bgColor?: string }>`
 	height: 100%;
 	position: relative;
 	z-index: 2;
-	width: calc(100% -  ${$uw(2.5)} );
+	width: calc(100% -  ${$uw(3)} );
 	font-size: 1.3rem;
 	padding-left: ${$uw(1)};
 
@@ -147,7 +162,7 @@ export const LabelContainer = styled.div<{ bgColor?: string }>`
 `;
 
 export const IconContainer = styled.div<{ bgColor?: string }>`
-	width: calc( ${$uw(2.5)} - 2px);
+	width: calc( ${$uw(3)} - 2px);
 	position: relative;
 	z-index: 2;
 	display: flex;
@@ -212,17 +227,17 @@ export const OptionsContainer = styled.div<{ maxHeight: number }>`
 	}
 	&.focused {
 		opacity: 1;
-		max-height: ${({ maxHeight }) => maxHeight}px;
+		max-height: ${({maxHeight})=>$uw(maxHeight)};
 	}
 	&.up {
-		bottom: 50px;
+		bottom: ${$uw(3)};
 		top: unset;
 	}
 `;
 
 export const Option = styled.div`
 	width: 100%;
-	height: 50px;
+	height: ${$uw(3.5)};
 	border-bottom: 1px solid;
 	padding: 5px 12px;
 	font-size: 1.3rem;

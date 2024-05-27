@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-
+import _ from 'lodash'
 import { useOnClickOutside } from "@hooks";
 import {
-	FocusBox,
-	IconContainer,
-	InputLabel,
-	InputWrapper,
-	InvisibleInput,
-	LabelContainer,
-	OptionsContainer,
-	Wrapper,
-	Option,
+    FocusBox,
+    IconContainer,
+    InputLabel,
+    InputWrapper,
+    InvisibleInput,
+    LabelContainer,
+    OptionsContainer,
+    Wrapper,
+    Option,
 } from "./components";
 import { CommonProps, HookFormProps } from "./components/types";
 import { Icon } from "@components";
@@ -39,9 +39,14 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
     const [focused, setFocused] = useState(false);
     const [compiled, setCompiled] = useState(false);
     const [up, setUp] = useState(false)
-
+    const [temptext, setTempText] = useState("")
+    const [resetText, setResetText] = useState(false)
     const ref = useRef<HTMLDivElement>(null);
     const optionsRef = useRef<HTMLDivElement>(null);
+    const textRef = useRef<HTMLInputElement>(null)
+
+
+
     const { t } = useTranslation();
     const {
         formState: { errors },
@@ -50,6 +55,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
         getValues,
     } = useFormContext();
 
+
     useOnClickOutside(ref, () => setFocused(false));
 
     useEffect(() => {
@@ -57,26 +63,72 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
         else setCompiled(false);
     }, [getValues(name)]);
 
+    useEffect(() => {
+        if (!focused) {
+            setTempText("")
+            return
+        }
+        if (!textRef.current) return
+        textRef.current.focus()
+    }, [focused])
 
     useEffect(() => {
-		const itemsHeight =
-			options.length > rowsPerList
-				? rowsPerList * 60
-				: options.length * 60;
-		setUp(
-			itemsHeight +
-				((optionsRef.current?.offsetParent as HTMLDivElement)
-					?.offsetTop ?? 0) >
-				window.innerHeight
-		);
-	}, [rowsPerList, optionsRef.current]);
+        const itemsHeight =
+            options.length > rowsPerList
+                ? rowsPerList * 60
+                : options.length * 60;
+        setUp(
+            itemsHeight +
+            ((optionsRef.current?.offsetParent as HTMLDivElement)
+                ?.offsetTop ?? 0) >
+            window.innerHeight
+        );
+    }, [rowsPerList, optionsRef.current]);
+/*
+    let timeout: NodeJS.Timeout
+   const handleFilterText = useCallback((text: string) => {
+        if (timeout) clearTimeout(timeout)
+        if(resetText) {
+            
+            setTempText(text?.length ?  text[text.length-1] : "")
+        }else{
+            setTempText(text)
+        }
+        setResetText(false)
+        
+        timeout = setTimeout(() => {
+            setResetText(true)
+        }, 500)
+
+    }, [resetText])
+
+    useEffect(()=>{
+        console.log("temptext",temptext)
+    }, [temptext])
+    const similarityScore = (str1: string, str2: string) => {
+        let score = 0;
+        const minLength = Math.min(str1.length, str2.length);
+        const lowered1 = str1.toLocaleLowerCase()
+        const lowered2 = str2.toLocaleLowerCase()
+        for (let i = 0; i < minLength; i++) {
+            if (lowered1[i] === lowered2[i]) {
+                score++;
+            }
+        }
+        return score;
+    };
+    const filteredOptions = useMemo(() => {
+        if (!temptext?.length) return options
+        return _.sortBy(options ,(opt) => similarityScore(temptext, opt.label))
+    }, [temptext])
+    */
 
     const classes = useMemo(() => {
-		return `${disabled && "disabled"} ${focused && "focused"} ${
-			compiled && "compiled"
-		} ${errors[name] && "error"}`;
-	}, [errors[name], disabled, focused, compiled]);
-    
+        return `${disabled && "disabled"} ${focused && "focused"} ${compiled && "compiled"
+            } ${errors[name] && "error"}`;
+    }, [errors[name], disabled, focused, compiled]);
+
+ 
 
     return (
         <Wrapper
@@ -100,11 +152,12 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
             <Controller
                 name={name}
                 control={control}
-                render={({ field: { onChange, value, ref,  name } }) => (
+                render={({ field: { onChange, value, ref, name } }) => (
                     <InputWrapper ref={ref} className="inputWrapper">
                         <InvisibleInput
-                            id={name}
-                            onFocus={() => setFocused(!focused)}
+                            id={name + '-fake'}
+                            onFocus={() => setFocused(true)}
+
                             {...register(name, {
                                 required: {
                                     value: required,
@@ -113,22 +166,38 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
                                 ...registerOptions,
                             })}
                         />
+                       {/* <InvisibleInput
+                            id={name}
+                            onFocus={() => {
+                                setFocused(true)
+
+                            }}
+                            className="fake-input"
+                            value={temptext}
+                            ref={textRef}
+                            type="text"
+                            onChange={(v) => {
+                                handleFilterText(v.target.value)
+
+                            }}
+
+                        /> */}
                         <LabelContainer
                             bgColor={bgColor}
                             className="label-container"
                             onClick={() => setFocused(!focused)}
                         >
                             {value
-                                ? options.find( (opt) => opt.value === value)
-                                      ?.render || (
-                                      <p>
-                                          {
-                                              options.find(
-                                                  (opt) => opt.value === value
-                                              )?.label
-                                          }
-                                      </p>
-                                  )
+                                ? options.find((opt) => opt.value === value)
+                                    ?.render || (
+                                    <p>
+                                        {
+                                            options.find(
+                                                (opt) => opt.value === value
+                                            )?.label
+                                        }
+                                    </p>
+                                )
                                 : ""}
                         </LabelContainer>
                         <IconContainer bgColor={bgColor}>
@@ -143,15 +212,14 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
                         <OptionsContainer
                             maxHeight={
                                 options.length > rowsPerList
-                                    ? rowsPerList * 50
-                                    : options.length * 50
+                                    ? rowsPerList * 3.5
+                                    : options.length * 3.5
                             }
-                            className={`options-container ${classes} ${
-                                up || forceOptionsUp ? "up" : ""
-                            }`}
+                            className={`options-container ${classes} ${up || forceOptionsUp ? "up" : ""
+                                }`}
                             ref={optionsRef}
                         >
-                            {options.map( (option, i) => (
+                            {options.map((option, i) => (
                                 <Option
                                     key={i}
                                     className="option"

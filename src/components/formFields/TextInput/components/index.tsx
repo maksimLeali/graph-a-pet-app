@@ -97,7 +97,7 @@ export const InputWrapper = styled.div`
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
 	border-top-right-radius: 0;
-	height: ${$uw(2.5)};
+	height: ${$uw(3)};
 	margin-bottom: ${$uw(1)};
 	overflow: hidden;
 	z-index: 1;
@@ -131,9 +131,7 @@ export const FocusBox = styled.span`
 		width: 100%;
 		max-height: 100%;
 	}
-	&.error {
-		background-color: ${$color("danger")};
-	}
+	
 `;
 
 export const StyledInput = styled.input`
