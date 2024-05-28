@@ -78,7 +78,6 @@ export const Step1 = React.memo(() => {
 							name="family"
 							options={familyOptions}
 							required
-							
 							forceOptionsUp
 							textLabel="pets.add_pet_page.step_1.insert_family"
 						/>

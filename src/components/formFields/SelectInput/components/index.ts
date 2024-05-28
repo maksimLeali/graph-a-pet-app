@@ -37,12 +37,12 @@ export const Wrapper = styled.div<selectProps>`
         }
 	}
 	.inputLabel {
-        color: ${({color})=> $color(color)} 
+        color: ${({ color }) => $color(color)} 
 	}
 	.label-container {
 		background-color: ${({ bgColor }) => $color(bgColor ?? 'background-color')};
 		> p {
-			color: var(--ion-color-${({ textColor }) => textColor});
+			color: ${({ textColor }) => $color(textColor)};
 		}
 	}
 	.inputWrapper {
@@ -51,21 +51,23 @@ export const Wrapper = styled.div<selectProps>`
 
 	
 	.options-container {
-		background-color: var(--ion-background-color);
-		border-color: var(--ion-color-${({ bgColor }) => bgColor});
+		background-color: ${$color('background-color')};
+		border-color: ${({ color }) => $color(color)}; 
 		&.up {
 			border-bottom :2px solid ${({ focusColor }) => $color(focusColor)}
 		}
 	}
 	.option {
-		color: var(--ion-color-${({ textColor }) => textColor});
-		border-color: var(--ion-color-${({ bgColor }) => bgColor});
+		color: ${({ textColor }) => $color(textColor)};
+		border-color: ${({ color }) => $color(color)};
+		background-color: ${({ bgColor }) => $color(bgColor ?? 'background-color')};
 		&:hover,&.selected {
-			border-color: var(--ion-color-${({ focusColor }) => focusColor});
-			background-color: var(
-				--ion-color-${({ hoverColor }) => hoverColor}
-			);
+			border-color: ${({ focusColor }) => $color(focusColor)};
+			background-color: ${({ hoverColor }) => $color(hoverColor)};
 		}
+	}
+	.focusBox{
+		background-color: ${$color("medium")};
 	}
 	.error-span{
 		color: ${$color('danger')};
@@ -78,12 +80,10 @@ export const Wrapper = styled.div<selectProps>`
 			}
 		}
         .inputLabel {
-            color: var(--ion-color-${({ focusColor }) => focusColor});
+            color: ${({ focusColor }) => $color(focusColor)};
 		}
 		.focusBox{
-			background-color: var(
-				--ion-color-${({ focusColor }) => focusColor}
-			);
+			background-color:${({ focusColor }) => $color(focusColor)}
 		}
     }
     &.error {
@@ -94,7 +94,7 @@ export const Wrapper = styled.div<selectProps>`
             }
         }
         .inputLabel {
-			color: var(--ion-color-danger);
+			color: ${$color('danger')};
         }
 		.focusBox{
 			background-color: ${$color('danger')}
@@ -167,7 +167,6 @@ export const IconContainer = styled.div`
 `;
 
 export const FocusBox = styled.span`
-	background-color: ${$color("medium")};
 	position: absolute;
 	display: block;
 	z-index: 1;
@@ -207,9 +206,7 @@ export const OptionsContainer = styled.div<{ maxHeight: number }>`
 	box-shadow: 1px 1px 2px 0px #2b2b2b;
 	transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
 
-	@media (prefers-color-scheme: dark) {
-		background-color: var(--ion-background-color);
-	}
+	
 	&.focused {
 		opacity: 1;
 		max-height: ${({ maxHeight }) => $uw(maxHeight)};
