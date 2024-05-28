@@ -28,54 +28,16 @@ export const Wrapper = styled.div<selectProps>`
 		opacity: 0.5;
 		pointer-events: none;
 	}
+	.icon-container{
+		background-color: ${({ bgColor }) => $color(bgColor ?? 'background-color')};
+	}
     .selectIcon {
 		> * { 
             color:${({ color }) => $color(color)} !important; 
         }
 	}
 	.inputLabel {
-        color: var(--ion-color-${({ bgColor }) => bgColor}); 
-	}
-	&.focused ,
-	&.compiled {
-        .selectIcon {
-            > * {
-                color: ${({ focusColor }) => $color(focusColor)} !important;
-			}
-		}
-        .inputLabel {
-            color: var(--ion-color-${({ focusColor }) => focusColor});
-		}
-    }
-    &.error {
-        .selectIcon {
-            > * {
-                color: ${({ errorColor }) => $color(errorColor)} !important
-                
-            }
-        }
-        .inputLabel {
-			color: var(--ion-color-danger);
-        }
-    }
-	.inputWrapper {
-		background-color: ${({ color }) => $color(color)};
-	}
-
-	.focusBox {
-		&.focused {
-			background-color: var(
-				--ion-color-${({ focusColor }) => focusColor}
-			);
-		}
-		&.compiled {
-			background-color: var(
-				--ion-color-${({ focusColor }) => focusColor}
-			);
-		}
-		&.error {
-			background-color: var(--ion-color-danger);
-		}
+        color: ${({color})=> $color(color)} 
 	}
 	.label-container {
 		background-color: ${({ bgColor }) => $color(bgColor ?? 'background-color')};
@@ -83,6 +45,11 @@ export const Wrapper = styled.div<selectProps>`
 			color: var(--ion-color-${({ textColor }) => textColor});
 		}
 	}
+	.inputWrapper {
+		background-color: ${({ color }) => $color(color)};
+	}
+
+	
 	.options-container {
 		background-color: var(--ion-background-color);
 		border-color: var(--ion-color-${({ bgColor }) => bgColor});
@@ -103,6 +70,37 @@ export const Wrapper = styled.div<selectProps>`
 	.error-span{
 		color: ${$color('danger')};
 	}
+	&.focused ,
+	&.compiled {
+        .selectIcon {
+            > * {
+                color: ${({ focusColor }) => $color(focusColor)} !important;
+			}
+		}
+        .inputLabel {
+            color: var(--ion-color-${({ focusColor }) => focusColor});
+		}
+		.focusBox{
+			background-color: var(
+				--ion-color-${({ focusColor }) => focusColor}
+			);
+		}
+    }
+    &.error {
+        .selectIcon {
+            > * {
+                color: ${({ errorColor }) => $color(errorColor)} !important
+                
+            }
+        }
+        .inputLabel {
+			color: var(--ion-color-danger);
+        }
+		.focusBox{
+			background-color: ${$color('danger')}
+		}
+    }
+	
 `;
 
 export const InputLabel = styled.label`
@@ -151,14 +149,14 @@ export const LabelContainer = styled.div`
 	}
 `;
 
-export const IconContainer = styled.div<{ bgColor?: string }>`
+export const IconContainer = styled.div`
 	width: calc( ${$uw(3)} - 2px);
 	position: relative;
 	z-index: 2;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ bgColor }) => $color(bgColor ?? 'background-color')};
+	
 	.selectIcon {
 		&.focused {
 			> * {

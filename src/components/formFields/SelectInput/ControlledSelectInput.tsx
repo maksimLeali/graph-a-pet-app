@@ -83,8 +83,8 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 			textColor={textColor}
 			bgColor={color}
 			disabledColor={disabledColor}
-            errorColor={errorColor}
-            color={color}
+			errorColor={errorColor}
+			color={color}
 		>
 			<InputLabel
 				className={`inputLabel ${focused ? "focused" : ""} ${
@@ -99,12 +99,11 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 			<InputWrapper ref={ref} className="inputWrapper">
 				<InvisibleInput id={name} value={currentValue} />
 				<LabelContainer
-					
 					className="label-container"
 					onClick={() => setFocused(!focused)}
 				>
 					{currentValue
-						? options.find( (opt) => opt.value === currentValue)
+						? options.find((opt) => opt.value === currentValue)
 								?.render || (
 								<p>
 									{
@@ -116,14 +115,14 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 						  )
 						: ""}
 				</LabelContainer>
-				<IconContainer bgColor={bgColor}>
+				<IconContainer>
 					<Icon
 						size="26px"
 						time=".5s"
 						onMouseUp={() => setFocused(!focused)}
-						className={`selectIcon ${
-                            focused ? "focused" : ""} ${
-                            compiled ? "compiled" : ""}`}
+						className={`selectIcon ${focused ? "focused" : ""} ${
+							compiled ? "compiled" : ""
+						}`}
 						name="caretDownCircleOutline"
 					/>
 				</IconContainer>
@@ -133,11 +132,9 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 							? rowsPerList * 3.5
 							: options.length * 3.5
 					}
-					className={`options-container ${
-                        focused ? "focused" : ""} ${
-						compiled ? "compiled" : ""} ${
-                        up || forceOptionsUp ? "up" : ""
-                    }`}
+					className={`options-container ${focused ? "focused" : ""} ${
+						compiled ? "compiled" : ""
+					} ${up || forceOptionsUp ? "up" : ""}`}
 					ref={optionsRef}
 				>
 					{options.map((option, i) => (
@@ -155,7 +152,9 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 				</OptionsContainer>
 				<FocusBox className={`focusBox ${focused ? "focused" : ""}`} />
 			</InputWrapper>
-			{errorText && <ErrorSpan className="error-span">{t(errorText)}</ErrorSpan>}
+			{errorText && (
+				<ErrorSpan className="error-span">{t(errorText)}</ErrorSpan>
+			)}
 		</Wrapper>
 	);
 };

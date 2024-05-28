@@ -198,7 +198,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 								  )
 								: ""}
 						</LabelContainer>
-						<IconContainer bgColor={bgColor}>
+						<IconContainer className="icon-container">
 							<Icon
 								size="26px"
 								time=".5s"
