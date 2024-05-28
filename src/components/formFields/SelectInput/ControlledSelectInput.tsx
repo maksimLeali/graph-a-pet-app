@@ -12,6 +12,7 @@ import {
 	OptionsContainer,
 	Wrapper,
 	Option,
+	ErrorSpan,
 } from "./components";
 import { useOnClickOutside } from "@hooks";
 import { CommonProps, ControlledProps } from "./components/types";
@@ -98,7 +99,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 			<InputWrapper ref={ref} className="inputWrapper">
 				<InvisibleInput id={name} value={currentValue} />
 				<LabelContainer
-					bgColor={bgColor}
+					
 					className="label-container"
 					onClick={() => setFocused(!focused)}
 				>
@@ -154,6 +155,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 				</OptionsContainer>
 				<FocusBox className={`focusBox ${focused ? "focused" : ""}`} />
 			</InputWrapper>
+			{errorText && <ErrorSpan className="error-span">{t(errorText)}</ErrorSpan>}
 		</Wrapper>
 	);
 };

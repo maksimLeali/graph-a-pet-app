@@ -1,14 +1,14 @@
-import { $color, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 import styled from "styled-components";
 
 type selectProps = {
-    bgColor: string;
-    color: string;
-    disabledColor: string;
-    textColor: string;
-    focusColor: string;
-    hoverColor: string;
-    errorColor: string;
+	bgColor?: string;
+	color: string;
+	disabledColor: string;
+	textColor: string;
+	focusColor: string;
+	hoverColor: string;
+	errorColor: string;
 };
 
 export const InvisibleInput = styled.input`
@@ -24,28 +24,13 @@ export const Wrapper = styled.div<selectProps>`
 	position: relative;
 	height: ${$uw(3)};
 	margin-bottom:  ${$uw(3)};
-    .fake-input{
-		&:-webkit-autofill,
-			.dark &:-webkit-autofill,
-			&:-webkit-autofill:hover,
-			.dark &:-webkit-autofill:hover,
-			&:-webkit-autofill:focus,
-			.dark &:-webkit-autofill:focus,
-			&:-webkit-autofill:active .dark &:-webkit-autofill:active {
-				-webkit-box-shadow: 0 0 0 30px ${$color("background-color")}
-					inset !important;
-				color: ${({ textColor }) => $color(textColor)};
-				-webkit-text-fill-color: ${({ textColor }) =>
-					$color(textColor)};
-			}
-	}
 	&.submitting, &.disabled {
 		opacity: 0.5;
 		pointer-events: none;
 	}
     .selectIcon {
 		> * { 
-            color:${({ bgColor }) => $color(bgColor)} !important; 
+            color:${({ color }) => $color(color)} !important; 
         }
 	}
 	.inputLabel {
@@ -74,7 +59,7 @@ export const Wrapper = styled.div<selectProps>`
         }
     }
 	.inputWrapper {
-		background-color: ${({ bgColor }) => $color(bgColor)};
+		background-color: ${({ color }) => $color(color)};
 	}
 
 	.focusBox {
@@ -93,6 +78,7 @@ export const Wrapper = styled.div<selectProps>`
 		}
 	}
 	.label-container {
+		background-color: ${({ bgColor }) => $color(bgColor ?? 'background-color')};
 		> p {
 			color: var(--ion-color-${({ textColor }) => textColor});
 		}
@@ -100,16 +86,22 @@ export const Wrapper = styled.div<selectProps>`
 	.options-container {
 		background-color: var(--ion-background-color);
 		border-color: var(--ion-color-${({ bgColor }) => bgColor});
+		&.up {
+			border-bottom :2px solid ${({ focusColor }) => $color(focusColor)}
+		}
 	}
 	.option {
 		color: var(--ion-color-${({ textColor }) => textColor});
 		border-color: var(--ion-color-${({ bgColor }) => bgColor});
-		&:hover {
+		&:hover,&.selected {
 			border-color: var(--ion-color-${({ focusColor }) => focusColor});
 			background-color: var(
 				--ion-color-${({ hoverColor }) => hoverColor}
 			);
 		}
+	}
+	.error-span{
+		color: ${$color('danger')};
 	}
 `;
 
@@ -132,6 +124,7 @@ export const InputLabel = styled.label`
 export const InputWrapper = styled.div`
 	width: 100%;
 	height: ${$uw(3)};
+	margin-bottom:${$uw(1)};
 	padding-bottom: 2px;
 	padding-left: 2px;
 	box-sizing: border-box;
@@ -140,24 +133,21 @@ export const InputWrapper = styled.div`
 	justify-content: space-between;
 `;
 
-export const LabelContainer = styled.div<{ bgColor?: string }>`
+export const LabelContainer = styled.div`
 	height: 100%;
 	position: relative;
 	z-index: 2;
 	width: calc(100% -  ${$uw(3)} );
-	font-size: 1.3rem;
-	padding-left: ${$uw(1)};
 
-	background-color: ${({ bgColor }) =>
-        bgColor
-            ? `var(--ion-color-${bgColor})`
-            : "var(--ion-background-color)"};
 	> * {
 		height: 100%;
 	}
 
 	> p {
 		margin: 0;
+		font-size: 1.6rem;
+		box-sizing: border-box;
+		padding:${$cssTRBL(.4, 0, 1, 1)}
 	}
 `;
 
@@ -168,10 +158,7 @@ export const IconContainer = styled.div<{ bgColor?: string }>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ bgColor }) =>
-        bgColor
-            ? `var(--ion-color-${bgColor})`
-            : "var(--ion-background-color)"};
+	background-color: ${({ bgColor }) => $color(bgColor ?? 'background-color')};
 	.selectIcon {
 		&.focused {
 			> * {
@@ -182,7 +169,7 @@ export const IconContainer = styled.div<{ bgColor?: string }>`
 `;
 
 export const FocusBox = styled.span`
-	background-color: var(--ion-color-medium);
+	background-color: ${$color("medium")};
 	position: absolute;
 	display: block;
 	z-index: 1;
@@ -227,7 +214,7 @@ export const OptionsContainer = styled.div<{ maxHeight: number }>`
 	}
 	&.focused {
 		opacity: 1;
-		max-height: ${({maxHeight})=>$uw(maxHeight)};
+		max-height: ${({ maxHeight }) => $uw(maxHeight)};
 	}
 	&.up {
 		bottom: ${$uw(3)};
@@ -249,4 +236,9 @@ export const Option = styled.div`
 	&:hover {
 		border-left: 1px solid;
 	}
+`;
+
+
+export const ErrorSpan = styled.span`
+	font-size: 1.6rem;
 `;
