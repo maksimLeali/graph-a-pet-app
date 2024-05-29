@@ -1,5 +1,5 @@
-import { IonContent } from "@ionic/react";
-import React, { useEffect } from "react";
+import { IonButton, IonContent } from "@ionic/react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
@@ -12,13 +12,18 @@ import {
 	Option,
 	SubmitInput,
 	FileInput,
+	Modal,
 } from "@components";
 import { useUserContext } from "@contexts";
 import { $cssTRBL, $uw } from "@theme";
 import { BREEDS } from "@utils";
+import { BreedSeletor } from "../../components";
 
 export const Step2 = React.memo(() => {
 	const { setPage } = useUserContext();
+	const [breedText, setBreedText] = useState("");
+	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
+	const [openModal, setOpenModal] = useState(false);
 	const [cookies, setCookies] = useCookies([
 		"add_pet_step_1",
 		"add_pet_step_2",
@@ -42,13 +47,36 @@ export const Step2 = React.memo(() => {
 		}
 	}, []);
 
-	const breedOptions: Option[] = Object.values(BREEDS).map((key) => ({
-		value: key,
-		label: t(`pets.breeds.${key.toLowerCase()}`),
-	}));
+	const openBreedsModal = useCallback(() => {
+		setOpenModal(true);
+	}, [breedText, selectedBreed, openModal]);
+
+	useEffect(() => {
+		console.log("breedText changed:", breedText);
+	}, [breedText]);
 
 	return (
 		<IonContent fullscreen>
+			<Modal
+				open={openModal}
+				onClose={() => {
+					setOpenModal(false);
+				}}
+			>
+				<BreedSeletor
+
+					onSelected={(v) => {
+						setSelectedBreed(v);
+						if (!v) return;
+						setBreedText(v.label);
+						console.log("Selected breed:", v.label);
+					}}
+					
+					changeBreedText={(v) => setBreedText(v)}
+					selectedBreed={selectedBreed}
+				/>
+				
+			</Modal>
 			<FormProvider {...methods}>
 				<Form
 					onSubmit={methods.handleSubmit((data) => {
@@ -69,14 +97,11 @@ export const Step2 = React.memo(() => {
 					</Intro>
 					<Row>
 						<span>{t("pets.add_pet_page.step_2.breed")}</span>
-						<SelectInput
-							name="breed"
-							options={breedOptions}
-							required
-							textLabel="pets.add_pet_page.step_2.insert_breed"
-						/>
+						<IonButton onClick={openBreedsModal}>
+							{breedText ||
+								t("pets.add_pet_page.step_2.select_breed")}
+						</IonButton>
 					</Row>
-					<FileInput name="file" />
 
 					<SubmitInput color="primary">
 						{t("pets.add_pet_page.step_2.continue")}
