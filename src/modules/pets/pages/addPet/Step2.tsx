@@ -1,5 +1,5 @@
 import { IonButton, IonContent } from "@ionic/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
@@ -29,8 +29,10 @@ export const Step2 = React.memo(() => {
 		"add_pet_step_1",
 		"add_pet_step_2",
 	]);
+	const [imageURL, setImageURL] = useState<string | null>(null);
 
 	const history = useHistory();
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const methods = useForm<{ breed: BREEDS }>({
 		mode: "onSubmit",
@@ -53,9 +55,16 @@ export const Step2 = React.memo(() => {
 		fadeBackground(true);
 	}, [breedText, selectedBreed, openModal]);
 
-	useEffect(() => {
-		console.log("breedText changed:", breedText);
-	}, [breedText]);
+	const handleFileChange = (event:any) => {
+		const file = event.target.files[0];
+		if (file) {
+			const imageURL = URL.createObjectURL(file);
+			if(imageURL){
+
+				setImageURL(imageURL);
+			}
+		}
+	};
 
 	return (
 		<IonContent fullscreen>
@@ -65,14 +74,19 @@ export const Step2 = React.memo(() => {
 					setOpenModal(false);
 					fadeBackground(false);
 				}}
-				onCancel={()=>{
+				onCancel={() => {
 					setOpenModal(false);
 					fadeBackground(false);
 				}}
-				onConfirm={()=>{
+				onConfirm={() => {
 					setOpenModal(false);
 					fadeBackground(false);
-					console.log('selectedBreed', selectedBreed, 'breedText', breedText)
+					console.log(
+						"selectedBreed",
+						selectedBreed,
+						"breedText",
+						breedText
+					);
 				}}
 			>
 				<BreedSeletor
@@ -104,13 +118,33 @@ export const Step2 = React.memo(() => {
 							}}
 						/>
 					</Intro>
+					<ImageTaker onClick={() => fileInputRef?.current ? fileInputRef.current.click() : undefined}>
+						<input
+							type="file"
+							accept="image/*"
+							ref={fileInputRef}
+							style={{ display: "none" }}
+							onChange={handleFileChange}
+						/>
+						{imageURL ? (
+							<img
+								src={imageURL}
+								alt="Selected"
+								style={{ maxWidth: "100%", maxHeight: "100%" }}
+							/>
+						) : (
+							t("pets.add_pet_page.step_2.upload_image")
+						)}
+					</ImageTaker>
 					<Row>
 						<span>{t("pets.add_pet_page.step_2.breed")}</span>
-						<FakeInput name="breed" textLabel="pets.add_pet_page.step_2.breed" onClick={openBreedsModal} value={ breedText } />
-							
-						
+						<FakeInput
+							name="breed"
+							textLabel="pets.add_pet_page.step_2.breed"
+							onClick={openBreedsModal}
+							value={breedText}
+						/>
 					</Row>
-
 					<SubmitInput color="primary">
 						{t("pets.add_pet_page.step_2.continue")}
 					</SubmitInput>
@@ -139,4 +173,23 @@ const Row = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: ${$uw(3)};
+`;
+
+const ImageTaker = styled.div`
+	width: 100%;
+	height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #f0f0f0;
+	border: 2px dashed #ccc;
+	cursor: pointer;
+	text-align: center;
+	padding: ${$uw(2)};
+	position: relative;
+	overflow: hidden;
+	img {
+		width: 100%;
+		height: auto;
+	}
 `;
