@@ -13,6 +13,7 @@ import {
 	SubmitInput,
 	FileInput,
 	Modal,
+	FakeInput,
 } from "@components";
 import { useUserContext } from "@contexts";
 import { $cssTRBL, $uw } from "@theme";
@@ -20,7 +21,7 @@ import { BREEDS } from "@utils";
 import { BreedSeletor } from "../../components";
 
 export const Step2 = React.memo(() => {
-	const { setPage } = useUserContext();
+	const { setPage, fadeBackground } = useUserContext();
 	const [breedText, setBreedText] = useState("");
 	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
 	const [openModal, setOpenModal] = useState(false);
@@ -49,6 +50,7 @@ export const Step2 = React.memo(() => {
 
 	const openBreedsModal = useCallback(() => {
 		setOpenModal(true);
+		fadeBackground(true);
 	}, [breedText, selectedBreed, openModal]);
 
 	useEffect(() => {
@@ -61,21 +63,28 @@ export const Step2 = React.memo(() => {
 				open={openModal}
 				onClose={() => {
 					setOpenModal(false);
+					fadeBackground(false);
+				}}
+				onCancel={()=>{
+					setOpenModal(false);
+					fadeBackground(false);
+				}}
+				onConfirm={()=>{
+					setOpenModal(false);
+					fadeBackground(false);
+					console.log('selectedBreed', selectedBreed, 'breedText', breedText)
 				}}
 			>
 				<BreedSeletor
-
 					onSelected={(v) => {
 						setSelectedBreed(v);
 						if (!v) return;
 						setBreedText(v.label);
 						console.log("Selected breed:", v.label);
 					}}
-					
 					changeBreedText={(v) => setBreedText(v)}
 					selectedBreed={selectedBreed}
 				/>
-				
 			</Modal>
 			<FormProvider {...methods}>
 				<Form
@@ -97,10 +106,9 @@ export const Step2 = React.memo(() => {
 					</Intro>
 					<Row>
 						<span>{t("pets.add_pet_page.step_2.breed")}</span>
-						<IonButton onClick={openBreedsModal}>
-							{breedText ||
-								t("pets.add_pet_page.step_2.select_breed")}
-						</IonButton>
+						<FakeInput name="breed" textLabel="pets.add_pet_page.step_2.breed" onClick={openBreedsModal} value={ breedText } />
+							
+						
 					</Row>
 
 					<SubmitInput color="primary">

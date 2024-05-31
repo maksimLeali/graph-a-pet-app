@@ -27,7 +27,7 @@ i18n.use(initReactI18next).init({
   lng,
   interpolation: {
     escapeValue: false,
-    
+
   },
 })
 

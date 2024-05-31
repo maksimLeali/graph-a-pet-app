@@ -9,7 +9,7 @@ import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.genera
 import { SubOwnerList, Icon, Image2x } from "@components";
 import { useSwipe } from "@hooks";
 import { useModal } from "@contexts";
-import { $break_point, $color, $cssTRBL, $uw } from "@theme";
+import { $breakPoint, $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
 	pets: DashboardPetFragment[];
@@ -107,12 +107,10 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 			onTouchStart={handleTouchStart}
 			onTouchMove={handleTouchMove}
 			mainColor={
-				pets[active]?.main_picture?.main_color?.color ??
-				"primary"
+				pets[active]?.main_picture?.main_color?.color ?? "primary"
 			}
 			contrast={
-				pets[active]?.main_picture?.main_color?.contrast ??
-				"white"
+				pets[active]?.main_picture?.main_color?.contrast ?? "white"
 			}
 		>
 			<BoxContainer>
@@ -131,26 +129,19 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 				</PetsBox>
 				<ActionChip className="top left" onClick={() => modalOpen()}>
 					<Icon name="peopleOutline" color="dark" />
-					<span>{"Affidatari"}</span>
+					<span>{t("home.co_owners")}</span>
 				</ActionChip>
 				<ActionChip className="top right">
 					<Icon name="bookOutline" color="dark" />
-					<span>{"Libretto"}</span>
+					<span>{t("home.health_record")}</span>
 				</ActionChip>
 				<ActionChip className="bottom left">
-					<Icon
-						name="informationCircleOutline"
-						color="dark"
-					/>
-					<span>{"Profilo"}</span>
+					<Icon name="informationCircleOutline" color="dark" />
+					<span>{t("home.profile")}</span>
 				</ActionChip>
 				<ActionChip className="bottom right" onClick={() => share()}>
-					<Icon
-						name="shareOutline"
-						color="dark"
-						mode="md"
-					/>
-					<span>{"Share"}</span>
+					<Icon name="shareOutline" color="dark" mode="md" />
+					<span>{t("home.share")}</span>
 				</ActionChip>
 			</BoxContainer>
 
@@ -184,23 +175,26 @@ const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
 		> * {
 			transition: color 1s ease-in, background-color 1s ease-in;
 			color: ${({ contrast }) => $color(contrast ?? "primary")};
-			background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
+			background-color: ${({ mainColor }) =>
+				$color(mainColor ?? "primary")};
 			&::after {
 				transition: color 1s ease-in, background-color 1s ease-in;
 				color: ${({ contrast }) => $color(contrast ?? "primary")};
-				background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
+				background-color: ${({ mainColor }) =>
+					$color(mainColor ?? "primary")};
 			}
 			&.pet-box {
 				transition: color 1s ease-in, background-color 1s ease-in;
-				border: 3px solid ${$color('background-color')};
-				background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
+				border: 3px solid ${$color("background-color")};
+				background-color: ${({ mainColor }) =>
+					$color(mainColor ?? "primary")};
 			}
 		}
 	}
 	> h2 {
 		transition: color 1s ease-in, background-color 1s ease-in;
 		color: ${({ contrast }) => $color(contrast ?? "primary")};
-		background-color: ${({ mainColor }) => $color( mainColor ?? "primary")};
+		background-color: ${({ mainColor }) => $color(mainColor ?? "primary")};
 	}
 	* {
 		transition: color 1s ease-in, background-color 1s ease-in;
@@ -209,20 +203,20 @@ const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
 `;
 const BoxContainer = styled.div`
 	width: 100%;
-	display: flex;	
-    flex-wrap: wrap;
-	height:${$uw(13)};
-    padding: ${$uw(.4)} 0;
+	display: flex;
+	flex-wrap: wrap;
+	height: ${$uw(13)};
+	padding: ${$uw(0.4)} 0;
 	box-sizing: border-box;
 	position: relative;
 	z-index: 0;
-    margin: ${$cssTRBL(5, 0 ,2, 0)};
+	margin: ${$cssTRBL(5, 0, 2, 0)};
 `;
 const PetsBox = styled.div<{ direction?: "clock" | "counter" }>`
 	width: ${$uw(13)};
 	justify-self: center;
-    left: calc(50% - ${$uw(6.5)});
-    top: 0;
+	left: calc(50% - ${$uw(6.5)});
+	top: 0;
 	aspect-ratio: 1;
 	z-index: 3;
 	position: absolute;
@@ -255,22 +249,19 @@ const ActionChip = styled.span`
 	height: ${$uw(6)};
 	display: flex;
 	padding-bottom: 5px;
-    margin-bottom:${$uw(.3)};
+	margin-bottom: ${$uw(0.3)};
 	align-items: center;
 	gap: 12px;
 	z-index: 2;
 	font-size: 2.1rem;
 	padding: 0 12px;
-	${$break_point(420)} {
-		
+	${$breakPoint(420)} {
 		font-size: 1.7rem;
 	}
-	${$break_point(380)} {
-		
+	${$breakPoint(380)} {
 		font-size: 1.6rem;
 	}
-	${$break_point(350)} {
-		
+	${$breakPoint(350)} {
 		font-size: 1.5rem;
 	}
 	&.left {
@@ -282,10 +273,9 @@ const ActionChip = styled.span`
 		justify-content: end;
 		flex-direction: row-reverse;
 	}
-    &.bottom{
-        margin-bottom: 0;
-    }
-
+	&.bottom {
+		margin-bottom: 0;
+	}
 `;
 
 const Title = styled.h2`
@@ -298,9 +288,9 @@ const Title = styled.h2`
 	border-radius: ${$uw(3)};
 	margin-bottom: ${$uw(2)};
 	text-transform: uppercase;
-    ${$break_point(450)}{
-        font-size: 2rem;
-    }
+	${$breakPoint(450)} {
+		font-size: 2rem;
+	}
 `;
 
 const DotsContainer = styled.div`
@@ -315,7 +305,7 @@ const PetDot = styled.span`
 	height: ${$uw(2)};
 	padding: ${$uw(0.7)};
 	box-sizing: border-box;
-	background-color: ${$color('background-color')};
+	background-color: ${$color("background-color")};
 	transition: padding 0.2s ease-out;
 	&:after {
 		display: flex;
@@ -324,11 +314,11 @@ const PetDot = styled.span`
 		height: 100%;
 
 		border-radius: 15px;
-		border: 1px solid ${$color('dark')};
+		border: 1px solid ${$color("dark")};
 	}
 	&.active::after {
 		content: "";
-		border: 2px solid ${$color('dark')};
+		border: 2px solid ${$color("dark")};
 	}
 	&.active {
 		padding: ${$uw(0.2)};

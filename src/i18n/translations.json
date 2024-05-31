@@ -112,6 +112,12 @@
           "no_events": "Nessun appuntamento"
         }
       },
+      "home": {
+        "profile": "Profilo",
+        "share": "Share",
+        "health_record": "Libretto",
+        "co_owners": "Affidatari"
+      },
       "pets": {
         "accept_as": "Accetta come:",
         "add_pet": "Agggiugni cucciolo",
@@ -168,7 +174,8 @@
             "continue": "Vai all'ultimo step",
             "insert_breed": "a che razza appartiene?",
             "intro": "Ora diamo un immagine definita di <b>{{name}}</b>",
-            "picture": "Hai una foto?"
+            "picture": "Hai una foto?",
+            "breed_alert": "Se la razza che vuoi inserire non è presente nella lista, confermando verrà comunque salvata, ci preoccuperemo il prima possibile di sopperire alla mancanza."
           },
           "step_3": {
             "birthday_male": "Quando è nato {{name}}",
@@ -527,6 +534,209 @@
           "tchiorny_terrier": "Tchiorny Terrier",
           "thai_ridgeback": "Thai Ridgeback",
           "tibetan_mastiff": "Tibetan Mastiff"
+        }
+      }
+    }
+  },
+  "en": {
+    "graph_a_pet_app": {
+      "auth": {
+        "insert_email": "Insert email",
+        "password": "Password",
+        "email": "E-mail",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "code": "Enter the code you received via email",
+        "confirm_password": "Confirm password",
+        "insert_password": "Enter password",
+        "insert_new_password": "Enter new password",
+        "insert_code": "Enter code",
+        "forgot_password_link": "Forgot password?",
+        "login": "Login",
+        "code_not_recived": "Check your mail, including spam",
+        "resend_code": "Send new email",
+        "send_code": "Send code",
+        "password_recovery": "Recover password",
+        "password_recovery_text": "Enter your email to set a new password",
+        "password_recovery_email_text": "Enter the code received in your email",
+        "password_recovery_password_text": "Select a new password",
+        "back_to_login": "Back to login",
+        "next": "Next",
+        "at_least_8_chars": "At least 8 characters",
+        "at_least_both_cases": "Both uppercase and lowercase",
+        "at_least_a_number": "At least one number",
+        "logout": "Logout",
+        "signup": "Sign up",
+        "already_registered": "Already a user?",
+        "not_registered": "Not registered yet?"
+      },
+      "users": {
+        "general": {
+          "empty_list": "No items",
+          "no_sub_owners": "No sub-owners"
+        }
+      },
+      "system": {
+        "menu": {
+          "settings": "Settings",
+          "profile": "Profile"
+        },
+        "logout_modal": {
+          "title": "You are about to log out",
+          "text": "Are you sure you want to log out of the app?"
+        },
+        "year": "Year",
+        "month": "Month",
+        "day": "Day",
+        "hour": "Hour",
+        "minute": "Minute",
+        "years": "Years",
+        "months": "Months",
+        "days": "Days",
+        "hours": "Hours",
+        "minutes": "Minutes"
+      },
+      "actions": {
+        "accept": "Accept",
+        "refuse": "Refuse",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "close": "Close"
+      },
+      "messages": {
+        "done": "Successfully done",
+        "success": {
+          "pet_updated": "Pet data successfully updated",
+          "login": "Login successful",
+          "logout": "Logout successful",
+          "signup": "Registration completed, check your email",
+          "pet_linked_succesfully": "Pet successfully added"
+        },
+        "errors": {
+          "not_authorized": "User not authorized",
+          "login": "Authentication error",
+          "me": "Error retrieving own data",
+          "user": "Error loading user",
+          "fetch": "Error fetching data",
+          "invalid_email": "Invalid email",
+          "code": "Invalid code entered",
+          "password_mismatch": "Passwords do not match",
+          "required": "Required field",
+          "no_pet_found": "No pet found"
+        }
+      },
+      "pages": {
+        "home": "Home",
+        "pet_sharing": "Do you want me?"
+      },
+      "events": {
+        "antiparasitic": "Antiparasitic",
+        "vaccine": "Vaccine",
+        "tablet": "Tablet",
+        "notes": "Notes",
+        "reminder": "Reminder",
+        "type": "Type",
+        "operation": "Operation",
+        "from_to": "From {{from}} to {{to}}",
+        "add_event": "Add event",
+        "name": "Event name",
+        "date_from": "Start date",
+        "time_from": "Start time",
+        "time": "Time",
+        "boster_date_from": "Booster start date",
+        "date_time_from": "Start date and time",
+        "booster_date_time_from": "Booster start date and time",
+        "pet": "For whom?",
+        "general": {
+          "no_events": "No appointments"
+        }
+      },
+      "home": {
+        "profile": "Profile",
+        "share": "Share",
+        "health_record": "Health",
+        "co_owners": "Foster"
+      },
+      "pets": {
+        "accept_as": "Accept as:",
+        "add_pet": "Add pet",
+        "age_years_one": "<b>{{count}}</b> year",
+        "age_years_other": "<b>{{count}}</b> years",
+        "age": "Age",
+        "coat_lenght": "Coat: <b>{{lenght}}</b>",
+        "desc_pet_sitter": "A <b>Pet Sitter</b> takes care of the pet for <b>work</b>",
+        "desc_sub_owner": "A <b>Sub-owner</b> takes care of the pet like the owner.<br/>Usually a <b>family member</b> or a <b>friend</b>",
+        "family": "Pet",
+        "gender_female": "Female",
+        "gender_male": "Male",
+        "gender_not_said": "Prefer not to specify",
+        "gender": "Gender",
+        "name": "Name",
+        "neutered_female": "Spayed",
+        "neutered_male": "Neutered",
+        "neutered": "Neutered",
+        "owner_short": "Owner",
+        "owner": "Owner",
+        "pet_sitter_short": "Pet sitter",
+        "pet_sitter": "Pet Sitter",
+        "petsitter": "Pet Sitter",
+        "shared_from": "Owner",
+        "shared_with": "Who can see it?",
+        "sub_owner_short": "Sub-owner",
+        "sub_owner": "Sub-owner",
+        "subowner": "Sub-owner",
+        "weight_kg": "<b>{{weight_kg}}</b> Kg",
+        "weight": "Weight",
+        "pet_family": {
+          "canine": "Dog",
+          "feline": "Cat",
+          "birds": "Bird",
+          "fish": "Fish",
+          "reptile": "Reptile"
+        },
+        "add_pet_page": {
+          "intro_title": "Hi <b>{{name}}</b></br>",
+          "intro_desc": "<span>Let's add your friend's data step by step.</span></br><span>Your friend will <b>follow you for a long time</b>, give them the right importance</span>",
+          "start": "Let's start",
+          "step_1": {
+            "continue": "Go to the next step",
+            "family": "What kind of animal?",
+            "gender": "Male or female?",
+            "insert_family": "Choose animal",
+            "insert_gender": "Gender",
+            "insert_name": "Name",
+            "intro": "Let's start by understanding who the pet is",
+            "name": "What's their name?"
+          },
+          "step_2": {
+            "breed": "What breed is it?",
+            "continue": "Go to the last step",
+            "insert_breed": "What breed is it?",
+            "intro": "Now let's give a defined image of <b>{{name}}</b>",
+            "picture": "Do you have a picture?",
+            "breed_alert": "If the breed you want to enter is not on the list, confirming it will still be saved, we will take care of the lack as soon as possible."
+          },
+          "step_3": {
+            "birthday_male": "When was {{name}} born",
+            "birthday_female": "When was {{name}} born",
+            "insert_birthday": "Birthdate",
+            "weight": "How much do they weigh?",
+            "insert_weight": "Weight in Kg",
+            "optionale_steps_skip": "We have entered all the necessary information for {{name}}!</br>If you want you can add more information now, or do it later at your own pace, it's up to you",
+            "skip": "Skip",
+            "continue": "Continue filling in"
+          },
+          "step_4": {
+            "color": "Would you like {{name}} to have a custom color﹡?",
+            "colors_suggested": "We suggest these based on the provided image",
+            "color_explain": "﹡this color will be shown on the home page, in events, and other small things related to {{name}}"
+          }
+        },
+        "coat_lenghts": {
+          "SHORT": "Short",
+          "MEDIUM": "Medium",
+          "LENGHT": "Long",
+          "HAIRLESS": "Hairless"
         }
       }
     }

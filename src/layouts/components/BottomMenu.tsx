@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 
 import { $color, $cssTRBL, $uw } from "@theme";
 import { Icon, IconName } from "@components";
+import { useUserContext } from "../../contexts/UserContext";
 
 export const BottomMenu= () => {
 
+	const {fade} = useUserContext()
     const menuItems: { to: string; icon: IconName }[] = [
 		{ to: "/home", icon: "home" },
 		{ to: "/pets", icon: "paw" },
@@ -13,7 +15,7 @@ export const BottomMenu= () => {
 		{ to: "/events", icon: "calendar" },
 	];
 	return (
-		<Container>
+		<Container fade={fade}>
 			{menuItems.map((item, i) => {
 				const selected = window.location.pathname.startsWith(item.to);
 				return (
@@ -36,9 +38,9 @@ export const BottomMenu= () => {
 	);
 };
 
-const Container = styled.div`
+const Container = styled.div<{fade: boolean}>`
     position: fixed;
-	z-index: 200;
+	z-index: ${({fade})=> fade ? -1 :200};
 	bottom: 0;
 	height: ${$uw(6)};
 	border-radius: 10px 10px 0 0;

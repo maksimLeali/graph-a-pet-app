@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { IonButton } from "@ionic/react";
 import { useTranslation } from "react-i18next";
-import { $break_point, $cssTRBL, $uw } from "@theme";
+import { $breakPoint, $cssTRBL, $uw } from "@theme";
 type props = {
 	minDate: string;
 	maxDate: string;
@@ -532,11 +532,11 @@ const YearList = styled.div`
 		font-size: 2.2rem;
 		width: ${$uw(4)};
 		text-align: center;
-		${$break_point(440)} {
+		${$breakPoint(440)} {
 			width: ${$uw(5)};
 			flex: 0 0 ${$uw(5)};
 		}
-		${$break_point(360)} {
+		${$breakPoint(360)} {
 			width: ${$uw(6)};
 			flex: 0 0 ${$uw(6)};
 		}
@@ -587,7 +587,7 @@ const DayItem = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-    width: ${$uw(5)};
+	width: ${$uw(5)};
 	flex: 0 0 ${$uw(5)};
 `;
 

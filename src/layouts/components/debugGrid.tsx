@@ -5,7 +5,7 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import { useUserContext } from "@contexts";
-import { $break_point, $color, $cssTRBL, $uw } from "@theme";
+import { $breakPoint, $color, $cssTRBL, $uw } from "@theme";
 
 gsap.registerPlugin(GSAPDraggable);
 
@@ -64,9 +64,9 @@ const Container = styled.div<{ gridHeight: number; visible: boolean }>`
 	justify-content: space-between;
 	align-items: start;
 	padding: ${$cssTRBL(2)};
-	
-    border-bottom: 1px solid var(--grid-color) ;
-    border-right: 2px solid var(--grid-color) ;
+
+	border-bottom: 1px solid var(--grid-color);
+	border-right: 2px solid var(--grid-color);
 	background-size: calc(var(--max-grid-size) / var(--grid-columns-number))
 		calc(var(--max-grid-size) / var(--grid-columns-number));
 	background-image: linear-gradient(
@@ -86,31 +86,30 @@ const Action = styled.button`
 	align-items: center;
 	justify-content: center;
 	border-radius: 100%;
-    background-color: unset;
-    font-weight: 800;
-    font-size: 2.5rem;
-    border-width: 4px;
-    border-style: solid;
+	background-color: unset;
+	font-weight: 800;
+	font-size: 2.5rem;
+	border-width: 4px;
+	border-style: solid;
 
-    ${$break_point(450)}{
-        font-size: 2rem;
-        border-width: 3px;
-    }
-    ${$break_point(400)}{
-        font-size: 1.8rem;
-        border-width: 2px;
-    }
-    ${$break_point(380)}{
-        font-size: 1.6rem;
-        border-width: 1px;
-    }
+	${$breakPoint(450)} {
+		font-size: 2rem;
+		border-width: 3px;
+	}
+	${$breakPoint(400)} {
+		font-size: 1.8rem;
+		border-width: 2px;
+	}
+	${$breakPoint(380)} {
+		font-size: 1.6rem;
+		border-width: 1px;
+	}
 	&.remove {
-		border-color: ${$color('danger')};
-		color: ${$color('danger')};
+		border-color: ${$color("danger")};
+		color: ${$color("danger")};
 	}
 	&.add {
-		border-color: ${$color('primary')};
-		color: ${$color('primary')};
-
+		border-color: ${$color("primary")};
+		color: ${$color("primary")};
 	}
 `;

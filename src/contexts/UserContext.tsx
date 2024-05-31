@@ -24,6 +24,8 @@ export type IUserContext = {
 	gridVisible: boolean;
 	user: Pick<MinUserFragment, "first_name" | "last_name" | "email">;
 	handleGridVisibility: (v: boolean) => void;
+	fadeBackground: (value: boolean)=> void
+	fade: boolean
 } & Record<string, any>;
 
 type Page = {
@@ -40,8 +42,11 @@ const defaultValue: IUserContext = {
 	ownedPets: [],
 	loading: false,
 	gridVisible: false,
+	fade :false,
 	user: { email: "", first_name: "", last_name: "" },
 	handleGridVisibility: () => {},
+	fadeBackground:()=>{}
+
 };
 const UserContext = React.createContext<IUserContext>(defaultValue);
 
@@ -55,7 +60,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [pageName, setPageName] = useState("");
 	const [cookie] = useCookies(["jwt", "user"]);
 	const [visible, setVisible] = useState(true);
-
+	const [fade,setFade] = useState(false);
 	const [gridVisible, setGridVisible] = useState(false);
 	const [alreadyRequested, setAlreadyRequested] = useState(false);
 	const [pets, setPets] = useState<
@@ -78,6 +83,10 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 		}
 		setVisible(visible);
 	};
+
+	const fadeBackground = (value: boolean)=>{
+		setFade(value)
+	}
 
 	const [getUserDashboardQuery, { loading }] = useGetUserDashboardLazyQuery({
 		fetchPolicy: "no-cache",
@@ -135,18 +144,20 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 			visible,
 			gridVisible,
 			handleGridVisibility,
+			fadeBackground,
+			fade,
 			user: {
 				first_name: user?.first_name ?? "",
 				last_name: user?.last_name ?? "",
 				email: user?.email ?? "",
 			},
 		}),
-		[visible, pets, gridVisible, loading, loanPets, ownedPets, user]
+		[visible, pets, gridVisible, loading, loanPets, ownedPets, user, fade]
 	);
 
 	return (
 		<UserContext.Provider value={value}>
-			<CustomIonHeader visible={visible} className="MainHeader">
+			<CustomIonHeader visible={visible} fade={fade} className="MainHeader">
 				<IonToolbar>
 					<IonTitle>{pageName}</IonTitle>
 				</IonToolbar>
@@ -176,11 +187,12 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 
 export const useUserContext = () => useContext(UserContext);
 
-const CustomIonHeader = styled(IonHeader)<{ visible: boolean }>`
+const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean }>`
 	position: absolute;
 	top: ${({ visible }) => (visible ? "0" : "-100%")};
 	height: ${$uw(5)};
 	max-width: var(--max-width);
+	${({fade})=> fade ? 'z-index: -1;' : ""};
 	left: calc(50% - 240px);
 	padding: ${$uw(0.75)};
 	box-sizing: border-box;

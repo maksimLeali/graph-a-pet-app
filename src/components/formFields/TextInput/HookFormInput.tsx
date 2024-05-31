@@ -79,7 +79,7 @@ export const HookFormInput: React.FC<HookFormProps & CommonProps> = ({
 
 	return (
 		<Wrapper
-			className={classes}
+			className={`text-input ${classes}`}
 			focusColor={focusColor}
 			disabledColor={disabledColor}
 			errorColor={errorColor}

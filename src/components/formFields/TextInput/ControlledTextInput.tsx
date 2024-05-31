@@ -76,7 +76,7 @@ export const ControlledTextInput: React.FC<ControlledProps & CommonProps> = ({
 
 	return (
 		<Wrapper
-			className={classes}
+			className={`text-input ${classes}`}
 			focusColor={focusColor}
 			disabledColor={disabledColor}
 			errorColor={errorColor}

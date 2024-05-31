@@ -78,11 +78,9 @@ export type ColorKeys =
   | "light-shade"
   | "light-tint";
 
-type ColorsObject = {
-  [key in ColorKeys]: string;
-};
 
-export const colors: ColorsObject = {
+
+export const colors: Record<ColorKeys, string>  = {
   "grid-color": "var(--grid-color)",
   "vaccine": "var(--vaccine)",
   "antiparasitic": "var(--antiparasitic)",
@@ -164,6 +162,7 @@ export const colors: ColorsObject = {
 };
 
 
-export function isColorKey(key: string): key is keyof ColorsObject {
-  return key in colors;
+
+export function isColorKey(key: string): key is ColorKeys {
+  return Object.keys(colors).includes(key);
 }
