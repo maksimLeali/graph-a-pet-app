@@ -16,7 +16,7 @@ import {
 	FakeInput,
 } from "@components";
 import { useUserContext } from "@contexts";
-import { $cssTRBL, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 import { BREEDS } from "@utils";
 import { BreedSeletor } from "../../components";
 
@@ -55,11 +55,11 @@ export const Step2 = React.memo(() => {
 		fadeBackground(true);
 	}, [breedText, selectedBreed, openModal]);
 
-	const handleFileChange = (event:any) => {
+	const handleFileChange = (event: any) => {
 		const file = event.target.files[0];
 		if (file) {
 			const imageURL = URL.createObjectURL(file);
-			if(imageURL){
+			if (imageURL) {
 
 				setImageURL(imageURL);
 			}
@@ -100,24 +100,19 @@ export const Step2 = React.memo(() => {
 					selectedBreed={selectedBreed}
 				/>
 			</Modal>
-			<FormProvider {...methods}>
-				<Form
-					onSubmit={methods.handleSubmit((data) => {
-						console.log(data);
-						setCookies("add_pet_step_2", data);
-					})}
-				>
-					<Intro>
-						<h3
-							dangerouslySetInnerHTML={{
-								__html:
-									t("pets.add_pet_page.step_2.intro", {
-										name:
-											cookies.add_pet_step_1?.name ?? "",
-									}) ?? "",
-							}}
-						/>
-					</Intro>
+			<Container>
+				<Intro>
+					<h3
+						dangerouslySetInnerHTML={{
+							__html:
+								t("pets.add_pet_page.step_2.intro", {
+									name:
+										cookies.add_pet_step_1?.name ?? "",
+								}) ?? "",
+						}}
+					/>
+				</Intro>
+				<Row>
 					<ImageTaker onClick={() => fileInputRef?.current ? fileInputRef.current.click() : undefined}>
 						<input
 							type="file"
@@ -133,33 +128,32 @@ export const Step2 = React.memo(() => {
 								style={{ maxWidth: "100%", maxHeight: "100%" }}
 							/>
 						) : (
-							t("pets.add_pet_page.step_2.upload_image")
+							t("pets.add_pet_page.step_2.picture")
 						)}
 					</ImageTaker>
-					<Row>
-						<span>{t("pets.add_pet_page.step_2.breed")}</span>
-						<FakeInput
-							name="breed"
-							textLabel="pets.add_pet_page.step_2.breed"
-							onClick={openBreedsModal}
-							value={breedText}
-						/>
-					</Row>
-					<SubmitInput color="primary">
-						{t("pets.add_pet_page.step_2.continue")}
-					</SubmitInput>
-				</Form>
-			</FormProvider>
+				</Row>
+				<Row>
+					<span>{t("pets.add_pet_page.step_2.breed")}</span>
+					<FakeInput
+						name="breed"
+						textLabel="pets.add_pet_page.step_2.breed"
+						onClick={openBreedsModal}
+						value={breedText}
+					/>
+				</Row>
+			</Container>
 		</IonContent>
 	);
 });
 
-const Form = styled.form`
+const Container = styled.div`
 	width: 100%;
 	height: 100%;
+	padding-top:${$uw(6)};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	overflow-y: scroll;
 	gap: ${$uw(1)};
 	padding: ${$cssTRBL(0, 1)};
 `;
@@ -176,20 +170,23 @@ const Row = styled.div`
 `;
 
 const ImageTaker = styled.div`
-	width: 100%;
-	height: 200px;
+	width: ${$uw(24)};
+	height: ${$uw(24)};
 	display: flex;
+	margin-bottom: ${$uw(3)};
 	align-items: center;
+	align-self: center;
 	justify-content: center;
-	background-color: #f0f0f0;
-	border: 2px dashed #ccc;
+	background-color: ${$color('background-color')};
+	border: 2px dashed ${$color('primary')};
 	cursor: pointer;
+	border-radius: 999px;
 	text-align: center;
-	padding: ${$uw(2)};
 	position: relative;
 	overflow: hidden;
 	img {
 		width: 100%;
 		height: auto;
+		object-fit: cover;
 	}
 `;

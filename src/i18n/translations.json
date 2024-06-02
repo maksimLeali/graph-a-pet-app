@@ -173,7 +173,7 @@
             "breed": "a che razza appartiene?",
             "continue": "Vai all'ultimo step",
             "insert_breed": "a che razza appartiene?",
-            "intro": "Ora diamo un immagine definita di <b>{{name}}</b>",
+            "intro": "Ora diamo un immagine definita di <b>{{name}}</b>", 
             "picture": "Hai una foto?",
             "breed_alert": "Se la razza che vuoi inserire non è presente nella lista, confermando verrà comunque salvata, ci preoccuperemo il prima possibile di sopperire alla mancanza."
           },

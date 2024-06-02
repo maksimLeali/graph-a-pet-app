@@ -5,7 +5,7 @@ import gsap from "gsap";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
-import { $color, $uw } from "@theme";
+import { $breakPoint, $color, $uw } from "@theme";
 import { Image2x, Icon } from "@components";
 import { gendersColor } from "@utils";
 
@@ -120,7 +120,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 
 const Container = styled.div<{ bgColor?: string; color?: string }>`
 	width: 100%;
-	height: ${$uw(11)};
+	height: ${$uw(12)};
 	margin-bottom: ${$uw(4)};
 	opacity: 0;
 	display: flex;
@@ -134,10 +134,11 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 		box-shadow: 0 0 0 1px #fff;
 	}
 	.info-box {
-		background-color: ${({ bgColor }) =>$color(bgColor || "primary")};
+		background-color: ${$color('light-tint')};
+		border: 3px solid ${({ bgColor }) =>$color(bgColor || "primary")};
 	}
 	span {
-		${({ color }) => (color ? `color: ${$color(color)};` : "")}
+		color: ${$color('dark')};
 	}
 `;
 
@@ -149,7 +150,7 @@ const ImageWrapper = styled.div`
 
 	overflow: hidden;
 	border-radius: 99px;
-	top: ${$uw(-1)};
+	top: ${$uw(-.5)};
 `;
 
 const Name = styled.div`
@@ -178,6 +179,16 @@ const Name = styled.div`
 			margin-bottom: 0;
 		}
 	}
+	${$breakPoint(420)}{
+		> span.mainInfo {
+		p {
+			font-size: 1.6rem;
+		}
+		span {
+			font-size: 1.2rem;
+		}
+	}
+	}
 `;
 
 const InfoBox = styled.div`
@@ -190,6 +201,7 @@ const InfoBox = styled.div`
 	flex-wrap: wrap;
 	flex-direction: column;
 	align-items: start;
+	box-sizing: border-box;
 
 	span {
 		height: ${$uw(1)};
@@ -202,7 +214,7 @@ const IconContainer = styled.div`
 	height: ${$uw(1.8)};
 	display: block;
 	border-radius: 100px;
-	background-color: #fff;
+
 	margin-right: ${$uw(1)};
 	padding: ${$uw(0.2)};
 `;
@@ -219,5 +231,10 @@ const InfoRow = styled.div`
 	}
 	> .sub {
 		font-size: 1.3rem;
+	}
+	${$breakPoint(420)}{
+		span {
+			font-size: 1.1rem;
+		}
 	}
 `;

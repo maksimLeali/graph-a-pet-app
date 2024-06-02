@@ -165,22 +165,6 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 								...registerOptions,
 							})}
 						/>
-						{/* <InvisibleInput
-                            id={name}
-                            onFocus={() => {
-                                setFocused(true)
-
-                            }}
-                            className="fake-input"
-                            value={temptext}
-                            ref={textRef}
-                            type="text"
-                            onChange={(v) => {
-                                handleFilterText(v.target.value)
-
-                            }}
-
-                        /> */}
 						<LabelContainer
 							className="label-container"
 							onClick={() => setFocused(!focused)}
