@@ -137,15 +137,17 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 		content: "";
 		background-color: ${$color("light-tint")};
 		position: absolute;
-		height: ${$uw(13)};
+		height: calc(${$uw(13)} - 4px);
+
 		left: ${$uw(7)};
 		width: ${$uw(7)};
 		z-index: 0;
+		border-top: 2px solid ${({ bgColor }) => $color(bgColor || "primary")};
+		
 	}
 	&::after {
 		content: "";
 		left: ${$uw(7)};
-
 		width: calc(${$uw(5)} );
 		height: ${$uw(3)};
 		background-color: ${({ bgColor }) => $color(bgColor || "primary")};
@@ -163,7 +165,9 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 		color: ${({ color }) => $color(color || "dark")};
 	}
 	.info-box {
+		border-top: 2px solid ${({ bgColor }) => $color(bgColor || "primary")};
 		background-color: ${$color("light-tint")};
+		
 	}
 `;
 
@@ -207,7 +211,9 @@ const Name = styled.div`
 const InfoBox = styled.div`
 	display: flex;
 	padding: ${$uw(1)};
-	width: ${$uw(17)};
+	width: calc(${$uw(17)} + 4px);
+	position: relative;
+	top: -2px;
 	height: ${$uw(10)};
 	border-radius: 0 2px 2px 0px;
 	
