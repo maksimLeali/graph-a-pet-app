@@ -51,7 +51,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 					/>
 				</ImageWrapper>
 			)}
-			<InfoBox className="info-box">
+			<InfoWrapper>
 				<Name className="name">
 					<IconContainer className="icon-container">
 						<Icon
@@ -62,52 +62,63 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 					</IconContainer>
 					<span className="mainInfo">{pet.name}</span>
 				</Name>
-				<InfoRow>
-					<span>
-						{t(`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`)}
-					</span>
-				</InfoRow>
-				<InfoRow>
-					<span
-						dangerouslySetInnerHTML={{
-							__html:
-								t("pets.age_years", {
-									count: dayjs().diff(pet.birthday, "years"),
-								}) ?? "",
-						}}
-					/>
-					<span
-						dangerouslySetInnerHTML={{
-							__html:
-								t("pets.weight_kg", {
-									weight_kg: pet.weight_kg,
-								}) ?? "",
-						}}
-					/>
-					<span
-						dangerouslySetInnerHTML={{
-							__html:
-								t("pets.coat_lenght", {
-									lenght: t(
-										`pets.coat_lenghts.${pet.body.coat.length}`
-									),
-								}) ?? "",
-						}}
-					/>
-				</InfoRow>
-
-				{pet.neutered && (
+				<InfoBox className="info-box">
 					<InfoRow>
-						<span className="sub">
+						<span>
 							{t(
-								`pets.neutered_${
-									pet.gender == "FEMALE" ? "female" : "male"
-								}`
+								`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`
 							)}
 						</span>
 					</InfoRow>
-				)}
-			</InfoBox>
+					
+					<InfoRow>
+						<span
+							dangerouslySetInnerHTML={{
+								__html:
+									t("pets.age_years", {
+										count: dayjs().diff(
+											pet.birthday,
+											"years"
+										),
+									}) ?? "",
+							}}
+						/>
+						<span
+							dangerouslySetInnerHTML={{
+								__html:
+									t("pets.weight_kg", {
+										weight_kg: pet.weight_kg,
+									}) ?? "",
+							}}
+						/>
+						
+					</InfoRow>
+
+						<InfoRow>
+						<span
+							dangerouslySetInnerHTML={{
+								__html:
+									t("pets.coat_lenght", {
+										lenght: t(
+											`pets.coat_lenghts.${pet.body.coat.length}`
+										),
+									}) ?? "",
+							}}
+						/>
+					{pet.neutered && (
+							<span className="sub">
+								{t(
+									`pets.neutered_${
+										pet.gender == "FEMALE"
+											? "female"
+											: "male"
+									}`
+								)}
+							</span>
+					)}
+						</InfoRow>
+				</InfoBox>
+			</InfoWrapper>
 		</Container>
 	);
 };
@@ -121,21 +132,21 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 	display: flex;
 	border-radius: 99px 4px 4px 99px;
 	position: relative;
-	padding: 2px;
+	
 	&::before {
 		content: "";
 		background-color: ${$color("light-tint")};
 		position: absolute;
-		height: calc(${$uw(13)} - 4px);
+		height: ${$uw(13)};
 		left: ${$uw(7)};
 		width: ${$uw(7)};
-		z-index: 1;
+		z-index: 0;
 	}
 	&::after {
 		content: "";
 		left: ${$uw(7)};
 
-		width: calc(${$uw(7)} + 4px);
+		width: calc(${$uw(5)} );
 		height: ${$uw(3)};
 		background-color: ${({ bgColor }) => $color(bgColor || "primary")};
 		position: absolute;
@@ -147,18 +158,18 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 	.icon-container {
 		background-color: ${$color("white")};
 	}
+	.name {
+		background-color: ${({ bgColor }) => $color(bgColor || "primary")};
+		color: ${({ color }) => $color(color || "dark")};
+	}
 	.info-box {
 		background-color: ${$color("light-tint")};
-		.name {
-			background-color: ${({ bgColor }) => $color(bgColor || "primary")};
-			color: ${({ color }) => $color(color || "dark")};
-		}
 	}
 `;
 
 const ImageWrapper = styled.div`
 	width: ${$uw(13)};
-	height: calc(${$uw(13)} - 4px);
+	height: ${$uw(13)};
 	flex: 0 0 ${$uw(13)};
 	aspect-ratio: 1;
 	position: relative;
@@ -168,13 +179,38 @@ const ImageWrapper = styled.div`
 	border-radius: 99px;
 `;
 
+const InfoWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+`;
+
+const Name = styled.div`
+	display: flex;
+	align-items: center;
+	position: relative;
+	width: fit-content;
+	font-size: 2rem;
+	left: ${$uw(-2)};
+	height: ${$uw(3)};
+	font-weight: 600;
+	padding-right: ${$uw(2)};
+	padding-left: ${$uw(1)};
+	border-radius: 0 99px 0px 0;
+	> span.mainInfo {
+		height: auto;
+		margin-bottom: 0;
+		font-size: 1.8rem;
+		font-weight: 800;
+	}
+`;
+
 const InfoBox = styled.div`
 	display: flex;
 	padding: ${$uw(1)};
 	width: ${$uw(17)};
-	height: 100%;
+	height: ${$uw(10)};
 	border-radius: 0 2px 2px 0px;
-	z-index: 2;
+	
 	flex-wrap: wrap;
 	flex-direction: column;
 	align-items: start;
@@ -186,33 +222,13 @@ const InfoBox = styled.div`
 	}
 `;
 
-const Name = styled.div`
-	display: flex;
-	align-items: center;
-	position: relative;
-	top: ${$uw(-1)};
-	font-size: 2rem;
-	left: ${$uw(-3)};
-	height: ${$uw(3)};
-	font-weight: 600;
-	padding-right: ${$uw(2)};
-	padding-left: ${$uw(1)};
-	border-radius: 0 99px 99px 0;
-	> span.mainInfo {
-		height: auto;
-		margin-bottom: 0;
-		font-size: 1.8rem;
-		font-weight: 800;
-	}
-`;
-
 const IconContainer = styled.div`
 	width: ${$uw(1.5)};
 	height: ${$uw(1.5)};
 	display: block;
 	border-radius: 100px;
 
-	margin-right: ${$uw(.5)};
+	margin-right: ${$uw(0.5)};
 	padding: ${$uw(0.2)};
 `;
 
@@ -220,7 +236,7 @@ const InfoRow = styled.div`
 	width: 100%;
 	display: flex;
 	gap: ${$uw(1)};
-	height: ${$uw(1.5)};
+
 	margin-bottom: ${$uw(0.5)};
 	justify-content: flex-start;
 	&:last-child {
