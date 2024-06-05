@@ -7,11 +7,7 @@ import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
 
 import {
-	SelectInput,
-	TextInput,
 	Option,
-	SubmitInput,
-	FileInput,
 	Modal,
 	FakeInput,
 } from "@components";

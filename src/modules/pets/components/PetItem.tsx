@@ -9,7 +9,6 @@ import { $breakPoint, $color, $uw } from "@theme";
 import { Image2x, Icon } from "@components";
 import { gendersColor } from "@utils";
 
-
 type Prop = {
 	pet: DashboardPetFragment;
 	index: number;
@@ -22,7 +21,6 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 	const { t } = useTranslation();
 	useEffect(() => {
 		if (imageReady) {
-			
 			gsap.fromTo(
 				itemRef.current,
 				{ opacity: 0, x: "-100px" }, // From left of 100px outside the screen
@@ -54,15 +52,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 				</ImageWrapper>
 			)}
 			<InfoBox className="info-box">
-				<Name>
-					<span className="mainInfo">
-						<p>{pet.name}</p>
-						<span>
-							{t(
-								`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`
-							)}
-						</span>
-					</span>
+				<Name className="name">
 					<IconContainer className="icon-container">
 						<Icon
 							size="100%"
@@ -70,8 +60,13 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 							name={gendersColor[pet.gender].iconName}
 						></Icon>
 					</IconContainer>
+					<span className="mainInfo">{pet.name}</span>
 				</Name>
-
+				<InfoRow>
+					<span>
+						{t(`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`)}
+					</span>
+				</InfoRow>
 				<InfoRow>
 					<span
 						dangerouslySetInnerHTML={{
@@ -89,8 +84,6 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 								}) ?? "",
 						}}
 					/>
-				</InfoRow>
-				<InfoRow>
 					<span
 						dangerouslySetInnerHTML={{
 							__html:
@@ -102,8 +95,9 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 						}}
 					/>
 				</InfoRow>
-				<InfoRow>
-					{pet.neutered && (
+
+				{pet.neutered && (
+					<InfoRow>
 						<span className="sub">
 							{t(
 								`pets.neutered_${
@@ -111,8 +105,8 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 								}`
 							)}
 						</span>
-					)}
-				</InfoRow>
+					</InfoRow>
+				)}
 			</InfoBox>
 		</Container>
 	);
@@ -120,84 +114,67 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 
 const Container = styled.div<{ bgColor?: string; color?: string }>`
 	width: 100%;
-	height: ${$uw(12)};
+	height: ${$uw(13)};
+	/* background-color: ${({ bgColor }) => $color(bgColor || "primary")}; */
 	margin-bottom: ${$uw(4)};
 	opacity: 0;
 	display: flex;
-	border-radius: 4px;
+	border-radius: 99px 4px 4px 99px;
 	position: relative;
+	padding: 2px;
+	&::before {
+		content: "";
+		background-color: ${$color("light-tint")};
+		position: absolute;
+		height: calc(${$uw(13)} - 4px);
+		left: ${$uw(7)};
+		width: ${$uw(7)};
+		z-index: 1;
+	}
+	&::after {
+		content: "";
+		left: ${$uw(7)};
+
+		width: calc(${$uw(7)} + 4px);
+		height: ${$uw(3)};
+		background-color: ${({ bgColor }) => $color(bgColor || "primary")};
+		position: absolute;
+		z-index: 1;
+	}
 	.image-wrapper {
-		border: 3px solid ${({ bgColor }) =>$color(bgColor || "primary")};
+		border: 4px solid ${({ bgColor }) => $color(bgColor || "primary")};
 	}
 	.icon-container {
-		border: 1px solid ${({ bgColor }) =>$color(bgColor || "primary")};
-		box-shadow: 0 0 0 1px #fff;
+		background-color: ${$color("white")};
 	}
 	.info-box {
-		background-color: ${$color('light-tint')};
-		border: 3px solid ${({ bgColor }) =>$color(bgColor || "primary")};
-	}
-	span {
-		color: ${$color('dark')};
+		background-color: ${$color("light-tint")};
+		.name {
+			background-color: ${({ bgColor }) => $color(bgColor || "primary")};
+			color: ${({ color }) => $color(color || "dark")};
+		}
 	}
 `;
 
 const ImageWrapper = styled.div`
 	width: ${$uw(13)};
-	height: ${$uw(13)};
-	position: absolute;
+	height: calc(${$uw(13)} - 4px);
+	flex: 0 0 ${$uw(13)};
 	aspect-ratio: 1;
-
+	position: relative;
+	z-index: 3;
+	border-left-width: 0;
 	overflow: hidden;
 	border-radius: 99px;
-	top: ${$uw(-.5)};
-`;
-
-const Name = styled.div`
-	display: flex;
-	align-items: center;
-	width: 100%;
-	justify-content: space-between;
-	font-size: 2rem;
-	height: ${$uw(2.5)};
-	margin-bottom: ${$uw(1)};
-	font-weight: 600;
-
-	> span.mainInfo {
-		height: 100%;
-		margin-bottom: 0;
-		p {
-			font-size: 1.8rem;
-			font-weight: 800;
-		}
-		span {
-			font-weight: 400;
-			font-size: 1.3rem;
-		}
-		* {
-			margin: 0;
-			margin-bottom: 0;
-		}
-	}
-	${$breakPoint(420)}{
-		> span.mainInfo {
-		p {
-			font-size: 1.6rem;
-		}
-		span {
-			font-size: 1.2rem;
-		}
-	}
-	}
 `;
 
 const InfoBox = styled.div`
 	display: flex;
 	padding: ${$uw(1)};
-	width: 100%;
+	width: ${$uw(17)};
 	height: 100%;
-	border-radius: 99px 20px 20px 99px;
-	padding-left: ${$uw(14)};
+	border-radius: 0 2px 2px 0px;
+	z-index: 2;
 	flex-wrap: wrap;
 	flex-direction: column;
 	align-items: start;
@@ -209,13 +186,33 @@ const InfoBox = styled.div`
 	}
 `;
 
+const Name = styled.div`
+	display: flex;
+	align-items: center;
+	position: relative;
+	top: ${$uw(-1)};
+	font-size: 2rem;
+	left: ${$uw(-3)};
+	height: ${$uw(3)};
+	font-weight: 600;
+	padding-right: ${$uw(2)};
+	padding-left: ${$uw(1)};
+	border-radius: 0 99px 99px 0;
+	> span.mainInfo {
+		height: auto;
+		margin-bottom: 0;
+		font-size: 1.8rem;
+		font-weight: 800;
+	}
+`;
+
 const IconContainer = styled.div`
-	width: ${$uw(1.8)};
-	height: ${$uw(1.8)};
+	width: ${$uw(1.5)};
+	height: ${$uw(1.5)};
 	display: block;
 	border-radius: 100px;
 
-	margin-right: ${$uw(1)};
+	margin-right: ${$uw(.5)};
 	padding: ${$uw(0.2)};
 `;
 
@@ -232,9 +229,9 @@ const InfoRow = styled.div`
 	> .sub {
 		font-size: 1.3rem;
 	}
-	${$breakPoint(420)}{
+	${$breakPoint(420)} {
 		span {
-			font-size: 1.1rem;
+			font-size: 1.4rem;
 		}
 	}
 `;
