@@ -70,7 +70,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 							)}
 						</span>
 					</InfoRow>
-					
+
 					<InfoRow>
 						<span
 							dangerouslySetInnerHTML={{
@@ -91,10 +91,9 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 									}) ?? "",
 							}}
 						/>
-						
 					</InfoRow>
 
-						<InfoRow>
+					<InfoRow>
 						<span
 							dangerouslySetInnerHTML={{
 								__html:
@@ -105,7 +104,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 									}) ?? "",
 							}}
 						/>
-					{pet.neutered && (
+						{pet.neutered && (
 							<span className="sub">
 								{t(
 									`pets.neutered_${
@@ -115,8 +114,8 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 									}`
 								)}
 							</span>
-					)}
-						</InfoRow>
+						)}
+					</InfoRow>
 				</InfoBox>
 			</InfoWrapper>
 		</Container>
@@ -132,7 +131,7 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 	display: flex;
 	border-radius: 99px 4px 4px 99px;
 	position: relative;
-	
+
 	&::before {
 		content: "";
 		background-color: ${$color("light-tint")};
@@ -142,13 +141,16 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 		left: ${$uw(7)};
 		width: ${$uw(7)};
 		z-index: 0;
+		box-shadow: #6666 -11px 2px 2px 0px;
 		border-top: 2px solid ${({ bgColor }) => $color(bgColor || "primary")};
-		
+		.dark & {
+			box-shadow: none;
+		}
 	}
 	&::after {
 		content: "";
 		left: ${$uw(7)};
-		width: calc(${$uw(5)} );
+		width: calc(${$uw(5)});
 		height: ${$uw(3)};
 		background-color: ${({ bgColor }) => $color(bgColor || "primary")};
 		position: absolute;
@@ -167,7 +169,10 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 	.info-box {
 		border-top: 2px solid ${({ bgColor }) => $color(bgColor || "primary")};
 		background-color: ${$color("light-tint")};
-		
+		box-shadow: 1px 2px 2px 0px #6666;
+		.dark & {
+			box-shadow: none;
+		}
 	}
 `;
 
@@ -211,12 +216,12 @@ const Name = styled.div`
 const InfoBox = styled.div`
 	display: flex;
 	padding: ${$uw(1)};
-	width: calc(${$uw(17)} + 4px);
+	width: ${$uw(16)};
 	position: relative;
 	top: -2px;
 	height: ${$uw(10)};
 	border-radius: 0 2px 2px 0px;
-	
+
 	flex-wrap: wrap;
 	flex-direction: column;
 	align-items: start;
