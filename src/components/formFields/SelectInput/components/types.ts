@@ -23,6 +23,7 @@ export type CommonProps = {
     required?: boolean;
     bgColor?: string;
     textLabel?: I18NKey;
+    hideIcon?:boolean;
     ntTextLabel?: string;
     color?: string;
     focusColor?: string;

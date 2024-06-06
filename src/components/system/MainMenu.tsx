@@ -82,11 +82,11 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 			{modal ? <Modal {...modal} /> : <></>}
 			<Container ref={ref}>
 				<MainOptions>
-					<Option to="/settings">
+					<Option onClick={() => onClose()} to="/settings">
 						<Icon size="24px" name="settingsOutline" />
 						<span>{t("system.menu.settings")}</span>
 					</Option>
-					<Option to="/settings/profile">
+					<Option onClick={() => onClose()} to="/settings/profile">
 						<Icon size="24px" name="personOutline" />
 						<span>{t("system.menu.profile")}</span>
 					</Option>

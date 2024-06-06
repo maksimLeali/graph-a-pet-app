@@ -5,11 +5,11 @@ export const SettingsRouter = () => {
 	const { path } = useRouteMatch();
 	return (
 		<>
-			<Route path={`${path}/profile`}>
-				<Profile />
-			</Route>
-			<Route path={`${path}`}>
+			<Route exact path={`${path}`}>
 				<Generals />
+			</Route>
+			<Route exact path={`${path}/profile`}>
+				<Profile />
 			</Route>
 		</>
 	);

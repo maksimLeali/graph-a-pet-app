@@ -24,6 +24,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 	textLabel,
 	ntTextLabel,
 	required = false,
+	hideIcon = false,
 	bgColor,
 	color = "medium",
 	hoverColor = "light-tint",
@@ -48,6 +49,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 	useOnClickOutside(ref, () => setFocused(false));
 
 	useEffect(() => {
+		console.log(currentValue);
 		if (currentValue) setCompiled(true);
 		else setCompiled(false);
 	}, [currentValue]);
@@ -91,6 +93,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 			disabledColor={disabledColor}
 			errorColor={errorColor}
 			color={color}
+			className={`select-input ${classes}`}
 		>
 			<InputLabel
 				className={`inputLabel ${classes}`}
@@ -103,7 +106,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 			<InputWrapper ref={ref} className="inputWrapper">
 				<InvisibleInput id={name} />
 				<LabelContainer
-					className="label-container"
+					className={`label-container ${hideIcon ? "full-width" : ""}`}
 					onClick={() => setFocused(!focused)}
 				>
 					{currentValue
@@ -119,26 +122,26 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 						  )
 						: ""}
 				</LabelContainer>
-				<IconContainer>
-					<Icon
-						size="26px"
-						time=".5s"
-						onMouseUp={() => setFocused(!focused)}
-						className={`selectIcon ${focused ? "focused" : ""} ${
-							compiled ? "compiled" : ""
-						}`}
-						name="caretDownCircleOutline"
-					/>
-				</IconContainer>
+				{!hideIcon && (
+					<IconContainer className="icon-container">
+						<Icon
+							size="26px"
+							time=".5s"
+							onMouseUp={() => setFocused(!focused)}
+							className={`selectIcon ${classes}`}
+							name="caretDownCircleOutline"
+						/>
+					</IconContainer>
+				)}
 				<OptionsContainer
 					maxHeight={
 						options.length > rowsPerList
 							? rowsPerList * 3.5
 							: options.length * 3.5
 					}
-					className={`options-container ${focused ? "focused" : ""} ${
-						compiled ? "compiled" : ""
-					} ${up || forceOptionsUp ? "up" : ""}`}
+					className={`options-container ${classes} ${
+						up || forceOptionsUp ? "up" : ""
+					} ${hideIcon ? "full-width" : ""}`}
 					ref={optionsRef}
 				>
 					{options.map((option, i) => (
@@ -154,7 +157,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 						</Option>
 					))}
 				</OptionsContainer>
-				<FocusBox className={`focusBox ${focused ? "focused" : ""}`} />
+				<FocusBox className={`focusBox ${classes}`} />
 			</InputWrapper>
 			{errorText && (
 				<ErrorSpan className="error-span">{t(errorText)}</ErrorSpan>

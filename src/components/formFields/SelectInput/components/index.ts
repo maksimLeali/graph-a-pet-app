@@ -136,7 +136,9 @@ export const LabelContainer = styled.div`
 	position: relative;
 	z-index: 2;
 	width: calc(100% -  ${$uw(3)} );
-
+	&.full-width{
+		width: 100%;
+	}
 	> * {
 		height: 100%;
 	}
@@ -206,7 +208,9 @@ export const OptionsContainer = styled.div<{ maxHeight: number }>`
 	box-shadow: 1px 1px 2px 0px #2b2b2b;
 	transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
 
-	
+	&.full-width{
+		width: 100%;
+	}
 	&.focused {
 		opacity: 1;
 		max-height: ${({ maxHeight }) => $uw(maxHeight)};

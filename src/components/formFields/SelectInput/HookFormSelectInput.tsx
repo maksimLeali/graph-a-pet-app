@@ -13,7 +13,7 @@ import {
 	OptionsContainer,
 	Wrapper,
 	Option,
-    ErrorSpan,
+	ErrorSpan,
 } from "./components";
 import { CommonProps, HookFormProps } from "./components/types";
 import { Icon } from "@components";
@@ -29,6 +29,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 	hoverColor = "light-tint",
 	focusColor = "primary",
 	disabledColor = "medium",
+	hideIcon = false,
 	forceOptionsUp = false,
 	textColor = "dark",
 	disabled = false,
@@ -89,8 +90,6 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 		} ${errors[name] && "error"}`;
 	}, [errors[name], disabled, focused, compiled]);
 
-    
-
 	return (
 		<Wrapper
 			focusColor={focusColor}
@@ -100,7 +99,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 			disabledColor={disabledColor}
 			errorColor={errorColor}
 			color={color}
-			className={classes}
+			className={`select-input ${classes}`}
 		>
 			<InputLabel
 				className={`inputLabel ${classes}`}
@@ -127,7 +126,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 							})}
 						/>
 						<LabelContainer
-							className="label-container"
+							className={`label-container ${hideIcon ? "full-width" : ""}`}
 							onClick={() => setFocused(!focused)}
 						>
 							{value
@@ -143,15 +142,17 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 								  )
 								: ""}
 						</LabelContainer>
-						<IconContainer className="icon-container">
-							<Icon
-								size="26px"
-								time=".5s"
-								onMouseUp={() => setFocused(!focused)}
-								className={`selectIcon ${classes}`}
-								name="caretDownCircleOutline"
-							/>
-						</IconContainer>
+						{!hideIcon && (
+							<IconContainer className="icon-container">
+								<Icon
+									size="26px"
+									time=".5s"
+									onMouseUp={() => setFocused(!focused)}
+									className={`selectIcon ${classes}`}
+									name="caretDownCircleOutline"
+								/>
+							</IconContainer>
+						)}
 						<OptionsContainer
 							maxHeight={
 								options.length > rowsPerList
@@ -159,14 +160,17 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 									: options.length * 3.5
 							}
 							className={`options-container ${classes} ${
-								up || forceOptionsUp ? "up" : ""
-							}`}
+								up || forceOptionsUp ? "up" : "" } ${
+								hideIcon ? 'full' : ""
+								}`}
 							ref={optionsRef}
 						>
 							{options.map((option, i) => (
 								<Option
 									key={i}
-									className={`option ${option.value === value ? 'selected' : ''}`}
+									className={`option ${
+										option.value === value ? "selected" : ""
+									}`}
 									onMouseUp={() => {
 										setFocused(false);
 										if (option.value === value) {
@@ -194,7 +198,7 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 					</InputWrapper>
 				)}
 			/>
-            {errors[name]?.message && (
+			{errors[name]?.message && (
 				<ErrorSpan className="error-span">
 					{t(errors[name]?.message as I18NKey)}
 				</ErrorSpan>

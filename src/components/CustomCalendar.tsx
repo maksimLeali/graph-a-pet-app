@@ -8,6 +8,7 @@ import _ from "lodash";
 import { useSwipe } from "@hooks";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { $color } from "@theme";
+import { useTranslation } from "react-i18next";
 
 type props = {
 	appointments?: AppointmentFragment[] | Maybe<AppointmentFragment>[];
@@ -25,6 +26,9 @@ export const CustomCalendar: React.FC<props> = ({
 	const [activeStartDate, setActiveStartDate] = useState(
 		dayjs().startOf("month").toDate()
 	);
+
+	const { i18n } = useTranslation();
+
 	const [selectedDay, setSelectedDay] = useState<Date>();
 
 	const onLeft = useCallback(
@@ -106,7 +110,7 @@ export const CustomCalendar: React.FC<props> = ({
 			onTouchMove={handleTouchMove}
 		>
 			<MyCalendar
-				locale="ita"
+				locale={i18n.language}
 				activeStartDate={activeStartDate}
 				onActiveStartDateChange={({ activeStartDate }) =>
 					setActiveStartDate(activeStartDate ?? new Date())
@@ -162,6 +166,14 @@ const MyCalendar = styled(Calendar)`
 	width: 100%;
 	border: none;
 	padding: 40px 12px;
+	* {
+		text-transform: capitalize;
+	}
+	.react-calendar__month-view__weekdays__weekday{
+		> * {
+			text-transform: uppercase;
+		}
+	}
 	.react-calendar__month-view__days__day {
 		flex: 0 0 12% !important;
 		margin: 0 2.14%;

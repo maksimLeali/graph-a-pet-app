@@ -19,7 +19,7 @@ export const SubmitInput:React.FC<props> = ({color, children, submitting=false, 
 
     return <>
         <HiddenSubmit className={`${submitting ? 'submitting' : ''}`} type="submit"/>
-        <IonButton disabled={isSubmitting|| submitting || disabled} type="submit" color={color} >{children}</IonButton>
+        <IonButton className="submit-input" disabled={isSubmitting|| submitting || disabled} type="submit" color={color} >{children}</IonButton>
     </>
 }
 
