@@ -173,7 +173,7 @@
             "breed": "a che razza appartiene?",
             "continue": "Vai all'ultimo step",
             "insert_breed": "a che razza appartiene?",
-            "intro": "Ora diamo un immagine definita di <b>{{name}}</b>", 
+            "intro": "Ora diamo un immagine definita di <b>{{name}}</b>",
             "picture": "Hai una foto?",
             "breed_alert": "Se la razza che vuoi inserire non è presente nella lista, confermando verrà comunque salvata, ci preoccuperemo il prima possibile di sopperire alla mancanza."
           },
@@ -737,6 +737,818 @@
           "MEDIUM": "Medium",
           "LENGHT": "Long",
           "HAIRLESS": "Hairless"
+        }
+      }
+    }
+  },
+  "fr": {
+    "graph_a_pet_app": {
+      "auth": {
+        "insert_email": "Insérer l'email",
+        "password": "Mot de passe",
+        "email": "E-mail",
+        "first_name": "Prénom",
+        "last_name": "Nom de famille",
+        "code": "Entrez le code que vous avez reçu par email",
+        "confirm_password": "Confirmer le mot de passe",
+        "insert_password": "Entrez le mot de passe",
+        "insert_new_password": "Entrez un nouveau mot de passe",
+        "insert_code": "Entrez le code",
+        "forgot_password_link": "Mot de passe oublié ?",
+        "login": "Connexion",
+        "code_not_recived": "Vérifiez votre courrier, y compris les spams",
+        "resend_code": "Envoyer un nouvel email",
+        "send_code": "Envoyer le code",
+        "password_recovery": "Récupérer le mot de passe",
+        "password_recovery_text": "Entrez votre email pour définir un nouveau mot de passe",
+        "password_recovery_email_text": "Entrez le code reçu dans votre email",
+        "password_recovery_password_text": "Sélectionnez un nouveau mot de passe",
+        "back_to_login": "Retour à la connexion",
+        "next": "Suivant",
+        "at_least_8_chars": "Au moins 8 caractères",
+        "at_least_both_cases": "Majuscules et minuscules",
+        "at_least_a_number": "Au moins un chiffre",
+        "logout": "Déconnexion",
+        "signup": "Inscription",
+        "already_registered": "Déjà utilisateur?",
+        "not_registered": "Pas encore inscrit ?"
+      },
+      "users": {
+        "general": {
+          "empty_list": "Aucun élément",
+          "no_sub_owners": "Aucun sous-propriétaire"
+        }
+      },
+      "system": {
+        "menu": {
+          "settings": "Paramètres",
+          "profile": "Profil"
+        },
+        "logout_modal": {
+          "title": "Vous êtes sur le point de vous déconnecter",
+          "text": "Êtes-vous sûr de vouloir vous déconnecter de l'application?"
+        },
+        "year": "Année",
+        "month": "Mois",
+        "day": "Jour",
+        "hour": "Heure",
+        "minute": "Minute",
+        "years": "Années",
+        "months": "Mois",
+        "days": "Jours",
+        "hours": "Heures",
+        "minutes": "Minutes"
+      },
+      "actions": {
+        "accept": "Accepter",
+        "refuse": "Refuser",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "close": "Fermer"
+      },
+      "messages": {
+        "done": "Réussi",
+        "success": {
+          "pet_updated": "Données de l'animal mises à jour avec succès",
+          "login": "Connexion réussie",
+          "logout": "Déconnexion réussie",
+          "signup": "Inscription terminée, vérifiez votre email",
+          "pet_linked_succesfully": "Animal ajouté avec succès"
+        },
+        "errors": {
+          "not_authorized": "Utilisateur non autorisé",
+          "login": "Erreur d'authentification",
+          "me": "Erreur lors de la récupération des données",
+          "user": "Erreur de chargement de l'utilisateur",
+          "fetch": "Erreur lors de la récupération des données",
+          "invalid_email": "Email invalide",
+          "code": "Code invalide",
+          "password_mismatch": "Les mots de passe ne correspondent pas",
+          "required": "Champ requis",
+          "no_pet_found": "Aucun animal trouvé"
+        }
+      },
+      "pages": {
+        "home": "Accueil",
+        "pet_sharing": "Voulez-vous de moi?"
+      },
+      "events": {
+        "antiparasitic": "Antiparasitaire",
+        "vaccine": "Vaccin",
+        "tablet": "Comprimé",
+        "notes": "Notes",
+        "reminder": "Rappel",
+        "type": "Type",
+        "operation": "Opération",
+        "from_to": "De {{from}} à {{to}}",
+        "add_event": "Ajouter un événement",
+        "name": "Nom de l'événement",
+        "date_from": "Date de début",
+        "time_from": "Heure de début",
+        "time": "Heure",
+        "boster_date_from": "Date de début du rappel",
+        "date_time_from": "Date et heure de début",
+        "booster_date_time_from": "Date et heure de début du rappel",
+        "pet": "Pour qui?",
+        "general": {
+          "no_events": "Aucun rendez-vous"
+        }
+      },
+      "home": {
+        "profile": "Profil",
+        "share": "Partager",
+        "health_record": "Santé",
+        "co_owners": "Famille d'accueil"
+      },
+      "pets": {
+        "accept_as": "Accepter en tant que:",
+        "add_pet": "Ajouter un animal",
+        "age_years_one": "<b>{{count}}</b> an",
+        "age_years_other": "<b>{{count}}</b> ans",
+        "age": "Âge",
+        "coat_lenght": "Pelage : <b>{{lenght}}</b>",
+        "desc_pet_sitter": "Un <b>Pet Sitter</b> s'occupe de l'animal pour le <b>travail</b>",
+        "desc_sub_owner": "Un <b>Sous-propriétaire</b> s'occupe de l'animal comme le propriétaire.<br/>Habituellement un <b>membre de la famille</b> ou un <b>ami</b>",
+        "family": "Animal",
+        "gender_female": "Femelle",
+        "gender_male": "Mâle",
+        "gender_not_said": "Préfère ne pas spécifier",
+        "gender": "Sexe",
+        "name": "Nom",
+        "neutered_female": "Stérilisée",
+        "neutered_male": "Castré",
+        "neutered": "Stérilisé",
+        "owner_short": "Propriétaire",
+        "owner": "Propriétaire",
+        "pet_sitter_short": "Pet sitter",
+        "pet_sitter": "Pet Sitter",
+        "petsitter": "Pet Sitter",
+        "shared_from": "Propriétaire",
+        "shared_with": "Qui peut voir?",
+        "sub_owner_short": "Sous-propriétaire",
+        "sub_owner": "Sous-propriétaire",
+        "subowner": "Sous-propriétaire",
+        "weight_kg": "<b>{{weight_kg}}</b> Kg",
+        "weight": "Poids",
+        "pet_family": {
+          "canine": "Chien",
+          "feline": "Chat",
+          "birds": "Oiseau",
+          "fish": "Poisson",
+          "reptile": "Reptile"
+        },
+        "add_pet_page": {
+          "intro_title": "Salut <b>{{name}}</b></br>",
+          "intro_desc": "<span>Ajoutons les informations de votre ami étape par étape.</span></br><span>Votre ami va vous <b>suivre pendant longtemps</b>, donnez-lui l'importance qu'il mérite</span>",
+          "start": "C'est parti",
+          "step_1": {
+            "continue": "Passer à l'étape suivante",
+            "family": "Quel type d'animal?",
+            "gender": "Mâle ou femelle?",
+            "insert_family": "Choisir l'animal",
+            "insert_gender": "Sexe",
+            "insert_name": "Nom",
+            "intro": "Commençons par comprendre qui est l'animal",
+            "name": "Quel est son nom?"
+          },
+          "step_2": {
+            "breed": "Quelle est sa race?",
+            "continue": "Passer à la dernière étape",
+            "insert_breed": "Quelle est sa race?",
+            "intro": "Maintenant, donnons une image définie de <b>{{name}}</b>",
+            "picture": "Avez-vous une photo?",
+            "breed_alert": "Si la race que vous souhaitez entrer ne figure pas dans la liste, en la confirmant, elle sera quand même enregistrée, nous nous occuperons du manque dès que possible."
+          },
+          "step_3": {
+            "birthday_male": "Quand est né {{name}}",
+            "birthday_female": "Quand est née {{name}}",
+            "insert_birthday": "Date de naissance",
+            "weight": "Quel est son poids?",
+            "insert_weight": "Poids en Kg",
+            "optionale_steps_skip": "Nous avons entré toutes les informations nécessaires pour {{name}}!</br>Si vous le souhaitez, vous pouvez ajouter plus d'informations maintenant, ou le faire plus tard à votre propre rythme, c'est à vous de décider",
+            "skip": "Passer",
+            "continue": "Continuer à remplir"
+          },
+          "step_4": {
+            "color": "Voulez-vous que {{name}} ait une couleur personnalisée﹡?",
+            "colors_suggested": "Nous suggérons celles-ci en fonction de l'image fournie",
+            "color_explain": "﹡cette couleur sera affichée sur la page d'accueil, dans les événements et d'autres petites choses liées à {{name}}"
+          }
+        },
+        "coat_lenghts": {
+          "SHORT": "Court",
+          "MEDIUM": "Moyen",
+          "LENGHT": "Long",
+          "HAIRLESS": "Sans poils"
+        }
+      }
+    }
+  },
+  "ru": {
+    "graph_a_pet_app": {
+      "auth": {
+        "insert_email": "Введите электронную почту",
+        "password": "Пароль",
+        "email": "Электронная почта",
+        "first_name": "Имя",
+        "last_name": "Фамилия",
+        "code": "Введите код, полученный по электронной почте",
+        "confirm_password": "Подтвердите пароль",
+        "insert_password": "Введите пароль",
+        "insert_new_password": "Введите новый пароль",
+        "insert_code": "Введите код",
+        "forgot_password_link": "Забыли пароль?",
+        "login": "Войти",
+        "code_not_recived": "Проверьте почту, включая спам",
+        "resend_code": "Отправить новое письмо",
+        "send_code": "Отправить код",
+        "password_recovery": "Восстановление пароля",
+        "password_recovery_text": "Введите свою электронную почту, чтобы установить новый пароль",
+        "password_recovery_email_text": "Введите код, полученный на вашу электронную почту",
+        "password_recovery_password_text": "Выберите новый пароль",
+        "back_to_login": "Назад к входу",
+        "next": "Далее",
+        "at_least_8_chars": "Не менее 8 символов",
+        "at_least_both_cases": "С заглавными и строчными буквами",
+        "at_least_a_number": "Хотя бы одна цифра",
+        "logout": "Выйти",
+        "signup": "Зарегистрироваться",
+        "already_registered": "Уже зарегистрированы?",
+        "not_registered": "Еще не зарегистрированы?"
+      },
+      "users": {
+        "general": {
+          "empty_list": "Нет элементов",
+          "no_sub_owners": "Нет дополнительных владельцев"
+        }
+      },
+      "system": {
+        "menu": {
+          "settings": "Настройки",
+          "profile": "Профиль"
+        },
+        "logout_modal": {
+          "title": "Вы собираетесь выйти",
+          "text": "Вы уверены, что хотите выйти из приложения?"
+        },
+        "year": "Год",
+        "month": "Месяц",
+        "day": "День",
+        "hour": "Час",
+        "minute": "Минута",
+        "years": "Лет",
+        "months": "Месяцев",
+        "days": "Дней",
+        "hours": "Часов",
+        "minutes": "Минут"
+      },
+      "actions": {
+        "accept": "Принять",
+        "refuse": "Отказаться",
+        "cancel": "Отменить",
+        "confirm": "Подтвердить",
+        "close": "Закрыть"
+      },
+      "messages": {
+        "done": "Успешно выполнено",
+        "success": {
+          "pet_updated": "Данные о питомце успешно обновлены",
+          "login": "Успешный вход",
+          "logout": "Успешный выход",
+          "signup": "Регистрация завершена, проверьте свою почту",
+          "pet_linked_succesfully": "Питомец успешно добавлен"
+        },
+        "errors": {
+          "not_authorized": "Пользователь не авторизован",
+          "login": "Ошибка аутентификации",
+          "me": "Ошибка при получении собственных данных",
+          "user": "Ошибка загрузки пользователя",
+          "fetch": "Ошибка при получении данных",
+          "invalid_email": "Недействительная электронная почта",
+          "code": "Введен недействительный код",
+          "password_mismatch": "Пароли не совпадают",
+          "required": "Обязательное поле",
+          "no_pet_found": "Питомец не найден"
+        }
+      },
+      "pages": {
+        "home": "Главная",
+        "pet_sharing": "Ты хочешь меня?"
+      },
+      "events": {
+        "antiparasitic": "Антипаразитарное",
+        "vaccine": "Вакцина",
+        "tablet": "Таблетка",
+        "notes": "Заметки",
+        "reminder": "Напоминание",
+        "type": "Тип",
+        "operation": "Операция",
+        "from_to": "От {{from}} до {{to}}",
+        "add_event": "Добавить событие",
+        "name": "Название события",
+        "date_from": "Дата начала",
+        "time_from": "Время начала",
+        "time": "Время",
+        "boster_date_from": "Дата начала повторной вакцинации",
+        "date_time_from": "Дата и время начала",
+        "booster_date_time_from": "Дата и время начала повторной вакцинации",
+        "pet": "Для кого?",
+        "general": {
+          "no_events": "Нет встреч"
+        }
+      },
+      "home": {
+        "profile": "Профиль",
+        "share": "Поделиться",
+        "health_record": "Здоровье",
+        "co_owners": "Временный хозяин"
+      },
+      "pets": {
+        "accept_as": "Принять как:",
+        "add_pet": "Добавить питомца",
+        "age_years_one": "<b>{{count}}</b> год",
+        "age_years_other": "<b>{{count}}</b> лет",
+        "age": "Возраст",
+        "coat_lenght": "Шерсть: <b>{{lenght}}</b>",
+        "desc_pet_sitter": "<b>Пет Ситтер</b> заботится о питомце для <b>работы</b>",
+        "desc_sub_owner": "<b>Дополнительный владелец</b> заботится о питомце как владелец.<br/>Обычно это <b>член семьи</b> или <b>друг</b>",
+        "family": "Питомец",
+        "gender_female": "Самка",
+        "gender_male": "Самец",
+        "gender_not_said": "Предпочитаю не указывать",
+        "gender": "Пол",
+        "name": "Имя",
+        "neutered_female": "Стерилизована",
+        "neutered_male": "Кастрирован",
+        "neutered": "Стерилизован",
+        "owner_short": "Владелец",
+        "owner": "Владелец",
+        "pet_sitter_short": "Пет ситтер",
+        "pet_sitter": "Пет Ситтер",
+        "petsitter": "Пет Ситтер",
+        "shared_from": "Владелец",
+        "shared_with": "Кто может видеть?",
+        "sub_owner_short": "Доп. владелец",
+        "sub_owner": "Дополнительный владелец",
+        "subowner": "Дополнительный владелец",
+        "weight_kg": "<b>{{weight_kg}}</b> кг",
+        "weight": "Вес",
+        "pet_family": {
+          "canine": "Собака",
+          "feline": "Кошка",
+          "birds": "Птица",
+          "fish": "Рыба",
+          "reptile": "Рептилия"
+        },
+        "add_pet_page": {
+          "intro_title": "Привет <b>{{name}}</b></br>",
+          "intro_desc": "<span>Давайте добавим данные вашего друга шаг за шагом.</span></br><span>Ваш друг будет <b>следовать за вами долгое время</b>, уделите ему должное внимание</span>",
+          "start": "Начнем",
+          "step_1": {
+            "continue": "Перейти к следующему шагу",
+            "family": "Какой это вид животного?",
+            "gender": "Самец или самка?",
+            "insert_family": "Выберите животное",
+            "insert_gender": "Пол",
+            "insert_name": "Имя",
+            "intro": "Начнем с понимания, кто такой питомец",
+            "name": "Как его зовут?"
+          },
+          "step_2": {
+            "breed": "Какой это породы?",
+            "continue": "Перейти к последнему шагу",
+            "insert_breed": "Какая это порода?",
+            "intro": "Теперь давайте дадим четкое представление о <b>{{name}}</b>",
+            "picture": "У вас есть фото?",
+            "breed_alert": "Если порода, которую вы хотите ввести, не указана в списке, подтвердив это, она все равно будет сохранена, мы решим эту проблему как можно скорее."
+          },
+          "step_3": {
+            "birthday_male": "Когда родился {{name}}",
+            "birthday_female": "Когда родилась {{name}}",
+            "insert_birthday": "Дата рождения",
+            "weight": "Сколько он весит?",
+            "insert_weight": "Вес в кг",
+            "optionale_steps_skip": "Мы ввели всю необходимую информацию для {{name}}!</br>Если хотите, можете добавить больше информации сейчас или сделать это позже, на ваше усмотрение",
+            "skip": "Пропустить",
+            "continue": "Продолжить заполнение"
+          },
+          "step_4": {
+            "color": "Хотите, чтобы у{{name}} был персональный цвет﹡?",
+            "colors_suggested": "Мы предлагаем эти цвета на основе предоставленного изображения",
+            "color_explain": "﹡этот цвет будет отображаться на главной странице, в событиях и других небольших вещах, связанных с {{name}}"
+          }
+        },
+        "coat_lenghts": {
+          "SHORT": "Короткая",
+          "MEDIUM": "Средняя",
+          "LENGHT": "Длинная",
+          "HAIRLESS": "Без шерсти"
+        }
+      }
+    }
+  },
+  "de": {
+    "graph_a_pet_app": {
+      "auth": {
+        "insert_email": "E-Mail einfügen",
+        "password": "Passwort",
+        "email": "E-Mail",
+        "first_name": "Vorname",
+        "last_name": "Nachname",
+        "code": "Geben Sie den Code ein, den Sie per E-Mail erhalten haben",
+        "confirm_password": "Passwort bestätigen",
+        "insert_password": "Passwort eingeben",
+        "insert_new_password": "Neues Passwort eingeben",
+        "insert_code": "Code eingeben",
+        "forgot_password_link": "Passwort vergessen?",
+        "login": "Anmelden",
+        "code_not_recived": "Überprüfen Sie Ihre E-Mail, einschließlich Spam",
+        "resend_code": "Neue E-Mail senden",
+        "send_code": "Code senden",
+        "password_recovery": "Passwort wiederherstellen",
+        "password_recovery_text": "Geben Sie Ihre E-Mail ein, um ein neues Passwort festzulegen",
+        "password_recovery_email_text": "Geben Sie den Code ein, den Sie per E-Mail erhalten haben",
+        "password_recovery_password_text": "Wählen Sie ein neues Passwort",
+        "back_to_login": "Zurück zur Anmeldung",
+        "next": "Weiter",
+        "at_least_8_chars": "Mindestens 8 Zeichen",
+        "at_least_both_cases": "Groß- und Kleinbuchstaben",
+        "at_least_a_number": "Mindestens eine Zahl",
+        "logout": "Abmelden",
+        "signup": "Registrieren",
+        "already_registered": "Bereits registriert?",
+        "not_registered": "Noch nicht registriert?"
+      },
+      "users": {
+        "general": {
+          "empty_list": "Keine Elemente",
+          "no_sub_owners": "Keine weiteren Besitzer"
+        }
+      },
+      "system": {
+        "menu": {
+          "settings": "Einstellungen",
+          "profile": "Profil"
+        },
+        "logout_modal": {
+          "title": "Sie sind im Begriff, sich abzumelden",
+          "text": "Sind Sie sicher, dass Sie sich von der App abmelden möchten?"
+        },
+        "year": "Jahr",
+        "month": "Monat",
+        "day": "Tag",
+        "hour": "Stunde",
+        "minute": "Minute",
+        "years": "Jahre",
+        "months": "Monate",
+        "days": "Tage",
+        "hours": "Stunden",
+        "minutes": "Minuten"
+      },
+      "actions": {
+        "accept": "Akzeptieren",
+        "refuse": "Ablehnen",
+        "cancel": "Abbrechen",
+        "confirm": "Bestätigen",
+        "close": "Schließen"
+      },
+      "messages": {
+        "done": "Erfolgreich abgeschlossen",
+        "success": {
+          "pet_updated": "Haustierdaten erfolgreich aktualisiert",
+          "login": "Anmeldung erfolgreich",
+          "logout": "Abmeldung erfolgreich",
+          "signup": "Registrierung abgeschlossen, überprüfen Sie Ihre E-Mail",
+          "pet_linked_succesfully": "Haustier erfolgreich hinzugefügt"
+        },
+        "errors": {
+          "not_authorized": "Benutzer nicht autorisiert",
+          "login": "Authentifizierungsfehler",
+          "me": "Fehler beim Abrufen eigener Daten",
+          "user": "Fehler beim Laden des Benutzers",
+          "fetch": "Fehler beim Abrufen der Daten",
+          "invalid_email": "Ungültige E-Mail",
+          "code": "Ungültiger Code eingegeben",
+          "password_mismatch": "Passwörter stimmen nicht überein",
+          "required": "Pflichtfeld",
+          "no_pet_found": "Kein Haustier gefunden"
+        }
+      },
+      "pages": {
+        "home": "Startseite",
+        "pet_sharing": "Willst du mich?"
+      },
+      "events": {
+        "antiparasitic": "Antiparasitikum",
+        "vaccine": "Impfung",
+        "tablet": "Tablette",
+        "notes": "Notizen",
+        "reminder": "Erinnerung",
+        "type": "Typ",
+        "operation": "Operation",
+        "from_to": "Von {{from}} bis {{to}}",
+        "add_event": "Ereignis hinzufügen",
+        "name": "Ereignisname",
+        "date_from": "Startdatum",
+        "time_from": "Startzeit",
+        "time": "Zeit",
+        "boster_date_from": "Startdatum der Auffrischung",
+        "date_time_from": "Startdatum und -zeit",
+        "booster_date_time_from": "Startdatum und -zeit der Auffrischung",
+        "pet": "Für wen?",
+        "general": {
+          "no_events": "Keine Termine"
+        }
+      },
+      "home": {
+        "profile": "Profil",
+        "share": "Teilen",
+        "health_record": "Gesundheit",
+        "co_owners": "Pflegefamilie"
+      },
+      "pets": {
+        "accept_as": "Akzeptieren als:",
+        "add_pet": "Haustier hinzufügen",
+        "age_years_one": "<b>{{count}}</b> Jahr",
+        "age_years_other": "<b>{{count}}</b> Jahre",
+        "age": "Alter",
+        "coat_lenght": "Fell: <b>{{lenght}}</b>",
+        "desc_pet_sitter": "Ein <b>Haustiersitter</b> kümmert sich beruflich um das Haustier",
+        "desc_sub_owner": "Ein <b>Zusätzlicher Besitzer</b> kümmert sich um das Haustier wie der Besitzer.<br/>Normalerweise ein <b>Familienmitglied</b> oder ein <b>Freund</b>",
+        "family": "Haustier",
+        "gender_female": "Weiblich",
+        "gender_male": "Männlich",
+        "gender_not_said": "Bevorzuge keine Angabe",
+        "gender": "Geschlecht",
+        "name": "Name",
+        "neutered_female": "Sterilisiert",
+        "neutered_male": "Kastriert",
+        "neutered": "Kastriert",
+        "owner_short": "Besitzer",
+        "owner": "Besitzer",
+        "pet_sitter_short": "Haustiersitter",
+        "pet_sitter": "Haustiersitter",
+        "petsitter": "Haustiersitter",
+        "shared_from": "Besitzer",
+        "shared_with": "Wer kann es sehen?",
+        "sub_owner_short": "Zus. Besitzer",
+        "sub_owner": "Zusätzlicher Besitzer",
+        "subowner": "Zusätzlicher Besitzer",
+        "weight_kg": "<b>{{weight_kg}}</b> kg",
+        "weight": "Gewicht",
+        "pet_family": {
+          "canine": "Hund",
+          "feline": "Katze",
+          "birds": "Vogel",
+          "fish": "Fisch",
+          "reptile": "Reptil"
+        },
+        "add_pet_page": {
+          "intro_title": "Hallo <b>{{name}}</b></br>",
+          "intro_desc": "<span>Lassen Sie uns die Daten Ihres Freundes Schritt für Schritt hinzufügen.</span></br><span>Ihr Freund wird <b>lange Zeit bei Ihnen bleiben</b>, geben Sie ihm die richtige Bedeutung</span>",
+          "start": "Lass uns anfangen",
+          "step_1": {
+            "continue": "Zum nächsten Schritt",
+            "family": "Welche Art von Tier?",
+            "gender": "Männlich oder weiblich?",
+            "insert_family": "Tier auswählen",
+            "insert_gender": "Geschlecht",
+            "insert_name": "Name",
+            "intro": "Lassen Sie uns zuerst verstehen, wer das Haustier ist",
+            "name": "Wie heißt es?"
+          },
+          "step_2": {
+            "breed": "Welche Rasse ist es?",
+            "continue": "Zum letzten Schritt",
+            "insert_breed": "Welche Rasse ist es?",
+            "intro": "Lassen Sie uns jetzt ein klares Bild von <b>{{name}}</b> geben",
+            "picture": "Haben Sie ein Bild?",
+            "breed_alert": "Wenn die Rasse, die Sie eingeben möchten, nicht in der Liste enthalten ist, wird sie dennoch gespeichert, wir kümmern uns so schnell wie möglich darum."
+          },
+          "step_3": {
+            "birthday_male": "Wann wurde {{name}} geboren?",
+            "birthday_female": "Wann wurde {{name}} geboren?",
+            "insert_birthday": "Geburtsdatum",
+            "weight": "Wie viel wiegt es?",
+            "insert_weight": "Gewicht in kg",
+            "optionale_steps_skip": "Wir haben alle notwendigen Informationen für {{name}} eingegeben!</br>Wenn Sie möchten, können Sie jetzt weitere Informationen hinzufügen oder dies später in Ihrem eigenen Tempo tun",
+            "skip": "Überspringen",
+            "continue": "Weiter ausfüllen"
+          },
+          "step_4": {
+            "color": "Möchten Sie, dass {{name}} eine eigene Farbe hat﹡?",
+            "colors_suggested": "Wir schlagen diese Farben basierend auf dem bereitgestellten Bild vor",
+            "color_explain": "﹡Diese Farbe wird auf der Startseite, in Ereignissen und anderen kleinen Dingen im Zusammenhang mit {{name}} angezeigt"
+          }
+        },
+        "coat_lenghts": {
+          "SHORT": "Kurz",
+          "MEDIUM": "Mittel",
+          "LENGHT": "Lang",
+          "HAIRLESS": "Haarlos"
+        }
+      }
+    }
+  },
+  "es": {
+    "graph_a_pet_app": {
+      "auth": {
+        "insert_email": "Introducir correo electrónico",
+        "password": "Contraseña",
+        "email": "Correo electrónico",
+        "first_name": "Nombre",
+        "last_name": "Apellido",
+        "code": "Introduce el código que recibiste por correo electrónico",
+        "confirm_password": "Confirmar contraseña",
+        "insert_password": "Introduce la contraseña",
+        "insert_new_password": "Introduce una nueva contraseña",
+        "insert_code": "Introduce el código",
+        "forgot_password_link": "¿Olvidaste tu contraseña?",
+        "login": "Iniciar sesión",
+        "code_not_recived": "Revisa tu correo, incluyendo el spam",
+        "resend_code": "Enviar nuevo correo electrónico",
+        "send_code": "Enviar código",
+        "password_recovery": "Recuperar contraseña",
+        "password_recovery_text": "Introduce tu correo electrónico para establecer una nueva contraseña",
+        "password_recovery_email_text": "Introduce el código recibido en tu correo electrónico",
+        "password_recovery_password_text": "Selecciona una nueva contraseña",
+        "back_to_login": "Volver a iniciar sesión",
+        "next": "Siguiente",
+        "at_least_8_chars": "Al menos 8 caracteres",
+        "at_least_both_cases": "Mayúsculas y minúsculas",
+        "at_least_a_number": "Al menos un número",
+        "logout": "Cerrar sesión",
+        "signup": "Registrarse",
+        "already_registered": "¿Ya estás registrado?",
+        "not_registered": "¿Aún no estás registrado?"
+      },
+      "users": {
+        "general": {
+          "empty_list": "No hay elementos",
+          "no_sub_owners": "No hay sub-propietarios"
+        }
+      },
+      "system": {
+        "menu": {
+          "settings": "Configuraciones",
+          "profile": "Perfil"
+        },
+        "logout_modal": {
+          "title": "Estás a punto de cerrar sesión",
+          "text": "¿Estás seguro de que deseas cerrar sesión en la aplicación?"
+        },
+        "year": "Año",
+        "month": "Mes",
+        "day": "Día",
+        "hour": "Hora",
+        "minute": "Minuto",
+        "years": "Años",
+        "months": "Meses",
+        "days": "Días",
+        "hours": "Horas",
+        "minutes": "Minutos"
+      },
+      "actions": {
+        "accept": "Aceptar",
+        "refuse": "Rechazar",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "close": "Cerrar"
+      },
+      "messages": {
+        "done": "Hecho con éxito",
+        "success": {
+          "pet_updated": "Datos de la mascota actualizados con éxito",
+          "login": "Inicio de sesión exitoso",
+          "logout": "Cierre de sesión exitoso",
+          "signup": "Registro completado, revisa tu correo electrónico",
+          "pet_linked_succesfully": "Mascota agregada con éxito"
+        },
+        "errors": {
+          "not_authorized": "Usuario no autorizado",
+          "login": "Error de autenticación",
+          "me": "Error al recuperar datos propios",
+          "user": "Error al cargar el usuario",
+          "fetch": "Error al obtener datos",
+          "invalid_email": "Correo electrónico inválido",
+          "code": "Código inválido",
+          "password_mismatch": "Las contraseñas no coinciden",
+          "required": "Campo requerido",
+          "no_pet_found": "No se encontró mascota"
+        }
+      },
+      "pages": {
+        "home": "Inicio",
+        "pet_sharing": "¿Me quieres?"
+      },
+      "events": {
+        "antiparasitic": "Antiparasitario",
+        "vaccine": "Vacuna",
+        "tablet": "Tableta",
+        "notes": "Notas",
+        "reminder": "Recordatorio",
+        "type": "Tipo",
+        "operation": "Operación",
+        "from_to": "De {{from}} a {{to}}",
+        "add_event": "Agregar evento",
+        "name": "Nombre del evento",
+        "date_from": "Fecha de inicio",
+        "time_from": "Hora de inicio",
+        "time": "Hora",
+        "boster_date_from": "Fecha de inicio del refuerzo",
+        "date_time_from": "Fecha y hora de inicio",
+        "booster_date_time_from": "Fecha y hora de inicio del refuerzo",
+        "pet": "¿Para quién?",
+        "general": {
+          "no_events": "No hay citas"
+        }
+      },
+      "home": {
+        "profile": "Perfil",
+        "share": "Compartir",
+        "health_record": "Salud",
+        "co_owners": "Familia temporal"
+      },
+      "pets": {
+        "accept_as": "Aceptar como:",
+        "add_pet": "Agregar mascota",
+        "age_years_one": "<b>{{count}}</b> año",
+        "age_years_other": "<b>{{count}}</b> años",
+        "age": "Edad",
+        "coat_lenght": "Pelaje: <b>{{lenght}}</b>",
+        "desc_pet_sitter": "Un <b>Cuidador de mascotas</b> se encarga de la mascota por <b>trabajo</b>",
+        "desc_sub_owner": "Un <b>Sub-propietario</b> se encarga de la mascota como el propietario.<br/>Normalmente es un <b>miembro de la familia</b> o un <b>amigo</b>",
+        "family": "Mascota",
+        "gender_female": "Hembra",
+        "gender_male": "Macho",
+        "gender_not_said": "Prefiero no especificar",
+        "gender": "Género",
+        "name": "Nombre",
+        "neutered_female": "Esterilizada",
+        "neutered_male": "Castrado",
+        "neutered": "Esterilizado",
+        "owner_short": "Propietario",
+        "owner": "Propietario",
+        "pet_sitter_short": "Cuidador de mascotas",
+        "pet_sitter": "Cuidador de mascotas",
+        "petsitter": "Cuidador de mascotas",
+        "shared_from": "Propietario",
+        "shared_with": "¿Quién puede verlo?",
+        "sub_owner_short": "Sub-propietario",
+        "sub_owner": "Sub-propietario",
+        "subowner": "Sub-propietario",
+        "weight_kg": "<b>{{weight_kg}}</b> kg",
+        "weight": "Peso",
+        "pet_family": {
+          "canine": "Perro",
+          "feline": "Gato",
+          "birds": "Pájaro",
+          "fish": "Pez",
+          "reptile": "Reptil"
+        },
+        "add_pet_page": {
+          "intro_title": "Hola <b>{{name}}</b></br>",
+          "intro_desc": "<span>Vamos a agregar los datos de tu amigo paso a paso.</span></br><span>Tu amigo <b>te seguirá por mucho tiempo</b>, dale la importancia adecuada</span>",
+          "start": "Vamos a empezar",
+          "step_1": {
+            "continue": "Pasar al siguiente paso",
+            "family": "¿Qué tipo de animal?",
+            "gender": "¿Macho o hembra?",
+            "insert_family": "Elegir animal",
+            "insert_gender": "Género",
+            "insert_name": "Nombre",
+            "intro": "Vamos a empezar por entender quién es la mascota",
+            "name": "¿Cómo se llama?"
+          },
+          "step_2": {
+            "breed": "¿Qué raza es?",
+            "continue": "Ir al último paso",
+            "insert_breed": "¿Qué raza es?",
+            "intro": "Ahora vamos a dar una imagen definida de <b>{{name}}</b>",
+            "picture": "¿Tienes una foto?",
+            "breed_alert": "Si la raza que deseas ingresar no está en la lista, confirmarla aún se guardará, nos encargaremos de la falta lo antes posible."
+          },
+          "step_3": {
+            "birthday_male": "¿Cuándo nació {{name}}?",
+            "birthday_female": "¿Cuándo nació {{name}}?",
+            "insert_birthday": "Fecha de nacimiento",
+            "weight": "¿Cuánto pesa?",
+            "insert_weight": "Peso en kg",
+            "optionale_steps_skip": "¡Hemos ingresado toda la información necesaria para {{name}}!</br>Si lo deseas, puedes agregar más información ahora o hacerlo más tarde a tu propio ritmo, depende de ti",
+            "skip": "Omitir",
+            "continue": "Seguir completando"
+          },
+          "step_4": {
+            "color": "¿Te gustaría que {{name}} tenga un color personalizado﹡?",
+            "colors_suggested": "Sugerimos estos basados en la imagen proporcionada",
+            "color_explain": "﹡este color se mostrará en la página de inicio, en eventos y otras pequeñas cosas relacionadas con {{name}}"
+          }
+        },
+        "coat_lenghts": {
+          "SHORT": "Corto",
+          "MEDIUM": "Medio",
+          "LENGHT": "Largo",
+          "HAIRLESS": "Sin pelo"
         }
       }
     }

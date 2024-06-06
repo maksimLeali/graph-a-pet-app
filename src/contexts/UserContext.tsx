@@ -22,10 +22,10 @@ export type IUserContext = {
 	loanPets: (DashboardPetFragment & { owner: boolean })[];
 	loading: boolean;
 	gridVisible: boolean;
-	user: Pick<MinUserFragment, "first_name" | "last_name" | "email">;
+	user: Pick<MinUserFragment, "first_name" | "last_name" | "email" | "profile_picture">;
 	handleGridVisibility: (v: boolean) => void;
-	fadeBackground: (value: boolean)=> void
-	fade: boolean
+	fadeBackground: (value: boolean) => void;
+	fade: boolean;
 } & Record<string, any>;
 
 type Page = {
@@ -42,11 +42,10 @@ const defaultValue: IUserContext = {
 	ownedPets: [],
 	loading: false,
 	gridVisible: false,
-	fade :false,
+	fade: false,
 	user: { email: "", first_name: "", last_name: "" },
 	handleGridVisibility: () => {},
-	fadeBackground:()=>{}
-
+	fadeBackground: () => {},
 };
 const UserContext = React.createContext<IUserContext>(defaultValue);
 
@@ -60,7 +59,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [pageName, setPageName] = useState("");
 	const [cookie] = useCookies(["jwt", "user"]);
 	const [visible, setVisible] = useState(true);
-	const [fade,setFade] = useState(false);
+	const [fade, setFade] = useState(false);
 	const [gridVisible, setGridVisible] = useState(false);
 	const [alreadyRequested, setAlreadyRequested] = useState(false);
 	const [pets, setPets] = useState<
@@ -68,7 +67,6 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	>([]);
 	const dateFrom = dayjs().startOf("w").toISOString();
 	const dateTo = dayjs(dateFrom).add(14, "days").toISOString();
-
 	const [user, setUser] = useState<MinUserFragment | null>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 
@@ -84,9 +82,9 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 		setVisible(visible);
 	};
 
-	const fadeBackground = (value: boolean)=>{
-		setFade(value)
-	}
+	const fadeBackground = (value: boolean) => {
+		setFade(value);
+	};
 
 	const [getUserDashboardQuery, { loading }] = useGetUserDashboardLazyQuery({
 		fetchPolicy: "no-cache",
@@ -150,6 +148,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 				first_name: user?.first_name ?? "",
 				last_name: user?.last_name ?? "",
 				email: user?.email ?? "",
+				profile_picture: user?.profile_picture,
 			},
 		}),
 		[visible, pets, gridVisible, loading, loanPets, ownedPets, user, fade]
@@ -157,7 +156,11 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 
 	return (
 		<UserContext.Provider value={value}>
-			<CustomIonHeader visible={visible} fade={fade} className="MainHeader">
+			<CustomIonHeader
+				visible={visible}
+				fade={fade}
+				className="MainHeader"
+			>
 				<IonToolbar>
 					<IonTitle>{pageName}</IonTitle>
 				</IonToolbar>
@@ -192,14 +195,14 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean }>`
 	top: ${({ visible }) => (visible ? "0" : "-100%")};
 	height: ${$uw(5)};
 	max-width: var(--max-width);
-	${({fade})=> fade ? 'z-index: -1;' : ""};
+	${({ fade }) => (fade ? "z-index: -1;" : "")};
 	left: calc(50% - 240px);
 	padding: ${$uw(0.75)};
 	box-sizing: border-box;
-	background-color: ${$color('background-color')};
+	background-color: ${$color("background-color")};
 	display: flex;
 	.dark & {
-		background-color: ${$color('toolbar-background')};
+		background-color: ${$color("toolbar-background")};
 	}
 	@media only screen and (max-width: 480px) {
 		left: 0;
@@ -220,7 +223,7 @@ const MainImage = styled.div`
 	box-sizing: border-box;
 	z-index: 10;
 	overflow: hidden;
-	border: 2px solid ${$color('primary')};
+	border: 2px solid ${$color("primary")};
 	border-radius: ${$uw(4)};
 	> .img2x {
 		width: 100%;

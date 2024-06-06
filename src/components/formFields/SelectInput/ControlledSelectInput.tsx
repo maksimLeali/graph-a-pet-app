@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "@components";
@@ -76,20 +76,24 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 		);
 	}, [rowsPerList, optionsRef.current]);
 
+	const classes = useMemo(() => {
+		return `${disabled && "disabled"} ${focused && "focused"} ${
+			compiled && "compiled"
+		} ${errorText ? "error" : ""}`;
+	}, [errorText, disabled, focused, compiled]);
+
 	return (
 		<Wrapper
 			focusColor={focusColor}
 			hoverColor={hoverColor}
 			textColor={textColor}
-			bgColor={color}
+			bgColor={bgColor}
 			disabledColor={disabledColor}
 			errorColor={errorColor}
 			color={color}
 		>
 			<InputLabel
-				className={`inputLabel ${focused ? "focused" : ""} ${
-					compiled ? "compiled" : ""
-				}`}
+				className={`inputLabel ${classes}`}
 				htmlFor={name}
 				onClick={() => setFocused(!focused)}
 			>
@@ -97,7 +101,7 @@ export const ControlledSelectInput: React.FC<ControlledProps & CommonProps> = ({
 				{required && !compiled && " *"}
 			</InputLabel>
 			<InputWrapper ref={ref} className="inputWrapper">
-				<InvisibleInput id={name} value={currentValue} />
+				<InvisibleInput id={name} />
 				<LabelContainer
 					className="label-container"
 					onClick={() => setFocused(!focused)}

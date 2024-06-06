@@ -31,7 +31,6 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 	disabledColor = "medium",
 	forceOptionsUp = false,
 	textColor = "dark",
-	errorText,
 	disabled = false,
 	rowsPerList = 7,
 	registerOptions,
@@ -83,44 +82,6 @@ export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
 				window.innerHeight
 		);
 	}, [rowsPerList, optionsRef.current]);
-	/*
-    let timeout: NodeJS.Timeout
-   const handleFilterText = useCallback((text: string) => {
-        if (timeout) clearTimeout(timeout)
-        if(resetText) {
-            
-            setTempText(text?.length ?  text[text.length-1] : "")
-        }else{
-            setTempText(text)
-        }
-        setResetText(false)
-        
-        timeout = setTimeout(() => {
-            setResetText(true)
-        }, 500)
-
-    }, [resetText])
-
-    useEffect(()=>{
-        console.log("temptext",temptext)
-    }, [temptext])
-    const similarityScore = (str1: string, str2: string) => {
-        let score = 0;
-        const minLength = Math.min(str1.length, str2.length);
-        const lowered1 = str1.toLocaleLowerCase()
-        const lowered2 = str2.toLocaleLowerCase()
-        for (let i = 0; i < minLength; i++) {
-            if (lowered1[i] === lowered2[i]) {
-                score++;
-            }
-        }
-        return score;
-    };
-    const filteredOptions = useMemo(() => {
-        if (!temptext?.length) return options
-        return _.sortBy(options ,(opt) => similarityScore(temptext, opt.label))
-    }, [temptext])
-    */
 
 	const classes = useMemo(() => {
 		return `${disabled && "disabled"} ${focused && "focused"} ${

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import { toast } from "react-hot-toast";
-
+import { Link } from "react-router-dom";
 
 import { useOnClickOutside } from "@hooks";
 import { useUserContext } from "@contexts";
@@ -43,14 +43,14 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 	}, []);
 
 	const exit = useCallback(() => {
-		Object.keys(cookies).forEach(cookieName => {
+		Object.keys(cookies).forEach((cookieName) => {
 			if (cookieName.startsWith("user") || cookieName.startsWith("jwt")) {
 				removeCookies(cookieName as "user" | "jwt");
 			}
 		});
-	
+
 		toast.success(t("messages.success.logout"));
-	
+
 		setTimeout(() => {
 			history.push("/auth");
 		}, 15000);
@@ -82,11 +82,11 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 			{modal ? <Modal {...modal} /> : <></>}
 			<Container ref={ref}>
 				<MainOptions>
-					<Option href="#settings">
+					<Option to="/settings">
 						<Icon size="24px" name="settingsOutline" />
 						<span>{t("system.menu.settings")}</span>
 					</Option>
-					<Option href="#profile">
+					<Option to="/settings/profile">
 						<Icon size="24px" name="personOutline" />
 						<span>{t("system.menu.profile")}</span>
 					</Option>
@@ -148,7 +148,7 @@ const ConfirmLogout = () => {
 const MenuBackground = styled.div`
 	width: 100vw;
 	height: 100dvh;
-	background-color: ${$color('trasparent-bg-shade')};
+	background-color: ${$color("trasparent-bg-shade")};
 	position: fixed;
 	display: flex;
 	align-items: center;
@@ -173,8 +173,8 @@ const Container = styled.div`
 	position: absolute;
 	max-width: var(--max-width);
 	bottom: -100%;
-	padding: ${$cssTRBL(2,0, 1)};
-	background-color: ${$color('light')};
+	padding: ${$cssTRBL(2, 0, 1)};
+	background-color: ${$color("light")};
 	box-sizing: border-box;
 	border-radius: 4px 4px 0 0;
 	transition: bottom 0.5s ease-in-out;
@@ -187,7 +187,7 @@ const MainOptions = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	border-bottom: 1px solid ${$color('dark')};
+	border-bottom: 1px solid ${$color("dark")};
 	margin-bottom: ${$uw(1)};
 	font-size: 1.6rem;
 `;
@@ -196,12 +196,12 @@ const ActionOptions = styled.div`
 	padding: 0;
 	display: flex;
 	flex-direction: column;
-	border-bottom: 1px solid ${$color('dark')};
+	border-bottom: 1px solid ${$color("dark")};
 	font-size: 1.6rem;
 
 	margin-bottom: ${$uw(1)};
 `;
-const Option = styled.a`
+const Option = styled(Link)`
 	width: 100%;
 	display: flex;
 	justify-content: flex-start;
@@ -215,7 +215,7 @@ const Option = styled.a`
 		justify-content: flex-end;
 	}
 	> span {
-		color: ${$color('dark')};
+		color: ${$color("dark")};
 	}
 `;
 const FakeOption = styled.div`
@@ -233,7 +233,7 @@ const FakeOption = styled.div`
 		justify-content: flex-end;
 	}
 	> span {
-		color: ${$color('dark')};
+		color: ${$color("dark")};
 	}
 `;
 const ToggleOption = styled.div`
@@ -241,7 +241,7 @@ const ToggleOption = styled.div`
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	
+
 	padding-right: ${$uw(2)};
 	box-sizing: border-box;
 	margin-bottom: ${$uw(1)};
@@ -254,7 +254,7 @@ const ToggleOption = styled.div`
 		margin-bottom: 0;
 	}
 	> span {
-		color: ${$color('dark')};
+		color: ${$color("dark")};
 	}
 `;
 
