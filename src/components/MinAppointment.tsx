@@ -78,6 +78,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
 				</CustomSpan>
 			</Body>
 			<PetName
+				className="custom-pet-color"
 				color={
 					appointment?.health_card?.pet.main_picture?.main_color
 						?.color

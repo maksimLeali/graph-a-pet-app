@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { IonHeader, IonToolbar, IonTitle } from "@ionic/react";
 import styled from "styled-components";
 import dayjs from "dayjs";
@@ -17,12 +17,17 @@ export type IUserContext = {
 	setPage: (page: Page) => void;
 	updatePets: (pets: DashboardPetFragment[]) => void;
 	refetchDashboard: () => void;
+	setUseCustomColorHandler: (v: boolean)=>void;
 	pets: (DashboardPetFragment & { owner: boolean })[];
 	ownedPets: (DashboardPetFragment & { owner: boolean })[];
 	loanPets: (DashboardPetFragment & { owner: boolean })[];
 	loading: boolean;
 	gridVisible: boolean;
-	user: Pick<MinUserFragment, "first_name" | "last_name" | "email" | "profile_picture">;
+	useCustomColors: boolean;
+	user: Pick<
+		MinUserFragment,
+		"first_name" | "last_name" | "email" | "profile_picture"
+	>;
 	handleGridVisibility: (v: boolean) => void;
 	fadeBackground: (value: boolean) => void;
 	fade: boolean;
@@ -37,11 +42,13 @@ const defaultValue: IUserContext = {
 	setPage: () => {},
 	updatePets: () => {},
 	refetchDashboard: () => {},
+	setUseCustomColorHandler: ()=>{},
 	pets: [],
 	loanPets: [],
 	ownedPets: [],
 	loading: false,
 	gridVisible: false,
+	useCustomColors: true,
 	fade: false,
 	user: { email: "", first_name: "", last_name: "" },
 	handleGridVisibility: () => {},
@@ -60,6 +67,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [cookie] = useCookies(["jwt", "user"]);
 	const [visible, setVisible] = useState(true);
 	const [fade, setFade] = useState(false);
+	const [useCustomColors, setUseCustomColors]= useState(true)
 	const [gridVisible, setGridVisible] = useState(false);
 	const [alreadyRequested, setAlreadyRequested] = useState(false);
 	const [pets, setPets] = useState<
@@ -85,6 +93,11 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const fadeBackground = (value: boolean) => {
 		setFade(value);
 	};
+
+	const setUseCustomColorHandler = (v: boolean)=>{
+		setUseCustomColors(v)
+		localStorage.setItem('customColor', `${v}`)
+	}
 
 	const [getUserDashboardQuery, { loading }] = useGetUserDashboardLazyQuery({
 		fetchPolicy: "no-cache",
@@ -128,6 +141,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 
 	const handleGridVisibility = (v: boolean) => {
 		setGridVisible(v);
+		
 	};
 
 	const value = useMemo(
@@ -143,6 +157,8 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 			gridVisible,
 			handleGridVisibility,
 			fadeBackground,
+			setUseCustomColorHandler,
+			useCustomColors,
 			fade,
 			user: {
 				first_name: user?.first_name ?? "",
@@ -151,7 +167,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 				profile_picture: user?.profile_picture,
 			},
 		}),
-		[visible, pets, gridVisible, loading, loanPets, ownedPets, user, fade]
+		[visible, pets, gridVisible, loading, loanPets, ownedPets, user, fade, useCustomColors]
 	);
 
 	return (

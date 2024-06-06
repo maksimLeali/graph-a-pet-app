@@ -124,7 +124,8 @@
           "system": "Sistema",
           "customization": "Personalizzazione",
           "privacy": "Privacy",
-          "select_language": "Seleziona lingua"
+          "select_language": "Seleziona lingua",
+          "pets_color": "Usa i colori del cucciolo"
         }
       },
       "pets": {
@@ -671,7 +672,8 @@
           "system": "System",
           "customization": "Customization",
           "privacy": "Privacy",
-          "select_language": "Select Language"
+          "select_language": "Select Language",
+          "pets_color": "Use the pet's colors"
         }
       },
       "pets": {
@@ -882,7 +884,8 @@
           "system": "Système",
           "customization": "Personnalisation",
           "privacy": "Confidentialité",
-          "select_language": "Sélectionner la langue"
+          "select_language": "Sélectionner la langue",
+          "pets_color": "Utiliser les couleurs de l'animal"
         }
       },
       "pets": {
@@ -1093,7 +1096,8 @@
           "system": "Система",
           "customization": "Настройка",
           "privacy": "Конфиденциальность",
-          "select_language": "Выберите язык"
+          "select_language": "Выберите язык",
+          "pets_color": "Используйте цвета питомца"
         }
       },
       "pets": {
@@ -1304,7 +1308,8 @@
           "system": "System",
           "customization": "Anpassung",
           "privacy": "Datenschutz",
-          "select_language": "Sprache auswählen"
+          "select_language": "Sprache auswählen",
+          "pets_color": "Verwende die Farben des Haustiers"
         }
       },
       "pets": {
@@ -1483,7 +1488,8 @@
           "system": "Sistema",
           "customization": "Personalización",
           "privacy": "Privacidad",
-          "select_language": "Seleccionar idioma"
+          "select_language": "Seleccionar idioma",
+          "pets_color": "Usa los colores de la mascota"
         }
       },
       "pages": {

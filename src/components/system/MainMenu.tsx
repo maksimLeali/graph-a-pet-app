@@ -104,14 +104,15 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 				<ToggleOption className="modeSelector">
 					<Toggle
 						value={darkMode}
-						onChange={() => {
-							setDarkMode(!darkMode);
+						onChange={(val) => {
+							setDarkMode(val);
 						}}
 						rigthElement={
-							<Icon size="18px" name="sunny" color="dark" />
+							<Icon size="18px" name="moonOutline" color="dark" />
 						}
 						leftElement={
-							<Icon size="18px" name="moonOutline" color="dark" />
+							
+							<Icon size="18px" name="sunny" color="dark" />
 						}
 					/>
 				</ToggleOption>
@@ -119,14 +120,14 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 					<ToggleOption className="gridSelector">
 						<Toggle
 							value={gridVisible}
-							onChange={() => {
-								handleGridVisibility(!gridVisible);
+							onChange={(val) => {
+								handleGridVisibility(val);
 							}}
 							rigthElement={
-								<Icon size="18px" name="eye" color="dark" />
+								<Icon size="18px" name="eyeOff" color="dark" />
 							}
 							leftElement={
-								<Icon size="18px" name="eyeOff" color="dark" />
+								<Icon size="18px" name="eye" color="dark" />
 							}
 						/>
 					</ToggleOption>

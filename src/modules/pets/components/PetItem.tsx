@@ -42,7 +42,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 			color={pet.main_picture?.main_color?.contrast}
 		>
 			{ready && (
-				<ImageWrapper className="image-wrapper">
+				<ImageWrapper className="image-wrapper custom-pet-border-color">
 					<Image2x
 						lazy
 						alt={`${pet.name} picture`}
@@ -52,7 +52,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 				</ImageWrapper>
 			)}
 			<InfoWrapper>
-				<Name className="name">
+				<Name className="name custom-pet-color">
 					<IconContainer className="icon-container">
 						<Icon
 							size="100%"
@@ -62,7 +62,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 					</IconContainer>
 					<span className="mainInfo">{pet.name}</span>
 				</Name>
-				<InfoBox className="info-box">
+				<InfoBox className="info-box custom-pet-border-color">
 					<InfoRow>
 						<span>
 							{t(
@@ -132,30 +132,7 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
 	border-radius: 99px 4px 4px 99px;
 	position: relative;
 
-	&::before {
-		content: "";
-		background-color: ${$color("light-tint")};
-		position: absolute;
-		height: calc(${$uw(13)} - 4px);
-
-		left: ${$uw(7)};
-		width: ${$uw(7)};
-		z-index: 0;
-		box-shadow: #6666 -11px 2px 2px 0px;
-		border-top: 2px solid ${({ bgColor }) => $color(bgColor || "primary")};
-		.dark & {
-			box-shadow: none;
-		}
-	}
-	&::after {
-		content: "";
-		left: ${$uw(7)};
-		width: calc(${$uw(5)});
-		height: ${$uw(3)};
-		background-color: ${({ bgColor }) => $color(bgColor || "primary")};
-		position: absolute;
-		z-index: 1;
-	}
+	
 	.image-wrapper {
 		border: 4px solid ${({ bgColor }) => $color(bgColor || "primary")};
 	}
@@ -181,7 +158,7 @@ const ImageWrapper = styled.div`
 	height: ${$uw(13)};
 	flex: 0 0 ${$uw(13)};
 	aspect-ratio: 1;
-	position: relative;
+	position: absolute;
 	z-index: 3;
 	border-left-width: 0;
 	overflow: hidden;
@@ -191,6 +168,8 @@ const ImageWrapper = styled.div`
 const InfoWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
+	width: 100%;
+	
 `;
 
 const Name = styled.div`
@@ -199,11 +178,11 @@ const Name = styled.div`
 	position: relative;
 	width: fit-content;
 	font-size: 2rem;
-	left: ${$uw(-2)};
+	margin-left: ${$uw(6)};
+	padding-left: ${$uw(6)};
 	height: ${$uw(3)};
 	font-weight: 600;
 	padding-right: ${$uw(2)};
-	padding-left: ${$uw(1)};
 	border-radius: 0 99px 0px 0;
 	> span.mainInfo {
 		height: auto;
@@ -216,7 +195,9 @@ const Name = styled.div`
 const InfoBox = styled.div`
 	display: flex;
 	padding: ${$uw(1)};
-	width: ${$uw(16)};
+	width: ${$uw(24)};	
+	margin-left: ${$uw(6)};
+	padding-left: ${$uw(8)};
 	position: relative;
 	top: -2px;
 	height: ${$uw(10)};

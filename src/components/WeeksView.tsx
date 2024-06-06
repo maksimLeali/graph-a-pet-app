@@ -105,6 +105,7 @@ export const WeeksView: React.FC<props> = ({
 									<CircleContainer key={"#" + i + "00"}>
 										{activePeriod.map((item, i) => (
 											<Circle
+												className="custom-pet-color"
 												key={item.color + i}
 												color={item.color}
 											/>

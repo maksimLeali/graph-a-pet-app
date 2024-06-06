@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { LanguageSelector } from "../components";
+import { LanguageSelector, PetsColor } from "../components";
 import { useUserContext } from "@contexts";
 import { $cssTRBL, $color, $uw } from "@theme";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ export const Generals = React.memo(() => {
 			</Section>
 			<Section>
 				<h2>{t("settings.general.customization")}</h2>
+				<PetsColor />
 			</Section>
 			<Section>
 				<h2>{t("settings.general.privacy")}</h2>
@@ -38,5 +39,9 @@ const Section = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	padding-bottom: ${$uw(2)};
 	border-bottom: 1px solid ${$color("medium")};
+	* {
+		color: ${$color("dark")};
+	}
 `;

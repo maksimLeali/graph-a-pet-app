@@ -618,3 +618,14 @@ h5 {
 .content-ltr {
 	--background: unset;
 }
+
+.force-primary .custom-pet-color-after:after {
+	background-color: var(--ion-color-primary) !important;
+}
+.force-primary .custom-pet-color {
+	background-color: var(--ion-color-primary) !important;
+	color: var(--ion-color-white) !important;
+}
+.force-primary .custom-pet-border-color {
+	border-color: var(--ion-color-primary) !important;
+}

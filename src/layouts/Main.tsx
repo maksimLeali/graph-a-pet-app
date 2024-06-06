@@ -1,16 +1,21 @@
 import styled from "styled-components";
 
-import { ModalContextProvider } from "@contexts";
+import { ModalContextProvider, useUserContext } from "@contexts";
 import { BottomMenu, DebugGrid } from "./components";
-
+import { useEffect } from "react";
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 	children: nodes,
 }) => {
+	const { useCustomColors } = useUserContext();
+
+	useEffect(() => {
+		console.log("useCustomColors", useCustomColors);
+	}, [useCustomColors]);
 	return (
 		<ModalContextProvider>
-			<Main id="mainWrapper">
-				<DebugGrid/>
+			<Main id="mainWrapper" className={!useCustomColors ? 'force-primary' : ''}>
+				<DebugGrid />
 				{nodes}
 				<BottomMenu />
 			</Main>

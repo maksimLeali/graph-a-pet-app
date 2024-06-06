@@ -66,6 +66,9 @@ const LanguageSelectorContainer = styled.div`
 		top: 1px;
         width: calc(100% - 1px);
 	}
+	.select-input{
+		margin-bottom: 0;
+	}
 `;
 
 const LanguageItem = styled.div`

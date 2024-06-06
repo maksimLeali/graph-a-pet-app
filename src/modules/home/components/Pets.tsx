@@ -114,7 +114,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 			}
 		>
 			<BoxContainer>
-				<PetsBox className="pet-box" direction={direction}>
+				<PetsBox className="custom-pet-color pet-box" direction={direction}>
 					{pets.map((pet, i) => (
 						<Image2x
 							id={pet.main_picture!.id}
@@ -127,25 +127,25 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 						/>
 					))}
 				</PetsBox>
-				<ActionChip className="top left" onClick={() => modalOpen()}>
+				<ActionChip className="custom-pet-color top left" onClick={() => modalOpen()}>
 					<Icon name="peopleOutline" color="dark" />
 					<span>{t("home.co_owners")}</span>
 				</ActionChip>
-				<ActionChip className="top right">
+				<ActionChip className="custom-pet-color top right">
 					<Icon name="bookOutline" color="dark" />
 					<span>{t("home.health_record")}</span>
 				</ActionChip>
-				<ActionChip className="bottom left">
+				<ActionChip className="custom-pet-color bottom left">
 					<Icon name="informationCircleOutline" color="dark" />
 					<span>{t("home.profile")}</span>
 				</ActionChip>
-				<ActionChip className="bottom right" onClick={() => share()}>
+				<ActionChip className="custom-pet-color bottom right" onClick={() => share()}>
 					<Icon name="shareOutline" color="dark" mode="md" />
 					<span>{t("home.share")}</span>
 				</ActionChip>
 			</BoxContainer>
 
-			{pets && pets.length && <Title>{pets[active].name}</Title>}
+			{pets && pets.length && <Title className="custom-pet-color">{pets[active].name}</Title>}
 
 			<DotsContainer>
 				{pets &&
@@ -153,7 +153,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 					pets.map((pet, i) => (
 						<PetDot
 							key={i}
-							className={`pet-dot ${i == active ? "active" : ""}`}
+							className={`pet-dot custom-pet-color-after ${i == active ? "active" : ""}`}
 							onClick={() => changeMain(i)}
 						/>
 					))}
