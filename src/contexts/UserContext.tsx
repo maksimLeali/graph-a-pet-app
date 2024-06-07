@@ -90,6 +90,10 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 		setVisible(visible);
 	};
 
+	useEffect(()=>{
+		setUseCustomColors(localStorage.getItem('customColor')=='true')
+	}, [])
+
 	const fadeBackground = (value: boolean) => {
 		setFade(value);
 	};
