@@ -16,6 +16,7 @@
     "lint": "eslint",
     "serve": "REACT_APP_ENV=local serve -p 3100 -s dist",
     "serve:local": "NODE_ENV=local serve -p 3100 -s dist",
+    "fetch:translations": "node fetchTranslation.js",
     "fetch:graphql": "apollo service:download --endpoint=https://graph-a-pet.makso.me/graphql graphql-schema.json",
     "fetch:graphql:dev": "env-cmd -x -f .env.development yarn fetch:graphql",
     "fetch:graphql:local": "apollo service:download --endpoint=http://localhost:5000/graphql graphql-schema.json",
