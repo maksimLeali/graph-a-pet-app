@@ -7,9 +7,18 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
-const baseUrl = process.env.VITE_BASE_URL_TRANSLATIONS
+// Get the URL from command-line arguments
+const args = process.argv.slice(2);
+const urlArg = args.find(arg => arg.startsWith('--url='));
+const baseUrl = urlArg ? urlArg.split('=')[1] : process.env.VITE_BASE_URL_TRANSLATIONS;
 
-console.log(baseUrl)
+if (!baseUrl) {
+  console.error('Base URL is not defined. Please provide it as an argument or set it in the .env file.');
+  process.exit(1);
+}
+
+console.log(`Using base URL: ${baseUrl}`);
+
 // Define the URL of the endpoint
 const endpointUrl = `${baseUrl}/translations/app`;
 
