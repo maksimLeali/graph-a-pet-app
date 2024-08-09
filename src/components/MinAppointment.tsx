@@ -102,8 +102,11 @@ const Container = styled(Link)`
 	padding: ${$cssTRBL(0.5, 1)};
 	align-items: center;
 	text-decoration: none;
-	background-color: ${$color('light-shade')};
-	background-color: ${$color('light-tint')};
+	background-color: ${$color("light")};
+	/* background-color: ${$color("light-tint")}; */
+	.dark & {
+		background-color: ${$color("light-tint")};
+	}
 	justify-content: space-between;
 `;
 
@@ -126,19 +129,19 @@ const Body = styled.div`
 
 const CustomSpan = styled.span`
 	font-size: 1.2rem;
-	color: ${$color('dark')};
+	color: ${$color("dark")};
 `;
 
 const PetName = styled.span<{ color?: string }>`
 	padding: 3px 12px;
-	color: ${$color('light')};
+	color: ${$color("light")};
 	border-radius: 20px;
 	font-weight: 600;
 	font-size: 1.7rem;
 	.dark & {
-		color: ${$color('dark')};
+		color: ${$color("dark")};
 	}
-	background-color: ${({ color }) => $color(color ?? 'primary')};
+	background-color: ${({ color }) => $color(color ?? "primary")};
 `;
 
 const IconWrapper = styled.div`
@@ -148,8 +151,10 @@ const IconWrapper = styled.div`
 	display: flex;
 	z-index: 1;
 	padding: 10px;
-	background-color: ${$color('light-tint')};
-	background-color: ${$color('light-shade')};
+	background-color: ${$color("light-tint")};
+	.dark & {
+		background-color: ${$color("light-shade")};
+	}
 	box-sizing: border-box;
 	align-items: center;
 
