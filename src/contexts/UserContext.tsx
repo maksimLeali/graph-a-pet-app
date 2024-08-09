@@ -12,6 +12,7 @@ import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated"
 import { $color, $uw } from "@theme";
 import { UserPlaceholder } from "@components";
 import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
+import { MinReportFragment } from "@graphql_generated/MinReport.generated";
 
 export type IUserContext = {
 	setPage: (page: Page) => void;
@@ -23,6 +24,7 @@ export type IUserContext = {
 	loanPets: (DashboardPetFragment & { owner: boolean })[];
 	loading: boolean;
 	gridVisible: boolean;
+	reports: MinReportFragment[];
 	useCustomColors: boolean;
 	user: Pick<
 		MinUserFragment,
@@ -49,6 +51,7 @@ const defaultValue: IUserContext = {
 	loading: false,
 	gridVisible: false,
 	useCustomColors: true,
+	reports:[],
 	fade: false,
 	user: { email: "", first_name: "", last_name: "" },
 	handleGridVisibility: () => {},
@@ -73,6 +76,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [pets, setPets] = useState<
 		(DashboardPetFragment & { owner: boolean })[]
 	>([]);
+	const [reports, setReports] = useState<MinReportFragment[]>([])
 	const dateFrom = dayjs().startOf("w").toISOString();
 	const dateTo = dayjs(dateFrom).add(14, "days").toISOString();
 	const [user, setUser] = useState<MinUserFragment | null>(null);
@@ -117,7 +121,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 					getUserDashboard.dashboard.ownerships.items &&
 					getUserDashboard.dashboard.ownerships.items.length
 				) {
-					const pets =
+					const dashboardPets =
 						getUserDashboard.dashboard.ownerships.items.map(
 							(item) => ({
 								...item!.pet,
@@ -125,8 +129,13 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 									item?.custody_level == CustodyLevel.Owner,
 							})
 						);
-					setPets(pets);
+					setPets(dashboardPets);
+
 				}
+				if(getUserDashboard.dashboard.reports?.items ){
+					setReports(getUserDashboard.dashboard.reports.items as MinReportFragment[])
+				}
+				
 			}
 			return;
 		},
@@ -163,6 +172,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 			fadeBackground,
 			setUseCustomColorHandler,
 			useCustomColors,
+			reports,
 			fade,
 			user: {
 				first_name: user?.first_name ?? "",
@@ -171,7 +181,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 				profile_picture: user?.profile_picture,
 			},
 		}),
-		[visible, pets, gridVisible, loading, loanPets, ownedPets, user, fade, useCustomColors]
+		[visible, pets, gridVisible, loading, loanPets, ownedPets, user, fade, useCustomColors, reports]
 	);
 
 	return (

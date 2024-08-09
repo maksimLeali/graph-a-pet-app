@@ -1,0 +1,10 @@
+fragment MinReport on Report {
+	id
+	reporter {
+		email
+		user_id
+	}
+	place
+	created_at
+	type
+}

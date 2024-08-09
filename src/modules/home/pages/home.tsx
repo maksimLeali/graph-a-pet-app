@@ -7,12 +7,12 @@ import { useCallback, useEffect, useState } from "react";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 
 import { useUserContext } from "@contexts";
-import { WeeksView } from "@components";
+import { ReportsPreview, WeeksView } from "@components";
 import { $uw } from "@theme";
 
 export const Home: React.FC = () => {
 	const [activePet, setActivePet] = useState(0);
-	const { setPage, ownedPets: pets, loading } = useUserContext();
+	const { setPage, ownedPets: pets, loading, reports } = useUserContext();
 	const [appointments, setAppointments] = useState<AppointmentFragment[]>();
 	useEffect(() => {
 		setPage({ name: "Home" });
@@ -80,7 +80,11 @@ export const Home: React.FC = () => {
 				fromDate={dayjs().startOf("w").toDate()}
 			/>
 
-			{/* <SkeletonBox /> */}
+			<ReportsPreview 
+				loading={loading}
+				reports={reports}
+				
+			/>
 		</IonContent>
 	);
 };

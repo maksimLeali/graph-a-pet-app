@@ -17,11 +17,7 @@ query getUserDashboard( $date_from: String!, $date_to: String! ) {
 			}
 			reports{
 				items {
-					id
-					created_at
-					place
-					latitude
-					longitude
+					...MinReport
 				}
 				success
 				error {
