@@ -32,7 +32,7 @@ const ChoiseContainer = styled.div`
 	display: flex;
 	position: relative;
 	flex-direction: column;
-	margin: ${$cssTRBL(5, 0, 2, 0)};
+	margin: ${$cssTRBL(0, 0, 2, 0)};
 	padding: ${$uw(0.4)} 0;
 `;
 

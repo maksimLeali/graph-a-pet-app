@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import { useEffect } from "react";
 
 import { ModalContextProvider, useUserContext } from "@contexts";
 import { BottomMenu, DebugGrid } from "./components";
-import { useEffect } from "react";
+import { $uw } from '@theme' 
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 	children: nodes,
@@ -27,7 +28,7 @@ const Main = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow-y: scroll;
-	padding-top: 64px;
+	padding-top: ${$uw(6)};
 	max-width: var(--max-width);
 	margin-left: auto;
 	margin-right: auto;

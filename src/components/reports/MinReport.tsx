@@ -13,36 +13,73 @@ type Props = {
 };
 
 export const MinReport: React.FC<Props> = React.memo(({ report }) => {
-    const reportUtils: { iconName: IconName, mainColor: string} = report.type == ReportType.Found 
-        ?  {
-            iconName:'eye',
-            mainColor: "success"
-        }
-        : {
-            iconName: "alertCircle",
-            mainColor: "danger"
-        }
+	const reportUtils: { iconName: IconName; mainColor: string } =
+		report.type == ReportType.Found
+			? {
+					iconName: "eye",
+					mainColor: "warning",
+			  }
+			: {
+					iconName: "alertCircle",
+					mainColor: "danger",
+			  };
 
-	return <Container>
-        <Header color={reportUtils.mainColor}>
-            <Icon name={reportUtils.iconName}  color={reportUtils.mainColor} size="24px" />
-            <p>{dayjs(report.created_at).format("ll")}</p>
-        </Header>
-        <p>{report.place}</p>
-        
-    </Container>;
+	return (
+		<Container color={reportUtils.mainColor}>
+			<Header>
+				<Icon
+					className="icon"
+					name={reportUtils.iconName}
+					color={reportUtils.mainColor}
+					uw={1.6}
+				/>
+				<p>{dayjs(report.created_at).format("dddd DD MMM, HH:mm ")}</p>
+			</Header>
+			<p>{report.place}</p>
+		</Container>
+	);
 });
 
-const Container = styled.div`
+const Container = styled.div<{ color: string }>`
 	display: flex;
-    padding: ${$uw(1)};
-    flex-direction: column;
-    background-color: ${$color("light")}
+	padding: ${$uw(1)};
+	flex-direction: column;
+	background-color: ${$color("light")};
+	height: ${$uw(6)};
+	border-radius: 4px;
+	margin-bottom: ${$uw(2)};
+	position: relative;
+	overflow: hidden;
+	&::before {
+		content: "";
+		width: ${$uw(4)};
+		position: absolute;
+		height: ${$uw(10)};
+		transform: rotate(45deg);
+		top: ${$uw(-4)};
+		left: ${$uw(-2)};
+		background-color: ${({ color }) => $color(color)};
+	}
 `;
 
-const Header = styled.div<{color: string}>`
-    width: 100%;
-    display: flex;
-    gap: ${$uw(1)};
-
-`
+const Header = styled.div`
+	width: 100%;
+	display: flex;
+	gap: ${$uw(1)};
+	> * {
+		margin: 0;
+	}
+	.icon {
+		position: relative;
+		&::before {
+			position: absolute;
+			width: ${$uw(2)};
+			height: ${$uw(2)};
+            top: ${$uw(-.2)};
+            left: ${$uw(-.2)};
+            border-radius: 100px;
+			background-color: ${$color("light")};
+			content: "";
+		}
+	}
+`;

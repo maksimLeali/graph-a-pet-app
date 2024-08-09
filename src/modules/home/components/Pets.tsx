@@ -210,7 +210,7 @@ const BoxContainer = styled.div`
 	box-sizing: border-box;
 	position: relative;
 	z-index: 0;
-	margin: ${$cssTRBL(5, 0, 2, 0)};
+	margin: ${$cssTRBL(0, 0, 2, 0)};
 `;
 const PetsBox = styled.div<{ direction?: "clock" | "counter" }>`
 	width: ${$uw(13)};
