@@ -50,12 +50,17 @@ const Container = styled.div<{ color: string }>`
 	padding: ${$uw(1)};
 	flex-direction: column;
 	width: 100%;
-	background-color: ${$color("light")};
+	background-color: ${$color("light-tint")};
 	height: ${$uw(6)};
 	border-radius: 4px;
 	margin-bottom: ${$uw(2)};
 	position: relative;
 	overflow: hidden;
+	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+		rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+	.dark & {
+		box-shadow: none;
+	}
 	&::before {
 		content: "";
 		width: ${$uw(4)};
@@ -85,7 +90,7 @@ const Header = styled.div`
 			top: ${$uw(-0.2)};
 			left: ${$uw(-0.2)};
 			border-radius: 100px;
-			background-color: ${$color("light")};
+			background-color: ${$color("light-tint")};
 			content: "";
 		}
 	}
