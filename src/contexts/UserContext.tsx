@@ -9,7 +9,7 @@ import { CustodyLevel } from "@types";
 import { MainMenu, Image2x } from "@components";
 import { MinUserFragment } from "@graphql_generated/minUser.generated";
 import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated";
-import { $color, $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 import { UserPlaceholder } from "@components";
 import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
 import { MinReportFragment } from "@graphql_generated/MinReport.generated";
@@ -227,7 +227,7 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean }>`
 	max-width: var(--max-width);
 	${({ fade }) => (fade ? "z-index: -1;" : "")};
 	left: calc(50% - 240px);
-	padding: ${$uw(0.75)};
+	padding: ${$cssTRBL(0.75, 1, 0.75, 0)};
 	box-sizing: border-box;
 	background-color: ${$color("background-color")};
 	display: flex;

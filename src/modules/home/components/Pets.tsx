@@ -170,7 +170,7 @@ const PetsContainer = styled.div<{ mainColor?: string; contrast?: string }>`
 	box-sizing: border-box;
 	position: relative;
 	align-items: center;
-	padding-top: 10px;
+	padding-top: ${$uw(2)};
 	> * {
 		> * {
 			transition: color 1s ease-in, background-color 1s ease-in;

@@ -35,7 +35,11 @@ export const MinReport: React.FC<Props> = React.memo(({ report }) => {
 				/>
 				<p>{dayjs(report.created_at).format("dddd DD MMM, HH:mm ")}</p>
 			</Header>
-			<p>{report.place}</p>
+			<LocationLink
+				href={`https://www.google.com/maps/@${report.latitude},${report.longitude},15z`}
+			>
+				{report.place} <Icon name="location" color="primary" />
+			</LocationLink>
 		</Container>
 	);
 });
@@ -44,6 +48,7 @@ const Container = styled.div<{ color: string }>`
 	display: flex;
 	padding: ${$uw(1)};
 	flex-direction: column;
+	width: 100%;
 	background-color: ${$color("light")};
 	height: ${$uw(6)};
 	border-radius: 4px;
@@ -60,12 +65,14 @@ const Container = styled.div<{ color: string }>`
 		left: ${$uw(-2)};
 		background-color: ${({ color }) => $color(color)};
 	}
+
 `;
 
 const Header = styled.div`
 	width: 100%;
 	display: flex;
 	gap: ${$uw(1)};
+	margin-bottom: ${$uw(1)};
 	> * {
 		margin: 0;
 	}
@@ -75,11 +82,17 @@ const Header = styled.div`
 			position: absolute;
 			width: ${$uw(2)};
 			height: ${$uw(2)};
-            top: ${$uw(-.2)};
-            left: ${$uw(-.2)};
-            border-radius: 100px;
+			top: ${$uw(-0.2)};
+			left: ${$uw(-0.2)};
+			border-radius: 100px;
 			background-color: ${$color("light")};
 			content: "";
 		}
 	}
+`;
+
+const LocationLink = styled.a`
+	display: flex;
+	align-items: end;
+	text-decoration: none;
 `;

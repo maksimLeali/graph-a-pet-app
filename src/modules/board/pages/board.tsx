@@ -11,8 +11,6 @@ export const Board: React.FC = () => {
 	}, []);
 	return (
 		<IonContent fullscreen>
-			<span>Board</span>
-
 			<ReportsPreview loading={loading} reports={reports} />
 		</IonContent>
 	);

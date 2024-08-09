@@ -5,6 +5,8 @@ fragment MinReport on Report {
 		user_id
 	}
 	place
+	latitude
+	longitude
 	created_at
 	type
 }

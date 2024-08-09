@@ -22,7 +22,7 @@ const MainContainer = styled.div`
 	width: 100%;
 
 	display: flex;
-	padding-top: 10px;
+	padding-top: ${$uw(2)};
 	margin-bottom: ${$uw(4)};
 	flex-direction: column;
 `;
