@@ -92,7 +92,7 @@ export const MinAppointment: React.FC<props> = ({ appointment }) => {
 
 const Container = styled(Link)`
 	width: ${$uw(28)};
-	height: ${$uw(4)};
+	height: ${$uw(5)};
 	position: relative;
 	margin-bottom: 20px;
 	box-sizing: border-box;
@@ -102,11 +102,8 @@ const Container = styled(Link)`
 	padding: ${$cssTRBL(0.5, 1)};
 	align-items: center;
 	text-decoration: none;
-	background-color: ${$color("light")};
-	/* background-color: ${$color("light-tint")}; */
-	.dark & {
-		background-color: ${$color("light-tint")};
-	}
+	background-color: ${$color("light-tint")};
+	
 	justify-content: space-between;
 `;
 
@@ -128,7 +125,7 @@ const Body = styled.div`
 `;
 
 const CustomSpan = styled.span`
-	font-size: 1.2rem;
+	font-size: 1.4rem;
 	color: ${$color("dark")};
 `;
 
@@ -145,16 +142,15 @@ const PetName = styled.span<{ color?: string }>`
 `;
 
 const IconWrapper = styled.div`
-	width: 46px;
+	width: ${$uw(3.5)};
+	padding: ${$cssTRBL(.5)};
 	aspect-ratio: 1;
 	border-radius: 80px;
 	display: flex;
 	z-index: 1;
-	padding: 10px;
-	background-color: ${$color("light-tint")};
-	.dark & {
-		background-color: ${$color("light-shade")};
-	}
+
+	border: 1px solid ${$color("light-shade")};
+
 	box-sizing: border-box;
 	align-items: center;
 
