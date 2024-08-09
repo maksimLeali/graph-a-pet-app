@@ -36,7 +36,8 @@ export const MinReport: React.FC<Props> = React.memo(({ report }) => {
 				<p>{dayjs(report.created_at).format("dddd DD MMM, HH:mm ")}</p>
 			</Header>
 			<LocationLink
-				href={`https://www.google.com/maps/@${report.latitude},${report.longitude},15z`}
+				// href={`https://www.google.com/maps/?api=1&query=${report.latitude},${report.longitude}`}
+				href={`https://www.google.com/maps/?q=&layer=c&cbll=${report.latitude},${report.longitude}&cbp=11,0,0,0,0`}
 			>
 				{report.place} <Icon name="location" color="primary" />
 			</LocationLink>
@@ -65,7 +66,6 @@ const Container = styled.div<{ color: string }>`
 		left: ${$uw(-2)};
 		background-color: ${({ color }) => $color(color)};
 	}
-
 `;
 
 const Header = styled.div`
