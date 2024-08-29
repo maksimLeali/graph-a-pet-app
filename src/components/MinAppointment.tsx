@@ -103,7 +103,7 @@ const Container = styled(Link)`
 	align-items: center;
 	text-decoration: none;
 	background-color: ${$color("light-tint")};
-	
+
 	justify-content: space-between;
 `;
 
@@ -143,13 +143,13 @@ const PetName = styled.span<{ color?: string }>`
 
 const IconWrapper = styled.div`
 	width: ${$uw(3.5)};
-	padding: ${$cssTRBL(.5)};
+	padding: ${$cssTRBL(0.5)};
 	aspect-ratio: 1;
 	border-radius: 80px;
 	display: flex;
 	z-index: 1;
 
-	border: 1px solid ${$color("light-shade")};
+	border: 1px solid ${$color("lightshade")};
 
 	box-sizing: border-box;
 	align-items: center;
