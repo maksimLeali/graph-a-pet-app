@@ -93,6 +93,9 @@ const Header = styled.div`
 			background-color: ${$color("light-tint")};
 			content: "";
 		}
+		> * {
+			transition: none;
+		}
 	}
 `;
 

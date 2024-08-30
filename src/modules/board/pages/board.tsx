@@ -1,25 +1,162 @@
-import { ReportsPreview } from "@components";
+import { MinReport, ReportsPreview } from "@components";
 import { useUserContext } from "@contexts";
-import { IonContent } from "@ionic/react";
-import { $cssTRBL, $uw } from "@theme";
-import { useEffect } from "react";
+import {
+	IonContent,
+	IonInfiniteScroll,
+	IonInfiniteScrollContent,
+	IonList,
+} from "@ionic/react";
+import { $color, $cssTRBL, $uw } from "@theme";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ChoiseContainer } from "../components";
+import { useListReportsLazyQuery } from "../operations/__generated__/listReports.generated";
+import { ReportType } from "@types";
+import { MinReportFragment } from "@graphql_generated/MinReport.generated";
+import _ from "lodash";
 
 export const Board: React.FC = () => {
-	const { setPage, ownedPets: pets, loading, reports } = useUserContext();
+	const { setPage } = useUserContext();
+	const [pageMissing, setPageMissing] = useState(0);
+	const [pageFound, setPageFound] = useState(0);
+	const [reportsType, setReportsType] = useState<ReportType>();
+	const [reachedMaxMissing, setReachedMaxMissing] = useState(false);
+	const [reachedMaxFound, setReachedMaxFound] = useState(false);
+	const [missingReports, setMissingReports] = useState<MinReportFragment[]>(
+		[]
+	);
+	const [foundReports, setFoundReports] = useState<MinReportFragment[]>([]);
+	const PAGE_SIZE = 5;
+
+	const [
+		listMissinggReports,
+		{ loading: loadingMissing, refetch: refetchMissing },
+	] = useListReportsLazyQuery({
+		variables: {
+			commonSearch: {
+				filters: {
+					fixed: [
+						{
+							key: "type",
+							value: ReportType.Missing,
+						},
+					],
+				},
+				page_size: PAGE_SIZE,
+				page: pageMissing,
+			},
+		},
+		onCompleted: ({ listReports }) => {
+			if (!listReports?.items?.length || listReports.error) {
+				return;
+			}
+
+			setMissingReports(listReports.items as MinReportFragment[]);
+			setReachedMaxMissing(true);
+		},
+	});
+	const [
+		listFoundgReports,
+		{ loading: loadingFound, refetch: refetchFound },
+	] = useListReportsLazyQuery({
+		variables: {
+			commonSearch: {
+				filters: {
+					fixed: [
+						{
+							key: "type",
+							value: ReportType.Found,
+						},
+					],
+				},
+				page_size: PAGE_SIZE,
+				page: pageFound,
+			},
+		},
+		onCompleted: ({ listReports }) => {
+			if (!listReports?.items?.length || listReports.error) {
+				return;
+			}
+			setFoundReports(listReports.items as MinReportFragment[]);
+		},
+	});
+
+	const fetchRepots = useCallback(() => {
+		listMissinggReports();
+		listFoundgReports();
+	}, [pageMissing, pageFound]);
+
 	useEffect(() => {
 		setPage({ name: "Board" });
+		fetchRepots();
+		
 	}, []);
+
+	const reportList = useMemo(() => {
+		console.log("repprts type", reportsType);
+		if (!reportsType) {
+			return _.sortBy([...missingReports, ...foundReports], "created_at");
+		}
+
+		if (reportsType === ReportType.Found) return foundReports;
+
+		return missingReports;
+	}, [missingReports, foundReports, reportsType]);
+
+	const reachedMax = useMemo(() => {
+		if (!reportsType) {
+			return reachedMaxMissing && reachedMaxFound;
+		}
+
+		if (reportsType === ReportType.Found) return reachedMaxFound;
+
+		return reachedMaxMissing;
+	}, [reachedMaxMissing, reachedMaxFound, reportsType]);
+
 	return (
 		<IonContent fullscreen>
-				<ChoiseContainer onChange={(choise)=> {console.log('choise: ', choise)}} />
-			
-			{/* <List>
+			<Container>
+				<ChoiseContainer
+					onChange={(choise) => {
+						setReportsType(choise);
+					}}
+				/>
+			</Container>
+			<List>
+				{reportList.map((item) => (
+					<MinReport report={item} />
+				))}
+			</List>
+			<InfiniteScroll
+				disabled={reachedMax}
+				onIonInfinite={(ev: any) => {
+					console.log("test");
+					setTimeout(() => ev.target.complete(), 500);
+				}}
+			>
+				<IonInfiniteScrollContent></IonInfiniteScrollContent>
+			</InfiniteScroll>
 
-			</List> */}
 			{/* <ReportsPreview loading={loading} reports={reports} /> */}
 		</IonContent>
 	);
 };
 
+const Container = styled.div`
+	position: sticky;
+	top: 0;
+	padding: ${$cssTRBL(2, 0)};
+	background-color: ${$color("background-color")};
+	z-index: 99;
+`;
+
+const List = styled(IonList)`
+	width: 100%;
+	background-color: ${$color("background-color")};
+	padding: ${$uw(1)};
+	overflow-y: scroll;
+`;
+
+const InfiniteScroll = styled(IonInfiniteScroll)`
+	margin-bottom: ${$uw(3)};
+`;

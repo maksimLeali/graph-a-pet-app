@@ -1,0 +1,16 @@
+query listReports( $commonSearch: CommonSearch! ){
+	listReports(commonSearch: $commonSearch) {
+		items {
+			...MinReport
+		}
+		success
+		error{
+			code
+			message
+		}
+		pagination {
+			page_size
+			total_items
+		}
+	}
+}
