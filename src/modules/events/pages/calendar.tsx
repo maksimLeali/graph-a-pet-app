@@ -1,8 +1,8 @@
-import { IonContent } from "@ionic/react";
+import { IonContent, IonRefresher, IonRefresherContent, RefresherEventDetail } from "@ionic/react";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import { FormProvider, useForm } from "react-hook-form";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "react-calendar/dist/Calendar.css";
 import { Maybe } from "graphql/jsutils/Maybe";
@@ -12,7 +12,7 @@ import { useListMyTreatmentsLazyQuery } from "../operations/__generated__/getMyA
 import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
 
 import { useUserContext, useModal } from "@contexts";
-import { AppointmentsList, CustomCalendar} from "@components";
+import { AppointmentsList, CustomCalendar } from "@components";
 import { AddEventForm } from "../components/addEventForm";
 import { MutationCreateTreatmentArgs } from "@types";
 import { $color, $uw } from "@theme";
@@ -35,7 +35,8 @@ export const CalendarEvents: React.FC = () => {
 
 	const { t } = useTranslation();
 
-	const [getMyAppointments, { loading, refetch }] =
+
+	const [getMyAppointments, { loading }] =
 		useListMyTreatmentsLazyQuery({
 			fetchPolicy: "no-cache",
 			variables: {
@@ -181,8 +182,17 @@ export const CalendarEvents: React.FC = () => {
 		getMyAppointments();
 	}, []);
 
+	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+		setAppointments([])
+		getMyAppointments()
+		event.detail.complete();
+	};
+
 	return (
 		<IonContent fullscreen>
+			<IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+				<IonRefresherContent></IonRefresherContent>
+			</IonRefresher>
 			<CustomCalendar
 				appointments={appointments}
 				onDateSelected={(date) => setDateSelected(date)}
@@ -210,7 +220,7 @@ export const CalendarEvents: React.FC = () => {
 
 const AddEventCta = styled.div`
 	width: 100%;
-	color: ${$color('primary')};
+	color: ${$color("primary")};
 	text-decoration: underline;
 	text-align: end;
 	padding: 0 ${$uw(2)};

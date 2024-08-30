@@ -1,4 +1,4 @@
-import { IonContent } from "@ionic/react";
+import { IonContent, IonRefresher, IonRefresherContent, RefresherEventDetail } from "@ionic/react";
 import styled from "styled-components";
 import { Pets, SkeletonBox } from "../components";
 import dayjs from "dayjs";
@@ -12,7 +12,13 @@ import { $uw } from "@theme";
 
 export const Home: React.FC = () => {
 	const [activePet, setActivePet] = useState(0);
-	const { setPage, ownedPets: pets, loading, reports } = useUserContext();
+	const {
+		setPage,
+		ownedPets: pets,
+		loading,
+		reports,
+		refetchDashboard,
+	} = useUserContext();
 	const [appointments, setAppointments] = useState<AppointmentFragment[]>();
 	useEffect(() => {
 		setPage({ name: "Home" });
@@ -61,18 +67,25 @@ export const Home: React.FC = () => {
 		);
 	}, [pets, activePet]);
 
+	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) =>{
+		refetchDashboard()
+		event.detail.complete();
+	}	
+	
 	return (
 		<IonContent fullscreen>
+			<IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+				<IonRefresherContent></IonRefresherContent>
+			</IonRefresher>
 			{loading && <SkeletonBox />}
 			{pets && pets.length > 0 && (
 				<Pets pets={pets} onActiveChange={(v) => setActivePet(v)} />
 			)}
-			{!loading &&  !pets?.length && (
+			{!loading && !pets?.length && (
 				<EmptyContainer>
 					<h4> Nessun cucciolo</h4>
 				</EmptyContainer>
 			)}
-			
 
 			<WeeksView
 				appointments={appointments}
@@ -80,11 +93,7 @@ export const Home: React.FC = () => {
 				fromDate={dayjs().startOf("w").toDate()}
 			/>
 
-			<ReportsPreview 
-				loading={loading}
-				reports={reports}
-				
-			/>
+			<ReportsPreview loading={loading} reports={reports} />
 		</IonContent>
 	);
 };

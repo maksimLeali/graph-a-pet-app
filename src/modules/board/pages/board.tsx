@@ -5,6 +5,9 @@ import {
 	IonInfiniteScroll,
 	IonInfiniteScrollContent,
 	IonList,
+	IonRefresher,
+	IonRefresherContent,
+	RefresherEventDetail,
 } from "@ionic/react";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -26,7 +29,7 @@ export const Board: React.FC = () => {
 		[]
 	);
 	const [foundReports, setFoundReports] = useState<MinReportFragment[]>([]);
-	const PAGE_SIZE = 5;
+	const PAGE_SIZE = 2;
 
 	const [
 		listMissinggReports,
@@ -51,7 +54,7 @@ export const Board: React.FC = () => {
 				return;
 			}
 
-			setMissingReports(listReports.items as MinReportFragment[]);
+			setMissingReports(p=> [...p, ...listReports.items as MinReportFragment[]]);
 			setReachedMaxMissing(true);
 		},
 	});
@@ -77,7 +80,7 @@ export const Board: React.FC = () => {
 			if (!listReports?.items?.length || listReports.error) {
 				return;
 			}
-			setFoundReports(listReports.items as MinReportFragment[]);
+			setFoundReports(p=> [...p, ...listReports.items as MinReportFragment[]]);
 		},
 	});
 
@@ -89,7 +92,6 @@ export const Board: React.FC = () => {
 	useEffect(() => {
 		setPage({ name: "Board" });
 		fetchRepots();
-		
 	}, []);
 
 	const reportList = useMemo(() => {
@@ -113,8 +115,24 @@ export const Board: React.FC = () => {
 		return reachedMaxMissing;
 	}, [reachedMaxMissing, reachedMaxFound, reportsType]);
 
+	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+		setPageFound(0)
+		setPageMissing(0)
+		setMissingReports([])
+		setFoundReports([])
+		event.detail.complete();
+	};
+
+	const handleNewData = ()=>{
+		setPageFound(p=>p+1)
+		setPageMissing(p=>p+1)
+	}
+
 	return (
 		<IonContent fullscreen>
+			<IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+				<IonRefresherContent></IonRefresherContent>
+			</IonRefresher>
 			<Container>
 				<ChoiseContainer
 					onChange={(choise) => {
@@ -130,7 +148,7 @@ export const Board: React.FC = () => {
 			<InfiniteScroll
 				disabled={reachedMax}
 				onIonInfinite={(ev: any) => {
-					console.log("test");
+					handleNewData()
 					setTimeout(() => ev.target.complete(), 500);
 				}}
 			>

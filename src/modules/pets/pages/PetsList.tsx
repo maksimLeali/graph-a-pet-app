@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useEffect } from "react";
-import { IonContent } from "@ionic/react";
+import { IonContent, IonRefresher, IonRefresherContent, RefresherEventDetail } from "@ionic/react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
@@ -9,15 +9,22 @@ import { useUserContext } from "@contexts";
 import { $color, $cssTRBL } from "@theme";
 
 export const PetsList: React.FC = () => {
-	const { setPage, ownedPets, loanPets, loading } = useUserContext();
+	const { setPage, ownedPets, loanPets, loading, refetchDashboard } = useUserContext();
 
 	useEffect(() => {
 		setPage({ name: "My pets" });
 	}, []);
 	const { t } = useTranslation();
 
+	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+		refetchDashboard();
+		event.detail.complete();
+	};
 	return (
 		<IonContent fullscreen>
+			<IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+				<IonRefresherContent></IonRefresherContent>
+			</IonRefresher>
 			<List>
 				{[...ownedPets, ...loanPets].map((pet, i) => {
 					return pet ? (
@@ -46,7 +53,7 @@ const List = styled.div`
 const AddPetCta = styled(Link)`
 	width: 100%;
 	display: block;
-	color: ${$color('primary')};
+	color: ${$color("primary")};
 	text-decoration: underline;
 	text-align: end;
 	padding: ${$cssTRBL(0, 2, 1, 2)};

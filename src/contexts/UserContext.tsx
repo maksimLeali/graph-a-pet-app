@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import { IonHeader, IonToolbar, IonTitle } from "@ionic/react";
 import styled from "styled-components";
 import dayjs from "dayjs";
@@ -18,7 +24,7 @@ export type IUserContext = {
 	setPage: (page: Page) => void;
 	updatePets: (pets: DashboardPetFragment[]) => void;
 	refetchDashboard: () => void;
-	setUseCustomColorHandler: (v: boolean)=>void;
+	setUseCustomColorHandler: (v: boolean) => void;
 	pets: (DashboardPetFragment & { owner: boolean })[];
 	ownedPets: (DashboardPetFragment & { owner: boolean })[];
 	loanPets: (DashboardPetFragment & { owner: boolean })[];
@@ -44,14 +50,14 @@ const defaultValue: IUserContext = {
 	setPage: () => {},
 	updatePets: () => {},
 	refetchDashboard: () => {},
-	setUseCustomColorHandler: ()=>{},
+	setUseCustomColorHandler: () => {},
 	pets: [],
 	loanPets: [],
 	ownedPets: [],
 	loading: false,
 	gridVisible: false,
 	useCustomColors: true,
-	reports:[],
+	reports: [],
 	fade: false,
 	user: { email: "", first_name: "", last_name: "" },
 	handleGridVisibility: () => {},
@@ -70,19 +76,21 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 	const [cookie] = useCookies(["jwt", "user"]);
 	const [visible, setVisible] = useState(true);
 	const [fade, setFade] = useState(false);
-	const [useCustomColors, setUseCustomColors]= useState(true)
+	const [useCustomColors, setUseCustomColors] = useState(true);
 	const [gridVisible, setGridVisible] = useState(false);
 	const [alreadyRequested, setAlreadyRequested] = useState(false);
 	const [pets, setPets] = useState<
 		(DashboardPetFragment & { owner: boolean })[]
 	>([]);
-	const [reports, setReports] = useState<MinReportFragment[]>([])
+	const [reports, setReports] = useState<MinReportFragment[]>([]);
 	const dateFrom = dayjs().startOf("w").toISOString();
 	const dateTo = dayjs(dateFrom).add(14, "days").toISOString();
 	const [user, setUser] = useState<MinUserFragment | null>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	const refetchDashboard = () => {
+		setPets([]);
+		setReports([]);
 		getUserDashboardQuery();
 	};
 
@@ -94,18 +102,18 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 		setVisible(visible);
 	};
 
-	useEffect(()=>{
-		setUseCustomColors(localStorage.getItem('customColor')=='true')
-	}, [])
+	useEffect(() => {
+		setUseCustomColors(localStorage.getItem("customColor") == "true");
+	}, []);
 
 	const fadeBackground = (value: boolean) => {
 		setFade(value);
 	};
 
-	const setUseCustomColorHandler = (v: boolean)=>{
-		setUseCustomColors(v)
-		localStorage.setItem('customColor', `${v}`)
-	}
+	const setUseCustomColorHandler = (v: boolean) => {
+		setUseCustomColors(v);
+		localStorage.setItem("customColor", `${v}`);
+	};
 
 	const [getUserDashboardQuery, { loading }] = useGetUserDashboardLazyQuery({
 		fetchPolicy: "no-cache",
@@ -130,12 +138,13 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 							})
 						);
 					setPets(dashboardPets);
-
 				}
-				if(getUserDashboard.dashboard.reports?.items ){
-					setReports(getUserDashboard.dashboard.reports.items as MinReportFragment[])
+				if (getUserDashboard.dashboard.reports?.items) {
+					setReports(
+						getUserDashboard.dashboard.reports
+							.items as MinReportFragment[]
+					);
 				}
-				
 			}
 			return;
 		},
@@ -154,7 +163,6 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 
 	const handleGridVisibility = (v: boolean) => {
 		setGridVisible(v);
-		
 	};
 
 	const value = useMemo(
@@ -181,7 +189,18 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 				profile_picture: user?.profile_picture,
 			},
 		}),
-		[visible, pets, gridVisible, loading, loanPets, ownedPets, user, fade, useCustomColors, reports]
+		[
+			visible,
+			pets,
+			gridVisible,
+			loading,
+			loanPets,
+			ownedPets,
+			user,
+			fade,
+			useCustomColors,
+			reports,
+		]
 	);
 
 	return (
