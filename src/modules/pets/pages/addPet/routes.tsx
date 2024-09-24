@@ -1,5 +1,5 @@
 import { Route, useRouteMatch } from "react-router-dom";
-import { IntroPage, Step1, Step2 } from ".";
+import { IntroPage, Step1, Step2, Step3 } from ".";
 import React from "react";
 
 type props = {
@@ -16,6 +16,9 @@ export const AddPetRoutes: React.FC<props> = React.memo(({ path }) => {
 			</Route>
 			<Route path={`${path}/step2`}>
 				<Step2 />
+			</Route>
+			<Route path={`${path}/step3`}>
+				<Step3 />
 			</Route>
 		</>
 	);

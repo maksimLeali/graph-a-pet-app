@@ -37,10 +37,7 @@ export const Step1 = React.memo(() => {
 		value: key,
 		label: t(`pets.gender_${key.toLowerCase()}`),
 	}));
-	const familyOptions: Option[] = Object.values(PetFamily).map((key) => ({
-		value: key,
-		label: t(`pets.pet_family.${key.toLowerCase()}`),
-	}));
+
 
 	return (
 		<IonContent fullscreen>
@@ -72,16 +69,7 @@ export const Step1 = React.memo(() => {
 							textLabel="pets.add_pet_page.step_1.insert_gender"
 						/>
 					</Row>
-					<Row>
-						<span>{t("pets.add_pet_page.step_1.family")}</span>
-						<SelectInput
-							name="family"
-							options={familyOptions}
-							required
-							forceOptionsUp
-							textLabel="pets.add_pet_page.step_1.insert_family"
-						/>
-					</Row>
+					
 
 					<SubmitInput color="primary">
 						{t("pets.add_pet_page.step_1.continue")}

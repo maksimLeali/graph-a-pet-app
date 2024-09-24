@@ -1,30 +1,23 @@
-import { IonButton, IonContent } from "@ionic/react";
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { IonContent } from "@ionic/react";
+import React, { useEffect, useState, useRef } from "react";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
-import { Option, Modal, FakeInput, SelectInput } from "@components";
+import { Modal } from "@components";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
-import { BREEDS, COAT_LENGHTS as COATS } from "@utils";
-import { BreedSeletor } from "../../components";
 import { ImageCanvas } from "../../components/ImageCanvas";
-import { PetFamily } from "@types";
 
-export const Step2 = React.memo(() => {
+export const Step3 = React.memo(() => {
 	const { setPage, fadeBackground } = useUserContext();
-	const [breedText, setBreedText] = useState("");
-	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
-	const [selectedCoat, setSelectedCoat] = useState<Option | null>(null);
-	const [openBreedSelector, setOpenBreedSelector] = useState(false);
-	const [openCoatSelector, setOpenCoatSelector] = useState(false);
 	const [openEditImage, setEditImage] = useState(false);
 
 	const [cookies, setCookies] = useCookies([
 		"add_pet_step_1",
 		"add_pet_step_2",
+		"add_pet_step_3",
 	]);
 	const [prevImageURL, setPrevImageURL] = useState<string | null>(null);
 	const [imageURL, setImageURL] = useState<string | null>(null);
@@ -32,38 +25,23 @@ export const Step2 = React.memo(() => {
 	const history = useHistory();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const methods = useForm<{ breed: BREEDS; coat_length: COATS }>({
+	const methods = useForm<any>({
 		mode: "onSubmit",
 		defaultValues: {
-			...(cookies.add_pet_step_2 && {
-				breed: cookies.add_pet_step_2.breed,
+			...(cookies.add_pet_step_3 && {
+				breed: cookies.add_pet_step_3.breed,
 			}),
 		},
 	});
 
 	const { t } = useTranslation();
 
-	const familyOptions: Option[] = Object.values(PetFamily).map((key) => ({
-		value: key,
-		label: t(`pets.pet_family.${key.toLowerCase()}`),
-	}));
-
 	useEffect(() => {
-		setPage({ name: "step 2 di 3" });
+		setPage({ name: "step 3 di 3" });
 		if (!cookies.add_pet_step_1) {
 			history.push("/pets/new/step1");
 		}
 	}, []);
-
-	const openBreedsModal = useCallback(() => {
-		setOpenBreedSelector(true);
-		fadeBackground(true);
-	}, [breedText, selectedBreed, openBreedSelector]);
-
-	const openCoatsModal = useCallback(() => {
-		setOpenCoatSelector(true);
-		fadeBackground(true);
-	}, [breedText, selectedBreed, openBreedSelector]);
 
 	const handleFileChange = (event: any) => {
 		const file = event.target.files[0];
@@ -73,6 +51,7 @@ export const Step2 = React.memo(() => {
 				if (imageURL) setPrevImageURL(imageURL);
 				setImageURL(tempImageURL);
 				setEditImage(true);
+				fadeBackground(true);
 			}
 		}
 	};
@@ -80,35 +59,28 @@ export const Step2 = React.memo(() => {
 	return (
 		<IonContent fullscreen>
 			<Modal
-				open={openBreedSelector}
+				open={openEditImage}
 				onClose={() => {
-					setOpenBreedSelector(false);
-					fadeBackground(false);
-				}}
-				onCancel={() => {
-					setOpenBreedSelector(false);
+					setImageURL(prevImageURL);
+					setEditImage(false);
 					fadeBackground(false);
 				}}
 				onConfirm={() => {
-					setOpenBreedSelector(false);
+					setEditImage(false);
 					fadeBackground(false);
-					console.log(
-						"selectedBreed",
-						selectedBreed,
-						"breedText",
-						breedText
-					);
+				}}
+				onCancel={() => {
+					setImageURL(prevImageURL);
+					setEditImage(false);
+					fadeBackground(false);
 				}}
 			>
-				<BreedSeletor
-					onSelected={(v) => {
-						setSelectedBreed(v);
-						if (!v) return;
-						setBreedText(v.label);
-						console.log("Selected breed:", v.label);
+				<ImageCanvas
+					imageUrl={imageURL ?? ""}
+					onCropChange={(croppedImageData) => {
+						console.log("Cropped Image Data:", croppedImageData);
+						setCroppedImageURL(croppedImageData); // Update the cropped image data
 					}}
-					changeBreedText={(v) => setBreedText(v)}
-					selectedBreed={selectedBreed}
 				/>
 			</Modal>
 
@@ -117,30 +89,31 @@ export const Step2 = React.memo(() => {
 					<h3
 						dangerouslySetInnerHTML={{
 							__html:
-								t("pets.add_pet_page.step_2.intro", {
+								t("pets.add_pet_page.step_3.intro", {
 									name: cookies.add_pet_step_1?.name ?? "",
 								}) ?? "",
 						}}
 					/>
 				</Intro>
 				<Row>
-					<span>{t("pets.add_pet_page.step_1.family")}</span>
-					<SelectInput
-						name="family"
-						options={familyOptions}
-						required
-						forceOptionsUp
-						textLabel="pets.add_pet_page.step_1.insert_family"
-					/>
-				</Row>
-				<Row>
-					<span>{t("pets.add_pet_page.step_2.breed")}</span>
-					<FakeInput
-						name="breed"
-						textLabel="pets.add_pet_page.step_2.breed"
-						onClick={openBreedsModal}
-						value={breedText}
-					/>
+					<ImageTaker
+						onClick={() =>
+							fileInputRef?.current
+								? fileInputRef.current.click()
+								: undefined
+						}
+					>
+						<input
+							type="file"
+							accept="image/*"
+							ref={fileInputRef}
+							style={{ display: "none" }}
+							onChange={handleFileChange}
+						/>
+						{croppedImageURL && (
+							<img src={croppedImageURL} alt="Cropped" />
+						)}
+					</ImageTaker>
 				</Row>
 			</Container>
 		</IonContent>

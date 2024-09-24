@@ -1,1 +1,1 @@
-export { BREEDS } from './breeds'
+export { BREEDS,COAT_LENGHTS,COAT_PATTERNS } from './breeds'
