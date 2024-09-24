@@ -5,28 +5,28 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
-
-import {
-	Option,
-	Modal,
-	FakeInput,
-} from "@components";
+import { Option, Modal, FakeInput } from "@components";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { BREEDS } from "@utils";
 import { BreedSeletor } from "../../components";
+import { ImageCanvas } from "../../components/ImageCanvas";
 
 export const Step2 = React.memo(() => {
 	const { setPage, fadeBackground } = useUserContext();
 	const [breedText, setBreedText] = useState("");
 	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
 	const [openModal, setOpenModal] = useState(false);
+	const [openEditImage, setEditImage] = useState(false);
+	
+
 	const [cookies, setCookies] = useCookies([
 		"add_pet_step_1",
 		"add_pet_step_2",
 	]);
+	const [prevImageURL, setPrevImageURL] = useState<string | null>(null);
 	const [imageURL, setImageURL] = useState<string | null>(null);
-
+	const [croppedImageURL, setCroppedImageURL] = useState<string | null>(null); // Store the cropped image
 	const history = useHistory();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +38,9 @@ export const Step2 = React.memo(() => {
 			}),
 		},
 	});
+
 	const { t } = useTranslation();
+
 	useEffect(() => {
 		setPage({ name: "step 2 di 3" });
 		if (!cookies.add_pet_step_1) {
@@ -54,10 +56,11 @@ export const Step2 = React.memo(() => {
 	const handleFileChange = (event: any) => {
 		const file = event.target.files[0];
 		if (file) {
-			const imageURL = URL.createObjectURL(file);
-			if (imageURL) {
-
-				setImageURL(imageURL);
+			const tempImageURL = URL.createObjectURL(file);
+			if (tempImageURL) {
+				if(imageURL) setPrevImageURL(imageURL)
+				setImageURL(tempImageURL);
+				setEditImage(true);
 			}
 		}
 	};
@@ -96,20 +99,49 @@ export const Step2 = React.memo(() => {
 					selectedBreed={selectedBreed}
 				/>
 			</Modal>
+
+			<Modal
+				open={openEditImage}
+				onClose={() => {
+					setImageURL(prevImageURL)
+					setEditImage(false);
+				}}
+				onConfirm={() => {
+					setEditImage(false);
+				}}
+				onCancel={() => {
+					setImageURL(prevImageURL)
+					setEditImage(false);
+				}}
+			>
+				<ImageCanvas
+					imageUrl={imageURL ?? ""}
+					onCropChange={(croppedImageData) => {
+						console.log("Cropped Image Data:", croppedImageData);
+						setCroppedImageURL(croppedImageData); // Update the cropped image data
+					}}
+				/>
+			</Modal>
+
 			<Container>
 				<Intro>
 					<h3
 						dangerouslySetInnerHTML={{
 							__html:
 								t("pets.add_pet_page.step_2.intro", {
-									name:
-										cookies.add_pet_step_1?.name ?? "",
+									name: cookies.add_pet_step_1?.name ?? "",
 								}) ?? "",
 						}}
 					/>
 				</Intro>
 				<Row>
-					<ImageTaker onClick={() => fileInputRef?.current ? fileInputRef.current.click() : undefined}>
+					<ImageTaker
+						onClick={() =>
+							fileInputRef?.current
+								? fileInputRef.current.click()
+								: undefined
+						}
+					>
 						<input
 							type="file"
 							accept="image/*"
@@ -117,14 +149,8 @@ export const Step2 = React.memo(() => {
 							style={{ display: "none" }}
 							onChange={handleFileChange}
 						/>
-						{imageURL ? (
-							<img
-								src={imageURL}
-								alt="Selected"
-								style={{ maxWidth: "100%", maxHeight: "100%" }}
-							/>
-						) : (
-							t("pets.add_pet_page.step_2.picture")
+						{croppedImageURL && (
+							<img src={croppedImageURL} alt="Cropped" />
 						)}
 					</ImageTaker>
 				</Row>
@@ -145,7 +171,7 @@ export const Step2 = React.memo(() => {
 const Container = styled.div`
 	width: 100%;
 	height: 100%;
-	padding-top:${$uw(6)};
+	padding-top: ${$uw(6)};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -173,8 +199,8 @@ const ImageTaker = styled.div`
 	align-items: center;
 	align-self: center;
 	justify-content: center;
-	background-color: ${$color('background-color')};
-	border: 2px dashed ${$color('primary')};
+	background-color: ${$color("background-color")};
+	border: 2px dashed ${$color("primary")};
 	cursor: pointer;
 	border-radius: 999px;
 	text-align: center;
@@ -182,7 +208,6 @@ const ImageTaker = styled.div`
 	overflow: hidden;
 	img {
 		width: 100%;
-		height: auto;
-		object-fit: cover;
+		height: 100%;
 	}
 `;
