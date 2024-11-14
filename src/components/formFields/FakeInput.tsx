@@ -52,9 +52,9 @@ export const FakeInput: React.FC<props> = ({
 	useEffect(() => {
 		if (value && value.length > 0) {
 			setCompiled(true);
-            return
+			return
 		}
-        setCompiled(false)
+		setCompiled(false)
 	}, [value]);
 
 	useOnClickOutside(ref, () => {
@@ -65,9 +65,8 @@ export const FakeInput: React.FC<props> = ({
 	});
 
 	const classes = useMemo(() => {
-		return `${disabled && "disabled"} ${focused && "focused"} ${
-			compiled && "compiled"
-		} ${error && "error"}`;
+		return `${disabled && "disabled"} ${focused && "focused"} ${compiled && "compiled"
+			} ${error && "error"}`;
 	}, [error, disabled, focused, compiled]);
 
 	useEffect(() => {
@@ -106,8 +105,8 @@ export const FakeInput: React.FC<props> = ({
 							error
 								? "danger"
 								: focused || compiled
-								? "primary"
-								: "medium"
+									? "primary"
+									: "medium"
 						}
 					/>
 				) : (

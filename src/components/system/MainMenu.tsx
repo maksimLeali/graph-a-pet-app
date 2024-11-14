@@ -107,6 +107,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 						onChange={(val) => {
 							setDarkMode(val);
 						}}
+						confirmColor="secondary"
 						rigthElement={
 							<Icon size="18px" name="moonOutline" color="dark" />
 						}

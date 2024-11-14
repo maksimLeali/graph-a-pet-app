@@ -21,12 +21,12 @@ export const Toggle: React.FC<Props> = ({
 	rigthElement,
 	barColor = "medium",
 	btnColor = "dark",
-	confirmColor,
+	confirmColor = "primary",
 }) => {
 	return (
 		<Container className="toggle" size={`calc(${btnSize} * 2 )`}>
 			<Wrapper
-				bgColor={value && confirmColor ? confirmColor : barColor}
+				bgColor={value ? confirmColor : barColor }
 				onClick={(e) => {
 					e.preventDefault();
 					onChange(!value);

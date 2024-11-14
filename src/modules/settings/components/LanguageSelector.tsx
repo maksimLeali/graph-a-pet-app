@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
-import { $uw } from "@theme";
+import { $color, $uw } from "@theme";
 import { SelectInput } from "@components";
 import { changeLanguageSideEffects } from "@i18n";
 
@@ -46,10 +46,12 @@ export const LanguageSelector = () => {
 
 const LanguageSelectorContainer = styled.div`
 	display: flex;
+	color: ${$color("dark")};
+	justify-content: space-between;
 	> * {
 		&:first-child {
 			flex: 0 0 ${$uw(14)};
-			margin-right: ${$uw(4)};
+			/* margin-right: ${$uw(4)}; */
 		}
 		&:last-child {
 			flex: 0 0 ${$uw(12)};

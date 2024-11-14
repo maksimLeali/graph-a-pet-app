@@ -16,10 +16,11 @@ export const BreedSeletor: React.FC<Props> = React.memo(
 	({ onSelected, changeBreedText, selectedBreed }) => {
 		const [applyFilter, setApplyFilter] = useState(false);
 		const [filterText, setFilterText] = useState("");
+		const { t: breedT } = useTranslation("breeds");
 		const { t } = useTranslation();
 		const breedOptions: Option[] = Object.values(BREEDS).map((key) => ({
 			value: key,
-			label: t(`pets.breeds.${key.toLowerCase()}`),
+			label: breedT(key.toLowerCase()),
 		}));
 
 		const handleSelection = useCallback(

@@ -5,39 +5,31 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
-import { Option, Modal, FakeInput, SelectInput } from "@components";
+import { Option, Modal, FakeInput, SelectInput, SubmitInput, NumberInput, Toggle } from "@components";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
-import { BREEDS, COAT_LENGHTS as COATS } from "@utils";
 import { BreedSeletor } from "../../components";
-import { ImageCanvas } from "../../components/ImageCanvas";
 import { PetFamily } from "@types";
+import { BREEDS, COAT_LENGHTS } from "@utils";
 
 export const Step2 = React.memo(() => {
 	const { setPage, fadeBackground } = useUserContext();
 	const [breedText, setBreedText] = useState("");
+	const [neutered, setNeutered] = useState(false);
 	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
-	const [selectedCoat, setSelectedCoat] = useState<Option | null>(null);
 	const [openBreedSelector, setOpenBreedSelector] = useState(false);
-	const [openCoatSelector, setOpenCoatSelector] = useState(false);
-	const [openEditImage, setEditImage] = useState(false);
 
 	const [cookies, setCookies] = useCookies([
 		"add_pet_step_1",
 		"add_pet_step_2",
 	]);
-	const [prevImageURL, setPrevImageURL] = useState<string | null>(null);
-	const [imageURL, setImageURL] = useState<string | null>(null);
-	const [croppedImageURL, setCroppedImageURL] = useState<string | null>(null); // Store the cropped image
 	const history = useHistory();
-	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const methods = useForm<{ breed: BREEDS; coat_length: COATS }>({
+	const methods = useForm<{ neutered: Boolean; family: PetFamily; breed: BREEDS | string; coat_length: COAT_LENGHTS }>({
 		mode: "onSubmit",
 		defaultValues: {
-			...(cookies.add_pet_step_2 && {
-				breed: cookies.add_pet_step_2.breed,
-			}),
+			...(cookies.add_pet_step_2)
+
 		},
 	});
 
@@ -47,11 +39,19 @@ export const Step2 = React.memo(() => {
 		value: key,
 		label: t(`pets.pet_family.${key.toLowerCase()}`),
 	}));
+	const coatOptions: Option[] = Object.values(COAT_LENGHTS).map((key) => ({
+		value: key,
+		label: t(`pets.coat_lengths.${key.toLowerCase()}`),
+	}));
 
 	useEffect(() => {
 		setPage({ name: "step 2 di 3" });
 		if (!cookies.add_pet_step_1) {
-			history.push("/pets/new/step1");
+			return history.push("/pets/new/step1");
+		}
+		if (cookies.add_pet_step_2) {
+			setBreedText(cookies.add_pet_step_2.breed)
+			setNeutered(cookies.add_pet_step_2.neutered? true : false) 
 		}
 	}, []);
 
@@ -60,22 +60,6 @@ export const Step2 = React.memo(() => {
 		fadeBackground(true);
 	}, [breedText, selectedBreed, openBreedSelector]);
 
-	const openCoatsModal = useCallback(() => {
-		setOpenCoatSelector(true);
-		fadeBackground(true);
-	}, [breedText, selectedBreed, openBreedSelector]);
-
-	const handleFileChange = (event: any) => {
-		const file = event.target.files[0];
-		if (file) {
-			const tempImageURL = URL.createObjectURL(file);
-			if (tempImageURL) {
-				if (imageURL) setPrevImageURL(imageURL);
-				setImageURL(tempImageURL);
-				setEditImage(true);
-			}
-		}
-	};
 
 	return (
 		<IonContent fullscreen>
@@ -111,43 +95,84 @@ export const Step2 = React.memo(() => {
 					selectedBreed={selectedBreed}
 				/>
 			</Modal>
+			<FormProvider {...methods}>
+				<Form
+					onSubmit={methods.handleSubmit((data) => {
+						data.breed = breedText;		
+						data.neutered = neutered;
+						console.log(data)				
+						setCookies("add_pet_step_2", data);
+						console.log(({
+							...data,
+							...cookies.add_pet_step_1
+						}))
+						// history.push("/pets/new/step3");
+					})}
+				>
+					<Intro>
+						<h3
+							dangerouslySetInnerHTML={{
+								__html:
+									t("pets.add_pet_page.step_2.intro", {
+										name: cookies.add_pet_step_1?.name ?? "",
+									}) ?? "",
+							}}
+						/>
+					</Intro>
+					<Row>
+						<span>{t("pets.add_pet_page.step_2.family")}</span>
+						<SelectInput
+							name="family"
+							options={familyOptions}
+							required
+							forceOptionsUp
+							textLabel="pets.add_pet_page.step_2.insert_family"
+						/>
+					</Row>
+					<Row>
+						<span>{t("pets.add_pet_page.step_2.breed")}</span>
+						<FakeInput
+							name="breed"
+							required
+							textLabel="pets.add_pet_page.step_2.insert_breed"
+							onClick={openBreedsModal}
+							value={breedText}
 
-			<Container>
-				<Intro>
-					<h3
-						dangerouslySetInnerHTML={{
-							__html:
-								t("pets.add_pet_page.step_2.intro", {
-									name: cookies.add_pet_step_1?.name ?? "",
-								}) ?? "",
-						}}
-					/>
-				</Intro>
-				<Row>
-					<span>{t("pets.add_pet_page.step_1.family")}</span>
-					<SelectInput
-						name="family"
-						options={familyOptions}
-						required
-						forceOptionsUp
-						textLabel="pets.add_pet_page.step_1.insert_family"
-					/>
-				</Row>
-				<Row>
-					<span>{t("pets.add_pet_page.step_2.breed")}</span>
-					<FakeInput
-						name="breed"
-						textLabel="pets.add_pet_page.step_2.breed"
-						onClick={openBreedsModal}
-						value={breedText}
-					/>
-				</Row>
-			</Container>
+						/>
+					</Row>
+					<Row>
+						<span>{t("pets.add_pet_page.step_2.coat")}</span>
+						<SelectInput
+							name="coat_length"
+							required
+							options={coatOptions}
+							forceOptionsUp
+							textLabel="pets.add_pet_page.step_2.insert_coat"
+						/>
+					</Row>
+					<Row>
+						<span>{t("pets.add_pet_page.step_2.coat")}</span>
+						<NumberInput
+							name="weight_kg"
+							required														
+							textLabel="pets.add_pet_page.step_2.insert_coat"
+						/>
+					</Row>
+					<Row className="inline">
+						<span>{t(`pets.add_pet_page.step_2.neutered_${cookies.add_pet_step_1.gender == 'FEMALE' ? 'female' : 'male'}`)}</span>
+						<Toggle value={neutered} onChange={()=>setNeutered(!neutered)} />
+						
+					</Row>
+					<SubmitInput color="primary">
+						{t("pets.add_pet_page.step_2.continue")}
+					</SubmitInput>
+				</Form>
+			</FormProvider>
 		</IonContent>
 	);
 });
 
-const Container = styled.div`
+const Form = styled.form`
 	width: 100%;
 	height: 100%;
 	padding-top: ${$uw(6)};
@@ -168,25 +193,8 @@ const Row = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: ${$uw(3)};
-`;
-
-const ImageTaker = styled.div`
-	width: ${$uw(24)};
-	height: ${$uw(24)};
-	display: flex;
-	margin-bottom: ${$uw(3)};
-	align-items: center;
-	align-self: center;
-	justify-content: center;
-	background-color: ${$color("background-color")};
-	border: 2px dashed ${$color("primary")};
-	cursor: pointer;
-	border-radius: 999px;
-	text-align: center;
-	position: relative;
-	overflow: hidden;
-	img {
-		width: 100%;
-		height: 100%;
+	&.inline{
+		flex-direction: row;
+		justify-content: space-between;
 	}
 `;
