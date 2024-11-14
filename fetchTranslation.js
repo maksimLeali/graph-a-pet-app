@@ -56,6 +56,5 @@ async function fetchAndSaveTranslations() {
     console.error('Error fetching data:', error);
   }
 }
-
 // Call the function to fetch and save translations
 fetchAndSaveTranslations();
