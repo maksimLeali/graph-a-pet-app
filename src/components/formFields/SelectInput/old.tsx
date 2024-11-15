@@ -7,6 +7,7 @@ import _ from "lodash";
 import { useOnClickOutside } from "@hooks";
 import { I18NKey } from "@i18n";
 import { Icon, IconName } from "@components";
+import { $uw } from "@theme";
 
 export type Option = {
 	value: any;
@@ -363,8 +364,8 @@ const InvisibleInput = styled.input`
 const Wrapper = styled.div<selectProps>`
 	width: 100%;
 	position: relative;
-	height: 40px;
-	margin-bottom: 40px;
+	height: ${$uw(2)};
+	margin-bottom: ${$uw(2)};
 	&.submitting {
 		opacity: 0.5;
 		pointer-events: none;
@@ -468,7 +469,7 @@ const InputLabel = styled.label`
 
 const InputWrapper = styled.div`
 	width: 100%;
-	height: 40px;
+	height: ${$uw(2)};
 	padding-bottom: 2px;
 	padding-left: 2px;
 	box-sizing: border-box;
@@ -481,7 +482,7 @@ const LabelContainer = styled.div<{ bgColor?: string }>`
 	height: 100%;
 	position: relative;
 	z-index: 2;
-	width: calc(100% - 40px);
+	width: calc(100% - ${$uw(2)});
 	font-size: 1.3rem;
 	padding-left: 20px;
 
@@ -499,7 +500,7 @@ const LabelContainer = styled.div<{ bgColor?: string }>`
 `;
 
 const IconContainer = styled.div<{ bgColor?: string }>`
-	width: 38px;
+	width: ${$uw(2)};
 	position: relative;
 	z-index: 2;
 	display: flex;
@@ -545,7 +546,7 @@ const FocusBox = styled.span`
 `;
 
 const OptionsContainer = styled.div<{ maxHeight: number }>`
-	width: calc(100% - 40px);
+	width: calc(100% - ${$uw(2)});
 	position: absolute;
 	z-index: 4;
 	top: 100%;

@@ -22,9 +22,12 @@ export const WeeksView: React.FC<props> = ({
 	const [selectedDay, setSelectedDay] = useState<Date>();
 	const [now, setNow] = useState<Date>();
 
+
+
 	const periodsWithEvents = useMemo(
 		() =>
 			_(appointments ?? [])
+				.filter(item=> item !== undefined)			
 				.map((ev) => ({
 					color:
 						ev?.health_card?.pet.main_picture?.main_color?.color ??
@@ -42,13 +45,14 @@ export const WeeksView: React.FC<props> = ({
 		const selected = dayjs(selectedDay);
 
 		return _(periodsWithEvents)
+			.filter(item=> item !== undefined)			
 			.filter(({ from, to }) =>
 				selectedDay
 					? selected.endOf("day").isAfter(from) &&
 					  selected.startOf("day").isBefore(to)
 					: true
 			)
-			.orderBy((item) => item.event!.date, ["asc"])
+			.orderBy((item) => item.event?.date, ["asc"])
 			.map((p) => p.event)
 			.value();
 	}, [periodsWithEvents, selectedDay]);

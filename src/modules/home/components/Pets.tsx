@@ -115,7 +115,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 		>
 			<BoxContainer>
 				<PetsBox className="custom-pet-color pet-box" direction={direction}>
-					{pets.map((pet, i) => (
+					{pets.map((pet, i) => pet.main_picture? (
 						<Image2x
 							id={pet.main_picture!.id}
 							key={i}
@@ -125,7 +125,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 								i == active ? "active" : ""
 							}`}
 						/>
-					))}
+					)  : <></>)}
 				</PetsBox>
 				<ActionChip className="custom-pet-color top left" onClick={() => modalOpen()}>
 					<Icon name="peopleOutline" color="dark" />

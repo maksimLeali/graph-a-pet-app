@@ -10,6 +10,7 @@ import ContentEditable from "react-contenteditable";
 
 import { useOnClickOutside } from "@hooks";
 import { I18NKey } from "@i18n";
+import { $uw } from "@theme";
 
 type props = {
     name: string;
@@ -155,7 +156,7 @@ type labelProps = {
 const Wrapper = styled.div`
     width: 100%;
     position: relative;
-    margin-bottom: 40px;
+    margin-bottom: ${$uw(2)};
     &.submitting {
         opacity: 0.5;
         pointer-events: none;
@@ -194,7 +195,7 @@ const InputWrapper = styled.div<wrapperProps>`
     padding: 0 0 2px 2px;
     border-radius: 2px;
     border-top-right-radius: 0;
-    min-height: 38px;
+    min-height: ${$uw(2)};
     margin-bottom: 12px;
     overflow: hidden;
     z-index: 1;
@@ -239,7 +240,7 @@ const FocusBox = styled.span<focusCircleProps>`
 const Editable = styled(ContentEditable)<{ textcolor: string, bgcolor?: string }>`
     height: 100%;
     width: 100%;
-    min-height: 38px;
+    min-height: ${$uw(2)};
     font-size: 1.6rem;
     padding-left: 20px;
     padding-bottom: 10px;
@@ -276,11 +277,11 @@ const Editable = styled(ContentEditable)<{ textcolor: string, bgcolor?: string }
 
   // Add the onKeyDown event handler
   &:empty {
-    min-height: 38px; // This ensures there's always a visible line for the cursor
+    min-height: ${$uw(2)}; // This ensures there's always a visible line for the cursor
   }
 
   &:not(:empty) {
-    min-height: 38px; // This ensures there's always a visible line for the cursor
+    min-height: ${$uw(2)}; // This ensures there's always a visible line for the cursor
   }
 
   &[contentEditable="true"] {

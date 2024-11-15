@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useOnClickOutside } from "@hooks";
 import { I18NKey } from "@i18n";
 import {  Icon } from "@components";
-import { $color } from "@theme";
+import { $color, $uw } from "@theme";
 
 type props = {
 	name: string;
@@ -118,7 +118,7 @@ type labelProps = {
 const Wrapper = styled.div`
 	width: 100%;
 	position: relative;
-	margin-bottom: 40px;
+	margin-bottom: ${$uw(2)};
 	&.submitting {
 		opacity: 0.5;
 		pointer-events: none;
@@ -157,7 +157,7 @@ const InputWrapper = styled.div<wrapperProps>`
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
 	border-top-right-radius: 0;
-	height: 38px;
+	height: ${$uw(2)};
 	margin-bottom: 12px;
 	overflow: hidden;
 	z-index: 1;

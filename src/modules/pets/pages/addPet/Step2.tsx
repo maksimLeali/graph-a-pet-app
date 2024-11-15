@@ -5,12 +5,13 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
-import { Option, Modal, FakeInput, SelectInput, SubmitInput, NumberInput, Toggle } from "@components";
+import { Option, Modal, FakeInput, SelectInput, SubmitInput, NumberInput, Toggle, DateTimePicker } from "@components";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { BreedSeletor } from "../../components";
-import { PetFamily } from "@types";
+import { CoatLength, CoatPattern, CustodyLevel, PetFamily } from "@types";
 import { BREEDS, COAT_LENGHTS } from "@utils";
+import { useAddPetToMeMutation } from "../../operations/__generated__/addPetToMe.generated";
 
 export const Step2 = React.memo(() => {
 	const { setPage, fadeBackground } = useUserContext();
@@ -18,6 +19,10 @@ export const Step2 = React.memo(() => {
 	const [neutered, setNeutered] = useState(false);
 	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
 	const [openBreedSelector, setOpenBreedSelector] = useState(false);
+	
+	const [addPetToMe, { loading }] = useAddPetToMeMutation({onCompleted: ()=>{
+		history.push("/pets/new/step3");
+	}})
 
 	const [cookies, setCookies] = useCookies([
 		"add_pet_step_1",
@@ -25,7 +30,7 @@ export const Step2 = React.memo(() => {
 	]);
 	const history = useHistory();
 
-	const methods = useForm<{ neutered: Boolean; family: PetFamily; breed: BREEDS | string; coat_length: COAT_LENGHTS }>({
+	const methods = useForm<{ birthday: string; weight_kg: string; neutered: boolean; family: PetFamily; breed: BREEDS | string; coat_length: COAT_LENGHTS }>({
 		mode: "onSubmit",
 		defaultValues: {
 			...(cookies.add_pet_step_2)
@@ -51,7 +56,7 @@ export const Step2 = React.memo(() => {
 		}
 		if (cookies.add_pet_step_2) {
 			setBreedText(cookies.add_pet_step_2.breed)
-			setNeutered(cookies.add_pet_step_2.neutered? true : false) 
+			setNeutered(cookies.add_pet_step_2.neutered ? true : false)
 		}
 	}, []);
 
@@ -60,6 +65,36 @@ export const Step2 = React.memo(() => {
 		fadeBackground(true);
 	}, [breedText, selectedBreed, openBreedSelector]);
 
+
+	const handleSubmit= methods.handleSubmit((data) => {
+		data.breed = breedText;
+		data.neutered = neutered;
+		console.log(data)
+		setCookies("add_pet_step_2", data);
+		console.log(({
+			...data,
+			...cookies.add_pet_step_1
+		}))
+		addPetToMe({variables: {
+			custodyLevel: CustodyLevel.Owner,
+			data: {
+				name: cookies.add_pet_step_1.name!,
+				gender:cookies.add_pet_step_1.gender!,
+				birthday: data.birthday,
+				weight_kg: parseFloat(data.weight_kg),
+				neutered: data.neutered,
+				body: {
+					family: data.family,
+					breed: data.breed,
+					coat: {
+						length: data.coat_length as unknown as CoatLength,
+						pattern: CoatPattern.Solid,
+						colors:[]
+					}
+				}
+			}
+		}})	
+	})
 
 	return (
 		<IonContent fullscreen>
@@ -97,17 +132,7 @@ export const Step2 = React.memo(() => {
 			</Modal>
 			<FormProvider {...methods}>
 				<Form
-					onSubmit={methods.handleSubmit((data) => {
-						data.breed = breedText;		
-						data.neutered = neutered;
-						console.log(data)				
-						setCookies("add_pet_step_2", data);
-						console.log(({
-							...data,
-							...cookies.add_pet_step_1
-						}))
-						// history.push("/pets/new/step3");
-					})}
+					onSubmit={handleSubmit}
 				>
 					<Intro>
 						<h3
@@ -125,7 +150,6 @@ export const Step2 = React.memo(() => {
 							name="family"
 							options={familyOptions}
 							required
-							forceOptionsUp
 							textLabel="pets.add_pet_page.step_2.insert_family"
 						/>
 					</Row>
@@ -151,17 +175,33 @@ export const Step2 = React.memo(() => {
 						/>
 					</Row>
 					<Row>
-						<span>{t("pets.add_pet_page.step_2.coat")}</span>
+						<span>{t("pets.add_pet_page.step_2.weight")}</span>
 						<NumberInput
 							name="weight_kg"
-							required														
-							textLabel="pets.add_pet_page.step_2.insert_coat"
+							required
+							textLabel="pets.add_pet_page.step_2.insert_weight"
+						/>
+					</Row>
+					<Row>
+						<span
+							dangerouslySetInnerHTML={{
+								__html:
+									t(`pets.add_pet_page.step_2.birthday_${cookies?.add_pet_step_1?.gender == "FEMALE" ? 'female' : "male"}`, {
+										name: cookies.add_pet_step_1?.name ?? "",
+									}) ?? "",
+							}}
+						/>
+						<DateTimePicker
+							name="birthday"
+							textLabel="pets.add_pet_page.step_2.insert_birthday"
+							type="date"
+							required
 						/>
 					</Row>
 					<Row className="inline">
-						<span>{t(`pets.add_pet_page.step_2.neutered_${cookies.add_pet_step_1.gender == 'FEMALE' ? 'female' : 'male'}`)}</span>
-						<Toggle value={neutered} onChange={()=>setNeutered(!neutered)} />
-						
+						<span>{t(`pets.add_pet_page.step_2.neutered_${cookies?.add_pet_step_1?.gender == 'FEMALE' ? 'female' : 'male'}`)}</span>
+						<Toggle value={neutered} onChange={() => setNeutered(!neutered)} />
+
 					</Row>
 					<SubmitInput color="primary">
 						{t("pets.add_pet_page.step_2.continue")}
@@ -175,24 +215,29 @@ export const Step2 = React.memo(() => {
 const Form = styled.form`
 	width: 100%;
 	height: 100%;
-	padding-top: ${$uw(6)};
+
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	
 	overflow-y: scroll;
-	gap: ${$uw(1)};
-	padding: ${$cssTRBL(0, 1)};
+	gap: ${$uw(2)};
+	padding: ${$cssTRBL(4, 1)};
+	
 `;
 
 const Intro = styled.div`
 	width: 100%;
-	margin-bottom: ${$uw(5)};
+	
 `;
 
 const Row = styled.div`
 	display: flex;
 	flex-direction: column;
-	gap: ${$uw(3)};
+	gap: ${$uw(2)};
+	justify-content: space-between;
+	> * {
+		margin-bottom: ${$uw(1)};
+	}
 	&.inline{
 		flex-direction: row;
 		justify-content: space-between;

@@ -960,15 +960,18 @@
           "continue": "Vai all'ultimo step",
           "insert_breed": "Segli razza",
           "intro": "Qualche informazione in più su <b>{{name}}</b>",
-          "neutered_female": "Sterilizzata?",
-          "neutered_male": "Castrato?"
+          "neutered_female": "Sterilizzata?", 
+          "neutered_male": "Castrato?",         
+          "birthday_female": "Quando è nata <b>{{name}}</b>?",
+          "birthday_male": "Quando è nato <b>{{name}}</b>?",
+          "insert_birthday" :"Compleanno",
+          "weight": "Quanto pesa?",
+          "insert_weight": "peso in Kg"
           
         },
         "step_3": {
           "intro": "Diamo un immagine a <b>{{name}}</b>",
-          "birthday_female": "Quando è nata {{name}}",
           "picture": "Hai una foto?",
-          "birthday_male": "Quando è nato {{name}}",
           "continue": "Continua a compilare",
           "insert_birthday": "Data di nascita",
           "insert_weight": "peso in Kg",

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { SubOwnerListItem } from "@components";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
-import { $color } from "@theme";
+import { $color, $uw } from "@theme";
 
 
 type props = {
@@ -36,7 +36,7 @@ const List = styled.div`
     display: flex;
     flex-direction: column;
     border-top: 1px solid ${$color('medium')};
-    max-height:calc(90vh - 140px);
+    max-height:calc(90vh - 1${$uw(2)});
     overflow-y: scroll;
     flex-flow: wrap;
     scroll-behavior: smooth;

@@ -455,13 +455,13 @@ const InputLabel = styled.label<labelProps>`
 		font-size 0.5s ease-in;
 	&.focused {
 		font-size: 1.8rem;
-		top: -25px;
+		top: -25px;top: ${$uw(-2)};
 		left: 0px;
 		color: ${({ focusColor }) => $color(focusColor)};
 	}
 	&.compiled {
 		font-size: 1.8rem;
-		top: -25px;
+		top: ${$uw(-2)};
 		left: 0px;
 		color: ${({ focusColor }) => $color(focusColor)};
 	}
@@ -476,7 +476,7 @@ const InputWrapper = styled.div<wrapperProps>`
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
 	border-top-right-radius: 0;
-	height: 38px;
+	height: ${$uw(2)};
 	margin-bottom: 12px;
 	overflow: hidden;
 	z-index: 1;

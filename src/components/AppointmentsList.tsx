@@ -127,8 +127,8 @@ const SkeletonMinAppointment = styled.div`
 `;
 
 const SkeletonIcon = styled.div`
-	width: 38px;
-	height: 38px;
+	width: ${$uw(2)};
+	height: ${$uw(2)};
 	border-radius: 50px;
 `;
 

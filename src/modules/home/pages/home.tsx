@@ -67,6 +67,10 @@ export const Home: React.FC = () => {
 		);
 	}, [pets, activePet]);
 
+	useEffect(()=>{
+		console.log('appointments', appointments)
+	},[appointments])
+
 	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) =>{
 		refetchDashboard()
 		event.detail.complete();

@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import { CustodyLevelSelector } from ".";
 import { CustodyLevel } from "@types";
-import { $color } from "@theme";
+import { $color, $uw } from "@theme";
 
 type props = {
 	onConfirm: (v: CustodyLevel) => void;
@@ -51,7 +51,7 @@ export const ShareBox: React.FC<props> = ({ onConfirm }) => {
 
 const ShareBoxContainer = styled.div`
 	width: calc(100% - 24px);
-	border-radius: 40px 30px 0 0;
+	border-radius: ${$uw(2)} 30px 0 0;
 	background-color: ${$color("light")};
 	position: absolute;
 	bottom: 80px;
