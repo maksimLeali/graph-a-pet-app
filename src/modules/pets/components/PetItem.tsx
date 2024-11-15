@@ -20,7 +20,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 	const itemRef = useRef<HTMLDivElement>(null);
 	const { t } = useTranslation();
 	useEffect(() => {
-		if (imageReady) {
+		if (imageReady || !pet.main_picture) {
 			gsap.fromTo(
 				itemRef.current,
 				{ opacity: 0, x: "-100px" }, // From left of 100px outside the screen
@@ -28,6 +28,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 			);
 		}
 	}, [imageReady, index]);
+
 	setTimeout(() => {
 		setReady(true);
 	}, 100);
@@ -41,7 +42,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 			bgColor={pet.main_picture?.main_color?.color}
 			color={pet.main_picture?.main_color?.contrast}
 		>
-			{ready && (
+			{ready && pet.main_picture ? (
 				<ImageWrapper className="image-wrapper custom-pet-border-color">
 					<Image2x
 						lazy
@@ -50,7 +51,9 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 						onLoad={() => setImageReady(true)} // Set ready state to true when image is loaded
 					/>
 				</ImageWrapper>
-			)}
+			) : <ImageWrapper className="image-wrapper custom-pet-border-color">
+				<Ph />
+				</ImageWrapper>}
 			<InfoWrapper>
 				<Name className="name custom-pet-color">
 					<IconContainer className="icon-container">
@@ -99,7 +102,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 								__html:
 									t("pets.coat_lenght", {
 										lenght: t(
-											`pets.coat_lenghts.${pet.body.coat.length}`
+											`pets.coat_lengths.${pet.body.coat.length.toLocaleLowerCase()}`
 										),
 									}) ?? "",
 							}}
@@ -243,3 +246,9 @@ const InfoRow = styled.div`
 		}
 	}
 `;
+
+const Ph = styled.div`
+	width: 100%;
+	height: 100%;
+	background-color: ${$color('light')}
+`
