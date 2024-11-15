@@ -42,7 +42,7 @@ async function fetchAndSaveTranslations() {
     // Define the path where the JSON file will be saved
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const filePath = path.join(__dirname, 'src', 'i18n', 'translations.json');
+    const filePath = path.join(__dirname, 'src', 'i18n', '_translations_.json');
 
     // Write the JSON data to a file
     fs.writeFile(filePath, jsonData, (err) => {

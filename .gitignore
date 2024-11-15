@@ -37,4 +37,5 @@ yarn-error.log*
 graphql-schema.json
 
 
-src/i18n/translations.json
+
+src/i18n/_translations_.json
