@@ -17,7 +17,7 @@ export const Step3 = React.memo(() => {
     const { setPage, fadeBackground, refetchDashboard } = useUserContext();
     const [openEditImage, setEditImage] = useState(false);
 
-    const [cookies, setCookies, remove] = useCookies(["add_pet_step_1", "add_pet_step_2"]);
+    const [cookies, setCookies, removeCookie] = useCookies(["add_pet_step_1", "add_pet_step_2"]);
     const [prevImageURL, setPrevImageURL] = useState<string | null>(null);
     const [imageURL, setImageURL] = useState<string | null>(null);
     const [croppedImageURL, setCroppedImageURL] = useState<string | null>(null);
@@ -26,6 +26,8 @@ export const Step3 = React.memo(() => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 	const [createMedia, loading] = useCreateMediaMutation({onCompleted: ()=>{
 		refetchDashboard()
+		removeCookie("add_pet_step_1")
+		removeCookie("add_pet_step_2")
 		setIsUploading(false);
 		history.push("/")
 	}, onError:()=>{
