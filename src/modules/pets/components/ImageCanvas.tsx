@@ -6,178 +6,131 @@ interface ImageCanvasProps {
 	imageUrl: string;
 	onCropChange: (croppedImageUrl: string) => void;
 }
-
 export const ImageCanvas: React.FC<ImageCanvasProps> = ({
-	imageUrl,
-	onCropChange,
+    imageUrl,
+    onCropChange,
 }) => {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const containerRef = useRef<HTMLDivElement>(null);
-	const [isDragging, setIsDragging] = useState(false);
-	const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
-	const [scale, setScale] = useState(1);
-	const [lastTouchPosition, setLastTouchPosition] = useState<{
-        x: number;
-		y: number;
-	} | null>(null);
-	const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
-	const imageRef = useRef<HTMLImageElement>(new Image());
-	const [minScale, setMinScale] = useState(1);
-	const [initialized, setInitialized] = useState(false);
-	
-    const setup = useCallback(() => {
-		const containerWidth = containerRef.current?.clientWidth ?? 300;
-		const containerHeight = containerRef.current?.clientHeight ?? 300;
-		const img = imageRef.current;
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+    const [scale, setScale] = useState(1);
+    const [lastPointerPosition, setLastPointerPosition] = useState<{ x: number; y: number } | null>(null);
+    const imageRef = useRef<HTMLImageElement>(new Image());
+    const [minScale, setMinScale] = useState(1);
 
-		// Calculate the minimum scale to ensure the image covers the container
-		const tempMinScale = Math.max(
-			containerWidth / img.width,
-			containerHeight / img.height
-		);
+    useEffect(() => {
+        const img = imageRef.current;
+        img.src = imageUrl;
+        img.onload = () => {
+            const containerWidth = containerRef.current?.clientWidth ?? 300;
+            const containerHeight = containerRef.current?.clientHeight ?? 300;
 
-		setMinScale(tempMinScale);
-		setScale(tempMinScale);  // Initialize the scale with the minimum scale
+            const tempMinScale = Math.max(
+                containerWidth / img.width,
+                containerHeight / img.height
+            );
+            setMinScale(tempMinScale);
+            setScale(tempMinScale);
 
-		// Calculate the centered position for the image
-		const initialX = (containerWidth - img.width * tempMinScale) / 2;
-		const initialY = (containerHeight - img.height * tempMinScale) / 2;
-		setImagePosition({ x: initialX, y: initialY });
+            const initialX = (containerWidth - img.width * tempMinScale) / 2;
+            const initialY = (containerHeight - img.height * tempMinScale) / 2;
+            setImagePosition({ x: initialX, y: initialY });
 
-		setInitialized(true);
-	}, [containerRef, imageRef]);
+            drawImage();
+        };
+    }, [imageUrl]);
 
-	// Load the image on mount
-	useEffect(() => {
-		const img = imageRef.current;
-		img.src = imageUrl;
-		img.onload = () => {
-			if (!initialized) setup();
-			drawImage();
-		};
-	}, [imageUrl, scale, imagePosition]);
+    const drawImage = () => {
+        const canvas = canvasRef.current;
+        if (!canvas || !imageRef.current) return;
 
-	const drawImage = useCallback(() => {
-		const canvas = canvasRef.current;
-		if (!canvas || !imageRef.current) return;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
 
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
 
-		// Clear the canvas
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+            imageRef.current,
+            imagePosition.x,
+            imagePosition.y,
+            imageRef.current.width * scale,
+            imageRef.current.height * scale
+        );
 
-		// Draw the image with current scale and position
-		ctx.save();
-		ctx.beginPath();
-		ctx.arc(
-			canvas.width / 2,
-			canvas.height / 2,
-			canvas.width / 2,
-			0,
-			Math.PI * 2,
-			true
-		);
-		ctx.closePath();
-		ctx.clip();
+        ctx.restore();
+    };
 
-		ctx.drawImage(
-			imageRef.current,
-			imagePosition.x,
-			imagePosition.y,
-			imageRef.current.width * scale,
-			imageRef.current.height * scale
-		);
+    const handlePointerDown = (event: React.MouseEvent | React.TouchEvent) => {
+        const point = getPointerPosition(event);
+        if (point) {
+            setLastPointerPosition(point);
+            setIsDragging(true);
+        }
+    };
 
-		ctx.restore();
-	}, [imagePosition, scale]);
+    const handlePointerMove = (event: React.MouseEvent | React.TouchEvent) => {
+        if (!isDragging || !lastPointerPosition) return;
 
-	// Handle dragging to move the image
-	const handleTouchMove = (event: React.TouchEvent<HTMLCanvasElement>) => {
-		event.preventDefault();
-		if (isDragging && lastTouchPosition && event.touches.length === 1) {
-			const touch = event.touches[0];
-			const deltaX = touch.clientX - lastTouchPosition.x;
-			const deltaY = touch.clientY - lastTouchPosition.y;
+        const point = getPointerPosition(event);
+        if (point) {
+            const deltaX = point.x - lastPointerPosition.x;
+            const deltaY = point.y - lastPointerPosition.y;
 
-			// Update image position while checking boundaries
-			setImagePosition((prevPos) => ({
-				x: clamp(
-					prevPos.x + deltaX,
-					canvasRef.current!.width - imageRef.current.width * scale,
-					0
-				),
-				y: clamp(
-					prevPos.y + deltaY,
-					canvasRef.current!.height - imageRef.current.height * scale,
-					0
-				),
-			}));
+            setImagePosition((prevPos) => ({
+                x: prevPos.x + deltaX,
+                y: prevPos.y + deltaY,
+            }));
 
-			setLastTouchPosition({ x: touch.clientX, y: touch.clientY });
-		} else if (event.touches.length === 2) {
-			const distance = getDistance(event.touches);
-			if (lastTouchDistance) {
-				let deltaScale = distance / lastTouchDistance;
-				let newScale = clamp(scale * deltaScale, minScale, 4); // clamp scale between minScale and max zoom level (e.g., 4)
+            setLastPointerPosition(point);
+            drawImage();
+        }
+    };
 
-				setScale(newScale);
-			}
-			setLastTouchDistance(distance);
-		}
-	};
+    const handlePointerUp = () => {
+        setIsDragging(false);
+        setLastPointerPosition(null);
 
-	const handleTouchStart = (event: React.TouchEvent<HTMLCanvasElement>) => {
-		event.preventDefault();
-		if (event.touches.length === 1) {
-			const touch = event.touches[0];
-			setLastTouchPosition({ x: touch.clientX, y: touch.clientY });
-			setIsDragging(true);
-		} else if (event.touches.length === 2) {
-			setLastTouchDistance(getDistance(event.touches));
-		}
-	};
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const croppedImageUrl = canvas.toDataURL();
+            onCropChange(croppedImageUrl);
+        }
+    };
 
-	const handleTouchEnd = () => {
-		setIsDragging(false);
-		setLastTouchPosition(null);
-		setLastTouchDistance(null);
+    const getPointerPosition = (event: React.MouseEvent | React.TouchEvent) => {
+        if ("touches" in event && event.touches.length > 0) {
+            const touch = event.touches[0];
+            return { x: touch.clientX, y: touch.clientY };
+        } else if ("clientX" in event) {
+            return { x: event.clientX, y: event.clientY };
+        }
+        return null;
+    };
 
-		// Generate the cropped image URL and call onCropChange
-		const canvas = canvasRef.current;
-		if (canvas) {
-			const croppedImageUrl = canvas.toDataURL();
-			onCropChange(croppedImageUrl); // Pass the base64 cropped image string back to the parent component
-		}
-	};
-
-	// Calculate the distance between two touch points (for zoom)
-	const getDistance = (touches: React.TouchList) => {
-		const [touch1, touch2] = [touches[0], touches[1]];
-		return Math.sqrt(
-			Math.pow(touch1.clientX - touch2.clientX, 2) +
-				Math.pow(touch1.clientY - touch2.clientY, 2)
-		);
-	};
-
-	// Clamp a value between a min and max range
-	const clamp = (value: number, min: number, max: number) => {
-		return Math.max(min, Math.min(value, max));
-	};
-
-	return (
-		<Container ref={containerRef}>
-			<canvas
-				ref={canvasRef}
-				width={containerRef.current?.clientWidth ?? 300}
-				height={containerRef.current?.clientHeight ?? 300}
-				onTouchStart={handleTouchStart}
-				onTouchMove={handleTouchMove}
-				onTouchEnd={handleTouchEnd}
-			/>
-		</Container>
-	);
+    return (
+        <Container ref={containerRef}>
+            <canvas
+                ref={canvasRef}
+                width={containerRef.current?.clientWidth ?? 300}
+                height={containerRef.current?.clientHeight ?? 300}
+                onMouseDown={handlePointerDown}
+                onMouseMove={handlePointerMove}
+                onMouseUp={handlePointerUp}
+                onMouseLeave={handlePointerUp}
+                onTouchStart={handlePointerDown}
+                onTouchMove={handlePointerMove}
+                onTouchEnd={handlePointerUp}
+            />
+        </Container>
+    );
 };
+
 
 const Container = styled.div`
 	width: ${$uw(24)};

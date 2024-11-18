@@ -1,0 +1,11 @@
+mutation createMedia ($data: MediaCreate! ){
+	createMedia(data: $data){
+		media{
+			id
+			ref_id
+			type
+			scope
+			
+		}
+	}
+}

@@ -1,6 +1,6 @@
-import { IonContent } from "@ionic/react";
+import { IonButton, IonContent } from "@ionic/react";
 import React, { useEffect, useState, useRef } from "react";
-import { useForm } from "react-hook-form";
+
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useCookies } from "react-cookie";
@@ -9,116 +9,156 @@ import { Modal } from "@components";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { ImageCanvas } from "../../components/ImageCanvas";
+import axios from "axios";
+import { useCreateMediaMutation } from "../../../../components/operations/__generated__/createMedia.generated";
+// import { useCreateMediaMutation } from "@graphql_generated/createMedia.generated";
 
 export const Step3 = React.memo(() => {
-	const { setPage, fadeBackground } = useUserContext();
-	const [openEditImage, setEditImage] = useState(false);
+    const { setPage, fadeBackground, refetchDashboard } = useUserContext();
+    const [openEditImage, setEditImage] = useState(false);
 
-	const [cookies, setCookies] = useCookies([
-		"add_pet_step_1",
-		"add_pet_step_2",
-		"add_pet_step_3",
-	]);
-	const [prevImageURL, setPrevImageURL] = useState<string | null>(null);
-	const [imageURL, setImageURL] = useState<string | null>(null);
-	const [croppedImageURL, setCroppedImageURL] = useState<string | null>(null); // Store the cropped image
-	const history = useHistory();
-	const fileInputRef = useRef<HTMLInputElement>(null);
+    const [cookies, setCookies, remove] = useCookies(["add_pet_step_1", "add_pet_step_2"]);
+    const [prevImageURL, setPrevImageURL] = useState<string | null>(null);
+    const [imageURL, setImageURL] = useState<string | null>(null);
+    const [croppedImageURL, setCroppedImageURL] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const history = useHistory();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+	const [createMedia, loading] = useCreateMediaMutation({onCompleted: ()=>{
+		refetchDashboard()
+		setIsUploading(false);
+		history.push("/")
+	}, onError:()=>{
+		setIsUploading(false);
+	}})
+    const { t } = useTranslation();
 
-	const methods = useForm<any>({
-		mode: "onSubmit",
-		defaultValues: {
-			...(cookies.add_pet_step_3 && {
-				breed: cookies.add_pet_step_3.breed,
-			}),
-		},
-	});
+    useEffect(() => {
+        setPage({ name: "step 3 di 3" });
+        if (!cookies.add_pet_step_1) {
+            return history.push("/pets/new/step1");
+        }
+        if (!cookies.add_pet_step_2) {
+            return history.push("/pets/new/step2");
+        }
+		console.log(cookies.add_pet_step_2)
+    }, []);
 
-	const { t } = useTranslation();
+    const handleFileChange = (event: any) => {
+        const file = event.target.files[0];
+        if (file) {
+            const tempImageURL = URL.createObjectURL(file);
+            if (tempImageURL) {
+                if (imageURL) setPrevImageURL(imageURL);
+                setImageURL(tempImageURL);
+                setEditImage(true);
+                fadeBackground(true);
+            }
+        }
+    };
 
-	useEffect(() => {
-		setPage({ name: "step 3 di 3" });
-		if (!cookies.add_pet_step_1) {
-			history.push("/pets/new/step1");
-		}
-	}, []);
+    const uploadImage = async () => {
+        try {
+            
+			if(!croppedImageURL) return
+			setIsUploading(true);
 
-	const handleFileChange = (event: any) => {
-		const file = event.target.files[0];
-		if (file) {
-			const tempImageURL = URL.createObjectURL(file);
-			if (tempImageURL) {
-				if (imageURL) setPrevImageURL(imageURL);
-				setImageURL(tempImageURL);
-				setEditImage(true);
-				fadeBackground(true);
-			}
-		}
-	};
+            // Convert base64 URL to Blob
+            const response = await fetch(croppedImageURL);
+            const blob = await response.blob();
 
-	return (
-		<IonContent fullscreen>
-			<Modal
-				open={openEditImage}
-				onClose={() => {
-					setImageURL(prevImageURL);
-					setEditImage(false);
-					fadeBackground(false);
-				}}
-				onConfirm={() => {
-					setEditImage(false);
-					fadeBackground(false);
-				}}
-				onCancel={() => {
-					setImageURL(prevImageURL);
-					setEditImage(false);
-					fadeBackground(false);
-				}}
-			>
-				<ImageCanvas
-					imageUrl={imageURL ?? ""}
-					onCropChange={(croppedImageData) => {
-						console.log("Cropped Image Data:", croppedImageData);
-						setCroppedImageURL(croppedImageData); // Update the cropped image data
-					}}
-				/>
-			</Modal>
+            // Prepare FormData
+            const formData = new FormData();
+            formData.append("file", blob, `${cookies.add_pet_step_2.pet_id}.png`);
 
-			<Container>
-				<Intro>
-					<h3
-						dangerouslySetInnerHTML={{
-							__html:
-								t("pets.add_pet_page.step_3.intro", {
-									name: cookies.add_pet_step_1?.name ?? "",
-								}) ?? "",
-						}}
-					/>
-				</Intro>
-				<Row>
-					<ImageTaker
-						onClick={() =>
-							fileInputRef?.current
-								? fileInputRef.current.click()
-								: undefined
-						}
-					>
-						<input
-							type="file"
-							accept="image/*"
-							ref={fileInputRef}
-							style={{ display: "none" }}
-							onChange={handleFileChange}
-						/>
-						{croppedImageURL && (
-							<img src={croppedImageURL} alt="Cropped" />
-						)}
-					</ImageTaker>
-				</Row>
-			</Container>
-		</IonContent>
-	);
+            // API Call
+            const apiResponse = await axios.post("https://graph-a-pet.makso.me/media/upload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "User-Agent": "insomnia/8.6.1",
+                },
+            });
+			const mediaData = apiResponse.data;
+			createMedia({variables: { data : {
+				type:"png",
+				scope: "pet_main_picture",
+				ref_id: cookies.add_pet_step_2.pet_id,
+				main_colors: mediaData.main_colors,
+				main_color: mediaData.main_colors[0],
+				url: mediaData.public_url,
+
+			}}})
+            console.log("Upload Success:", apiResponse.data);
+            
+        } catch (error) {
+            console.error("Upload Error:", error);          
+        } 
+    };
+
+    return (
+        <IonContent fullscreen>
+            <Modal
+                open={openEditImage}
+                onClose={() => {
+                    setImageURL(prevImageURL);
+                    setEditImage(false);
+                    fadeBackground(false);
+                }}
+                onConfirm={() => {
+                    setEditImage(false);
+                    fadeBackground(false);
+                }}
+                onCancel={() => {
+                    setImageURL(prevImageURL);
+                    setCroppedImageURL(prevImageURL);
+                    setEditImage(false);
+                    fadeBackground(false);
+                }}
+            >
+                <ImageCanvas
+                    imageUrl={imageURL ?? ""}
+                    onCropChange={(croppedImageData) => {
+                        setCroppedImageURL(croppedImageData);
+                    }}
+                />
+            </Modal>
+
+            <Container>
+                <Intro>
+                    <h3
+                        dangerouslySetInnerHTML={{
+                            __html: t("pets.add_pet_page.step_3.intro", {
+                                name: cookies.add_pet_step_1?.name ?? "",
+                            }) ?? "",
+                        }}
+                    />
+                </Intro>
+                <Row>
+                    <ImageTaker
+                        onClick={() =>
+                            fileInputRef?.current ? fileInputRef.current.click() : undefined
+                        }
+                    >
+                        <input
+                            type="file"
+                            accept="image/*"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={handleFileChange}
+                        />
+                        {croppedImageURL && <img src={croppedImageURL} alt="Cropped" />}
+                    </ImageTaker>
+                </Row>
+                <IonButton color="primary" onClick={uploadImage} disabled={isUploading}>
+                    {isUploading ? "Uploading..." : t("pets.add_pet_page.step_3.continue")}
+                </IonButton>
+                <IonButton  disabled={isUploading} >{t("pets.add_pet_page.step_3.skip")}</IonButton>
+            </Container>
+        </IonContent>
+    );
 });
+
+
 
 const Container = styled.div`
 	width: 100%;

@@ -20,7 +20,9 @@ export const Step2 = React.memo(() => {
 	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
 	const [openBreedSelector, setOpenBreedSelector] = useState(false);
 	
-	const [addPetToMe, { loading }] = useAddPetToMeMutation({onCompleted: ()=>{
+	const [addPetToMe, { loading }] = useAddPetToMeMutation({onCompleted: async (data)=>{		
+		if(!data.addPetToMe.data?.pet.id) return
+		setCookies('add_pet_step_2', {...cookies.add_pet_step_2, pet_id : data.addPetToMe.data.pet.id})
 		history.push("/pets/new/step3");
 	}})
 
@@ -94,6 +96,7 @@ export const Step2 = React.memo(() => {
 				}
 			}
 		}})	
+		history.push("/pets/new/step1");
 	})
 
 	return (
