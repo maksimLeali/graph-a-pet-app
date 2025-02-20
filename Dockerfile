@@ -13,7 +13,7 @@ RUN yarn install
 # Build the app
 RUN yarn fetch:graphql && \
     yarn generate && \
-    yarn fetch:translations && \
+    # yarn fetch:translations && \
     yarn build 
 
 # Set the env to "production"
