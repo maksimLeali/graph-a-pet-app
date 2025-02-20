@@ -9,7 +9,7 @@ import { Option, Modal, FakeInput, SelectInput, SubmitInput, NumberInput, Toggle
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { BreedSeletor } from "../../components";
-import { CoatLength, CoatPattern, CustodyLevel, PetFamily } from "@types";
+import { CoatLength, CustodyLevel, PetFamily } from "@types";
 import { BREEDS, COAT_LENGHTS } from "@utils";
 import { useAddPetToMeMutation } from "../../operations/__generated__/addPetToMe.generated";
 
@@ -22,6 +22,7 @@ export const Step2 = React.memo(() => {
 	
 	const [addPetToMe, { loading }] = useAddPetToMeMutation({onCompleted: async (data)=>{		
 		if(!data.addPetToMe.data?.pet.id) return
+		console.log('here')
 		setCookies('add_pet_step_2', {...cookies.add_pet_step_2, pet_id : data.addPetToMe.data.pet.id})
 		history.push("/pets/new/step3");
 	}})
@@ -88,15 +89,14 @@ export const Step2 = React.memo(() => {
 				body: {
 					family: data.family,
 					breed: data.breed,
-					coat: {
-						length: data.coat_length as unknown as CoatLength,
-						pattern: CoatPattern.Solid,
-						colors:[]
-					}
+					
+					coat_length: data.coat_length as unknown as CoatLength,						
+						
+					
 				}
 			}
 		}})	
-		history.push("/pets/new/step1");
+		// history.push("/pets/new/step1");
 	})
 
 	return (

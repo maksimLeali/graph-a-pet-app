@@ -8,7 +8,7 @@ import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 
 import { useUserContext } from "@contexts";
 import { ReportsPreview, WeeksView } from "@components";
-import { $uw } from "@theme";
+import { $color, $cssTRBL, $uw } from "@theme";
 
 export const Home: React.FC = () => {
 	const [activePet, setActivePet] = useState(0);
@@ -67,9 +67,6 @@ export const Home: React.FC = () => {
 		);
 	}, [pets, activePet]);
 
-	useEffect(()=>{
-		console.log('appointments', appointments)
-	},[appointments])
 
 	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) =>{
 		refetchDashboard()
@@ -87,6 +84,9 @@ export const Home: React.FC = () => {
 			)}
 			{!loading && !pets?.length && (
 				<EmptyContainer>
+					<Circle>
+
+					</Circle>
 					<h4> Nessun cucciolo</h4>
 				</EmptyContainer>
 			)}
@@ -107,5 +107,12 @@ const EmptyContainer = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	padding: ${$cssTRBL(9.2, 0)};	
 	height: ${$uw(32)};
 `;
+
+const Circle = styled.div`
+	height: 100%;
+	aspect-ratio: 1;
+	border: 1px solid ${$color('primary')};
+`

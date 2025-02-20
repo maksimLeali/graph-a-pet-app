@@ -13,56 +13,12 @@ export type Scalars = {
   Upload: any;
 };
 
-export type Coat = {
-  __typename?: 'Coat';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  length: CoatLength;
-  colors: Array<Maybe<Scalars['String']>>;
-  pattern: CoatPattern;
-  texture: Scalars['String'];
-};
-
-export type CoatCreate = {
-  length: CoatLength;
-  colors: Array<Maybe<Scalars['String']>>;
-  pattern: CoatPattern;
-};
-
 export enum CoatLength {
   Short = 'SHORT',
   Medium = 'MEDIUM',
   Long = 'LONG',
   Hairless = 'HAIRLESS'
 }
-
-export enum CoatName {
-  Fur = 'FUR',
-  Scales = 'SCALES',
-  Feathers = 'FEATHERS',
-  Skin = 'SKIN',
-  Shed = 'SHED',
-  Coat = 'COAT'
-}
-
-export enum CoatPattern {
-  Merle = 'MERLE',
-  Brindle = 'BRINDLE',
-  Harlequin = 'HARLEQUIN',
-  Ticked = 'TICKED',
-  Spotted = 'SPOTTED',
-  Roan = 'ROAN',
-  Tricolor = 'TRICOLOR',
-  Bicolor = 'BICOLOR',
-  Solid = 'SOLID',
-  Colorpoint = 'COLORPOINT'
-}
-
-export type CoatUpdate = {
-  length?: Maybe<CoatLength>;
-  colors?: Maybe<Array<Maybe<Scalars['String']>>>;
-  pattern?: Maybe<CoatPattern>;
-};
 
 export type Code = {
   __typename?: 'Code';
@@ -683,7 +639,7 @@ export type PetAddedResult = {
 export type PetBody = {
   __typename?: 'PetBody';
   id: Scalars['ID'];
-  coat: Coat;
+  coat_length: CoatLength;
   image: Media;
   tags: Array<Maybe<Tag>>;
   family: PetFamily;
@@ -693,13 +649,13 @@ export type PetBody = {
 export type PetBodyCreate = {
   family: PetFamily;
   breed: Scalars['String'];
-  coat: CoatCreate;
+  coat_length?: Maybe<CoatLength>;
 };
 
 export type PetBodyUpdate = {
   family?: Maybe<PetFamily>;
   breed?: Maybe<Scalars['String']>;
-  coat?: Maybe<CoatUpdate>;
+  coat_length?: Maybe<CoatLength>;
 };
 
 export type PetCreate = {

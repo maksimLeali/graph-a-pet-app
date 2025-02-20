@@ -11,12 +11,14 @@ import { useLoginMutation } from "../operations/__generated__/login.generated";
 import { Icon, SubmitInput, TextInput } from "@components";
 import { MutationLoginArgs } from "@types";
 import { $color } from "@theme";
+import { useEffect } from "react";
 
 export const Login: React.FC = () => {
 	const methods = useForm<MutationLoginArgs & { text: string }>({
 		mode: "onSubmit",
 	});
-	const [cookie, setCookie] = useCookies(["jwt", "user"]);
+	const [cookies, setCookie, removeCookies] = useCookies(["user", "jwt"]);
+
 	const history = useHistory();
 	let timeout: string | number | NodeJS.Timeout | null | undefined = null;
 	const [login, { loading }] = useLoginMutation({
@@ -35,6 +37,14 @@ export const Login: React.FC = () => {
 			}, 500);
 		},
 	});
+
+	useEffect(() => {
+		Object.keys(cookies).forEach((cookieName) => {
+			if (cookieName.startsWith("user") || cookieName.startsWith("jwt")) {
+				removeCookies(cookieName as "user" | "jwt");
+			}
+		});
+	}, [])
 
 	const { t } = useTranslation();
 	// if (window.PublicKeyCredential) {

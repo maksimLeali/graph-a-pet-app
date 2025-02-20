@@ -36,10 +36,6 @@ fragment FullPet on Pet {
 	body {
 		breed
 		family
-		coat{
-			length
-			id
-			colors
-		}
+		coat_length			
 	}
 }

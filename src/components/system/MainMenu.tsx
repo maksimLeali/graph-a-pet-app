@@ -26,7 +26,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 	const [darkMode, setDarkMode] = useState(false);
 	const [inited, setInited] = useState(false);
 	const [isPWA, setIsPWA] = useState(false);
-	const [cookies, setCookies, removeCookies] = useCookies(["user", "jwt"]);
+	const [cookies, _setCookies, removeCookies] = useCookies(["user", "jwt"]);
 	const [modalOpen, setModalOpen] = useState(false);
 	const history = useHistory();
 	const { t } = useTranslation();
@@ -43,17 +43,16 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 	}, []);
 
 	const exit = useCallback(() => {
-		Object.keys(cookies).forEach((cookieName) => {
-			if (cookieName.startsWith("user") || cookieName.startsWith("jwt")) {
-				removeCookies(cookieName as "user" | "jwt");
-			}
-		});
-
 		toast.success(t("messages.success.logout"));
-
 		setTimeout(() => {
+			Object.keys(cookies).forEach((cookieName) => {
+				if (cookieName.startsWith("user") || cookieName.startsWith("jwt")) {
+					removeCookies(cookieName as "user" | "jwt");
+				}
+			});
+			console.log('exiting')
 			history.push("/auth");
-		}, 15000);
+		}, 1500);
 	}, []);
 
 	useEffect(() => {
@@ -112,7 +111,6 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 							<Icon size="18px" name="moonOutline" color="dark" />
 						}
 						leftElement={
-							
 							<Icon size="18px" name="sunny" color="dark" />
 						}
 					/>
