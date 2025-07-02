@@ -24,7 +24,7 @@
         "@i18n": ["./src/i18n"],
         "@images": ["./src/images"],
         "@layouts": ["./src/layouts"],
-        "@theme": ["./src/utils/theme"],
+        "@theme": ["./src/theme"],
         "@types": ["./src/types"],
         "@utils": ["./src/utils"],
     }

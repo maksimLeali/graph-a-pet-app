@@ -8,7 +8,14 @@ import _ from 'lodash'
 import toast from 'react-hot-toast';
 import { config } from './config';
 import Cookies from 'js-cookie';
+import { css } from './theme';
 // const [cookies, setCookies, removeCookie] = useCookies(['jwt'])
+
+
+const style = document.createElement('style');
+style.id = 'cutmo-css-variables';
+style.innerText = css;
+document.head.appendChild(style);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

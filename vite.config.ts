@@ -13,7 +13,7 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@images': path.resolve(__dirname, './src/images'),
       '@layouts': path.resolve(__dirname, './src/layouts'),
-      '@theme': path.resolve(__dirname, './src/utils/theme'),
+      '@theme': path.resolve(__dirname, './src/theme'),
       '@utils': path.resolve(__dirname, './src/utils'),
       "@graphql_generated/*": path.resolve('./src/components/operations/__generated__/*'),
       "@i18n": path.resolve(__dirname, './src/i18n'),

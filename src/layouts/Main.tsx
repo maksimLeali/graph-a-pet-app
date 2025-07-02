@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { useEffect } from "react";
 
 import { ModalContextProvider, useUserContext } from "@contexts";
-import { BottomMenu, DebugGrid } from "./components";
+import { BottomMenu } from "./components";
 import { $uw } from '@theme' 
-
+import { DebugGrid } from "@lemaks/grid_system";
+import { css } from "../theme";
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 	children: nodes,
 }) => {
@@ -12,7 +13,8 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 
 	useEffect(() => {
 		console.log("useCustomColors", useCustomColors);
-	}, [useCustomColors]);
+		console.log("css", css);
+	}, []);
 	return (
 		<ModalContextProvider>
 			<Main id="mainWrapper" className={!useCustomColors ? 'force-primary' : ''}>

@@ -102,7 +102,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 								__html:
 									t("pets.coat_lenght", {
 										lenght: t(
-											`pets.coat_lengths.${pet.body.coat.length.toLocaleLowerCase()}`
+											`pets.coat_lengths.${pet.body?.coat?.length.toLocaleLowerCase()}`
 										),
 									}) ?? "",
 							}}
