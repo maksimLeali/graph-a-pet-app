@@ -1,388 +1,321 @@
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  JSON: any;
-  Upload: any;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  JSON: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export enum CoatLength {
-  Short = 'SHORT',
-  Medium = 'MEDIUM',
+  Hairless = 'HAIRLESS',
   Long = 'LONG',
-  Hairless = 'HAIRLESS'
+  Medium = 'MEDIUM',
+  Short = 'SHORT'
 }
 
 export type Code = {
   __typename?: 'Code';
-  id: Scalars['ID'];
-  code: Scalars['String'];
-  ref_id: Scalars['ID'];
-  scope: Scalars['String'];
-  valid: Scalars['Boolean'];
-  ref_table: Scalars['String'];
-  created_by: Scalars['String'];
-  created_at: Scalars['String'];
+  code: Scalars['String']['output'];
+  created_at: Scalars['String']['output'];
+  created_by: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  ref_id: Scalars['ID']['output'];
+  ref_table: Scalars['String']['output'];
+  scope: Scalars['String']['output'];
+  valid: Scalars['Boolean']['output'];
 };
 
 export type CodeCreate = {
-  code: Scalars['String'];
-  ref_id: Scalars['String'];
-  ref_table: Scalars['String'];
+  code: Scalars['String']['input'];
+  ref_id: Scalars['String']['input'];
+  ref_table: Scalars['String']['input'];
 };
 
 export type CodeResult = {
   __typename?: 'CodeResult';
-  success: Scalars['Boolean'];
-  error?: Maybe<Error>;
   code?: Maybe<Code>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type CodeValidationResult = {
   __typename?: 'CodeValidationResult';
-  success: Scalars['Boolean'];
-  error?: Maybe<Error>;
-  is_valid?: Maybe<Scalars['Boolean']>;
   code?: Maybe<Code>;
+  error?: Maybe<Error>;
+  is_valid?: Maybe<Scalars['Boolean']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type CommonSearch = {
-  page?: Maybe<Scalars['Int']>;
-  page_size?: Maybe<Scalars['Int']>;
-  order_by?: Maybe<Scalars['String']>;
-  order_direction?: Maybe<Scalars['String']>;
-  filters?: Maybe<DeepFilters>;
+  filters?: InputMaybe<DeepFilters>;
+  order_by?: InputMaybe<Scalars['String']['input']>;
+  order_direction?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  page_size?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Coordinates = {
   __typename?: 'Coordinates';
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
+  latitude?: Maybe<Scalars['Float']['output']>;
+  longitude?: Maybe<Scalars['Float']['output']>;
 };
 
 export enum CustodyLevel {
-  SubOwner = 'SUB_OWNER',
   Owner = 'OWNER',
-  PetSitter = 'PET_SITTER'
+  PetSitter = 'PET_SITTER',
+  SubOwner = 'SUB_OWNER'
 }
 
 export type DailyStats = {
   __typename?: 'DailyStats';
-  all_users: Scalars['Int'];
-  active_users: Scalars['Int'];
-  all_pets: Scalars['Int'];
-  all_reports: Scalars['Int'];
-  daily_reports: Scalars['Int'];
-  active_users_percent: Scalars['Float'];
+  active_users: Scalars['Int']['output'];
+  active_users_percent: Scalars['Float']['output'];
+  all_pets: Scalars['Int']['output'];
+  all_reports: Scalars['Int']['output'];
+  all_users: Scalars['Int']['output'];
+  daily_reports: Scalars['Int']['output'];
 };
 
 export type DamnatioMemoriae = {
   __typename?: 'DamnatioMemoriae';
-  id: Scalars['ID'];
-  created_at: Scalars['String'];
-  original_table: Scalars['String'];
-  original_data?: Maybe<Scalars['JSON']>;
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  original_data?: Maybe<Scalars['JSON']['output']>;
+  original_table: Scalars['String']['output'];
 };
 
 export type DamnatioMemoriaeResult = {
   __typename?: 'DamnatioMemoriaeResult';
-  success: Scalars['Boolean'];
-  error?: Maybe<Error>;
   DamnatioMemoriae?: Maybe<DamnatioMemoriae>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Dashboard = {
   __typename?: 'Dashboard';
-  active_users: Scalars['Int'];
-  active_users_percent: Scalars['Float'];
-  all_users: Scalars['Int'];
-  all_pets: Scalars['Int'];
-  labels: Array<Scalars['String']>;
-  active_users_mean: Scalars['Int'];
-  active_users_percent_stats: Array<Scalars['Float']>;
-  active_users_stats: Array<Scalars['Int']>;
-  all_pet_stats: Array<Scalars['Int']>;
-  all_users_stats: Array<Scalars['Int']>;
+  active_users: Scalars['Int']['output'];
+  active_users_mean: Scalars['Int']['output'];
+  active_users_percent: Scalars['Float']['output'];
+  active_users_percent_stats: Array<Scalars['Float']['output']>;
+  active_users_stats: Array<Scalars['Int']['output']>;
+  all_pet_stats: Array<Scalars['Int']['output']>;
+  all_pets: Scalars['Int']['output'];
+  all_users: Scalars['Int']['output'];
+  all_users_stats: Array<Scalars['Int']['output']>;
+  labels: Array<Scalars['String']['output']>;
 };
 
 export type DashboardResult = {
   __typename?: 'DashboardResult';
-  success: Scalars['Boolean'];
-  error?: Maybe<Error>;
   dashboard?: Maybe<Dashboard>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type DeepFilters = {
-  and?: Maybe<DeepFilters>;
-  or?: Maybe<DeepFilters>;
-  not?: Maybe<DeepFilters>;
-  fixed?: Maybe<Array<Maybe<FixedFilter>>>;
-  ranges?: Maybe<Array<Maybe<RangeFilter>>>;
-  search?: Maybe<SearchFilter>;
-  lists?: Maybe<Array<Maybe<ListFilter>>>;
-  join?: Maybe<Array<Maybe<Join>>>;
+  and?: InputMaybe<DeepFilters>;
+  fixed?: InputMaybe<Array<InputMaybe<FixedFilter>>>;
+  join?: InputMaybe<Array<InputMaybe<Join>>>;
+  lists?: InputMaybe<Array<InputMaybe<ListFilter>>>;
+  not?: InputMaybe<DeepFilters>;
+  or?: InputMaybe<DeepFilters>;
+  ranges?: InputMaybe<Array<InputMaybe<RangeFilter>>>;
+  search?: InputMaybe<SearchFilter>;
 };
 
 export type DefaultResult = {
   __typename?: 'DefaultResult';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type DeleteResult = {
   __typename?: 'DeleteResult';
-  success?: Maybe<Scalars['Boolean']>;
-  id?: Maybe<Scalars['ID']>;
   error?: Maybe<Error>;
+  id?: Maybe<Scalars['ID']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type Error = {
   __typename?: 'Error';
-  code: Scalars['String'];
-  message: Scalars['String'];
-  extra?: Maybe<Scalars['String']>;
+  code: Scalars['String']['output'];
+  extra?: Maybe<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
 };
 
 export type Filters = {
-  fixed?: Maybe<Array<Maybe<FixedFilter>>>;
-  ranges?: Maybe<Array<Maybe<RangeFilter>>>;
-  lists?: Maybe<Array<Maybe<ListFilter>>>;
-  join?: Maybe<Array<Maybe<Join>>>;
-  search?: Maybe<Array<Maybe<SearchFilter>>>;
+  fixed?: InputMaybe<Array<InputMaybe<FixedFilter>>>;
+  join?: InputMaybe<Array<InputMaybe<Join>>>;
+  lists?: InputMaybe<Array<InputMaybe<ListFilter>>>;
+  ranges?: InputMaybe<Array<InputMaybe<RangeFilter>>>;
+  search?: InputMaybe<Array<InputMaybe<SearchFilter>>>;
 };
 
 export type FixedFilter = {
-  key: Scalars['String'];
-  value: Scalars['String'];
+  key: Scalars['String']['input'];
+  value: Scalars['String']['input'];
 };
 
 export enum FrequencyUnit {
   Daily = 'DAILY',
-  Weekly = 'WEEKLY',
   Monthly = 'MONTHLY',
+  Weekly = 'WEEKLY',
   Yearly = 'YEARLY'
 }
 
 export enum Gender {
-  Male = 'MALE',
   Female = 'FEMALE',
+  Male = 'MALE',
   NotSaid = 'NOT_SAID'
 }
 
 export type GenericResult = {
   __typename?: 'GenericResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type HealthCard = {
   __typename?: 'HealthCard';
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
+  notes: Array<Maybe<Scalars['String']['output']>>;
   pet: Pet;
   treatments: PaginatedTreatments;
-  notes: Array<Maybe<Scalars['String']>>;
 };
 
 
 export type HealthCardTreatmentsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 export type HealthCardCreate = {
-  pet_id: Scalars['ID'];
+  pet_id: Scalars['ID']['input'];
 };
 
 export type HealthCardResult = {
   __typename?: 'HealthCardResult';
-  health_card?: Maybe<HealthCard>;
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
+  health_card?: Maybe<HealthCard>;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type HealthCardUpdate = {
-  notes: Array<Maybe<Scalars['String']>>;
+  notes: Array<InputMaybe<Scalars['String']['input']>>;
 };
-
 
 /** just see */
 export type Join = {
-  key: Scalars['String'];
+  key: Scalars['String']['input'];
   value: DeepFilters;
 };
 
 export type ListFilter = {
-  key?: Maybe<Scalars['String']>;
-  value: Array<Maybe<Scalars['String']>>;
+  key?: InputMaybe<Scalars['String']['input']>;
+  value: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 export type MainColor = {
   __typename?: 'MainColor';
-  color: Scalars['String'];
-  contrast: Scalars['String'];
+  color: Scalars['String']['output'];
+  contrast: Scalars['String']['output'];
 };
 
 export type MainColorCreate = {
-  color: Scalars['String'];
-  contrast?: Maybe<Scalars['String']>;
+  color: Scalars['String']['input'];
+  contrast?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Media = {
   __typename?: 'Media';
-  id: Scalars['ID'];
-  url: Scalars['String'];
-  type: Scalars['String'];
-  scope: Scalars['String'];
+  id: Scalars['ID']['output'];
   main_color?: Maybe<MainColor>;
   main_colors?: Maybe<Array<MainColor>>;
-  ref_id: Scalars['String'];
+  ref_id: Scalars['String']['output'];
+  scope: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  url: Scalars['String']['output'];
 };
 
 export type MediaCreate = {
-  url: Scalars['String'];
-  scope: Scalars['String'];
-  ref_id: Scalars['String'];
-  main_colors?: Maybe<Array<Maybe<MainColorCreate>>>;
-  main_color?: Maybe<MainColorCreate>;
-  type: Scalars['String'];
+  main_color?: InputMaybe<MainColorCreate>;
+  main_colors?: InputMaybe<Array<InputMaybe<MainColorCreate>>>;
+  ref_id: Scalars['String']['input'];
+  scope: Scalars['String']['input'];
+  type: Scalars['String']['input'];
+  url: Scalars['String']['input'];
 };
 
 export type MediaResult = {
   __typename?: 'MediaResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   media?: Maybe<Media>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type MediaUpdate = {
-  url?: Maybe<Scalars['String']>;
-  scope?: Maybe<Scalars['String']>;
-  ref_id?: Maybe<Scalars['String']>;
-  main_colors?: Maybe<Array<Maybe<MainColorCreate>>>;
-  main_color?: Maybe<MainColorCreate>;
-  type?: Maybe<Scalars['String']>;
+  main_color?: InputMaybe<MainColorCreate>;
+  main_colors?: InputMaybe<Array<InputMaybe<MainColorCreate>>>;
+  ref_id?: InputMaybe<Scalars['String']['input']>;
+  scope?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type MinTreatment = {
   __typename?: 'MinTreatment';
-  id: Scalars['ID'];
+  date: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
   type: TreatmentType;
-  name: Scalars['String'];
-  date: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser: UserResult;
-  signUp: UserResult;
-  updateUser: UserResult;
-  deleteUser: DeleteResult;
-  updateMe: UserResult;
-  createPet: PetResult;
-  updatePet: PetResult;
-  deletePet: DeleteResult;
-  deleteOwnership: DeleteResult;
-  updateOwnership: OwnershipResult;
-  login: NewTokenResult;
-  linkPetToUser: OwnershipResult;
-  linkPetToMe: OwnershipResult;
-  logout: Scalars['Boolean'];
   addPet: PetResult;
-  addPetToUser: PetAddedResult;
   addPetToMe: PetAddedResult;
-  refreshToken: NewTokenResult;
-  createHealthCard: HealthCardResult;
-  updateHealthCard: HealthCardResult;
-  createTreatment: TreatmentResult;
-  updateTreatment: TreatmentResult;
-  createReport: ReportResult;
-  updateReport: ReportResult;
-  updateMedia: MediaResult;
-  createMedia: MediaResult;
-  createCode: CodeResult;
+  addPetToUser: PetAddedResult;
   checkCode: CodeValidationResult;
-  restoreMemoriae: RestoredResult;
-  respondToReport: ReportResult;
-  verifyUser: NewTokenResult;
+  createCode: CodeResult;
+  createHealthCard: HealthCardResult;
+  createMedia: MediaResult;
+  createPet: PetResult;
+  createReport: ReportResult;
+  createTreatment: TreatmentResult;
+  createUser: UserResult;
+  deleteOwnership: DeleteResult;
+  deletePet: DeleteResult;
+  deleteUser: DeleteResult;
+  linkPetToMe: OwnershipResult;
+  linkPetToUser: OwnershipResult;
+  login: NewTokenResult;
+  logout: Scalars['Boolean']['output'];
+  refreshToken: NewTokenResult;
   resendCode: GenericResult;
-};
-
-
-export type MutationCreateUserArgs = {
-  data: UserCreate;
-};
-
-
-export type MutationSignUpArgs = {
-  data: UserCreate;
-};
-
-
-export type MutationUpdateUserArgs = {
-  id: Scalars['ID'];
-  data: UserUpdate;
-};
-
-
-export type MutationDeleteUserArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationUpdateMeArgs = {
-  data: UserUpdate;
-};
-
-
-export type MutationCreatePetArgs = {
-  data: PetCreate;
-};
-
-
-export type MutationUpdatePetArgs = {
-  id: Scalars['ID'];
-  data: PetUpdate;
-};
-
-
-export type MutationDeletePetArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationDeleteOwnershipArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationUpdateOwnershipArgs = {
-  id: Scalars['ID'];
-  data: OwnershipUpdate;
-};
-
-
-export type MutationLoginArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-
-export type MutationLinkPetToUserArgs = {
-  userId: Scalars['ID'];
-  petId: Scalars['ID'];
-  custodyLevel?: Maybe<CustodyLevel>;
-};
-
-
-export type MutationLinkPetToMeArgs = {
-  petId: Scalars['ID'];
-  custodyLevel?: Maybe<CustodyLevel>;
+  respondToReport: ReportResult;
+  restoreMemoriae: RestoredResult;
+  signUp: UserResult;
+  updateHealthCard: HealthCardResult;
+  updateMe: UserResult;
+  updateMedia: MediaResult;
+  updateOwnership: OwnershipResult;
+  updatePet: PetResult;
+  updateReport: ReportResult;
+  updateTreatment: TreatmentResult;
+  updateUser: UserResult;
+  verifyUser: NewTokenResult;
 };
 
 
@@ -391,59 +324,20 @@ export type MutationAddPetArgs = {
 };
 
 
+export type MutationAddPetToMeArgs = {
+  custodyLevel?: InputMaybe<CustodyLevel>;
+  pet: PetCreate;
+};
+
+
 export type MutationAddPetToUserArgs = {
   pet: PetCreate;
-  userId: Scalars['String'];
+  userId: Scalars['String']['input'];
 };
 
 
-export type MutationAddPetToMeArgs = {
-  pet: PetCreate;
-  custodyLevel?: Maybe<CustodyLevel>;
-};
-
-
-export type MutationCreateHealthCardArgs = {
-  data: HealthCardCreate;
-};
-
-
-export type MutationUpdateHealthCardArgs = {
-  id: Scalars['ID'];
-  data: HealthCardUpdate;
-};
-
-
-export type MutationCreateTreatmentArgs = {
-  data: TreatmentCreate;
-};
-
-
-export type MutationUpdateTreatmentArgs = {
-  id: Scalars['ID'];
-  data: TreatmentUpdate;
-};
-
-
-export type MutationCreateReportArgs = {
-  data: ReportCreate;
-};
-
-
-export type MutationUpdateReportArgs = {
-  id: Scalars['ID'];
-  data: ReportUpdate;
-};
-
-
-export type MutationUpdateMediaArgs = {
-  id: Scalars['ID'];
-  data: MediaUpdate;
-};
-
-
-export type MutationCreateMediaArgs = {
-  data: MediaCreate;
+export type MutationCheckCodeArgs = {
+  code: Scalars['String']['input'];
 };
 
 
@@ -452,59 +346,170 @@ export type MutationCreateCodeArgs = {
 };
 
 
-export type MutationCheckCodeArgs = {
-  code: Scalars['String'];
+export type MutationCreateHealthCardArgs = {
+  data: HealthCardCreate;
 };
 
 
-export type MutationRestoreMemoriaeArgs = {
-  id: Scalars['ID'];
+export type MutationCreateMediaArgs = {
+  data: MediaCreate;
 };
 
 
-export type MutationRespondToReportArgs = {
-  id: Scalars['ID'];
-  reporter: ReporterCreate;
+export type MutationCreatePetArgs = {
+  data: PetCreate;
 };
 
 
-export type MutationVerifyUserArgs = {
-  email: Scalars['String'];
-  code?: Maybe<Scalars['String']>;
+export type MutationCreateReportArgs = {
+  data: ReportCreate;
+};
+
+
+export type MutationCreateTreatmentArgs = {
+  data: TreatmentCreate;
+};
+
+
+export type MutationCreateUserArgs = {
+  data: UserCreate;
+};
+
+
+export type MutationDeleteOwnershipArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeletePetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationLinkPetToMeArgs = {
+  custodyLevel?: InputMaybe<CustodyLevel>;
+  petId: Scalars['ID']['input'];
+};
+
+
+export type MutationLinkPetToUserArgs = {
+  custodyLevel?: InputMaybe<CustodyLevel>;
+  petId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 
 export type MutationResendCodeArgs = {
-  email: Scalars['String'];
+  email: Scalars['String']['input'];
+};
+
+
+export type MutationRespondToReportArgs = {
+  id: Scalars['ID']['input'];
+  reporter: ReporterCreate;
+};
+
+
+export type MutationRestoreMemoriaeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationSignUpArgs = {
+  data: UserCreate;
+};
+
+
+export type MutationUpdateHealthCardArgs = {
+  data: HealthCardUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateMeArgs = {
+  data: UserUpdate;
+};
+
+
+export type MutationUpdateMediaArgs = {
+  data: MediaUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateOwnershipArgs = {
+  data: OwnershipUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdatePetArgs = {
+  data: PetUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateReportArgs = {
+  data: ReportUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateTreatmentArgs = {
+  data: TreatmentUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateUserArgs = {
+  data: UserUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationVerifyUserArgs = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
 };
 
 export type NewOwnership = {
   __typename?: 'NewOwnership';
-  pet: Pet;
   ownership: Ownership;
+  pet: Pet;
 };
 
 export type NewTokenResult = {
   __typename?: 'NewTokenResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
-  token?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean']['output'];
+  token?: Maybe<Scalars['String']['output']>;
   user?: Maybe<User>;
 };
 
 export type Ownership = {
   __typename?: 'Ownership';
-  id: Scalars['ID'];
-  user: User;
-  pet: Pet;
   custody_level: CustodyLevel;
+  id: Scalars['ID']['output'];
+  pet: Pet;
+  user: User;
 };
 
 export type OwnershipResult = {
   __typename?: 'OwnershipResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   ownership?: Maybe<Ownership>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type OwnershipUpdate = {
@@ -513,621 +518,1693 @@ export type OwnershipUpdate = {
 
 export type OwnershipsResult = {
   __typename?: 'OwnershipsResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   ownerships: Array<Maybe<Ownership>>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type PaginatedCodes = {
   __typename?: 'PaginatedCodes';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
   items: Array<Maybe<Code>>;
   pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaginatedDamnationesMemoriae = {
   __typename?: 'PaginatedDamnationesMemoriae';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   items: Array<Maybe<DamnatioMemoriae>>;
   pagination: Pagination;
+  success: Scalars['Boolean']['output'];
 };
 
 export type PaginatedHealthCards = {
   __typename?: 'PaginatedHealthCards';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
   items: Array<Maybe<HealthCard>>;
   pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaginatedMedias = {
   __typename?: 'PaginatedMedias';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
   items: Array<Maybe<Media>>;
   pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaginatedOwnerships = {
   __typename?: 'PaginatedOwnerships';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
   items: Array<Maybe<Ownership>>;
   pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaginatedPets = {
   __typename?: 'PaginatedPets';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   items: Array<Maybe<Pet>>;
   pagination: Pagination;
+  success: Scalars['Boolean']['output'];
 };
 
 export type PaginatedReports = {
   __typename?: 'PaginatedReports';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
   items: Array<Maybe<Report>>;
   pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaginatedTreatments = {
   __typename?: 'PaginatedTreatments';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
   items: Array<Maybe<Treatment>>;
   pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
   items: Array<Maybe<User>>;
   pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 /** how a list is owganized by how many items has been found, in which page we are, the number of element per page and how many pages there are */
 export type Pagination = {
   __typename?: 'Pagination';
-  total_items?: Maybe<Scalars['Int']>;
-  total_pages?: Maybe<Scalars['Int']>;
-  current_page?: Maybe<Scalars['Int']>;
-  page_size?: Maybe<Scalars['Int']>;
+  current_page?: Maybe<Scalars['Int']['output']>;
+  page_size?: Maybe<Scalars['Int']['output']>;
+  total_items?: Maybe<Scalars['Int']['output']>;
+  total_pages?: Maybe<Scalars['Int']['output']>;
 };
 
 export type Pet = {
   __typename?: 'Pet';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  ownerships?: Maybe<PaginatedOwnerships>;
+  birthday: Scalars['String']['output'];
   body: PetBody;
-  birthday: Scalars['String'];
-  neutered: Scalars['Boolean'];
+  chip_code?: Maybe<Scalars['String']['output']>;
+  diet?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  disciplines?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   gender: Gender;
   health_card?: Maybe<HealthCard>;
-  chip_code?: Maybe<Scalars['String']>;
-  weight_kg?: Maybe<Scalars['Float']>;
-  temperament?: Maybe<Scalars['String']>;
-  diet?: Maybe<Array<Maybe<Scalars['String']>>>;
-  intollerance?: Maybe<Array<Maybe<Scalars['String']>>>;
-  disciplines?: Maybe<Array<Maybe<Scalars['String']>>>;
+  id: Scalars['ID']['output'];
+  intollerance?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   main_picture?: Maybe<Media>;
+  name: Scalars['String']['output'];
+  neutered: Scalars['Boolean']['output'];
+  ownerships?: Maybe<PaginatedOwnerships>;
   pictures?: Maybe<PaginatedMedias>;
+  temperament?: Maybe<Scalars['String']['output']>;
+  weight_kg?: Maybe<Scalars['Float']['output']>;
 };
 
 
 export type PetOwnershipsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 
 export type PetPicturesArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 export type PetAddedResult = {
   __typename?: 'PetAddedResult';
-  success: Scalars['Boolean'];
-  error?: Maybe<Error>;
   data?: Maybe<NewOwnership>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type PetBody = {
   __typename?: 'PetBody';
-  id: Scalars['ID'];
+  breed: Scalars['String']['output'];
   coat_length: CoatLength;
+  family: PetFamily;
+  id: Scalars['ID']['output'];
   image: Media;
   tags: Array<Maybe<Tag>>;
-  family: PetFamily;
-  breed: Scalars['String'];
 };
 
 export type PetBodyCreate = {
+  breed: Scalars['String']['input'];
+  coat_length?: InputMaybe<CoatLength>;
   family: PetFamily;
-  breed: Scalars['String'];
-  coat_length?: Maybe<CoatLength>;
 };
 
 export type PetBodyUpdate = {
-  family?: Maybe<PetFamily>;
-  breed?: Maybe<Scalars['String']>;
-  coat_length?: Maybe<CoatLength>;
+  breed?: InputMaybe<Scalars['String']['input']>;
+  coat_length?: InputMaybe<CoatLength>;
+  family?: InputMaybe<PetFamily>;
 };
 
 export type PetCreate = {
-  name: Scalars['String'];
+  birthday: Scalars['String']['input'];
   body: PetBodyCreate;
-  birthday: Scalars['String'];
-  neutered: Scalars['Boolean'];
+  chip_code?: InputMaybe<Scalars['String']['input']>;
+  diet?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  disciplines?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   gender: Gender;
-  chip_code?: Maybe<Scalars['String']>;
-  weight_kg?: Maybe<Scalars['Float']>;
-  temperament?: Maybe<Scalars['String']>;
-  diet?: Maybe<Array<Maybe<Scalars['String']>>>;
-  intollerance?: Maybe<Array<Maybe<Scalars['String']>>>;
-  disciplines?: Maybe<Array<Maybe<Scalars['String']>>>;
+  intollerance?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  name: Scalars['String']['input'];
+  neutered: Scalars['Boolean']['input'];
+  temperament?: InputMaybe<Scalars['String']['input']>;
+  weight_kg?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export enum PetFamily {
-  Reptile = 'REPTILE',
+  Birds = 'BIRDS',
   Canine = 'CANINE',
   Feline = 'FELINE',
-  Birds = 'BIRDS',
-  Fish = 'FISH'
+  Fish = 'FISH',
+  Reptile = 'REPTILE'
 }
 
 export type PetResult = {
   __typename?: 'PetResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   pet?: Maybe<Pet>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type PetUpdate = {
-  name?: Maybe<Scalars['String']>;
-  body?: Maybe<PetBodyUpdate>;
-  birthday?: Maybe<Scalars['String']>;
-  neutered?: Maybe<Scalars['Boolean']>;
-  gender?: Maybe<Gender>;
-  chip_code?: Maybe<Scalars['String']>;
-  weight_kg?: Maybe<Scalars['Float']>;
-  temperament?: Maybe<Scalars['String']>;
-  diet?: Maybe<Array<Maybe<Scalars['String']>>>;
-  intollerance?: Maybe<Array<Maybe<Scalars['String']>>>;
-  disciplines?: Maybe<Array<Maybe<Scalars['String']>>>;
+  birthday?: InputMaybe<Scalars['String']['input']>;
+  body?: InputMaybe<PetBodyUpdate>;
+  chip_code?: InputMaybe<Scalars['String']['input']>;
+  diet?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  disciplines?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  gender?: InputMaybe<Gender>;
+  intollerance?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  neutered?: InputMaybe<Scalars['Boolean']['input']>;
+  temperament?: InputMaybe<Scalars['String']['input']>;
+  weight_kg?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type PetsResult = {
   __typename?: 'PetsResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   pets: Array<Maybe<Pet>>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  listUsers: PaginatedUsers;
-  getUser: UserResult;
-  listPets: PaginatedPets;
-  listMyPets: PaginatedPets;
-  getPet: PetResult;
-  me: UserResult;
-  getOwnership: OwnershipResult;
-  listOwnerships: PaginatedOwnerships;
-  listHealthCards: PaginatedHealthCards;
-  getHealthCard?: Maybe<HealthCardResult>;
-  getTreatment?: Maybe<TreatmentResult>;
-  listTreatments: PaginatedTreatments;
-  listMyTreatments: PaginatedTreatments;
-  getReport?: Maybe<ReportResult>;
-  listReports: PaginatedReports;
-  getMedia: MediaResult;
   getCode: CodeResult;
-  listMedias: PaginatedMedias;
-  listCodes: PaginatedCodes;
-  getDashboard: DashboardResult;
-  getRealTimeStatistic: RealTimeStatisticResult;
-  getGroupedStatistics: StatisticsResult;
   getDamnatioMemoriae?: Maybe<DamnatioMemoriaeResult>;
-  listDamnationesMemoriae?: Maybe<PaginatedDamnationesMemoriae>;
-  getUserDashboard: UserDashboardResult;
+  getDashboard: DashboardResult;
+  getGroupedStatistics: StatisticsResult;
+  getHealthCard?: Maybe<HealthCardResult>;
+  getMedia: MediaResult;
   getOrCreateCode?: Maybe<CodeResult>;
-};
-
-
-export type QueryListUsersArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryGetUserArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryListPetsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryListMyPetsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryGetPetArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetOwnershipArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryListOwnershipsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryListHealthCardsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryGetHealthCardArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetTreatmentArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryListTreatmentsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryListMyTreatmentsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryGetReportArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryListReportsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryGetMediaArgs = {
-  id: Scalars['ID'];
+  getOwnership: OwnershipResult;
+  getPet: PetResult;
+  getRealTimeStatistic: RealTimeStatisticResult;
+  getReport?: Maybe<ReportResult>;
+  getTreatment?: Maybe<TreatmentResult>;
+  getUser: UserResult;
+  getUserDashboard: UserDashboardResult;
+  listCodes: PaginatedCodes;
+  listDamnationesMemoriae?: Maybe<PaginatedDamnationesMemoriae>;
+  listHealthCards: PaginatedHealthCards;
+  listMedias: PaginatedMedias;
+  listMyPets: PaginatedPets;
+  listMyTreatments: PaginatedTreatments;
+  listOwnerships: PaginatedOwnerships;
+  listPets: PaginatedPets;
+  listReports: PaginatedReports;
+  listTreatments: PaginatedTreatments;
+  listUsers: PaginatedUsers;
+  me: UserResult;
 };
 
 
 export type QueryGetCodeArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryListMediasArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryListCodesArgs = {
-  commonSearch?: Maybe<CommonSearch>;
-};
-
-
-export type QueryGetGroupedStatisticsArgs = {
-  date_from: Scalars['String'];
-  date_to?: Maybe<Scalars['String']>;
-  group?: Maybe<Scalars['String']>;
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryGetDamnatioMemoriaeArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryListDamnationesMemoriaeArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+export type QueryGetGroupedStatisticsArgs = {
+  date_from: Scalars['String']['input'];
+  date_to?: InputMaybe<Scalars['String']['input']>;
+  group?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetHealthCardArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetMediaArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryGetOrCreateCodeArgs = {
-  ref_id: Scalars['String'];
-  ref_table: Scalars['String'];
-  code?: Maybe<Scalars['String']>;
+  code?: InputMaybe<Scalars['String']['input']>;
+  ref_id: Scalars['String']['input'];
+  ref_table: Scalars['String']['input'];
+};
+
+
+export type QueryGetOwnershipArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetPetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetReportArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetTreatmentArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryListCodesArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListDamnationesMemoriaeArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListHealthCardsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListMediasArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListMyPetsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListMyTreatmentsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListOwnershipsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListPetsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListReportsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListTreatmentsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListUsersArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 export type RangeFilter = {
-  key: Scalars['String'];
-  value?: Maybe<RangeFilterValue>;
+  key: Scalars['String']['input'];
+  value?: InputMaybe<RangeFilterValue>;
 };
 
 export type RangeFilterValue = {
-  min?: Maybe<Scalars['String']>;
-  max?: Maybe<Scalars['String']>;
+  max?: InputMaybe<Scalars['String']['input']>;
+  min?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RealTimeStatisticResult = {
   __typename?: 'RealTimeStatisticResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   statistics?: Maybe<DailyStats>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Report = {
   __typename?: 'Report';
-  id: Scalars['ID'];
-  created_at: Scalars['String'];
-  updated_at: Scalars['String'];
-  type: ReportType;
-  place: Scalars['String'];
   coordinates: Coordinates;
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  latitude: Scalars['Float']['output'];
+  longitude: Scalars['Float']['output'];
+  notes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  pet?: Maybe<Pet>;
+  place: Scalars['String']['output'];
   reporter: Reporter;
   responders: Array<Maybe<Reporter>>;
-  notes?: Maybe<Array<Maybe<Scalars['String']>>>;
-  pet?: Maybe<Pet>;
+  type: ReportType;
+  updated_at: Scalars['String']['output'];
 };
 
 export type ReportCreate = {
-  type: ReportType;
-  place: Scalars['String'];
-  latitude: Scalars['Float'];
-  longitude: Scalars['Float'];
+  latitude: Scalars['Float']['input'];
+  longitude: Scalars['Float']['input'];
+  notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  pet_id?: InputMaybe<Scalars['String']['input']>;
+  place: Scalars['String']['input'];
   reporter: ReporterCreate;
-  notes?: Maybe<Array<Maybe<Scalars['String']>>>;
-  pet_id?: Maybe<Scalars['String']>;
+  type: ReportType;
 };
 
 export type ReportResult = {
   __typename?: 'ReportResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   report?: Maybe<Report>;
+  success: Scalars['Boolean']['output'];
 };
 
 export enum ReportType {
-  Missing = 'MISSING',
-  Found = 'FOUND'
+  Found = 'FOUND',
+  Missing = 'MISSING'
 }
 
 export type ReportUpdate = {
-  place?: Maybe<Scalars['String']>;
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
-  notes?: Maybe<Array<Maybe<Scalars['String']>>>;
-  responders?: Maybe<Array<Maybe<ReporterCreate>>>;
+  latitude?: InputMaybe<Scalars['Float']['input']>;
+  longitude?: InputMaybe<Scalars['Float']['input']>;
+  notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  place?: InputMaybe<Scalars['String']['input']>;
+  responders?: InputMaybe<Array<InputMaybe<ReporterCreate>>>;
 };
 
 export type Reporter = {
   __typename?: 'Reporter';
-  email: Scalars['String'];
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
-  user_id?: Maybe<Scalars['String']>;
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  last_name: Scalars['String']['output'];
+  user_id?: Maybe<Scalars['String']['output']>;
 };
 
 export type ReporterCreate = {
-  email: Scalars['String'];
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
-  user_id?: Maybe<Scalars['String']>;
+  email: Scalars['String']['input'];
+  first_name: Scalars['String']['input'];
+  last_name: Scalars['String']['input'];
+  user_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RestoredResult = {
   __typename?: 'RestoredResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
-  table?: Maybe<Scalars['String']>;
-  restored?: Maybe<Scalars['JSON']>;
+  restored?: Maybe<Scalars['JSON']['output']>;
+  success: Scalars['Boolean']['output'];
+  table?: Maybe<Scalars['String']['output']>;
 };
 
 export type SearchFilter = {
-  value?: Maybe<Scalars['String']>;
-  fields?: Maybe<Array<Maybe<Scalars['String']>>>;
+  fields?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  value?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Statistic = {
   __typename?: 'Statistic';
-  id: Scalars['ID'];
-  date: Scalars['String'];
-  all_user: Scalars['Int'];
-  all_pets: Scalars['Int'];
-  all_active_users: Scalars['Int'];
+  all_active_users: Scalars['Int']['output'];
+  all_pets: Scalars['Int']['output'];
+  all_user: Scalars['Int']['output'];
+  date: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
 };
 
 export type StatisticResult = {
   __typename?: 'StatisticResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   statistic?: Maybe<Statistic>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Statistics = {
   __typename?: 'Statistics';
-  labels: Array<Scalars['String']>;
-  active_users_mean: Array<Scalars['Float']>;
-  active_users_min: Array<Scalars['Float']>;
-  active_users_max: Array<Scalars['Float']>;
-  all_users: Array<Scalars['Float']>;
-  all_pets: Array<Scalars['Float']>;
+  active_users_max: Array<Scalars['Float']['output']>;
+  active_users_mean: Array<Scalars['Float']['output']>;
+  active_users_min: Array<Scalars['Float']['output']>;
+  all_pets: Array<Scalars['Float']['output']>;
+  all_users: Array<Scalars['Float']['output']>;
+  labels: Array<Scalars['String']['output']>;
 };
 
 export type StatisticsResult = {
   __typename?: 'StatisticsResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
   statistics?: Maybe<Statistics>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Tag = {
   __typename?: 'Tag';
-  id: Scalars['ID'];
-  text: Scalars['String'];
+  id: Scalars['ID']['output'];
+  text: Scalars['String']['output'];
 };
 
 export type Treatment = {
   __typename?: 'Treatment';
-  id: Scalars['ID'];
-  created_at: Scalars['String'];
-  type: TreatmentType;
-  name: Scalars['String'];
-  date: Scalars['String'];
-  logs?: Maybe<Array<Maybe<Scalars['String']>>>;
-  duration?: Maybe<TreatmentDuration>;
-  frequency_value?: Maybe<Scalars['Int']>;
-  frequency_times?: Maybe<Scalars['Int']>;
-  frequency_unit?: Maybe<FrequencyUnit>;
   booster?: Maybe<Treatment>;
+  created_at: Scalars['String']['output'];
+  date: Scalars['String']['output'];
+  duration?: Maybe<TreatmentDuration>;
+  frequency_times?: Maybe<Scalars['Int']['output']>;
+  frequency_unit?: Maybe<FrequencyUnit>;
+  frequency_value?: Maybe<Scalars['Int']['output']>;
   health_card?: Maybe<HealthCard>;
+  id: Scalars['ID']['output'];
+  logs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  name: Scalars['String']['output'];
   related?: Maybe<Array<Maybe<MinTreatment>>>;
+  type: TreatmentType;
 };
 
 export type TreatmentCreate = {
-  health_card_id: Scalars['ID'];
-  name: Scalars['String'];
-  date: Scalars['String'];
+  booster_date?: InputMaybe<Scalars['String']['input']>;
+  date: Scalars['String']['input'];
+  frequency_times?: InputMaybe<Scalars['Int']['input']>;
+  frequency_unit?: InputMaybe<FrequencyUnit>;
+  frequency_value?: InputMaybe<Scalars['Int']['input']>;
+  health_card_id: Scalars['ID']['input'];
+  logs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  name: Scalars['String']['input'];
   type: TreatmentType;
-  logs?: Maybe<Array<Maybe<Scalars['String']>>>;
-  booster_date?: Maybe<Scalars['String']>;
-  frequency_times?: Maybe<Scalars['Int']>;
-  frequency_value?: Maybe<Scalars['Int']>;
-  frequency_unit?: Maybe<FrequencyUnit>;
 };
 
 export type TreatmentResult = {
   __typename?: 'TreatmentResult';
-  treatment?: Maybe<Treatment>;
-  success?: Maybe<Scalars['Boolean']>;
   error?: Maybe<Error>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  treatment?: Maybe<Treatment>;
 };
 
 export enum TreatmentType {
-  Vaccine = 'VACCINE',
   Antiparasitic = 'ANTIPARASITIC',
-  Tablet = 'TABLET',
   Operation = 'OPERATION',
-  Reminder = 'REMINDER'
+  Reminder = 'REMINDER',
+  Tablet = 'TABLET',
+  Vaccine = 'VACCINE'
 }
 
 export type TreatmentUpdate = {
-  logs?: Maybe<Array<Maybe<Scalars['String']>>>;
-  date?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  delete_old?: Maybe<Scalars['Boolean']>;
-  booster_date?: Maybe<Scalars['String']>;
-  type?: Maybe<TreatmentType>;
-  frequency_times?: Maybe<Scalars['Int']>;
-  frequency_value?: Maybe<Scalars['Int']>;
-  frequency_unit?: Maybe<FrequencyUnit>;
+  booster_date?: InputMaybe<Scalars['String']['input']>;
+  date?: InputMaybe<Scalars['String']['input']>;
+  delete_old?: InputMaybe<Scalars['Boolean']['input']>;
+  frequency_times?: InputMaybe<Scalars['Int']['input']>;
+  frequency_unit?: InputMaybe<FrequencyUnit>;
+  frequency_value?: InputMaybe<Scalars['Int']['input']>;
+  logs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<TreatmentType>;
 };
-
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['ID'];
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
-  email: Scalars['String'];
-  role: UserRole;
-  created_at: Scalars['String'];
+  created_at: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  last_activity?: Maybe<Scalars['String']['output']>;
+  last_name: Scalars['String']['output'];
   ownerships?: Maybe<PaginatedOwnerships>;
-  pets_owned: Scalars['Int'];
-  pets_on_loan: Scalars['Int'];
-  last_activity?: Maybe<Scalars['String']>;
+  pets_on_loan: Scalars['Int']['output'];
+  pets_owned: Scalars['Int']['output'];
   profile_picture?: Maybe<Media>;
   reports?: Maybe<PaginatedReports>;
+  role: UserRole;
 };
 
 
 export type UserOwnershipsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 
 export type UserReportsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 export type UserCreate = {
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
+  email: Scalars['String']['input'];
+  first_name: Scalars['String']['input'];
+  last_name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type UserDashboard = {
   __typename?: 'UserDashboard';
-  user_id?: Maybe<Scalars['String']>;
   ownerships?: Maybe<PaginatedOwnerships>;
   reports?: Maybe<PaginatedReports>;
+  user_id?: Maybe<Scalars['String']['output']>;
 };
 
 
 export type UserDashboardOwnershipsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 
 export type UserDashboardReportsArgs = {
-  commonSearch?: Maybe<CommonSearch>;
+  commonSearch?: InputMaybe<CommonSearch>;
 };
 
 export type UserDashboardResult = {
   __typename?: 'UserDashboardResult';
   dashboard?: Maybe<UserDashboard>;
   error?: Maybe<Error>;
-  success?: Maybe<Scalars['Boolean']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type UserResult = {
   __typename?: 'UserResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
   user?: Maybe<User>;
 };
 
 export enum UserRole {
-  User = 'USER',
-  Admin = 'ADMIN'
+  Admin = 'ADMIN',
+  User = 'USER'
 }
 
 export type UserUpdate = {
-  first_name?: Maybe<Scalars['String']>;
-  last_name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  last_activity?: Maybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  first_name?: InputMaybe<Scalars['String']['input']>;
+  last_activity?: InputMaybe<Scalars['String']['input']>;
+  last_name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UsersResult = {
   __typename?: 'UsersResult';
-  success: Scalars['Boolean'];
   error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
   users: Array<Maybe<User>>;
 };
 
 export enum TreatmentDuration {
-  TenMinutes = 'TEN_MINUTES',
-  QuarterHour = 'QUARTER_HOUR',
-  ThreeQuarter = 'THREE_QUARTER',
   HalfHour = 'HALF_HOUR',
   Hour = 'HOUR',
   HourAndHalf = 'HOUR_AND_HALF',
+  QuarterHour = 'QUARTER_HOUR',
+  TenMinutes = 'TEN_MINUTES',
+  ThreeQuarter = 'THREE_QUARTER',
   TwoHours = 'TWO_HOURS'
 }
+
+export type MinReportFragment = { __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } };
+
+export type AppointmentFragment = { __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null };
+
+export type CreateMediaMutationVariables = Exact<{
+  data: MediaCreate;
+}>;
+
+
+export type CreateMediaMutation = { __typename?: 'Mutation', createMedia: { __typename?: 'MediaResult', media?: { __typename?: 'Media', id: string, ref_id: string, type: string, scope: string } | null } };
+
+export type DashboardPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, name: string, type: TreatmentType } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
+
+export type FullPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null> } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
+
+export type FullTreatmentFragment = { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, frequency_unit?: FrequencyUnit | null, frequency_value?: number | null, frequency_times?: number | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null };
+
+export type MinPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
+
+export type MinUserFragment = { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null };
+
+export type PetMinSubOwnerFragment = { __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } };
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'NewTokenResult', token?: string | null, success: boolean, error?: { __typename?: 'Error', code: string, message: string, extra?: string | null } | null, user?: { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null } | null } };
+
+export type ResendCodeMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type ResendCodeMutation = { __typename?: 'Mutation', resendCode: { __typename?: 'GenericResult', success: boolean, error?: { __typename?: 'Error', message: string, code: string, extra?: string | null } | null } };
+
+export type SignUpMutationVariables = Exact<{
+  data: UserCreate;
+}>;
+
+
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'UserResult', success: boolean, user?: { __typename?: 'User', id: string, last_name: string, first_name: string, email: string, role: UserRole } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type VerifyMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+  code: Scalars['String']['input'];
+}>;
+
+
+export type VerifyMutation = { __typename?: 'Mutation', verifyUser: { __typename?: 'NewTokenResult', token?: string | null, success: boolean, error?: { __typename?: 'Error', code: string, message: string, extra?: string | null } | null, user?: { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null } | null } };
+
+export type ListReportsQueryVariables = Exact<{
+  commonSearch: CommonSearch;
+}>;
+
+
+export type ListReportsQuery = { __typename?: 'Query', listReports: { __typename?: 'PaginatedReports', success?: boolean | null, items: Array<{ __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', page_size?: number | null, total_items?: number | null } } };
+
+export type CreateTreatmentMutationVariables = Exact<{
+  treatment: TreatmentCreate;
+}>;
+
+
+export type CreateTreatmentMutation = { __typename?: 'Mutation', createTreatment: { __typename?: 'TreatmentResult', success?: boolean | null, error?: { __typename?: 'Error', extra?: string | null, code: string, message: string } | null, treatment?: { __typename?: 'Treatment', id: string, name: string, date: string, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string } | null> | null } | null } };
+
+export type GetTreatmentQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetTreatmentQuery = { __typename?: 'Query', getTreatment?: { __typename?: 'TreatmentResult', error?: { __typename?: 'Error', code: string, message: string } | null, treatment?: { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, frequency_unit?: FrequencyUnit | null, frequency_value?: number | null, frequency_times?: number | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null } | null } | null };
+
+export type ListMyTreatmentsQueryVariables = Exact<{
+  commonSearch: CommonSearch;
+}>;
+
+
+export type ListMyTreatmentsQuery = { __typename?: 'Query', listMyTreatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', page_size?: number | null, total_items?: number | null } } };
+
+export type GetUserDashboardQueryVariables = Exact<{
+  date_from: Scalars['String']['input'];
+  date_to: Scalars['String']['input'];
+}>;
+
+
+export type GetUserDashboardQuery = { __typename?: 'Query', getUserDashboard: { __typename?: 'UserDashboardResult', success?: boolean | null, dashboard?: { __typename?: 'UserDashboard', ownerships?: { __typename?: 'PaginatedOwnerships', success?: boolean | null, items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, name: string, type: TreatmentType } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } | null, reports?: { __typename?: 'PaginatedReports', success?: boolean | null, items: Array<{ __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type GetOrCreateQueryVariables = Exact<{
+  ref_id: Scalars['String']['input'];
+  ref_table: Scalars['String']['input'];
+  code?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetOrCreateQuery = { __typename?: 'Query', getOrCreateCode?: { __typename?: 'CodeResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, code?: { __typename?: 'Code', id: string, code: string, ref_id: string, ref_table: string } | null } | null };
+
+export type GetPetQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type AddPetToMeMutationVariables = Exact<{
+  data: PetCreate;
+  custodyLevel?: InputMaybe<CustodyLevel>;
+}>;
+
+
+export type AddPetToMeMutation = { __typename?: 'Mutation', addPetToMe: { __typename?: 'PetAddedResult', data?: { __typename?: 'NewOwnership', pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } } | null } };
+
+export type CheckCodeMutationVariables = Exact<{
+  code: Scalars['String']['input'];
+}>;
+
+
+export type CheckCodeMutation = { __typename?: 'Mutation', checkCode: { __typename?: 'CodeValidationResult', success: boolean, is_valid?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, code?: { __typename?: 'Code', id: string, code: string, ref_id: string, ref_table: string } | null } };
+
+export type GetFullPetQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type LinkPetToMeMutationVariables = Exact<{
+  petId: Scalars['ID']['input'];
+  custodyLevel: CustodyLevel;
+}>;
+
+
+export type LinkPetToMeMutation = { __typename?: 'Mutation', linkPetToMe: { __typename?: 'OwnershipResult', success: boolean, ownership?: { __typename?: 'Ownership', id: string, custody_level: CustodyLevel, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } } | null, error?: { __typename?: 'Error', message: string, code: string } | null } };
+
+export const MinReportFragmentDoc = gql`
+    fragment MinReport on Report {
+  id
+  reporter {
+    email
+    user_id
+  }
+  place
+  latitude
+  longitude
+  created_at
+  type
+}
+    `;
+export const AppointmentFragmentDoc = gql`
+    fragment Appointment on Treatment {
+  id
+  date
+  type
+  name
+  duration
+  health_card {
+    pet {
+      id
+      name
+      main_picture {
+        id
+        main_color {
+          color
+        }
+      }
+    }
+  }
+}
+    `;
+export const PetMinSubOwnerFragmentDoc = gql`
+    fragment petMinSubOwner on Ownership {
+  id
+  custody_level
+  user {
+    id
+    first_name
+    email
+    last_name
+    profile_picture {
+      id
+      scope
+      main_colors {
+        color
+        contrast
+      }
+      main_color {
+        color
+        contrast
+      }
+    }
+  }
+}
+    `;
+export const MinPetFragmentDoc = gql`
+    fragment MinPet on Pet {
+  name
+  id
+  main_picture {
+    id
+    main_color {
+      color
+      contrast
+    }
+    main_colors {
+      color
+      contrast
+    }
+    url
+    ref_id
+  }
+  ownerships {
+    items {
+      ...petMinSubOwner
+    }
+  }
+  weight_kg
+  birthday
+  gender
+  neutered
+  body {
+    breed
+    family
+    coat_length
+  }
+}
+    ${PetMinSubOwnerFragmentDoc}`;
+export const DashboardPetFragmentDoc = gql`
+    fragment DashboardPet on Pet {
+  ...MinPet
+  health_card {
+    id
+    treatments(
+      commonSearch: {order_by: "date", order_direction: "asc", filters: {ranges: [{key: "date", value: {min: $date_from, max: $date_to}}]}}
+    ) {
+      items {
+        id
+        date
+        name
+        type
+      }
+      success
+      error {
+        code
+        message
+      }
+    }
+  }
+}
+    ${MinPetFragmentDoc}`;
+export const FullPetFragmentDoc = gql`
+    fragment FullPet on Pet {
+  name
+  id
+  main_picture {
+    id
+    main_color {
+      color
+      contrast
+    }
+    main_colors {
+      color
+      contrast
+    }
+    url
+    ref_id
+  }
+  pictures {
+    items {
+      id
+      main_color {
+        color
+        contrast
+      }
+      url
+      ref_id
+    }
+  }
+  ownerships {
+    items {
+      ...petMinSubOwner
+    }
+  }
+  weight_kg
+  birthday
+  gender
+  body {
+    breed
+    family
+    coat_length
+  }
+}
+    ${PetMinSubOwnerFragmentDoc}`;
+export const FullTreatmentFragmentDoc = gql`
+    fragment FullTreatment on Treatment {
+  id
+  name
+  date
+  logs
+  type
+  frequency_unit
+  frequency_value
+  frequency_times
+  booster {
+    id
+  }
+  related {
+    id
+    date
+    name
+    type
+  }
+}
+    `;
+export const MinUserFragmentDoc = gql`
+    fragment minUser on User {
+  id
+  role
+  first_name
+  last_name
+  email
+  profile_picture {
+    id
+  }
+}
+    `;
+export const CreateMediaDocument = gql`
+    mutation createMedia($data: MediaCreate!) {
+  createMedia(data: $data) {
+    media {
+      id
+      ref_id
+      type
+      scope
+    }
+  }
+}
+    `;
+export type CreateMediaMutationFn = Apollo.MutationFunction<CreateMediaMutation, CreateMediaMutationVariables>;
+
+/**
+ * __useCreateMediaMutation__
+ *
+ * To run a mutation, you first call `useCreateMediaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMediaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMediaMutation, { data, loading, error }] = useCreateMediaMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateMediaMutation(baseOptions?: Apollo.MutationHookOptions<CreateMediaMutation, CreateMediaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMediaMutation, CreateMediaMutationVariables>(CreateMediaDocument, options);
+      }
+export type CreateMediaMutationHookResult = ReturnType<typeof useCreateMediaMutation>;
+export type CreateMediaMutationResult = Apollo.MutationResult<CreateMediaMutation>;
+export type CreateMediaMutationOptions = Apollo.BaseMutationOptions<CreateMediaMutation, CreateMediaMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    token
+    success
+    error {
+      code
+      message
+      extra
+    }
+    user {
+      ...minUser
+    }
+  }
+}
+    ${MinUserFragmentDoc}`;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const ResendCodeDocument = gql`
+    mutation resendCode($email: String!) {
+  resendCode(email: $email) {
+    success
+    error {
+      message
+      code
+      extra
+    }
+  }
+}
+    `;
+export type ResendCodeMutationFn = Apollo.MutationFunction<ResendCodeMutation, ResendCodeMutationVariables>;
+
+/**
+ * __useResendCodeMutation__
+ *
+ * To run a mutation, you first call `useResendCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendCodeMutation, { data, loading, error }] = useResendCodeMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useResendCodeMutation(baseOptions?: Apollo.MutationHookOptions<ResendCodeMutation, ResendCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendCodeMutation, ResendCodeMutationVariables>(ResendCodeDocument, options);
+      }
+export type ResendCodeMutationHookResult = ReturnType<typeof useResendCodeMutation>;
+export type ResendCodeMutationResult = Apollo.MutationResult<ResendCodeMutation>;
+export type ResendCodeMutationOptions = Apollo.BaseMutationOptions<ResendCodeMutation, ResendCodeMutationVariables>;
+export const SignUpDocument = gql`
+    mutation SignUp($data: UserCreate!) {
+  signUp(data: $data) {
+    user {
+      id
+      last_name
+      first_name
+      email
+      role
+    }
+    success
+    error {
+      code
+      message
+    }
+  }
+}
+    `;
+export type SignUpMutationFn = Apollo.MutationFunction<SignUpMutation, SignUpMutationVariables>;
+
+/**
+ * __useSignUpMutation__
+ *
+ * To run a mutation, you first call `useSignUpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignUpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signUpMutation, { data, loading, error }] = useSignUpMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignUpMutation, SignUpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignUpMutation, SignUpMutationVariables>(SignUpDocument, options);
+      }
+export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
+export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
+export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export const VerifyDocument = gql`
+    mutation verify($email: String!, $code: String!) {
+  verifyUser(email: $email, code: $code) {
+    token
+    success
+    error {
+      code
+      message
+      extra
+    }
+    user {
+      ...minUser
+    }
+  }
+}
+    ${MinUserFragmentDoc}`;
+export type VerifyMutationFn = Apollo.MutationFunction<VerifyMutation, VerifyMutationVariables>;
+
+/**
+ * __useVerifyMutation__
+ *
+ * To run a mutation, you first call `useVerifyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVerifyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [verifyMutation, { data, loading, error }] = useVerifyMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useVerifyMutation(baseOptions?: Apollo.MutationHookOptions<VerifyMutation, VerifyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VerifyMutation, VerifyMutationVariables>(VerifyDocument, options);
+      }
+export type VerifyMutationHookResult = ReturnType<typeof useVerifyMutation>;
+export type VerifyMutationResult = Apollo.MutationResult<VerifyMutation>;
+export type VerifyMutationOptions = Apollo.BaseMutationOptions<VerifyMutation, VerifyMutationVariables>;
+export const ListReportsDocument = gql`
+    query listReports($commonSearch: CommonSearch!) {
+  listReports(commonSearch: $commonSearch) {
+    items {
+      ...MinReport
+    }
+    success
+    error {
+      code
+      message
+    }
+    pagination {
+      page_size
+      total_items
+    }
+  }
+}
+    ${MinReportFragmentDoc}`;
+
+/**
+ * __useListReportsQuery__
+ *
+ * To run a query within a React component, call `useListReportsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListReportsQuery({
+ *   variables: {
+ *      commonSearch: // value for 'commonSearch'
+ *   },
+ * });
+ */
+export function useListReportsQuery(baseOptions: Apollo.QueryHookOptions<ListReportsQuery, ListReportsQueryVariables> & ({ variables: ListReportsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListReportsQuery, ListReportsQueryVariables>(ListReportsDocument, options);
+      }
+export function useListReportsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListReportsQuery, ListReportsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListReportsQuery, ListReportsQueryVariables>(ListReportsDocument, options);
+        }
+export function useListReportsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListReportsQuery, ListReportsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListReportsQuery, ListReportsQueryVariables>(ListReportsDocument, options);
+        }
+export type ListReportsQueryHookResult = ReturnType<typeof useListReportsQuery>;
+export type ListReportsLazyQueryHookResult = ReturnType<typeof useListReportsLazyQuery>;
+export type ListReportsSuspenseQueryHookResult = ReturnType<typeof useListReportsSuspenseQuery>;
+export type ListReportsQueryResult = Apollo.QueryResult<ListReportsQuery, ListReportsQueryVariables>;
+export const CreateTreatmentDocument = gql`
+    mutation CreateTreatment($treatment: TreatmentCreate!) {
+  createTreatment(data: $treatment) {
+    success
+    error {
+      extra
+      code
+      message
+    }
+    treatment {
+      id
+      name
+      date
+      related {
+        id
+        date
+      }
+    }
+  }
+}
+    `;
+export type CreateTreatmentMutationFn = Apollo.MutationFunction<CreateTreatmentMutation, CreateTreatmentMutationVariables>;
+
+/**
+ * __useCreateTreatmentMutation__
+ *
+ * To run a mutation, you first call `useCreateTreatmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTreatmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTreatmentMutation, { data, loading, error }] = useCreateTreatmentMutation({
+ *   variables: {
+ *      treatment: // value for 'treatment'
+ *   },
+ * });
+ */
+export function useCreateTreatmentMutation(baseOptions?: Apollo.MutationHookOptions<CreateTreatmentMutation, CreateTreatmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTreatmentMutation, CreateTreatmentMutationVariables>(CreateTreatmentDocument, options);
+      }
+export type CreateTreatmentMutationHookResult = ReturnType<typeof useCreateTreatmentMutation>;
+export type CreateTreatmentMutationResult = Apollo.MutationResult<CreateTreatmentMutation>;
+export type CreateTreatmentMutationOptions = Apollo.BaseMutationOptions<CreateTreatmentMutation, CreateTreatmentMutationVariables>;
+export const GetTreatmentDocument = gql`
+    query getTreatment($id: ID!) {
+  getTreatment(id: $id) {
+    error {
+      code
+      message
+    }
+    treatment {
+      ...FullTreatment
+    }
+  }
+}
+    ${FullTreatmentFragmentDoc}`;
+
+/**
+ * __useGetTreatmentQuery__
+ *
+ * To run a query within a React component, call `useGetTreatmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTreatmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTreatmentQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTreatmentQuery(baseOptions: Apollo.QueryHookOptions<GetTreatmentQuery, GetTreatmentQueryVariables> & ({ variables: GetTreatmentQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTreatmentQuery, GetTreatmentQueryVariables>(GetTreatmentDocument, options);
+      }
+export function useGetTreatmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTreatmentQuery, GetTreatmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTreatmentQuery, GetTreatmentQueryVariables>(GetTreatmentDocument, options);
+        }
+export function useGetTreatmentSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTreatmentQuery, GetTreatmentQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTreatmentQuery, GetTreatmentQueryVariables>(GetTreatmentDocument, options);
+        }
+export type GetTreatmentQueryHookResult = ReturnType<typeof useGetTreatmentQuery>;
+export type GetTreatmentLazyQueryHookResult = ReturnType<typeof useGetTreatmentLazyQuery>;
+export type GetTreatmentSuspenseQueryHookResult = ReturnType<typeof useGetTreatmentSuspenseQuery>;
+export type GetTreatmentQueryResult = Apollo.QueryResult<GetTreatmentQuery, GetTreatmentQueryVariables>;
+export const ListMyTreatmentsDocument = gql`
+    query listMyTreatments($commonSearch: CommonSearch!) {
+  listMyTreatments(commonSearch: $commonSearch) {
+    items {
+      ...Appointment
+    }
+    success
+    error {
+      code
+      message
+    }
+    pagination {
+      page_size
+      total_items
+    }
+  }
+}
+    ${AppointmentFragmentDoc}`;
+
+/**
+ * __useListMyTreatmentsQuery__
+ *
+ * To run a query within a React component, call `useListMyTreatmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListMyTreatmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListMyTreatmentsQuery({
+ *   variables: {
+ *      commonSearch: // value for 'commonSearch'
+ *   },
+ * });
+ */
+export function useListMyTreatmentsQuery(baseOptions: Apollo.QueryHookOptions<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables> & ({ variables: ListMyTreatmentsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables>(ListMyTreatmentsDocument, options);
+      }
+export function useListMyTreatmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables>(ListMyTreatmentsDocument, options);
+        }
+export function useListMyTreatmentsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables>(ListMyTreatmentsDocument, options);
+        }
+export type ListMyTreatmentsQueryHookResult = ReturnType<typeof useListMyTreatmentsQuery>;
+export type ListMyTreatmentsLazyQueryHookResult = ReturnType<typeof useListMyTreatmentsLazyQuery>;
+export type ListMyTreatmentsSuspenseQueryHookResult = ReturnType<typeof useListMyTreatmentsSuspenseQuery>;
+export type ListMyTreatmentsQueryResult = Apollo.QueryResult<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables>;
+export const GetUserDashboardDocument = gql`
+    query getUserDashboard($date_from: String!, $date_to: String!) {
+  getUserDashboard {
+    dashboard {
+      ownerships {
+        items {
+          id
+          custody_level
+          pet {
+            ...DashboardPet
+          }
+        }
+        success
+        error {
+          code
+          message
+        }
+      }
+      reports {
+        items {
+          ...MinReport
+        }
+        success
+        error {
+          code
+          message
+        }
+      }
+    }
+    success
+    error {
+      code
+      message
+    }
+  }
+}
+    ${DashboardPetFragmentDoc}
+${MinReportFragmentDoc}`;
+
+/**
+ * __useGetUserDashboardQuery__
+ *
+ * To run a query within a React component, call `useGetUserDashboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserDashboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserDashboardQuery({
+ *   variables: {
+ *      date_from: // value for 'date_from'
+ *      date_to: // value for 'date_to'
+ *   },
+ * });
+ */
+export function useGetUserDashboardQuery(baseOptions: Apollo.QueryHookOptions<GetUserDashboardQuery, GetUserDashboardQueryVariables> & ({ variables: GetUserDashboardQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserDashboardQuery, GetUserDashboardQueryVariables>(GetUserDashboardDocument, options);
+      }
+export function useGetUserDashboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserDashboardQuery, GetUserDashboardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserDashboardQuery, GetUserDashboardQueryVariables>(GetUserDashboardDocument, options);
+        }
+export function useGetUserDashboardSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserDashboardQuery, GetUserDashboardQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserDashboardQuery, GetUserDashboardQueryVariables>(GetUserDashboardDocument, options);
+        }
+export type GetUserDashboardQueryHookResult = ReturnType<typeof useGetUserDashboardQuery>;
+export type GetUserDashboardLazyQueryHookResult = ReturnType<typeof useGetUserDashboardLazyQuery>;
+export type GetUserDashboardSuspenseQueryHookResult = ReturnType<typeof useGetUserDashboardSuspenseQuery>;
+export type GetUserDashboardQueryResult = Apollo.QueryResult<GetUserDashboardQuery, GetUserDashboardQueryVariables>;
+export const GetOrCreateDocument = gql`
+    query getOrCreate($ref_id: String!, $ref_table: String!, $code: String) {
+  getOrCreateCode(ref_id: $ref_id, ref_table: $ref_table, code: $code) {
+    error {
+      code
+      message
+    }
+    success
+    code {
+      id
+      code
+      ref_id
+      ref_table
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetOrCreateQuery__
+ *
+ * To run a query within a React component, call `useGetOrCreateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrCreateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOrCreateQuery({
+ *   variables: {
+ *      ref_id: // value for 'ref_id'
+ *      ref_table: // value for 'ref_table'
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useGetOrCreateQuery(baseOptions: Apollo.QueryHookOptions<GetOrCreateQuery, GetOrCreateQueryVariables> & ({ variables: GetOrCreateQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOrCreateQuery, GetOrCreateQueryVariables>(GetOrCreateDocument, options);
+      }
+export function useGetOrCreateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrCreateQuery, GetOrCreateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrCreateQuery, GetOrCreateQueryVariables>(GetOrCreateDocument, options);
+        }
+export function useGetOrCreateSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetOrCreateQuery, GetOrCreateQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetOrCreateQuery, GetOrCreateQueryVariables>(GetOrCreateDocument, options);
+        }
+export type GetOrCreateQueryHookResult = ReturnType<typeof useGetOrCreateQuery>;
+export type GetOrCreateLazyQueryHookResult = ReturnType<typeof useGetOrCreateLazyQuery>;
+export type GetOrCreateSuspenseQueryHookResult = ReturnType<typeof useGetOrCreateSuspenseQuery>;
+export type GetOrCreateQueryResult = Apollo.QueryResult<GetOrCreateQuery, GetOrCreateQueryVariables>;
+export const GetPetDocument = gql`
+    query getPet($id: ID!) {
+  getPet(id: $id) {
+    pet {
+      ...MinPet
+    }
+    success
+    error {
+      code
+      message
+    }
+  }
+}
+    ${MinPetFragmentDoc}`;
+
+/**
+ * __useGetPetQuery__
+ *
+ * To run a query within a React component, call `useGetPetQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPetQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPetQuery(baseOptions: Apollo.QueryHookOptions<GetPetQuery, GetPetQueryVariables> & ({ variables: GetPetQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPetQuery, GetPetQueryVariables>(GetPetDocument, options);
+      }
+export function useGetPetLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPetQuery, GetPetQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPetQuery, GetPetQueryVariables>(GetPetDocument, options);
+        }
+export function useGetPetSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPetQuery, GetPetQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPetQuery, GetPetQueryVariables>(GetPetDocument, options);
+        }
+export type GetPetQueryHookResult = ReturnType<typeof useGetPetQuery>;
+export type GetPetLazyQueryHookResult = ReturnType<typeof useGetPetLazyQuery>;
+export type GetPetSuspenseQueryHookResult = ReturnType<typeof useGetPetSuspenseQuery>;
+export type GetPetQueryResult = Apollo.QueryResult<GetPetQuery, GetPetQueryVariables>;
+export const AddPetToMeDocument = gql`
+    mutation addPetToMe($data: PetCreate!, $custodyLevel: CustodyLevel) {
+  addPetToMe(pet: $data, custodyLevel: $custodyLevel) {
+    data {
+      pet {
+        ...MinPet
+      }
+    }
+  }
+}
+    ${MinPetFragmentDoc}`;
+export type AddPetToMeMutationFn = Apollo.MutationFunction<AddPetToMeMutation, AddPetToMeMutationVariables>;
+
+/**
+ * __useAddPetToMeMutation__
+ *
+ * To run a mutation, you first call `useAddPetToMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPetToMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPetToMeMutation, { data, loading, error }] = useAddPetToMeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *      custodyLevel: // value for 'custodyLevel'
+ *   },
+ * });
+ */
+export function useAddPetToMeMutation(baseOptions?: Apollo.MutationHookOptions<AddPetToMeMutation, AddPetToMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPetToMeMutation, AddPetToMeMutationVariables>(AddPetToMeDocument, options);
+      }
+export type AddPetToMeMutationHookResult = ReturnType<typeof useAddPetToMeMutation>;
+export type AddPetToMeMutationResult = Apollo.MutationResult<AddPetToMeMutation>;
+export type AddPetToMeMutationOptions = Apollo.BaseMutationOptions<AddPetToMeMutation, AddPetToMeMutationVariables>;
+export const CheckCodeDocument = gql`
+    mutation checkCode($code: String!) {
+  checkCode(code: $code) {
+    error {
+      code
+      message
+    }
+    success
+    is_valid
+    code {
+      id
+      code
+      ref_id
+      ref_table
+    }
+  }
+}
+    `;
+export type CheckCodeMutationFn = Apollo.MutationFunction<CheckCodeMutation, CheckCodeMutationVariables>;
+
+/**
+ * __useCheckCodeMutation__
+ *
+ * To run a mutation, you first call `useCheckCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkCodeMutation, { data, loading, error }] = useCheckCodeMutation({
+ *   variables: {
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useCheckCodeMutation(baseOptions?: Apollo.MutationHookOptions<CheckCodeMutation, CheckCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CheckCodeMutation, CheckCodeMutationVariables>(CheckCodeDocument, options);
+      }
+export type CheckCodeMutationHookResult = ReturnType<typeof useCheckCodeMutation>;
+export type CheckCodeMutationResult = Apollo.MutationResult<CheckCodeMutation>;
+export type CheckCodeMutationOptions = Apollo.BaseMutationOptions<CheckCodeMutation, CheckCodeMutationVariables>;
+export const GetFullPetDocument = gql`
+    query getFullPet($id: ID!) {
+  getPet(id: $id) {
+    pet {
+      ...MinPet
+    }
+    success
+    error {
+      code
+      message
+    }
+  }
+}
+    ${MinPetFragmentDoc}`;
+
+/**
+ * __useGetFullPetQuery__
+ *
+ * To run a query within a React component, call `useGetFullPetQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFullPetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFullPetQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetFullPetQuery(baseOptions: Apollo.QueryHookOptions<GetFullPetQuery, GetFullPetQueryVariables> & ({ variables: GetFullPetQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFullPetQuery, GetFullPetQueryVariables>(GetFullPetDocument, options);
+      }
+export function useGetFullPetLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFullPetQuery, GetFullPetQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFullPetQuery, GetFullPetQueryVariables>(GetFullPetDocument, options);
+        }
+export function useGetFullPetSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetFullPetQuery, GetFullPetQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetFullPetQuery, GetFullPetQueryVariables>(GetFullPetDocument, options);
+        }
+export type GetFullPetQueryHookResult = ReturnType<typeof useGetFullPetQuery>;
+export type GetFullPetLazyQueryHookResult = ReturnType<typeof useGetFullPetLazyQuery>;
+export type GetFullPetSuspenseQueryHookResult = ReturnType<typeof useGetFullPetSuspenseQuery>;
+export type GetFullPetQueryResult = Apollo.QueryResult<GetFullPetQuery, GetFullPetQueryVariables>;
+export const LinkPetToMeDocument = gql`
+    mutation linkPetToMe($petId: ID!, $custodyLevel: CustodyLevel!) {
+  linkPetToMe(petId: $petId, custodyLevel: $custodyLevel) {
+    ownership {
+      id
+      custody_level
+      pet {
+        ...MinPet
+      }
+    }
+    success
+    error {
+      message
+      code
+    }
+  }
+}
+    ${MinPetFragmentDoc}`;
+export type LinkPetToMeMutationFn = Apollo.MutationFunction<LinkPetToMeMutation, LinkPetToMeMutationVariables>;
+
+/**
+ * __useLinkPetToMeMutation__
+ *
+ * To run a mutation, you first call `useLinkPetToMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLinkPetToMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [linkPetToMeMutation, { data, loading, error }] = useLinkPetToMeMutation({
+ *   variables: {
+ *      petId: // value for 'petId'
+ *      custodyLevel: // value for 'custodyLevel'
+ *   },
+ * });
+ */
+export function useLinkPetToMeMutation(baseOptions?: Apollo.MutationHookOptions<LinkPetToMeMutation, LinkPetToMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LinkPetToMeMutation, LinkPetToMeMutationVariables>(LinkPetToMeDocument, options);
+      }
+export type LinkPetToMeMutationHookResult = ReturnType<typeof useLinkPetToMeMutation>;
+export type LinkPetToMeMutationResult = Apollo.MutationResult<LinkPetToMeMutation>;
+export type LinkPetToMeMutationOptions = Apollo.BaseMutationOptions<LinkPetToMeMutation, LinkPetToMeMutationVariables>;

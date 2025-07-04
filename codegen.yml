@@ -1,15 +1,10 @@
-schema: ./graphql-schema.json
-documents: 'src/**/*.graphql'
+schema: "./graphql-schema.json"
+documents:
+  - "src/**/*.graphql"
+  - "src/**/*.{ts,tsx}"
 generates:
   src/types.ts:
-    - typescript
-  src/:
-    preset: near-operation-file
-    presetConfig:
-      extension: .generated.tsx
-      baseTypesPath: types.ts
-      folder: ../__generated__
     plugins:
+      - typescript
       - typescript-operations
       - typescript-react-apollo
-  

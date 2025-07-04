@@ -1,0 +1,5 @@
+schema: https://graph-a-pet.makso.me/graphql
+generates:
+  ./graphql-schema.json:
+    plugins:
+      - introspection
