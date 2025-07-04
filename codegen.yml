@@ -1,10 +1,22 @@
+# codegen.yml
 schema: "./graphql-schema.json"
 documents:
   - "src/**/*.graphql"
   - "src/**/*.{ts,tsx}"
+  # escludi i file già generati
+  - "!src/**/__generated__/**"
 generates:
   src/types.ts:
     plugins:
       - typescript
+      - typescript-operations
+      - typescript-react-apollo
+  src/:
+    preset: near-operation-file
+    presetConfig:
+      baseTypesPath: types.ts
+      extension: .generated.ts
+      folder: __generated__
+    plugins:
       - typescript-operations
       - typescript-react-apollo
