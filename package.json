@@ -23,6 +23,8 @@
     "generate": "graphql-codegen --config codegen.yml"
   },
   "resolutions": {
+    "react-router": "5.3.4",
+    "react-router-dom": "5.3.4",
     "graphql": "16.11.0"
   },
   "dependencies": {
@@ -34,11 +36,9 @@
     "@capacitor/keyboard": "4.1.1",
     "@capacitor/status-bar": "4.1.1",
     "@gsap/react": "^2.1.2",
-    "@ionic/react": "^7.0.0",
-    "@ionic/react-router": "^7.0.0",
+    "@ionic/react": "^8.6.3",
+    "@ionic/react-router": "^8.6.3",
     "@lemaks/grid_system": "^1.0.12",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
     "apollo-boost": "^0.4.9",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
@@ -60,8 +60,8 @@
     "react-hook-form": "7.59.0",
     "react-hot-toast": "^2.5.2",
     "react-i18next": "^12.2.0",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4",
+    "react-router": "5.3.4",
+    "react-router-dom": "5.3.4",
     "sanitize-html": "^2.17.0",
     "serve": "^14.2.4",
     "styled-components": "^5.3.9"
@@ -76,6 +76,7 @@
     "@graphql-codegen/typescript": "^4.1.6",
     "@graphql-codegen/typescript-operations": "^4.6.1",
     "@graphql-codegen/typescript-react-apollo": "^4.3.3",
+    "@graphql-codegen/typescript-resolvers": "^4.5.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.6.1",
@@ -83,6 +84,7 @@
     "@types/lodash": "^4.17.20",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@types/react-router-dom": "^5.3.3",
     "@types/sanitize-html": "^2.16.0",
     "@types/styled-components": "^5.1.26",
     "@vitejs/plugin-react": "^3.1.0",

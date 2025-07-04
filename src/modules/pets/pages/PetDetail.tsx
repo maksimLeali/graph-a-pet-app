@@ -32,7 +32,6 @@ export const PetDetails: React.FC = () => {
             if (!checkCode?.code || checkCode.error) {
                 return;
             }
-
             getPet({ variables: { id: checkCode.code.ref_id } });
         },
     });

@@ -1140,13 +1140,6 @@ export type MinReportFragment = { __typename?: 'Report', id: string, place: stri
 
 export type AppointmentFragment = { __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null };
 
-export type CreateMediaMutationVariables = Exact<{
-  data: MediaCreate;
-}>;
-
-
-export type CreateMediaMutation = { __typename?: 'Mutation', createMedia: { __typename?: 'MediaResult', media?: { __typename?: 'Media', id: string, ref_id: string, type: string, scope: string } | null } };
-
 export type DashboardPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, name: string, type: TreatmentType } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
 
 export type FullPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null> } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
@@ -1158,6 +1151,13 @@ export type MinPetFragment = { __typename?: 'Pet', name: string, id: string, wei
 export type MinUserFragment = { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null };
 
 export type PetMinSubOwnerFragment = { __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } };
+
+export type CreateMediaMutationVariables = Exact<{
+  data: MediaCreate;
+}>;
+
+
+export type CreateMediaMutation = { __typename?: 'Mutation', createMedia: { __typename?: 'MediaResult', media?: { __typename?: 'Media', id: string, ref_id: string, type: string, scope: string } | null } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -1256,13 +1256,6 @@ export type CheckCodeMutationVariables = Exact<{
 
 export type CheckCodeMutation = { __typename?: 'Mutation', checkCode: { __typename?: 'CodeValidationResult', success: boolean, is_valid?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, code?: { __typename?: 'Code', id: string, code: string, ref_id: string, ref_table: string } | null } };
 
-export type GetFullPetQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-
-export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
-
 export type LinkPetToMeMutationVariables = Exact<{
   petId: Scalars['ID']['input'];
   custodyLevel: CustodyLevel;
@@ -1270,6 +1263,13 @@ export type LinkPetToMeMutationVariables = Exact<{
 
 
 export type LinkPetToMeMutation = { __typename?: 'Mutation', linkPetToMe: { __typename?: 'OwnershipResult', success: boolean, ownership?: { __typename?: 'Ownership', id: string, custody_level: CustodyLevel, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } } | null, error?: { __typename?: 'Error', message: string, code: string } | null } };
+
+export type GetFullPetQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export const MinReportFragmentDoc = gql`
     fragment MinReport on Report {
@@ -2116,6 +2116,51 @@ export function useCheckCodeMutation(baseOptions?: Apollo.MutationHookOptions<Ch
 export type CheckCodeMutationHookResult = ReturnType<typeof useCheckCodeMutation>;
 export type CheckCodeMutationResult = Apollo.MutationResult<CheckCodeMutation>;
 export type CheckCodeMutationOptions = Apollo.BaseMutationOptions<CheckCodeMutation, CheckCodeMutationVariables>;
+export const LinkPetToMeDocument = gql`
+    mutation linkPetToMe($petId: ID!, $custodyLevel: CustodyLevel!) {
+  linkPetToMe(petId: $petId, custodyLevel: $custodyLevel) {
+    ownership {
+      id
+      custody_level
+      pet {
+        ...MinPet
+      }
+    }
+    success
+    error {
+      message
+      code
+    }
+  }
+}
+    ${MinPetFragmentDoc}`;
+export type LinkPetToMeMutationFn = Apollo.MutationFunction<LinkPetToMeMutation, LinkPetToMeMutationVariables>;
+
+/**
+ * __useLinkPetToMeMutation__
+ *
+ * To run a mutation, you first call `useLinkPetToMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLinkPetToMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [linkPetToMeMutation, { data, loading, error }] = useLinkPetToMeMutation({
+ *   variables: {
+ *      petId: // value for 'petId'
+ *      custodyLevel: // value for 'custodyLevel'
+ *   },
+ * });
+ */
+export function useLinkPetToMeMutation(baseOptions?: Apollo.MutationHookOptions<LinkPetToMeMutation, LinkPetToMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LinkPetToMeMutation, LinkPetToMeMutationVariables>(LinkPetToMeDocument, options);
+      }
+export type LinkPetToMeMutationHookResult = ReturnType<typeof useLinkPetToMeMutation>;
+export type LinkPetToMeMutationResult = Apollo.MutationResult<LinkPetToMeMutation>;
+export type LinkPetToMeMutationOptions = Apollo.BaseMutationOptions<LinkPetToMeMutation, LinkPetToMeMutationVariables>;
 export const GetFullPetDocument = gql`
     query getFullPet($id: ID!) {
   getPet(id: $id) {
@@ -2163,48 +2208,3 @@ export type GetFullPetQueryHookResult = ReturnType<typeof useGetFullPetQuery>;
 export type GetFullPetLazyQueryHookResult = ReturnType<typeof useGetFullPetLazyQuery>;
 export type GetFullPetSuspenseQueryHookResult = ReturnType<typeof useGetFullPetSuspenseQuery>;
 export type GetFullPetQueryResult = Apollo.QueryResult<GetFullPetQuery, GetFullPetQueryVariables>;
-export const LinkPetToMeDocument = gql`
-    mutation linkPetToMe($petId: ID!, $custodyLevel: CustodyLevel!) {
-  linkPetToMe(petId: $petId, custodyLevel: $custodyLevel) {
-    ownership {
-      id
-      custody_level
-      pet {
-        ...MinPet
-      }
-    }
-    success
-    error {
-      message
-      code
-    }
-  }
-}
-    ${MinPetFragmentDoc}`;
-export type LinkPetToMeMutationFn = Apollo.MutationFunction<LinkPetToMeMutation, LinkPetToMeMutationVariables>;
-
-/**
- * __useLinkPetToMeMutation__
- *
- * To run a mutation, you first call `useLinkPetToMeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLinkPetToMeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [linkPetToMeMutation, { data, loading, error }] = useLinkPetToMeMutation({
- *   variables: {
- *      petId: // value for 'petId'
- *      custodyLevel: // value for 'custodyLevel'
- *   },
- * });
- */
-export function useLinkPetToMeMutation(baseOptions?: Apollo.MutationHookOptions<LinkPetToMeMutation, LinkPetToMeMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LinkPetToMeMutation, LinkPetToMeMutationVariables>(LinkPetToMeDocument, options);
-      }
-export type LinkPetToMeMutationHookResult = ReturnType<typeof useLinkPetToMeMutation>;
-export type LinkPetToMeMutationResult = Apollo.MutationResult<LinkPetToMeMutation>;
-export type LinkPetToMeMutationOptions = Apollo.BaseMutationOptions<LinkPetToMeMutation, LinkPetToMeMutationVariables>;

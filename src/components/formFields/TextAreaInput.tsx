@@ -237,7 +237,7 @@ const FocusBox = styled.span<focusCircleProps>`
     }
 `;
 
-const Editable = styled(ContentEditable)<{ textcolor: string, bgcolor?: string }>`
+const Editable = styled(ContentEditable as unknown as any)<{ textcolor: string, bgcolor?: string }>`
     height: 100%;
     width: 100%;
     min-height: ${$uw(2)};

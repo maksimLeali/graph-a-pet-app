@@ -3,6 +3,10 @@
 import { I18NKey } from "@i18n"
 import { Maybe } from "@types"
 
+export function toScalar<T>(value: T): { input: T; output: T } {
+  return { input: value, output: value };
+}
+
 type Join<K, P> = K extends string | number
   ? P extends string | number
     ? `${K}${'' extends P ? '' : '.'}${P}`

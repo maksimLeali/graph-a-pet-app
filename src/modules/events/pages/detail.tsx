@@ -29,7 +29,7 @@ export const EventDetails: React.FC<props> = () => {
 		},
 	});
 	useEffect(() => {
-		setPage({ visible: false, name: "" });
+		setPage({ visible: false, name: "" });		
 		getEvent({ variables: { id } });
 	}, []);
 

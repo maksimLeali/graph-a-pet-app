@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import { Link } from "@router-components";
 import { useState } from "react";
 
 import { useVerifyMutation } from "../operations/__generated__/verifyUser.generated";

@@ -17,7 +17,8 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, './src/utils'),
       "@graphql_generated/*": path.resolve('./src/components/operations/__generated__/*'),
       "@i18n": path.resolve(__dirname, './src/i18n'),
-      "@types": path.resolve(__dirname, './src/types')
+      "@types": path.resolve(__dirname, './src/types'),
+      "@router-components":path.resolve(__dirname, "./src/router/components")
     }
   }
 })

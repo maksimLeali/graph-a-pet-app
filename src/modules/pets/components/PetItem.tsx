@@ -97,16 +97,6 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 					</InfoRow>
 
 					<InfoRow>
-						<span
-							dangerouslySetInnerHTML={{
-								__html:
-									t("pets.coat_lenght", {
-										lenght: t(
-											`pets.coat_lengths.${pet.body?.coat?.length.toLocaleLowerCase()}`
-										),
-									}) ?? "",
-							}}
-						/>
 						{pet.neutered && (
 							<span className="sub">
 								{t(

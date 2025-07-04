@@ -117,7 +117,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 
 	const [getUserDashboardQuery, { loading }] = useGetUserDashboardLazyQuery({
 		fetchPolicy: "no-cache",
-		variables: {
+		variables: {			
 			date_from: dateFrom,
 			date_to: dateTo,
 		},

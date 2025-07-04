@@ -39,8 +39,8 @@ const authLink = setContext((_, { headers }) => {
 const testResponseLink = new ApolloLink((operation, forward)=> {
   return forward(operation).map(response => {
     // Access the response data here
-    const responseData = response.data;
-    if ([401, 403].includes(_.get(response, 'errors.0.extensions.code', 0) )) {
+    const responseData = response.data; 
+    if ([401, 403].includes(_.get(response, 'errors.0.extensions.code', 0) as number )) {
       toast.error('User not Authorized')
       Cookies.remove('jwt')
       Cookies.remove('user')

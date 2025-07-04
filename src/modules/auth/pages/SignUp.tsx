@@ -3,7 +3,8 @@ import { useCookies } from "react-cookie";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "@router-components";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import _ from "lodash";
 

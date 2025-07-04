@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link } from "@router-components";
 
 import { $color, $cssTRBL, $uw } from "@theme";
 import { Icon, IconName } from "@components";

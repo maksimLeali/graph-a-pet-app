@@ -78,8 +78,8 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 	}, []);
 	const share = useCallback(() => {
 		getOrCreateCode({
-			variables: {
-				ref_table: "pets",
+			variables: {				
+				ref_table: "pets",				
 				ref_id: pets[active].id,
 				code: null,
 			},
