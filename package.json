@@ -39,6 +39,7 @@
     "@gsap/react": "^2.1.0",
     "@ionic/react": "^7.0.0",
     "@ionic/react-router": "^7.0.0",
+    "@lemaks/grid_system": "^1.0.12",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "apollo-boost": "^0.4.9",
