@@ -36,6 +36,7 @@ yarn-error.log*
 *__generated__*
 graphql-schema.json
 
+.vscode
 
 
 src/i18n/_translations_.json

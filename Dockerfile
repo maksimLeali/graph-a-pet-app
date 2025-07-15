@@ -17,6 +17,7 @@ COPY . .
 RUN yarn fetch:graphql \
  && yarn generate \
  && yarn build
+ 
 
 ENV NODE_ENV=production
 EXPOSE 3100
