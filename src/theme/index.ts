@@ -7,6 +7,7 @@ const userColors = {
     "operation": "#02c39a",
     "reminder": "#9550b5",
     "tablet": "#a07178",
+    "training": "#0066cc",
     "male-color": "#2986cc",
     "female-color": "#c90076",
     "background-color": "var(--ion-background-color)",

@@ -5,6 +5,7 @@ export type ColorKeys =
   | "operation"
   | "reminder"
   | "tablet"
+  | "training"
   | "male-color"
   | "female-color"
   | "toolbar-background"
@@ -87,6 +88,7 @@ export const colors: Record<ColorKeys, string>  = {
   "operation": "var(--operation)",
   "reminder": "var(--reminder)",
   "tablet": "var(--tablet)",
+  "training": "var(--training)",
   "male-color": "var(--male-color)",
   "female-color": "var(--female-color)",
   "background-color": "var(--ion-background-color)",

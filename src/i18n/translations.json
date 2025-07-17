@@ -57,6 +57,7 @@
       "time": "Zeit",
       "time_from": "Startzeit",
       "type": "Typ",
+      "training": "Training",
       "vaccine": "Impfung"
     },
     "home": {
@@ -268,6 +269,7 @@
       "time": "Time",
       "time_from": "Start time",
       "type": "Type",
+      "training": "Training",
       "vaccine": "Vaccine"
     },
     "home": {
@@ -479,6 +481,7 @@
       "time": "Hora",
       "time_from": "Hora de inicio",
       "type": "Tipo",
+      "training": "Entrenamiento",
       "vaccine": "Vacuna"
     },
     "home": {
@@ -689,6 +692,7 @@
       "time": "Heure",
       "time_from": "Heure de début",
       "type": "Type",
+      "traning": "Entraînement",
       "vaccine": "Vaccin"
     },
     "home": {
@@ -900,6 +904,7 @@
       "time": "Ora",
       "time_from": "Ora inizio",
       "type": "Tipologia",
+      "training": "Allenamento",
       "vaccine": "Vaccino"
     },
     "home": {
@@ -951,7 +956,7 @@
           "name": "Come si chiama ?"
         },
         "step_2": {
-          "breed": "a che razza appartiene?",          
+          "breed": "a che razza appartiene?",
           "coat": "Che tipo di pelo ha?",
           "insert_coat": "Scegli lungezza pelo",
           "family": "Che animale è?",
@@ -960,14 +965,13 @@
           "continue": "Vai all'ultimo step",
           "insert_breed": "Segli razza",
           "intro": "Qualche informazione in più su <b>{{name}}</b>",
-          "neutered_female": "Sterilizzata?", 
-          "neutered_male": "Castrato?",         
+          "neutered_female": "Sterilizzata?",
+          "neutered_male": "Castrato?",
           "birthday_female": "Quando è nata <b>{{name}}</b>?",
           "birthday_male": "Quando è nato <b>{{name}}</b>?",
-          "insert_birthday" :"Compleanno",
+          "insert_birthday": "Compleanno",
           "weight": "Quanto pesa?",
           "insert_weight": "peso in Kg"
-          
         },
         "step_3": {
           "intro": "Diamo un immagine a <b>{{name}}</b>",
@@ -1059,6 +1063,227 @@
       "general": {
         "empty_list": "Nessun elemento",
         "no_sub_owners": "Nessun affidatario"
+      }
+    }
+  },
+  "ru": {
+    "actions": {
+      "accept": "Принять",
+      "cancel": "Отменить",
+      "close": "Закрыть",
+      "confirm": "Подтвердить",
+      "refuse": "Отклонить",
+      "save": "Сохранить"
+    },
+    "auth": {
+      "already_registered": "Вы уже зарегистрированы?",
+      "at_least_8_chars": "Не менее 8 символов",
+      "at_least_a_number": "По крайней мере одна цифра",
+      "at_least_both_cases": "Как заглавные, так и строчные буквы",
+      "back_to_login": "Вернуться к входу",
+      "code": "Введите код, полученный по электронной почте",
+      "code_not_recived": "Проверьте свою почту, включая папку «Спам»",
+      "confirm_password": "Подтвердите пароль",
+      "email": "Электронная почта",
+      "first_name": "Имя",
+      "forgot_password_link": "Забыли пароль?",
+      "insert_code": "Введите код",
+      "insert_email": "Введите адрес электронной почты",
+      "insert_new_password": "Введите новый пароль",
+      "insert_password": "Введите пароль",
+      "last_name": "Фамилия",
+      "login": "Войти",
+      "logout": "Выйти",
+      "next": "Далее",
+      "not_registered": "Еще не зарегистрированы?",
+      "password": "Пароль",
+      "password_recovery": "Восстановление пароля",
+      "password_recovery_email_text": "Введите код, полученный на вашу электронную почту",
+      "password_recovery_password_text": "Выберите новый пароль",
+      "password_recovery_text": "Введите свою электронную почту, чтобы установить новый пароль",
+      "resend_code": "Отправить письмо повторно",
+      "send_code": "Отправить код",
+      "signup": "Зарегистрироваться"
+    },
+    "events": {
+      "add_event": "Добавить событие",
+      "antiparasitic": "Антипаразитарное средство",
+      "booster_date_time_from": "Дата и время начала повторной вакцинации",
+      "boster_date_from": "Дата начала повторной вакцинации",
+      "date_from": "Дата начала",
+      "date_time_from": "Дата и время начала",
+      "from_to": "С {{from}} до {{to}}",
+      "general": {
+        "no_events": "Нет запланированных событий"
+      },
+      "name": "Название события",
+      "notes": "Заметки",
+      "operation": "Операция",
+      "pet": "Для кого?",
+      "reminder": "Напоминание",
+      "tablet": "Таблетка",
+      "time": "Время",
+      "time_from": "Время начала",
+      "type": "Тип",
+      "training": "Тренировка",
+      "vaccine": "Вакцина"
+    },
+    "home": {
+      "co_owners": "Опекуны",
+      "health_record": "Медицинская карта",
+      "profile": "Профиль",
+      "recent_reports": "Последние сообщения",
+      "share": "Поделиться"
+    },
+    "messages": {
+      "done": "Успешно завершено",
+      "errors": {
+        "code": "Введен неверный код",
+        "fetch": "Ошибка при получении данных",
+        "invalid_email": "Неверный адрес электронной почты",
+        "login": "Ошибка аутентификации",
+        "me": "Ошибка при получении данных о пользователе",
+        "no_pet_found": "Животное не найдено",
+        "not_authorized": "Пользователь не авторизован",
+        "password_mismatch": "Пароли не совпадают",
+        "required": "Обязательное поле",
+        "user": "Ошибка загрузки данных пользователя"
+      },
+      "success": {
+        "login": "Вход выполнен",
+        "logout": "Выход выполнен успешно",
+        "pet_linked_succesfully": "Животное успешно добавлено",
+        "pet_updated": "Данные питомца успешно обновлены",
+        "signup": "Регистрация завершена, проверьте свою почту"
+      }
+    },
+    "pages": {
+      "home": "Главная",
+      "pet_sharing": "Хочешь меня?"
+    },
+    "pets": {
+      "accept_as": "Принять как:",
+      "add_pet": "Добавить питомца",
+      "add_pet_page": {
+        "intro_desc": "<span>Давайте пошагово внесем данные вашего друга.</span></br><span>Ваш друг будет с вами <b>очень долго</b>, поэтому уделите этому необходимое внимание</span>",
+        "intro_title": "Привет, <b>{{name}}</b></br>",
+        "start": "Начнем",
+        "step_1": {
+          "continue": "Перейти к следующему шагу",
+          "gender": "Мальчик или девочка?",
+          "insert_gender": "Пол",
+          "insert_name": "Имя",
+          "intro": "Давайте начнем с того, кто ваш питомец",
+          "name": "Как его зовут?"
+        },
+        "step_2": {
+          "breed": "К какой породе он/она относится?",
+          "coat": "Какой у него/неё тип шерсти?",
+          "insert_coat": "Выберите длину шерсти",
+          "family": "Какое это животное?",
+          "insert_family": "Выберите животное",
+          "breed_alert": "Если породы нет в списке, после подтверждения она всё равно будет сохранена, и мы как можно скорее устраним это упущение.",
+          "continue": "Перейти к последнему шагу",
+          "insert_breed": "Выберите породу",
+          "intro": "Немного информации о <b>{{name}}</b>",
+          "neutered_female": "Стерилизована?",
+          "neutered_male": "Кастрирован?",
+          "birthday_female": "Когда родилась <b>{{name}}</b>?",
+          "birthday_male": "Когда родился <b>{{name}}</b>?",
+          "insert_birthday": "Дата рождения",
+          "weight": "Сколько весит?",
+          "insert_weight": "Вес в кг"
+        },
+        "step_3": {
+          "intro": "Добавим изображение для <b>{{name}}</b>",
+          "picture": "У вас есть фото?",
+          "continue": "Продолжить заполнение",
+          "insert_birthday": "Дата рождения",
+          "insert_weight": "Вес в кг",
+          "optionale_steps_skip": "Мы ввели всё необходимое для {{name}}!</br>Если хотите, можете добавить другую информацию сейчас или сделать это позже — решать вам",
+          "skip": "Пропустить",
+          "weight": "Сколько весит?"
+        },
+        "step_4": {
+          "color": "Предпочли бы вы, чтобы у {{name}} был индивидуальный цвет﹡?",
+          "color_explain": "﹡этот цвет будет отображаться на главной странице, в событиях и других элементах, связанных с {{name}}",
+          "colors_suggested": "Мы предлагаем эти цвета, основываясь на предоставленном изображении"
+        }
+      },
+      "age": "Возраст",
+      "age_years_one": "<b>{{count}}</b> год",
+      "age_years_other": "<b>{{count}}</b> лет",
+      "coat_lenght": "Шерсть: <b>{{lenght}}</b>",
+      "coat_lengths": {
+        "hairless": "Отсутствует",
+        "lenght": "Длинная",
+        "medium": "Средняя",
+        "short": "Короткая"
+      },
+      "desc_pet_sitter": "<b>Пэтситтер</b> заботится о животном <b>профессионально</b>",
+      "desc_sub_owner": "<b>Опекун</b> заботится о животном как владелец.<br/>Обычно это <b>член семьи</b> или <b>друг</b>",
+      "family": "Питомец",
+      "gender": "Пол",
+      "gender_female": "Самка",
+      "gender_male": "Самец",
+      "gender_not_said": "Предпочитаю не указывать",
+      "name": "Имя",
+      "neutered": "Стерилизован",
+      "neutered_female": "Стерилизована",
+      "neutered_male": "Кастрирован",
+      "owner": "Владелец",
+      "owner_short": "Вл.",
+      "pet_family": {
+        "birds": "Птица",
+        "canine": "Собака",
+        "feline": "Кошка",
+        "fish": "Рыба",
+        "reptile": "Рептилия"
+      },
+      "pet_sitter": "Пэтситтер",
+      "pet_sitter_short": "Птс",
+      "petsitter": "Пэтситтер",
+      "shared_from": "Владелец",
+      "shared_with": "Кто может видеть?",
+      "sub_owner": "Опекун",
+      "sub_owner_short": "Опк.",
+      "subowner": "Опекун",
+      "weight": "Вес",
+      "weight_kg": "<b>{{weight_kg}}</b> кг"
+    },
+    "settings": {
+      "general": {
+        "customization": "Настройка",
+        "pets_color": "Использовать цвет питомца",
+        "privacy": "Конфиденциальность",
+        "select_language": "Выберите язык",
+        "system": "Система"
+      }
+    },
+    "system": {
+      "day": "День",
+      "days": "Дни",
+      "hour": "Час",
+      "hours": "Часы",
+      "logout_modal": {
+        "text": "Вы уверены, что хотите выйти из приложения?",
+        "title": "Вы собираетесь выйти"
+      },
+      "menu": {
+        "profile": "Профиль",
+        "settings": "Настройки"
+      },
+      "minute": "Минута",
+      "minutes": "Минуты",
+      "month": "Месяц",
+      "months": "Месяцы",
+      "year": "Год",
+      "years": "Годы"
+    },
+    "users": {
+      "general": {
+        "empty_list": "Нет элементов",
+        "no_sub_owners": "Нет опекуна"
       }
     }
   }

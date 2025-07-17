@@ -1028,6 +1028,7 @@ export enum TreatmentType {
   Operation = 'OPERATION',
   Reminder = 'REMINDER',
   Tablet = 'TABLET',
+  Training = 'TRAINING',
   Vaccine = 'VACCINE'
 }
 
