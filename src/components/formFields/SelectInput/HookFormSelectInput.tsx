@@ -4,205 +4,207 @@ import { useTranslation } from "react-i18next";
 import _ from "lodash";
 import { useOnClickOutside } from "@hooks";
 import {
-	FocusBox,
-	IconContainer,
-	InputLabel,
-	InputWrapper,
-	InvisibleInput,
-	LabelContainer,
-	OptionsContainer,
-	Wrapper,
-	Option,
-	ErrorSpan,
+  FocusBox,
+  IconContainer,
+  InputLabel,
+  InputWrapper,
+  InvisibleInput,
+  LabelContainer,
+  OptionsContainer,
+  Wrapper,
+  Option as OptionItem,
+  ErrorSpan,
 } from "./components";
 import { CommonProps, HookFormProps } from "./components/types";
 import { Icon } from "@components";
 import { I18NKey } from "@i18n";
 
 export const HookFormSelectInput: React.FC<HookFormProps & CommonProps> = ({
-	name,
-	textLabel,
-	ntTextLabel,
-	required = false,
-	bgColor,
-	color = "medium",
-	hoverColor = "light-tint",
-	focusColor = "primary",
-	disabledColor = "medium",
-	hideIcon = false,
-	forceOptionsUp = false,
-	textColor = "dark",
-	disabled = false,
-	rowsPerList = 7,
-	registerOptions,
-	errorColor = "danger",
-	options,
+  name,
+  textLabel,
+  ntTextLabel,
+  required = false,
+  bgColor,
+  color = "medium",
+  hoverColor = "light-tint",
+  focusColor = "primary",
+  disabledColor = "medium",
+  hideIcon = false,
+  forceOptionsUp = false,
+  textColor = "dark",
+  disabled = false,
+  rowsPerList = 7,
+  registerOptions,
+  errorColor = "danger",
+  options,
 }) => {
-	const [focused, setFocused] = useState(false);
-	const [compiled, setCompiled] = useState(false);
-	const [up, setUp] = useState(false);
-	const [temptext, setTempText] = useState("");
-	const [resetText, setResetText] = useState(false);
-	const ref = useRef<HTMLDivElement>(null);
-	const optionsRef = useRef<HTMLDivElement>(null);
-	const textRef = useRef<HTMLInputElement>(null);
+  const [focused, setFocused] = useState(false);
+  const [compiled, setCompiled] = useState(false);
+  const [up, setUp] = useState(false);
+  const [tempText, setTempText] = useState("");
 
-	const { t } = useTranslation();
-	const {
-		formState: { errors },
-		control,
-		register,
-		getValues,
-	} = useFormContext();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLInputElement>(null);
 
-	useOnClickOutside(ref, () => setFocused(false));
+  const { t } = useTranslation();
+  const {
+    control,
+    formState: { errors },
+    getValues,
+  } = useFormContext();
 
-	useEffect(() => {
-		if (getValues(name)) setCompiled(true);
-		else setCompiled(false);
-	}, [getValues(name)]);
+  useOnClickOutside(containerRef, () => setFocused(false));
 
-	useEffect(() => {
-		if (!focused) {
-			setTempText("");
-			return;
-		}
-		if (!textRef.current) return;
-		textRef.current.focus();
-	}, [focused]);
+  useEffect(() => {
+    const current = getValues(name);
+    setCompiled(!!current);
+  }, [getValues(name)]);
 
-	useEffect(() => {
-		const itemsHeight =
-			options.length > rowsPerList
-				? rowsPerList * 60
-				: options.length * 60;
-		setUp(
-			itemsHeight +
-				((optionsRef.current?.offsetParent as HTMLDivElement)
-					?.offsetTop ?? 0) >
-				window.innerHeight
-		);
-	}, [rowsPerList, optionsRef.current]);
+  useEffect(() => {
+    if (!focused) {
+      setTempText("");
+      return;
+    }
+    textRef.current?.focus();
+  }, [focused]);
 
-	const classes = useMemo(() => {
-		return `${disabled && "disabled"} ${focused && "focused"} ${
-			compiled && "compiled"
-		} ${errors[name] && "error"}`;
-	}, [errors[name], disabled, focused, compiled]);
+  useEffect(() => {
+    const itemsHeight =
+      options.length > rowsPerList
+        ? rowsPerList * 60
+        : options.length * 60;
+    const parentTop =
+      (optionsRef.current?.offsetParent as HTMLDivElement)?.offsetTop ?? 0;
+    setUp(itemsHeight + parentTop > window.innerHeight);
+  }, [rowsPerList, options, optionsRef.current]);
 
-	return (
-		<Wrapper
-			focusColor={focusColor}
-			hoverColor={hoverColor}
-			textColor={textColor}
-			bgColor={bgColor}
-			disabledColor={disabledColor}
-			errorColor={errorColor}
-			color={color}
-			className={`select-input ${classes}`}
-		>
-			<InputLabel
-				className={`inputLabel ${classes}`}
-				htmlFor={name}
-				onClick={() => setFocused(!focused)}
-			>
-				{textLabel ? t(textLabel) : ntTextLabel}
-				{required && !compiled && " *"}
-			</InputLabel>
-			<Controller
-				name={name}
-				control={control}
-				render={({ field: { onChange, value, ref, name } }) => (
-					<InputWrapper ref={ref} className="inputWrapper">
-						<InvisibleInput
-							id={name + "-fake"}
-							onFocus={() => setFocused(true)}
-							{...register(name, {
-								required: {
-									value: required,
-									message: "messages.errors.required",
-								},
-								...registerOptions,
-							})}
-						/>
-						<LabelContainer
-							className={`label-container ${hideIcon ? "full-width" : ""}`}
-							onClick={() => setFocused(!focused)}
-						>
-							{value
-								? options.find((opt) => opt.value === value)
-										?.render || (
-										<p>
-											{
-												options.find(
-													(opt) => opt.value === value
-												)?.label
-											}
-										</p>
-								  )
-								: ""}
-						</LabelContainer>
-						{!hideIcon && (
-							<IconContainer className="icon-container">
-								<Icon
-									size="26px"
-									time=".5s"
-									onMouseUp={() => setFocused(!focused)}
-									className={`selectIcon ${classes}`}
-									name="caretDownCircleOutline"
-								/>
-							</IconContainer>
-						)}
-						<OptionsContainer
-							maxHeight={
-								options.length > rowsPerList
-									? rowsPerList * 3.5
-									: options.length * 3.5
-							}
-							className={`options-container ${classes} ${
-								up || forceOptionsUp ? "up" : "" } ${
-								hideIcon ? 'full' : ""
-								}`}
-							ref={optionsRef}
-						>
-							{options.map((option, i) => (
-								<Option
-									key={i}
-									className={`option ${
-										option.value === value ? "selected" : ""
-									}`}
-									onMouseUp={() => {
-										setFocused(false);
-										if (option.value === value) {
-											onChange(null);
-											setCompiled(false);
-											return;
-										}
-										onChange(option.value);
-										setCompiled(true);
-									}}
-								>
-									{option.render
-										? option.render
-										: option.label}
-									{option.value === value && (
-										<Icon
-											name="closeCircleOutline"
-											color={color}
-										/>
-									)}
-								</Option>
-							))}
-						</OptionsContainer>
-						<FocusBox className={`focusBox ${classes}`} />
-					</InputWrapper>
-				)}
-			/>
-			{errors[name]?.message && (
-				<ErrorSpan className="error-span">
-					{t(errors[name]?.message as I18NKey)}
-				</ErrorSpan>
-			)}
-		</Wrapper>
-	);
+  const classes = useMemo(
+    () =>
+      `${disabled && "disabled"} ${
+        focused && "focused"
+      } ${compiled && "compiled"} ${errors[name] && "error"}`,
+    [errors[name], disabled, focused, compiled]
+  );
+
+  return (
+    <Wrapper
+      focusColor={focusColor}
+      hoverColor={hoverColor}
+      textColor={textColor}
+      bgColor={bgColor}
+      disabledColor={disabledColor}
+      errorColor={errorColor}
+      color={color}
+      className={`select-input ${classes}`}
+    >
+      <InputLabel
+        className={`inputLabel ${classes}`}
+        htmlFor={name}
+        onClick={() => setFocused((f) => !f)}
+      >
+        {textLabel ? t(textLabel) : ntTextLabel}
+        {required && !compiled && " *"}
+      </InputLabel>
+
+      <Controller
+        name={name}
+        control={control}
+        rules={{
+          required: required && {
+            value: true,
+            message: "messages.errors.required",
+          },
+          ...registerOptions,
+        }}
+        render={({ field: { onChange, onBlur, value, ref: fieldRef } }) => (
+          <InputWrapper ref={containerRef} className="inputWrapper">
+            {/* campo nascosto per collegare ref e value a RHF */}
+            <InvisibleInput
+              id={`${name}-hidden`}
+              type="hidden"
+              value={value ?? ""}
+              ref={fieldRef}
+              onBlur={onBlur}
+            />
+
+            <LabelContainer
+              className={`label-container ${hideIcon ? "full-width" : ""}`}
+              onClick={() => setFocused((f) => !f)}
+            >
+              {value
+                ? options.find((opt) => opt.value === value)?.render ?? (
+                    <p>
+                      {
+                        options.find((opt) => opt.value === value)
+                          ?.label
+                      }
+                    </p>
+                  )
+                : ""}
+            </LabelContainer>
+
+            {!hideIcon && (
+              <IconContainer className="icon-container">
+                <Icon
+                  size="26px"
+                  time=".5s"
+                  onMouseUp={() => setFocused((f) => !f)}
+                  className={`selectIcon ${classes}`}
+                  name="caretDownCircleOutline"
+                />
+              </IconContainer>
+            )}
+
+            <OptionsContainer
+              maxHeight={
+                options.length > rowsPerList
+                  ? rowsPerList * 3.5
+                  : options.length * 3.5
+              }
+              className={`options-container ${classes} ${
+                up || forceOptionsUp ? "up" : ""
+              } ${hideIcon ? "full" : ""}`}
+              ref={optionsRef}
+            >
+              {options.map((option, i) => (
+                <OptionItem
+                  key={i}
+                  className={`option ${
+                    option.value === value ? "selected" : ""
+                  }`}
+                  onMouseUp={() => {
+                    setFocused(false);
+                    if (option.value === value) {
+                      onChange(null);
+                      setCompiled(false);
+                    } else {
+                      onChange(option.value);
+                      setCompiled(true);
+                    }
+                  }}
+                >
+                  {option.render ?? option.label}
+                  {option.value === value && (
+                    <Icon
+                      name="closeCircleOutline"
+                      color={color}
+                    />
+                  )}
+                </OptionItem>
+              ))}
+            </OptionsContainer>
+
+            <FocusBox className={`focusBox ${classes}`} />
+          </InputWrapper>
+        )}
+      />
+
+      {errors[name]?.message && (
+        <ErrorSpan className="error-span">
+          {t(errors[name]?.message as I18NKey)}
+        </ErrorSpan>
+      )}
+    </Wrapper>
+  );
 };

@@ -1,6 +1,6 @@
 import { IonContent } from "@ionic/react";
 import React, { useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm ,Controller } from "react-hook-form";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
 import styled from "styled-components";
@@ -11,7 +11,7 @@ import { SelectInput, TextInput, Option, SubmitInput } from "@components";
 import { $cssTRBL, $uw } from "@theme";
 import { useUserContext } from "@contexts";
 
-export const Step1 = React.memo(() => {
+export const Step1 =() => {
 	const { setPage } = useUserContext();
 	const [cookies, setCookies] = useCookies(["add_pet_step_1"]);
 
@@ -33,6 +33,11 @@ export const Step1 = React.memo(() => {
 		setPage({ name: "step 1 di 3" });
 	}, []);
 
+	const gender_ = methods.watch('gender')
+
+	useEffect(()=>{
+		console.log('gender', gender_)
+	}, [gender_])
 	const genderOptions: Option[] = Object.values(Gender).map((key) => ({
 		value: key,
 		label: t(`pets.gender_${key.toLowerCase()}`),
@@ -78,7 +83,7 @@ export const Step1 = React.memo(() => {
 			</FormProvider>
 		</IonContent>
 	);
-});
+};
 
 const Form = styled.form`
 	width: 100%;
