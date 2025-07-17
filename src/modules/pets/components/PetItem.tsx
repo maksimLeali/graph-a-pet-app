@@ -19,6 +19,8 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 	const [imageReady, setImageReady] = useState(false);
 	const itemRef = useRef<HTMLDivElement>(null);
 	const { t } = useTranslation();
+	const { t : breedT} = useTranslation("breeds")
+
 	useEffect(() => {
 		if (imageReady || !pet.main_picture) {
 			gsap.fromTo(
@@ -68,8 +70,8 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 				<InfoBox className="info-box custom-pet-border-color">
 					<InfoRow>
 						<span>
-							{t(
-								`pets.breeds.${pet.body.breed.toLocaleLowerCase()}`
+							{breedT(
+								`${pet.body.breed.toLocaleLowerCase()}`
 							)}
 						</span>
 					</InfoRow>

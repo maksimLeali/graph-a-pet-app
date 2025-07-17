@@ -17,7 +17,7 @@ import {
 } from "@components";
 import { TreatmentType } from "@types";
 import { EventOption } from "./EventOption";
-import { $cssTRBL } from "@theme";
+import { $cssTRBL, $uw } from "@theme";
 
 export const AddEventForm = () => {
 	const { pets } = useUserContext();
@@ -33,7 +33,7 @@ export const AddEventForm = () => {
 			return {
 				value: pet.health_card!.id,
 				label: pet.name,
-				render: <span>{pet.name}</span>,
+				render: <PetName>{pet.name}</PetName>,
 			};
 		});
 
@@ -105,9 +105,9 @@ export const AddEventForm = () => {
 const Form = styled.div`
 	width: 100%;
 	overflow-y: scroll;
-	max-height: 600px;
+	max-height: ${$uw(40)};
 	display: flex;
-	padding: ${$cssTRBL(0, 2)};
+	padding: ${$cssTRBL(2, 2)};
 	flex-wrap: wrap;
 	justify-content: space-between;
 	.main_date {
@@ -117,3 +117,7 @@ const Form = styled.div`
 		width: 40%;
 	}
 `;
+
+const PetName = styled.span`
+	padding-left: ${$uw(1)};
+`

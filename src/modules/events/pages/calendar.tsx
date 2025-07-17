@@ -156,6 +156,7 @@ export const CalendarEvents: React.FC = () => {
 				},
 			},
 		});
+		methods.reset()
 	});
 
 	const openAddCalendarModal = useCallback(() => {
@@ -168,6 +169,8 @@ export const CalendarEvents: React.FC = () => {
 			},
 			onConfirm: () => {
 				createEvent();
+				getMyAppointments()
+				closeModal();
 			},
 			children: (
 				<FormProvider {...methods}>

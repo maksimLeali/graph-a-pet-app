@@ -1,6 +1,7 @@
 import styled from "styled-components"
 
 import { SpecialIconName, SpecialIcon } from "@components"
+import { $uw } from "@theme"
 
 type props ={
     iconName: SpecialIconName,
@@ -25,6 +26,7 @@ display: flex;
 align-items: center;
 justify-content: start;
 gap: 12px;
+padding-left: ${$uw(1)};
 > p {
     font-size: 1.6rem;
 }
