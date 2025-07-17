@@ -242,12 +242,12 @@ export const useUserContext = () => useContext(UserContext);
 const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean }>`
 	position: absolute;
 	top: ${({ visible }) => (visible ? "0" : "-100%")};
-	height: ${$uw(6)};
+	height: ${$uw(5)};
 
 	max-width: var(--max-width);
 	${({ fade }) => (fade ? "z-index: -1;" : "")};
 	left: calc(50% - 240px);
-	padding: ${$cssTRBL(0.75, 1, 1.75, 0)};
+	padding: ${$cssTRBL(0.75, 1, .75, 0)};
 	box-sizing: border-box;
 	background-color: ${$color("background-color")};
 	display: flex;
