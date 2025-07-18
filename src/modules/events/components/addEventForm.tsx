@@ -63,18 +63,18 @@ export const AddEventForm = () => {
 				required
 				textLabel="events.pet"
 			/>
-			<TextInput
-				name="data.name"
-				textLabel="events.name"
-				bgColor="light"
-				required
-			/>
 			<SelectInput
 				name="data.type"
 				options={typeOptions}
 				bgColor="light"
 				required
 				textLabel="events.type"
+			/>
+			<TextInput
+				name="data.name"
+				textLabel="events.name"
+				bgColor="light"
+				required
 			/>
 			<DateTimePicker
 				name="date_date"

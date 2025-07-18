@@ -76,9 +76,9 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 
 	return (
 		<MenuBackground
-			className={`${open ? "open" : ""} ${isPWA ? "" : "browser"}`}
+			className={`${modalOpen? 'modalOpen' : ''} ${open ? "open" : ""} ${isPWA ? "" : "browser"}`}
 		>
-			{modal ? <Modal {...modal} /> : <></>}
+			{modal && modalOpen ? <Modal {...modal} /> : <></>}
 			<Container ref={ref}>
 				<MainOptions>
 					<Option onClick={() => onClose()} to="/settings">
@@ -139,7 +139,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 const ConfirmLogout = () => {
 	const { t } = useTranslation();
 	return (
-		<LogoutContainer>
+		<LogoutContainer className="logoutContainer">
 			<p>{t("system.logout_modal.text")}</p>
 		</LogoutContainer>
 	);
@@ -263,6 +263,7 @@ const LogoutContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	margin-bottom: ${$uw(2)};
+	
 	> p {
 		text-align: center;
 		font-size: 1.6rem;
