@@ -132,11 +132,11 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
 						<Action>
 
 						</Action>
-						<Action>
+						{onShare && <Action onClick={()=>onShare(pet.id)}>
 							{t('share')}
 							<Icon name="shareOutline" />
 
-						</Action>
+						</Action>}
 					</ActionContainer>
 					}			
 				</InfoBox>
