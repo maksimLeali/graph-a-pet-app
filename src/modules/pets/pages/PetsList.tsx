@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IonContent, IonRefresher, IonRefresherContent, RefresherEventDetail } from "@ionic/react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -7,9 +7,22 @@ import { Link } from "react-router-dom";
 import { PetItem } from "../components/PetItem";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL } from "@theme";
+import { useGetOrCreateLazyQuery } from "../../home/operations/__generated__/getOrCreateCode.generated";
 
 export const PetsList: React.FC = () => {
 	const { setPage, ownedPets, loanPets, loading, refetchDashboard } = useUserContext();
+	const [canShare, setCanShare] = useState(true);
+
+	useEffect(() => {
+		try {
+			navigator.canShare({
+				url: `${window.location.origin}/home`,
+				text: "Un cucciolo per te",
+			});
+		} catch (e) {
+			setCanShare(false);
+		}
+	}, []);
 
 	useEffect(() => {
 		setPage({ name: "My pets" });
@@ -20,13 +33,53 @@ export const PetsList: React.FC = () => {
 		refetchDashboard();
 		event.detail.complete();
 	};
+
+	const [getOrCreateCode] = useGetOrCreateLazyQuery({
+		onCompleted: ({ getOrCreateCode }) => {
+			if (!getOrCreateCode?.code || getOrCreateCode.error) {
+				return;
+			}
+			try {
+				if (!canShare) {
+					return null;
+				}
+				navigator.share({
+					url: `${window.location.origin}/pets/sharing/${getOrCreateCode.code.code}`,
+					title: "Un cucciolo per te",
+					text: "ti è stato condiviso un cucciolo",
+				});
+			} catch (e) {
+				console.log(e);
+			}
+		},
+	});
+
+
+	const share = useCallback((id:string) => {
+		getOrCreateCode({
+			variables: {				
+				ref_table: "pets",				
+				ref_id: id,
+				code: null,
+			},
+		});
+	}, []);
+
+	console.log(loanPets)
 	return (
 		<IonContent fullscreen>
 			<IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
 				<IonRefresherContent></IonRefresherContent>
 			</IonRefresher>
 			<List>
-				{[...ownedPets, ...loanPets].map((pet, i) => {
+				{ownedPets.map((pet, i) => {
+					return pet ? (
+						<PetItem key={pet.id} pet={pet} index={i} onShare={share} />
+					) : (
+						<></>
+					);
+				})}
+				{loanPets.map((pet, i) => {
 					return pet ? (
 						<PetItem key={pet.id} pet={pet} index={i} />
 					) : (

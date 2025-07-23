@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
 import gsap from "gsap";
 import dayjs from "dayjs";
@@ -12,15 +12,16 @@ import { gendersColor } from "@utils";
 type Prop = {
 	pet: DashboardPetFragment;
 	index: number;
+	onShare?: (id: string)=>void 
 };
 
-export const PetItem: React.FC<Prop> = ({ pet, index }) => {
+export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
 	const [ready, setReady] = useState(false);
 	const [imageReady, setImageReady] = useState(false);
 	const itemRef = useRef<HTMLDivElement>(null);
 	const { t } = useTranslation();
 	const { t : breedT} = useTranslation("breeds")
-
+	const [mode, setMode] = useState<"view"| "edit">("view")
 	useEffect(() => {
 		if (imageReady || !pet.main_picture) {
 			gsap.fromTo(
@@ -38,11 +39,17 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 	useEffect(() => {
 		console.log(t("pet.age_years", { years: 3 }));
 	}, []);
+
+	const enterEdit= useCallback(()=>{
+		setMode( "edit")
+	}, [])
+
 	return (
 		<Container
 			ref={itemRef}
 			bgColor={pet.main_picture?.main_color?.color}
 			color={pet.main_picture?.main_color?.contrast}
+			onContextMenu= {enterEdit}
 		>
 			{ready && pet.main_picture ? (
 				<ImageWrapper className="image-wrapper custom-pet-border-color">
@@ -52,9 +59,15 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 						id={pet.main_picture!.id}
 						onLoad={() => setImageReady(true)} // Set ready state to true when image is loaded
 					/>
+					<DeleteWrapper className={`${mode === "edit"? "edit" : "view"}`}>
+						<Icon name="trashOutline" />
+					</DeleteWrapper>
 				</ImageWrapper>
 			) : <ImageWrapper className="image-wrapper custom-pet-border-color">
 				<Ph />
+					<DeleteWrapper className={`${mode === "edit"? "edit" : "view"}`}>
+						<Icon name="trashOutline" />
+					</DeleteWrapper>
 				</ImageWrapper>}
 			<InfoWrapper>
 				<Name className="name custom-pet-color">
@@ -68,7 +81,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 					<span className="mainInfo">{pet.name}</span>
 				</Name>
 				<InfoBox className="info-box custom-pet-border-color">
-					<InfoRow>
+					{mode === "view" ? <><InfoRow>
 						<span>
 							{breedT(
 								`${pet.body.breed.toLocaleLowerCase()}`
@@ -109,8 +122,23 @@ export const PetItem: React.FC<Prop> = ({ pet, index }) => {
 									}`
 								)}
 							</span>
-						)}
-					</InfoRow>
+						)}					
+					</InfoRow>	</>
+					:
+					<ActionContainer>
+						<Cancel>
+							<Icon name="closeCircleOutline" />
+						</Cancel>
+						<Action>
+
+						</Action>
+						<Action>
+							{t('share')}
+							<Icon name="shareOutline" />
+
+						</Action>
+					</ActionContainer>
+					}			
 				</InfoBox>
 			</InfoWrapper>
 		</Container>
@@ -159,6 +187,24 @@ const ImageWrapper = styled.div`
 	overflow: hidden;
 	border-radius: 99px;
 `;
+
+const DeleteWrapper = styled.div`
+	width: ${$uw(13)};
+	height: ${$uw(13)};
+	top:0;
+	flex: 0 0 ${$uw(13)};
+	position: absolute;
+	padding:${$uw(2)};
+	opacity: .0;
+	background-color: ${$color('danger')};
+	&.edit{
+		opacity: .7;
+	}
+	>* {
+		height:100%;
+		width: 100%;
+	}
+`
 
 const InfoWrapper = styled.div`
 	display: flex;
@@ -242,5 +288,19 @@ const InfoRow = styled.div`
 const Ph = styled.div`
 	width: 100%;
 	height: 100%;
-	background-color: ${$color('light')}
+	background-color: ${$color('light')};
+`
+
+
+const ActionContainer = styled.div`
+	width:100%;
+`
+const Cancel = styled.div`
+	display:flex;
+	justify-content: flex-end;
+	margin-bottom:${$uw(1)};
+`
+const Action = styled.div`
+	display: flex;
+	justify-content: space-between;
 `
