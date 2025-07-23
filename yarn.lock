@@ -1863,29 +1863,29 @@
     debug "^4.0.0"
     tslib "^2.0.1"
 
-"@ionic/core@8.6.3":
-  version "8.6.3"
-  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-8.6.3.tgz#f03ecb0a5c464128db8cdf00687a43c5e9cbd333"
-  integrity sha512-N/mkw+sPecLEoO1lrnKDS0uZgl6PWSyFprCkkqoK1nHlfBkgFiHm5M9rvWlnGaFC/5xrhNGHdUtYHDFM+F8gRw==
+"@ionic/core@8.6.5":
+  version "8.6.5"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-8.6.5.tgz#deb730b3a05d1067eb512c59a7b57ed4827938bd"
+  integrity sha512-HN+6/Q67fEEpRA86QzXSrCahuHwaTPBsa910RuvY0pIYuoY4rpzGPU9ZOQ5q2wBsrln921rroEPU1xdpPKIH8Q==
   dependencies:
     "@stencil/core" "4.33.1"
     ionicons "^7.2.2"
     tslib "^2.1.0"
 
-"@ionic/react-router@^8.6.3":
-  version "8.6.3"
-  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-8.6.3.tgz#ab4dc0f5c0a226e97008f49880a1dada4fcf2bb1"
-  integrity sha512-hjBTtvltDccgBkZbZRgvnHAB+IxtjXBIJVuRRWAgyTovlJJAdm7oP8RxabblsZqYgdAup9LTI/L5X/uLDlzGIg==
+"@ionic/react-router@^8.6.5":
+  version "8.6.5"
+  resolved "https://registry.yarnpkg.com/@ionic/react-router/-/react-router-8.6.5.tgz#30dddaef757ee007dbf5cc10c17b3045274b3943"
+  integrity sha512-DGR7yHaNEneK1DwZ6D52vkKRICAAteiC1i9C6KgNGw24e1et83nE1gqa4s4EQ3ggbfWBkmWCs/9UBqU8oyG0Cg==
   dependencies:
-    "@ionic/react" "8.6.3"
+    "@ionic/react" "8.6.5"
     tslib "*"
 
-"@ionic/react@8.6.3", "@ionic/react@^8.6.3":
-  version "8.6.3"
-  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-8.6.3.tgz#bb584087b0303cd05b0d8008dcf3a14e1597b83b"
-  integrity sha512-wBFn6cOKuRKJfUNBz1SyexLkqs+QdaSImEJJ5wepaIF5A94rKlG0JQGCCZjT0KaLbJ+UaQuCgRRQWUrT0XJKDQ==
+"@ionic/react@8.6.5", "@ionic/react@^8.6.5":
+  version "8.6.5"
+  resolved "https://registry.yarnpkg.com/@ionic/react/-/react-8.6.5.tgz#cf415226cd836d32fb7de1d9f8d27d092ce20c79"
+  integrity sha512-reUKqlU3cIJoHuDibB8WUd32a7nqg5aMsIfPnXOVydIUsJdvQnwjACbYiP0g+4AFzTVPsw/Cmyqh85GhXGw4WA==
   dependencies:
-    "@ionic/core" "8.6.3"
+    "@ionic/core" "8.6.5"
     ionicons "^7.0.0"
     tslib "*"
 
@@ -2065,10 +2065,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@lemaks/grid_system@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@lemaks/grid_system/-/grid_system-1.0.12.tgz#0b2a30e2dc658b3a2323685380ba6bf930d44ebb"
-  integrity sha512-p1KwWSFdDjFxZcHUIXwbEZ3uAjOxf3SGBeIgxaWTXL0BWA844B/NDe5daTLSBamYposPwCOTsPSa0kKrex84Sg==
+"@lemaks/grid_system@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@lemaks/grid_system/-/grid_system-1.0.13.tgz#7c582ec2ca7aa4c506a22750c55760d54885cb37"
+  integrity sha512-ZO+SxstvWb70jFp1XIKJI/YPkgc1/GvgssiJYA7VMiAzMHaCNfZ90M0I8yZtheyb3hBXNd59QG2mRA1zjorYzg==
   dependencies:
     "@gsap/react" "^2.1.2"
     "@parcel/packager-ts" "^2.13.3"

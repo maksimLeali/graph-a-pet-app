@@ -9,16 +9,14 @@ import { css } from "../theme";
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 	children: nodes,
 }) => {
-	const { useCustomColors } = useUserContext();
+	const { useCustomColors, gridVisible, handleGridVisibility } = useUserContext();
 
-	useEffect(() => {
-		console.log("useCustomColors", useCustomColors);
-		console.log("css", css);
-	}, []);
+
 	return (
 		<ModalContextProvider>
 			<Main id="mainWrapper" className={!useCustomColors ? 'force-primary' : ''}>
-				<DebugGrid />
+				{/* @ts-ignore */}
+				<DebugGrid visible={gridVisible} setVisible={handleGridVisibility}/>
 				{nodes}
 				<BottomMenu />
 			</Main>

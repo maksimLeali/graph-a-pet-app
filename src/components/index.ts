@@ -13,5 +13,4 @@ export * from './SpecialIcons'
 export * from "./formFields";
 export * from './icons' 
 export * from './placeholders'
-export * from './system'
 export * from  './reports'

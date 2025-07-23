@@ -42,7 +42,7 @@ const Container = styled.div<{fade: boolean}>`
     position: fixed;
 	z-index: ${({fade})=> fade ? -1 :200};
 	bottom: 0;
-	height: ${$uw(6)};
+	height: ${$uw(4)};
 	border-radius: 10px 10px 0 0;
 	width: 100%;
 	max-width: var(--max-width);
@@ -50,7 +50,7 @@ const Container = styled.div<{fade: boolean}>`
 	box-shadow: 0 -1px 2px 0px ${$color('medium')};
 	display: flex;
 	justify-content: space-between;
-	padding: ${$cssTRBL(2, 4)};
+	padding: ${$cssTRBL(1, 2)};
 	box-sizing: border-box;
 	.dark & {
 		background-color: ${$color('step-50')};

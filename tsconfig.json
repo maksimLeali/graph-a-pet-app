@@ -25,6 +25,7 @@
         "@i18n": ["./src/i18n"],
         "@images": ["./src/images"],
         "@layouts": ["./src/layouts"],
+        "@layouts/components": ["./src/layouts/components"],
         "@theme": ["./src/theme"],
         "@types": ["./src/types"],
         "@utils": ["./src/utils"],
