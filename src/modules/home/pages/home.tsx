@@ -83,10 +83,7 @@ export const Home: React.FC = () => {
 				<Pets pets={pets} onActiveChange={(v) => setActivePet(v)} />
 			)}
 			{!loading && !pets?.length && (
-				<EmptyContainer>
-					<Circle>
-
-					</Circle>
+				<EmptyContainer>					
 					<h4> Nessun cucciolo</h4>
 				</EmptyContainer>
 			)}
@@ -97,7 +94,7 @@ export const Home: React.FC = () => {
 				fromDate={dayjs().startOf("w").toDate()}
 			/>
 
-			<ReportsPreview loading={loading} reports={reports} />
+			{(loading || reports?.length > 0 ) && <ReportsPreview loading={loading} reports={reports} /> }
 		</IonContent>
 	);
 };

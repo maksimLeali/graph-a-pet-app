@@ -14,7 +14,7 @@ import { BREEDS, COAT_LENGHTS } from "@utils";
 import { useAddPetToMeMutation } from "../../operations/__generated__/addPetToMe.generated";
 
 export const Step2 = React.memo(() => {
-	const { setPage, fadeBackground } = useUserContext();
+	const { setPage, fadeBackground, refetchDashboard } = useUserContext();
 	const [breedText, setBreedText] = useState("");
 	const [neutered, setNeutered] = useState(false);
 	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
@@ -23,6 +23,7 @@ export const Step2 = React.memo(() => {
 	const [addPetToMe, { loading }] = useAddPetToMeMutation({onCompleted: async (data)=>{		
 		if(!data.addPetToMe.data?.pet.id) return
 		console.log('here')
+		refetchDashboard()
 		setCookies('add_pet_step_2', {...cookies.add_pet_step_2, pet_id : data.addPetToMe.data.pet.id})
 		history.push("/pets/new/step3");
 	}})
@@ -95,7 +96,7 @@ export const Step2 = React.memo(() => {
 					
 				}
 			}
-		}})	
+		}})			
 		// history.push("/pets/new/step1");
 	})
 

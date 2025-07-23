@@ -23,10 +23,10 @@ export const Sharing: React.FC = () => {
     const { code } = useParams<{ code: string }>();
     const [pet, setPet] = useState<MinPetFragment>();
     const { t } = useTranslation();
-    const { setPage } = useUserContext();
+    const { setPage, refetchDashboard } = useUserContext();
     const [cookies] = useCookies(["user"]);
     const [owner, setOwner] = useState<string>();
-    const [loaners, setLoaners] = useState<string[]>([]);
+    const [loaners, setLoaners] = useState<string[]>([]);    
     const [checkCode, { loading: checkLoading }] = useCheckCodeMutation({
         onCompleted: ({ checkCode }) => {
             if (!checkCode?.code || checkCode.error) {
@@ -66,6 +66,7 @@ export const Sharing: React.FC = () => {
                 return
             }
             toast.success(t('messages.success.linked_succesfully'))
+            refetchDashboard();
         }
     })
 

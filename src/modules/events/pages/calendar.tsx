@@ -18,7 +18,7 @@ import { MutationCreateTreatmentArgs } from "@types";
 import { $color, $uw } from "@theme";
 
 export const CalendarEvents: React.FC = () => {
-	const { setPage, refetchDashboard } = useUserContext();
+	const { setPage, refetchDashboard} = useUserContext();
 	const [appointments, setAppointments] = useState<
 		Maybe<AppointmentFragment>[]
 	>([]);
@@ -105,13 +105,14 @@ export const CalendarEvents: React.FC = () => {
 			dateSelected ? dayjs(dateSelected).toISOString() : undefined!
 		);
 	}, [dateSelected]);
+
 	const [createTreatment, { loading: creationLoading }] =
 		useCreateTreatmentMutation({
 			onCompleted: ({ createTreatment }) => {
-				console.log(createTreatment);
+				console.log('createTreatment:', createTreatment);
 				if (!createTreatment || createTreatment.error) {
 					return;
-				}
+				}				
 
 				methods.setValue("date_date", undefined!);
 				methods.setValue("date_time", undefined!);
@@ -119,8 +120,7 @@ export const CalendarEvents: React.FC = () => {
 				methods.setValue("data.name", undefined!);
 				methods.setValue("data.type", undefined!);
 				methods.setValue("data.health_card_id", undefined!);
-				getMyAppointments();
-				refetchDashboard();
+				
 				closeModal();
 			},
 		});
@@ -136,13 +136,13 @@ export const CalendarEvents: React.FC = () => {
 	});
 	const { openModal, closeModal } = useModal();
 
-	const createEvent = methods.handleSubmit((data) => {
+	const createEvent = methods.handleSubmit(async (data) => {
 		const time = dayjs(data.date_time);
 		const date = dayjs(data.date_date)
 			.set("hour", time.hour())
 			.set("minute", time.minute())
 			.toISOString();
-		createTreatment({
+		await createTreatment({
 			variables: {
 				treatment: {
 					health_card_id: data.data.health_card_id,
@@ -170,6 +170,7 @@ export const CalendarEvents: React.FC = () => {
 			onConfirm: () => {
 				createEvent();
 				getMyAppointments()
+				refetchDashboard();
 				closeModal();
 			},
 			children: (

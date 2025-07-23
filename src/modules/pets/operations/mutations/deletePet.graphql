@@ -1,0 +1,10 @@
+mutation deletePet($id: ID!) {
+    deletePet(id: $id) {
+        error {
+            code
+            message
+        }
+        success
+        id
+    }
+}

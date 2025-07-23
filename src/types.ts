@@ -1257,6 +1257,20 @@ export type CheckCodeMutationVariables = Exact<{
 
 export type CheckCodeMutation = { __typename?: 'Mutation', checkCode: { __typename?: 'CodeValidationResult', success: boolean, is_valid?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, code?: { __typename?: 'Code', id: string, code: string, ref_id: string, ref_table: string } | null } };
 
+export type DeleteOwnershipMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteOwnershipMutation = { __typename?: 'Mutation', deleteOwnership: { __typename?: 'DeleteResult', success?: boolean | null, id?: string | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type DeletePetMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'DeleteResult', success?: boolean | null, id?: string | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
 export type LinkPetToMeMutationVariables = Exact<{
   petId: Scalars['ID']['input'];
   custodyLevel: CustodyLevel;
@@ -2117,6 +2131,82 @@ export function useCheckCodeMutation(baseOptions?: Apollo.MutationHookOptions<Ch
 export type CheckCodeMutationHookResult = ReturnType<typeof useCheckCodeMutation>;
 export type CheckCodeMutationResult = Apollo.MutationResult<CheckCodeMutation>;
 export type CheckCodeMutationOptions = Apollo.BaseMutationOptions<CheckCodeMutation, CheckCodeMutationVariables>;
+export const DeleteOwnershipDocument = gql`
+    mutation deleteOwnership($id: ID!) {
+  deleteOwnership(id: $id) {
+    error {
+      code
+      message
+    }
+    success
+    id
+  }
+}
+    `;
+export type DeleteOwnershipMutationFn = Apollo.MutationFunction<DeleteOwnershipMutation, DeleteOwnershipMutationVariables>;
+
+/**
+ * __useDeleteOwnershipMutation__
+ *
+ * To run a mutation, you first call `useDeleteOwnershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteOwnershipMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteOwnershipMutation, { data, loading, error }] = useDeleteOwnershipMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteOwnershipMutation(baseOptions?: Apollo.MutationHookOptions<DeleteOwnershipMutation, DeleteOwnershipMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteOwnershipMutation, DeleteOwnershipMutationVariables>(DeleteOwnershipDocument, options);
+      }
+export type DeleteOwnershipMutationHookResult = ReturnType<typeof useDeleteOwnershipMutation>;
+export type DeleteOwnershipMutationResult = Apollo.MutationResult<DeleteOwnershipMutation>;
+export type DeleteOwnershipMutationOptions = Apollo.BaseMutationOptions<DeleteOwnershipMutation, DeleteOwnershipMutationVariables>;
+export const DeletePetDocument = gql`
+    mutation deletePet($id: ID!) {
+  deletePet(id: $id) {
+    error {
+      code
+      message
+    }
+    success
+    id
+  }
+}
+    `;
+export type DeletePetMutationFn = Apollo.MutationFunction<DeletePetMutation, DeletePetMutationVariables>;
+
+/**
+ * __useDeletePetMutation__
+ *
+ * To run a mutation, you first call `useDeletePetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePetMutation, { data, loading, error }] = useDeletePetMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeletePetMutation(baseOptions?: Apollo.MutationHookOptions<DeletePetMutation, DeletePetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePetMutation, DeletePetMutationVariables>(DeletePetDocument, options);
+      }
+export type DeletePetMutationHookResult = ReturnType<typeof useDeletePetMutation>;
+export type DeletePetMutationResult = Apollo.MutationResult<DeletePetMutation>;
+export type DeletePetMutationOptions = Apollo.BaseMutationOptions<DeletePetMutation, DeletePetMutationVariables>;
 export const LinkPetToMeDocument = gql`
     mutation linkPetToMe($petId: ID!, $custodyLevel: CustodyLevel!) {
   linkPetToMe(petId: $petId, custodyLevel: $custodyLevel) {

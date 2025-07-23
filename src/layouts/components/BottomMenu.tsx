@@ -41,10 +41,11 @@ export const BottomMenu= () => {
 const Container = styled.div<{fade: boolean}>`
     position: fixed;
 	z-index: ${({fade})=> fade ? -1 :200};
-	bottom: 0;
+	bottom: ${$uw(1)};
 	height: ${$uw(4)};
-	border-radius: 10px 10px 0 0;
-	width: 100%;
+	border-radius: 10px 10px ;
+	width: ${$uw(30)};
+	left: calc(50% - ${$uw(15)});
 	max-width: var(--max-width);
 	background-color: ${$color('light')};
 	box-shadow: 0 -1px 2px 0px ${$color('medium')};

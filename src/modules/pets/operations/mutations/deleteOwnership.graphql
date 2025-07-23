@@ -1,0 +1,10 @@
+mutation deleteOwnership($id: ID!) {
+    deleteOwnership(id: $id) {
+        error {
+            code
+            message
+        }
+        success
+        id
+    }
+}
