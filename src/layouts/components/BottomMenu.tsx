@@ -28,7 +28,7 @@ export const BottomMenu= () => {
 						<Icon
 							dropShadow={selected}
 							name={item.icon}
-							size="32px"
+							size="24px"
 							color={selected ? "primary" : "medium"}
 						/>
 					</Link>
@@ -48,10 +48,10 @@ const Container = styled.div<{fade: boolean}>`
 	left: calc(50% - ${$uw(15)});
 	max-width: var(--max-width);
 	background-color: ${$color('light')};
-	box-shadow: 0 -1px 2px 0px ${$color('medium')};
+	box-shadow: 0 0px 1px 1px ${$color('medium')};
 	display: flex;
 	justify-content: space-between;
-	padding: ${$cssTRBL(1, 2)};
+	padding: ${$cssTRBL(1, 2,)};
 	box-sizing: border-box;
 	.dark & {
 		background-color: ${$color('step-50')};

@@ -67,8 +67,7 @@ const Container = styled.div<ContainerProps>`
 		height: 100%;
 		aspect-ratio: 1;
 
-		${({ dropShadow }) =>
-			dropShadow ? "filter: drop-shadow(0px 4px 2px #000 );" : ""}
+	
 		${({ reverse }) => (reverse ? `transform: ScaleX(-1);` : "")}
         transition: color ${({ time }) => time} ease-in, transform ${({
 			time,
