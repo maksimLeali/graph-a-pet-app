@@ -126,7 +126,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
 					</InfoRow>	</>
 					:
 					<ActionContainer>
-						<Cancel>
+						<Cancel onClick={()=>setMode('view')}>
 							<Icon name="closeCircleOutline" />
 						</Cancel>
 						<Action>
