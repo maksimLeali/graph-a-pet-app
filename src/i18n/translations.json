@@ -1004,6 +1004,7 @@
                 "on_loan": "In affidamwento",
                 "empty": "Nesun animale",
                 "delete_pet":"Sicuro di voler cancellare {{name}}? ",
+                "report": "Segnala smarrimento",
                 "delete_loan": "Vuoi togliere {{name}} dai tuoi animali in affido?"
             },
             "desc_pet_sitter": "Un <b>Pet Sitter</b> si occupa dell'animale per <b>lavoro</b>",

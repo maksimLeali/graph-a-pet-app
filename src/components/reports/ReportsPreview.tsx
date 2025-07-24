@@ -56,5 +56,5 @@ const Title = styled.h3`
 
 const List = styled.div`
 	width: 100%;
-	padding: ${$uw(1)};
+	
 `;

@@ -7,15 +7,16 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { $breakPoint, $color, $uw } from "@theme";
-import { Image2x, Icon } from "@components";
+import { Image2x, Icon, NewReportForm } from "@components";
 import { gendersColor } from "@utils";
 import { useDeletePetMutation } from "../operations/__generated__/deletePet.generated";
 import { useModal, useUserContext } from "@contexts";
 import { CustodyLevel, useDeleteOwnershipMutation } from "@types";
+import { FormProvider, useForm } from "react-hook-form";
 
 type Prop = {
     pet: DashboardPetFragment;
-    index: number;    
+    index: number;
     onShare?: (id: string) => void;
 };
 
@@ -28,7 +29,11 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
     const [mode, setMode] = useState<"view" | "edit" | null>();
     const { openModal, closeModal } = useModal();
 
-    const { user ,refetchDashboard} = useUserContext();
+    const { user, refetchDashboard } = useUserContext();
+
+    const methods = useForm({
+        mode: "onSubmit",
+    });
 
     const ownership = useMemo(() => {
         const mine = pet.ownerships?.items.find((o) => o?.user.id === user.id);
@@ -39,9 +44,8 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
     const [deletePet, { loading: deleteLoading }] = useDeletePetMutation({
         onCompleted: (res) => {
             toast.success(t("pets.pet_list_page.deleted_pet_ok"));
-			refetchDashboard();
-			closeModal();
-            
+            refetchDashboard();
+            closeModal();
         },
     });
     const [deleteOwnerhsp, { loading: deleteOwnershipLoading }] =
@@ -97,6 +101,26 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                         { name: pet.name }
                     )}
                 </Text>
+            ),
+        });
+    }, []);
+
+    const openNewReportForm = useCallback(() => {
+        openModal({
+            onClose: () => {
+                closeModal();
+            },
+            onCancel: () => {
+                closeModal();
+            },
+            onConfirm: () => {
+                console.log(methods.getValues())
+                closeModal();
+            },
+            children: (
+                <FormProvider {...methods}>
+                    <NewReportForm />
+                </FormProvider>
             ),
         });
     }, []);
@@ -202,7 +226,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                             <Cancel onClick={() => setMode("view")}>
                                 <Icon name="closeCircleOutline" />
                             </Cancel>
-                            <Action></Action>
+
                             {onShare &&
                                 ownership.type === CustodyLevel.Owner && (
                                     <Action onClick={() => onShare(pet.id)}>
@@ -210,6 +234,15 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                                         <Icon name="shareOutline" />
                                     </Action>
                                 )}
+                            <Action onClick={openNewReportForm}>
+                                {t("pets.pet_list_page.report")}
+                                <Icon
+                                    className="icon"
+                                    name="alertCircle"
+                                    color="danger"
+                                    uw={1.6}
+                                />
+                            </Action>
                         </ActionContainer>
                     )}
                 </InfoBox>
@@ -268,11 +301,11 @@ const DeleteWrapper = styled.div`
     position: absolute;
     padding: ${$uw(2)};
     opacity: 0;
-	z-index: -1;
+    z-index: -1;
     background-color: ${$color("danger")};
     &.edit {
         animation: petItemAppear 0.5s ease-in forwards;
-		z-index: 10;
+        z-index: 10;
     }
     &.view {
         animation: petItemDisappear 0.5s ease-in forwards;
