@@ -16,8 +16,8 @@ import { useAddPetToMeMutation } from "../../operations/__generated__/addPetToMe
 export const Step2 = React.memo(() => {
 	const { setPage, fadeBackground, refetchDashboard } = useUserContext();
 	const [breedText, setBreedText] = useState("");
-	const [neutered, setNeutered] = useState(false);
 	const [selectedBreed, setSelectedBreed] = useState<Option | null>(null);
+	const [neutered, setNeutered] = useState(false);
 	const [openBreedSelector, setOpenBreedSelector] = useState(false);
 	
 	const [addPetToMe, { loading }] = useAddPetToMeMutation({onCompleted: async (data)=>{		

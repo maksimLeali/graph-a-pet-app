@@ -24,17 +24,23 @@ import { useQueryParams } from "@hooks";
 import { LocationSelector } from "../components";
 
 type props = {};
+type Location = {
+    coordinates: { latitude: string; longitude: string };
+    label: string;
+};
 
 export const NewReport: React.FC<props> = () => {
     const [useCurrentDate, setUseCurrentDate] = useState(true);
     const [isMissing, setIsMissing] = useState(false);
     const queryParams = useQueryParams();
     const { setPage, fadeBackground, ownedPets } = useUserContext();
-    
+
     const { t } = useTranslation();
 
     const [openLocationSelector, setOpenLocationSelector] = useState(false);
-    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+        null
+    );
     const [locationText, setLocationText] = useState("");
 
     const petsOptions: Option[] = ownedPets.map((pet: DashboardPetFragment) => {
@@ -95,32 +101,35 @@ export const NewReport: React.FC<props> = () => {
 
     return (
         <IonContent fullscreen>
-            {openLocationSelector && <Modal
-                open={openLocationSelector}
-                onClose={() => {
-                    setOpenLocationSelector(false);
-                    fadeBackground(false);
-                }}
-                onCancel={() => {
-                    setOpenLocationSelector(false);
-                    fadeBackground(false);
-                }}
-                onConfirm={() => {
-                    setOpenLocationSelector(false);
-                    fadeBackground(false);
-                }}
-            >
-                <LocationSelector
-                    onSelected={(v) => {
-                        // setSelectedLocation(v);
-                        // if (!v) return;
-                        // setLocationText(v.label);
-                        console.log("Selected location:", v);
+            {openLocationSelector && (
+                <Modal
+                    open={openLocationSelector}
+                    onClose={() => {
+                        setOpenLocationSelector(false);
+                        fadeBackground(false);
                     }}
-                    changeLocationText={(v) => setLocationText(v)}
-                    selectedLocation={selectedLocation}
-                />
-            </Modal>}
+                    onCancel={() => {
+                        setOpenLocationSelector(false);
+                        fadeBackground(false);
+                    }}
+                    onConfirm={() => {
+                        setOpenLocationSelector(false);
+                        fadeBackground(false);
+                    }}
+                >
+                    <LocationSelector
+                        onSelected={(v) => {
+                            console.log("*é*é*é*é*é*é", v);
+                            setSelectedLocation(v);
+                            // if (!v) return;
+                            setLocationText(v?.label ?? "");
+                            console.log("Selected location:", v);
+                        }}
+                        changeLocationText={(v) => setLocationText(v)}
+                        selectedLocation={selectedLocation}
+                    />
+                </Modal>
+            )}
 
             <FormProvider {...methods}>
                 <Form
@@ -142,6 +151,14 @@ export const NewReport: React.FC<props> = () => {
                         required={isMissing}
                         disabled={!isMissing}
                         textLabel="board.new_report.pet"
+                    />
+
+                    <FakeInput
+                        name="location"
+                        required
+                        textLabel="board.new_report.insert_location"
+                        onClick={openLocationsModal}
+                        value={locationText}
                     />
                     <Row>
                         <p>{t("board.new_report.use_current_time")}</p>
@@ -167,14 +184,10 @@ export const NewReport: React.FC<props> = () => {
                         required={!useCurrentDate}
                         disabled={useCurrentDate}
                     />
-                    <FakeInput
-                        name="location"
-                        required
-                        textLabel="board.new_report.insert_location"
-                        onClick={openLocationsModal}
-                        value={locationText}
+                    <TextAreaInput
+                        name="notes"
+                        textLabel="board.new_report.notes"
                     />
-                    <TextAreaInput name="notes" textLabel="board.new_report.notes" />
                 </Form>
             </FormProvider>
         </IonContent>

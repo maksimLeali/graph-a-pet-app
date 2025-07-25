@@ -32,6 +32,11 @@ L.Icon.Default.mergeOptions({
     shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
 });
 
+type Location = {
+  coordinates: { latitude: string; longitude: string };
+  label: string;
+} 
+
 // Recenter helper for dynamic center/zoom
 const RecenterMap: FC<{ center: [number, number]; zoom: number }> = ({
     center,
@@ -102,10 +107,7 @@ function useNominatimSearch(query: string) {
 }
 
 const MapEvents: FC<{
-    onSelect: (data: {
-        coordinates: { latitude: string; longitude: string };
-        label: string;
-    }) => void;
+    onSelect: (data: Location | null) => void;
 }> = ({ onSelect }) => {
     const map = useMapEvents({
         click: async ({ latlng }) => {
@@ -146,33 +148,36 @@ const MapEvents: FC<{
                 console.error("Reverse geocode failed:", err);
             }
         },
+        popupclose: () => {
+          // qui l’utente ha chiuso la popup
+          // onSelect(null);
+        },
     });
     return null;
 };
 
 interface Props {
-    onSelected: (opt: UIOption | null) => void;
+    onSelected: (opt: Location | null) => void;
     changeLocationText: (text: string) => void;
-    selectedLocation: UIOption | null;
+    selectedLocation: Location | null;
 }
 
 export const LocationSelector: FC<Props> = React.memo(
     ({ onSelected, changeLocationText, selectedLocation }) => {
         const { t } = useTranslation();
+        const [selected, setSelected] = useState<Location | null>(null)
         const [initPosition, setInitPosition] = useState<{
             latitude: number | null;
             longitude: number | null;
         }>();
         const [query, setQuery] = useState("");
         const {
-            options: searchOptions,
-            loading,
-            error,
+            options: searchOptions,            
         } = useNominatimSearch(query);
         const { coords, requestLocation } = useGeolocation({
             timeout: 10000,
         });
-
+        
         const [mapZoom, setMapZoom] = useState<number>(10);
 
         useEffect(() => {
@@ -212,11 +217,9 @@ export const LocationSelector: FC<Props> = React.memo(
 
         const handleChange = useCallback(
             (val: string) => {
-                setQuery(val);
-                changeLocationText(val);
-                onSelected(null);
+                setQuery(val);                
             },
-            [changeLocationText, onSelected]
+            [onSelected]
         );
 
         return (
@@ -227,6 +230,7 @@ export const LocationSelector: FC<Props> = React.memo(
                         value={query}
                         bgColor="light"
                         onChange={handleChange}
+                        
                     />
                 </SearchBar>
                 <MapWrapper>
@@ -252,7 +256,7 @@ export const LocationSelector: FC<Props> = React.memo(
                                 />
                             </>
                         )}
-                        <MapEvents onSelect={(data)=>{}}/>
+                        <MapEvents onSelect={(data)=>{ console.log('data', data); onSelected(data); changeLocationText(data?.label ?? "")}}/>
                     </MapContainer>
                 </MapWrapper>
             </Container>
