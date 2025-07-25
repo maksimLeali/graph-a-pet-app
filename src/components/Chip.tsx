@@ -6,11 +6,12 @@ type props = {
     color?: string,
     onClick?: ()=> void,
     invert?:boolean
+    className?: string
 }
 
-export const Chip: React.FC<props> = ({label, color="primary", invert= false, onClick})=> {
+export const Chip: React.FC<props> = ({label, color="primary", invert= false, onClick, className})=> {
 
-    return <Container onClick={onClick ? ()=>{  onClick()} : ()=> {}} color={color} className={`${invert? 'invert' : ''}`}>
+    return <Container  onClick={onClick ? ()=>{  onClick()} : ()=> {}} color={color} className={`${className} ${invert? 'invert' : ''}`}>
         <span>{label}</span>
     </Container>
 }

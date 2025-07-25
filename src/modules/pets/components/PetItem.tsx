@@ -429,12 +429,13 @@ const ActionContainer = styled.div`
     height: ${$uw(10)};
     overflow: hidden;
     position: absolute;
-    transition: max-width 0.5s ease-in;
     max-width: 0;
     top: ${$uw(-2.55)};
     left: 0;
     padding-top: ${$uw(2.55)};
+    transition: max-width 0.5s ease-out .2s;
     .edit & {
+        transition: max-width 0.5s ease-in;
         max-width: 100%;
     }
 `;
@@ -459,10 +460,10 @@ const Cancel = styled.div`
     right: ${$uw(0.5)};
     top: ${$uw(0.5)};
     opacity: 0;
-    transition: opacity 0.2s ease-out;
+    transition: opacity 0.2s ease-out ;
     .edit & {
         opacity: 1;
-        transition: opacity 1s ease-in;
+        transition: opacity .2s ease-in .5s ;
     }
 `;
 const Action = styled.div`
@@ -472,10 +473,10 @@ const Action = styled.div`
     height: ${$uw(2)};
     width: ${$uw(8)};
     opacity: 0;
-    transition: opacity 0.2s ease-out;
+    transition: opacity 0.2s ease-out ;
     .edit & {
         opacity: 1;
-        transition: opacity 1s ease-in;
+        transition: opacity .2s ease-in .5s;
     }
 `;
 

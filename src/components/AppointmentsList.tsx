@@ -110,6 +110,7 @@ const Container = styled.div`
 		width: 100%;
 		border-bottom: 1px solid ${$color("medium")};
 		padding-bottom: ${$uw(1)};
+		margin-bottom: ${$uw(1)};
 	}
 	.group_date::first-letter {
 		text-transform: capitalize;

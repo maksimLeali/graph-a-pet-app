@@ -49,37 +49,6 @@ const List = styled.div`
     }
 `;
 
-const Item = styled.div`
-    width: 100%;
-    border-bottom: 1px solid ${$color('medium')};
-    height: 90px;
-    display: flex;
-    justify-content:flex-start;
-`;
-const UserImageBox = styled.div`
-    width: 90px;
-    margin-right: 10px;
-    padding: 15px;
-    > .img2x {
-        width: 100%;
-        height: 100%;
-    }
-`;
-
-const DescBox = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const ActionsOpener = styled.div`
-    
-    height: 100%;
-    display: flex;
-    align-items:center;
-    justify-content: center;
-    margin-left:auto;
-    margin-right:12px;
-`
 const Gradient = styled.div`
     width:100%;
     height:50px;

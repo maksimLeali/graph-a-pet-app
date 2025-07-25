@@ -77,6 +77,7 @@ export const Board: React.FC = () => {
 			},
 		},
 		onCompleted: ({ listReports }) => {
+			console.log(listReports)
 			if (!listReports?.items?.length || listReports.error) {
 				return;
 			}
@@ -120,6 +121,7 @@ export const Board: React.FC = () => {
 		setPageMissing(0)
 		setMissingReports([])
 		setFoundReports([])
+		fetchRepots()
 		event.detail.complete();
 	};
 

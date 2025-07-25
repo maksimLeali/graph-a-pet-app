@@ -94,7 +94,8 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 				<SubOwnerList
 					ownerships={
 						(pets[active].ownerships?.items.filter(
-							(item) => item && item.user.id !== user.id
+							(item) => 
+								item && item.user.id !== user.id
 						) as PetMinSubOwnerFragment[]) ?? []
 					}
 					onSelected={(str) => {}}
