@@ -355,7 +355,7 @@ const Name = styled.div`
     width: fit-content;
     font-size: 2rem;
     margin-left: ${$uw(5)};
-    padding-left: ${$uw(5)};
+    padding-left: ${$uw(5.5)};
     height: ${$uw(2.5)};
     font-weight: 600;
     padding-right: ${$uw(2)};
@@ -374,7 +374,7 @@ const InfoBox = styled.div`
     width: ${$uw(24)};
     height: ${$uw(7.7)};
     margin-left: ${$uw(5)};
-    padding-left: ${$uw(6)};
+    padding-left: ${$uw(5.5)};
     position: relative;
     border-radius: 0 2px 2px 0px;
     flex-wrap: wrap;
@@ -442,12 +442,13 @@ const ActionContainer = styled.div`
 const ActionWrapper = styled.div`
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: ${$uw(0.5)};
+    justify-content: space-between;
+    gap: ${$uw(1)};
     flex-wrap: wrap;
     width: 100%;
     height: 100%;
-    padding: ${$cssTRBL(1.5, 1, 1.5, 5)};
+    border-radius: 2px 0 2px 0;
+    padding: ${$cssTRBL(1, 1, 1, 5.5)};
 `;
 
 const Cancel = styled.div`
