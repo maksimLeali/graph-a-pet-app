@@ -30,6 +30,7 @@ type props = {
 	name: string;
 	ntTextLabel?: string;
 	pkBgColor?: string;
+	disabled?: boolean;
 	pkLabelColor?: string;
 	pkSelectedColor?: string;
 	pkTxtColor?: string;
@@ -47,6 +48,7 @@ export const DateTimePicker: React.FC<props> = ({
 	textLabel,
 	color = "medium",
 	required = false,
+	disabled= false,
 	registerOptions,
 	type = "date",
 	focusColor = "primary",
@@ -82,14 +84,14 @@ export const DateTimePicker: React.FC<props> = ({
 	const [selectedHour, setSelectedHour] = useState<number | undefined>();
 	const {
 		register,
-		formState: { errors, isSubmitting },
-		getValues,
+		formState: { errors, isSubmitting },		
 		setValue,
+		watch,
 	} = useFormContext();
 
+	const value = watch(name)
+
 	useEffect(() => {
-		const value = getValues(name);
-		console.log("value", value);
 		if (!value) {
 			setCompiled(false);
 			setSelectedDay(undefined);
@@ -105,7 +107,7 @@ export const DateTimePicker: React.FC<props> = ({
 		setSelectedMonth(dayjs(value).month());
 		setSelectedHour(dayjs(value).hour());
 		setSelectedMinute(dayjs(value).minute());
-	}, [getValues(name)]);
+	}, [value]);
 
 	const selectedDate = useMemo(() => {
 		if (
@@ -164,8 +166,7 @@ export const DateTimePicker: React.FC<props> = ({
 		}
 	});
 
-	const reset = () => {
-		const value = getValues(name);
+	const reset = () => {	
 		if (value) {
 			setSelectedYear(dayjs(value).year());
 			setSelectedMonth(dayjs(value).month());
@@ -218,8 +219,7 @@ export const DateTimePicker: React.FC<props> = ({
 		setShowTimePicker(false);
 	};
 
-	useEffect(() => {
-		const value = getValues(name);
+	useEffect(() => {		
 		if (!value) return;
 		setSelectedYear(dayjs(value).year());
 		setSelectedMonth(dayjs(value).month());
@@ -239,9 +239,11 @@ export const DateTimePicker: React.FC<props> = ({
 
 	return (
 		<Wrapper
-			className={`${isSubmitting ? "submitting" : ""} ${className}`}
+			className={`${isSubmitting ? "submitting" : ""} ${disabled ? "disabled" :""} ${className}`}
 			pkBgColor={pkBgColor}
 			pkTxtColor={pkTxtColor}
+			disabledColor={disabledColor}
+			
 			pkSelectedColor={pkSelectedColor}
 			pkLabelColor={pkLabelColor}
 		>
@@ -275,6 +277,7 @@ export const DateTimePicker: React.FC<props> = ({
 						e.preventDefault();
 						openPicker();
 					}}
+					
 					min={minDate}
 					max={maxDate}
 					// type={type == "dateTime" ? "datetime-local" : type}
@@ -292,12 +295,12 @@ export const DateTimePicker: React.FC<props> = ({
 					})}
 				>
 					<span>
-						{getValues(name)
+						{value
 							? type == "date"
-								? dayjs(getValues(name)).format("dddd ll")
+								? dayjs(value).format("dddd ll")
 								: type == "time"
-								? dayjs(getValues(name)).format("HH:mm")
-								: dayjs(getValues(name)).format(
+								? dayjs(value).format("HH:mm")
+								: dayjs(value).format(
 										"dddd ll, HH:mm"
 								  )
 							: null}
@@ -403,6 +406,8 @@ type mainWrapperColors = {
 	pkBgColor: string;
 	pkSelectedColor: string;
 	pkLabelColor: string;
+	disabledColor: string;
+	
 };
 
 type wrapperProps = {
@@ -421,8 +426,9 @@ type labelProps = {
 const Wrapper = styled.div<mainWrapperColors>`
 	width: 100%;
 	position: relative;
-	margin-bottom: 40px;
-	&.submitting {
+	margin-bottom: ${$uw(2)};
+	height: ${$uw(4)};
+	&.submitting, &.disabled {
 		opacity: 0.5;
 		pointer-events: none;
 	}
@@ -442,12 +448,20 @@ const Wrapper = styled.div<mainWrapperColors>`
 			}
 		}
 	}
+	&.disabled {
+		> .label {
+			color: ${({ disabledColor }) => $color(disabledColor)};
+		}
+		.focus-box {
+			background-color: ${({ disabledColor }) => $color(disabledColor)};
+		}
+	}
 `;
 
 const InputLabel = styled.label<labelProps>`
 	z-index: 2;
 	position: absolute;
-	left: 20px;
+	left: ${$uw(1)};
 	top: 2px;
 	font-size: 2rem;
 	color: ${({ color }) => $color(color)};
@@ -476,7 +490,7 @@ const InputWrapper = styled.div<wrapperProps>`
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
 	border-top-right-radius: 0;
-	height: ${$uw(2)};
+	height: ${$uw(2.5)};
 	margin-bottom: 12px;
 	overflow: hidden;
 	z-index: 1;
@@ -516,6 +530,7 @@ const FocusBox = styled.span<focusCircleProps>`
 	&.error {
 		background-color: ${$color('danger')};
 	}
+	
 `;
 
 const StyledInput = styled.div<{ textColor: string; bgColor?: string }>`
@@ -532,10 +547,9 @@ const StyledInput = styled.div<{ textColor: string; bgColor?: string }>`
 	height: 100%;
 	width: 100%;
 	box-sizing: border-box;
-	padding-left: 20px;
-	padding-bottom: 10px;
-	background-color: ${({ bgColor }) => $color(bgColor ?? "background-color")};
-
+	padding-left: ${$uw(1)};
+	/* padding-bottom: ${$uw(1)}; */
+	background-color: ${({ bgColor }) => $color(bgColor ?? "background-color")};	
 	&:-webkit-autofill,
 	.dark &:-webkit-autofill,
 	&:-webkit-autofill:hover,

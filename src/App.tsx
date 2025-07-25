@@ -18,6 +18,8 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
+import 'leaflet/dist/leaflet.css';
+
 import { Toaster } from 'react-hot-toast';
 import { AppContextProvider } from './contexts';
 

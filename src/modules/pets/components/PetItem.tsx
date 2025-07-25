@@ -14,6 +14,7 @@ import { useModal, useUserContext } from "@contexts";
 import { CustodyLevel, useDeleteOwnershipMutation } from "@types";
 import { FormProvider, useForm } from "react-hook-form";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
+import { useHistory } from "react-router";
 
 type Prop = {
     pet: DashboardPetFragment;
@@ -29,7 +30,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
     const { t: breedT } = useTranslation("breeds");
     const [mode, setMode] = useState<"view" | "edit" | null>();
     const { openModal, closeModal } = useModal();
-
+    const history = useHistory();
     const { user, refetchDashboard } = useUserContext();
 
     const methods = useForm({
@@ -243,7 +244,9 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                                 <Icon name="peopleOutline" color="dark" />
                                 <span>{t("home.co_owners")}</span>
                             </Action>
-                            <Action onClick={openNewReportForm}>
+                            <Action onClick={()=>{
+                                history.push(`/board/new?pet_id=${pet.id}`)
+                            }}>
                                 <Icon
                                     className="icon"
                                     name="alertCircle"

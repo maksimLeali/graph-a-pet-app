@@ -936,6 +936,22 @@
                 "signup": "Reggistrazione completata, controlla la tua mail"
             }
         },
+        "board": {
+            "page_name": "Bacheca segnalazioni",
+            "lost": "Smarriti",
+            "found": "Avvistamenti",
+            "add_report": "Nuova segnalazione",
+            "new_report": {
+                "page_name": "Segnalazione",
+                "use_current_time": "Usare data e ora di adesso",
+                "is_missing": "Ho samrrito un cane",
+                "pet": "Chi si è perso?",
+                "date": "Data",
+                "time": "Ora",
+                "insert_location": "Luogo",
+                "notes":"Note"
+            }
+        },
         "pages": {
             "home": "Home",
             "pet_sharing": "Mi vuoi ?"

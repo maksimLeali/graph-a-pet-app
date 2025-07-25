@@ -19,7 +19,7 @@ export type CommonProps = {
     required?: boolean;
     textLabel?: string;
     ntTextLabel?: string;
-    color?: string;
+    color?: string;    
     disabled?: boolean;
     focusColor?: string;
     disabledColor?: string;

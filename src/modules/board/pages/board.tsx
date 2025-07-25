@@ -1,13 +1,13 @@
 import { MinReport, ReportsPreview } from "@components";
 import { useUserContext } from "@contexts";
 import {
-	IonContent,
-	IonInfiniteScroll,
-	IonInfiniteScrollContent,
-	IonList,
-	IonRefresher,
-	IonRefresherContent,
-	RefresherEventDetail,
+    IonContent,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    IonList,
+    IonRefresher,
+    IonRefresherContent,
+    RefresherEventDetail,
 } from "@ionic/react";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -17,166 +17,188 @@ import { useListReportsLazyQuery } from "../operations/__generated__/listReports
 import { ReportType } from "@types";
 import { MinReportFragment } from "@graphql_generated/MinReport.generated";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export const Board: React.FC = () => {
-	const { setPage } = useUserContext();
-	const [pageMissing, setPageMissing] = useState(0);
-	const [pageFound, setPageFound] = useState(0);
-	const [reportsType, setReportsType] = useState<ReportType>();
-	const [reachedMaxMissing, setReachedMaxMissing] = useState(false);
-	const [reachedMaxFound, setReachedMaxFound] = useState(false);
-	const [missingReports, setMissingReports] = useState<MinReportFragment[]>(
-		[]
-	);
-	const [foundReports, setFoundReports] = useState<MinReportFragment[]>([]);
-	const PAGE_SIZE = 2;
+    const { setPage } = useUserContext();
+    const [pageMissing, setPageMissing] = useState(0);
+    const [pageFound, setPageFound] = useState(0);
+    const [reportsType, setReportsType] = useState<ReportType>();
+    const [reachedMaxMissing, setReachedMaxMissing] = useState(false);
+    const [reachedMaxFound, setReachedMaxFound] = useState(false);
+    const [missingReports, setMissingReports] = useState<MinReportFragment[]>(
+        []
+    );
+    const [foundReports, setFoundReports] = useState<MinReportFragment[]>([]);
+    const PAGE_SIZE = 4;
+    const { t } = useTranslation();
+    const [
+        listMissinggReports,
+        { loading: loadingMissing, refetch: refetchMissing },
+    ] = useListReportsLazyQuery({
+        variables: {
+            commonSearch: {
+                filters: {
+                    fixed: [
+                        {
+                            key: "type",
+                            value: ReportType.Missing,
+                        },
+                    ],
+                },
+                page_size: PAGE_SIZE,
+                page: pageMissing,
+            },
+        },
+        onCompleted: ({ listReports }) => {
+            if (!listReports?.items?.length || listReports.error) {
+                return;
+            }
 
-	const [
-		listMissinggReports,
-		{ loading: loadingMissing, refetch: refetchMissing },
-	] = useListReportsLazyQuery({
-		variables: {
-			commonSearch: {
-				filters: {
-					fixed: [
-						{
-							key: "type",
-							value: ReportType.Missing,
-						},
-					],
-				},
-				page_size: PAGE_SIZE,
-				page: pageMissing,
-			},
-		},
-		onCompleted: ({ listReports }) => {
-			if (!listReports?.items?.length || listReports.error) {
-				return;
-			}
+            setMissingReports((p) => [
+                ...p,
+                ...(listReports.items as MinReportFragment[]),
+            ]);
+            setReachedMaxMissing(true);
+        },
+    });
+    const [
+        listFoundgReports,
+        { loading: loadingFound, refetch: refetchFound },
+    ] = useListReportsLazyQuery({
+        variables: {
+            commonSearch: {
+                filters: {
+                    fixed: [
+                        {
+                            key: "type",
+                            value: ReportType.Found,
+                        },
+                    ],
+                },
+                page_size: PAGE_SIZE,
+                page: pageFound,
+            },
+        },
+        onCompleted: ({ listReports }) => {
+            console.log(listReports);
+            if (!listReports?.items?.length || listReports.error) {
+                return;
+            }
+            setFoundReports((p) => [
+                ...p,
+                ...(listReports.items as MinReportFragment[]),
+            ]);
+        },
+    });
 
-			setMissingReports(p=> [...p, ...listReports.items as MinReportFragment[]]);
-			setReachedMaxMissing(true);
-		},
-	});
-	const [
-		listFoundgReports,
-		{ loading: loadingFound, refetch: refetchFound },
-	] = useListReportsLazyQuery({
-		variables: {
-			commonSearch: {
-				filters: {
-					fixed: [
-						{
-							key: "type",
-							value: ReportType.Found,
-						},
-					],
-				},
-				page_size: PAGE_SIZE,
-				page: pageFound,
-			},
-		},
-		onCompleted: ({ listReports }) => {
-			console.log(listReports)
-			if (!listReports?.items?.length || listReports.error) {
-				return;
-			}
-			setFoundReports(p=> [...p, ...listReports.items as MinReportFragment[]]);
-		},
-	});
+    const fetchRepots = useCallback(() => {
+        listMissinggReports();
+        listFoundgReports();
+    }, [pageMissing, pageFound]);
 
-	const fetchRepots = useCallback(() => {
-		listMissinggReports();
-		listFoundgReports();
-	}, [pageMissing, pageFound]);
+    useEffect(() => {
+        setPage({ name: t("board.page_name") });
+        fetchRepots();
+    }, []);
 
-	useEffect(() => {
-		setPage({ name: "Board" });
-		fetchRepots();
-	}, []);
+    const reportList = useMemo(() => {
+        console.log("repprts type", reportsType);
+        if (!reportsType) {
+            return _.sortBy([...missingReports, ...foundReports], "created_at");
+        }
 
-	const reportList = useMemo(() => {
-		console.log("repprts type", reportsType);
-		if (!reportsType) {
-			return _.sortBy([...missingReports, ...foundReports], "created_at");
-		}
+        if (reportsType === ReportType.Found) return foundReports;
 
-		if (reportsType === ReportType.Found) return foundReports;
+        return missingReports;
+    }, [missingReports, foundReports, reportsType]);
 
-		return missingReports;
-	}, [missingReports, foundReports, reportsType]);
+    const reachedMax = useMemo(() => {
+        if (!reportsType) {
+            return reachedMaxMissing && reachedMaxFound;
+        }
 
-	const reachedMax = useMemo(() => {
-		if (!reportsType) {
-			return reachedMaxMissing && reachedMaxFound;
-		}
+        if (reportsType === ReportType.Found) return reachedMaxFound;
 
-		if (reportsType === ReportType.Found) return reachedMaxFound;
+        return reachedMaxMissing;
+    }, [reachedMaxMissing, reachedMaxFound, reportsType]);
 
-		return reachedMaxMissing;
-	}, [reachedMaxMissing, reachedMaxFound, reportsType]);
+    const handleRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+        setPageFound(0);
+        setPageMissing(0);
+        setMissingReports([]);
+        setFoundReports([]);
+        fetchRepots();
+        event.detail.complete();
+    };
 
-	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-		setPageFound(0)
-		setPageMissing(0)
-		setMissingReports([])
-		setFoundReports([])
-		fetchRepots()
-		event.detail.complete();
-	};
+    const handleNewData = () => {
+        setPageFound((p) => p + 1);
+        setPageMissing((p) => p + 1);
+    };
 
-	const handleNewData = ()=>{
-		setPageFound(p=>p+1)
-		setPageMissing(p=>p+1)
-	}
+    return (
+        <IonContent fullscreen>
+            <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                <IonRefresherContent></IonRefresherContent>
+            </IonRefresher>
+            <Container>
+                <ChoiseContainer
+                    onChange={(choise) => {
+                        setReportsType(choise);
+                    }}
+                />
+            </Container>
 
-	return (
-		<IonContent fullscreen>
-			<IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-				<IonRefresherContent></IonRefresherContent>
-			</IonRefresher>
-			<Container>
-				<ChoiseContainer
-					onChange={(choise) => {
-						setReportsType(choise);
-					}}
-				/>
-			</Container>
-			<List>
-				{reportList.map((item) => (
-					<MinReport report={item} />
-				))}
-			</List>
-			<InfiniteScroll
-				disabled={reachedMax}
-				onIonInfinite={(ev: any) => {
-					handleNewData()
-					setTimeout(() => ev.target.complete(), 500);
-				}}
-			>
-				<IonInfiniteScrollContent></IonInfiniteScrollContent>
-			</InfiniteScroll>
+            <InfiniteScroll
+                disabled={reachedMax}
+                onIonInfinite={(ev: any) => {
+                    handleNewData();
+                    setTimeout(() => ev.target.complete(), 500);
+                }}
+            >
+                <IonInfiniteScrollContent>
+                    <List>
+                        {reportList.map((item) => (
+                            <MinReport report={item} />
+                        ))}
+                    </List>
+                </IonInfiniteScrollContent>
+                    <AddReportCta to="/board/new">
+                        {t("board.add_report")}
+                    </AddReportCta>
+            </InfiniteScroll>
 
-			{/* <ReportsPreview loading={loading} reports={reports} /> */}
-		</IonContent>
-	);
+            {/* <ReportsPreview loading={loading} reports={reports} /> */}
+        </IonContent>
+    );
 };
 
 const Container = styled.div`
-	position: sticky;
-	top: 0;
-	padding: ${$cssTRBL(2, 0)};
-	background-color: ${$color("background-color")};
-	z-index: 99;
+    position: sticky;
+    top: 0;
+    padding: ${$cssTRBL(2, 0)};
+    background-color: ${$color("background-color")};
+    z-index: 99;
 `;
 
 const List = styled(IonList)`
-	width: 100%;
-	background-color: ${$color("background-color")};
-	padding: ${$uw(1)};
-	overflow-y: scroll;
+    width: 100%;
+    background-color: ${$color("background-color")};
+    padding: ${$uw(1)};
+    overflow-y: scroll;
 `;
 
 const InfiniteScroll = styled(IonInfiniteScroll)`
-	margin-bottom: ${$uw(3)};
+    margin-bottom: ${$uw(3)};
+`;
+
+const AddReportCta = styled(Link)`
+    width: 100%;
+    display: block;
+    color: ${$color("primary")};
+    text-decoration: underline;
+    text-align: end;
+    padding: ${$cssTRBL(0, 2, 1, 2)};
 `;

@@ -22,7 +22,7 @@ export const HookFormInput: React.FC<HookFormProps & CommonProps> = ({
 	ntTextLabel,
 	required = false,
 	type = "text",
-	inputMode = "text",
+	inputMode = "text",	
 	focusColor = "primary",
 	disabledColor = "lightGray",
 	textColor = "dark",
