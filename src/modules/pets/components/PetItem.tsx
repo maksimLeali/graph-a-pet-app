@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
-import { $breakPoint, $color, $uw } from "@theme";
+import { $breakPoint, $color, $cssTRBL, $uw } from "@theme";
 import { Image2x, Icon, NewReportForm, SubOwnerList } from "@components";
 import { gendersColor } from "@utils";
 import { useDeletePetMutation } from "../operations/__generated__/deletePet.generated";
@@ -147,6 +147,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
             ref={itemRef}
             bgColor={pet.main_picture?.main_color?.color}
             color={pet.main_picture?.main_color?.contrast}
+            className={`${mode}`}
             onContextMenu={(e) => {
                 e.preventDefault();
                 switchMode();
@@ -233,38 +234,38 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                             </span>
                         )}
                     </InfoRow>
-                    <ActionContainer className="actionContainer custom-pet-color">
+                    <ActionContainer className="actionContainer">
                         <Cancel onClick={() => setMode("view")}>
                             <Icon name="closeCircleOutline" />
                         </Cancel>
-                        <Action onClick={() => openCoOwnerModal()}>
-                            <Icon name="peopleOutline" color="dark" />
-                            {t("home.co_owners")}
-                        </Action>
-                        <Action onClick={openNewReportForm}>
-                            <Icon
-                                className="icon"
-                                name="alertCircle"
-                                color="dark"
-                                
-                            />
-                            {t("pets.pet_list_page.report")}
-                        </Action>
-                        <Action>
-                            <Icon
-                                name="informationCircleOutline"
-                                color="dark"
-                            />
-                            {t("home.profile")}
-                        </Action>
-                        {onShare && ownership.type === CustodyLevel.Owner ? (
-                            <Action onClick={() => onShare(pet.id)}>
-                                <Icon name="shareOutline" />
-                                {t("share")}
+                        <ActionWrapper className="actionWrapper custom-pet-color">
+                            <Action onClick={() => openCoOwnerModal()}>
+                                <Icon name="peopleOutline" color="dark" />
+                                <span>{t("home.co_owners")}</span>
                             </Action>
-                        ) : (
-                            <Action />
-                        )}
+                            <Action onClick={openNewReportForm}>
+                                <Icon
+                                    className="icon"
+                                    name="alertCircle"
+                                    color="dark"
+                                />
+                                <span>{t("pets.pet_list_page.report")}</span>
+                            </Action>
+                            <Action>
+                                <Icon
+                                    name="informationCircleOutline"
+                                    color="dark"
+                                />
+                                <span>{t("home.profile")}</span>
+                            </Action>
+                            {onShare &&
+                                ownership.type === CustodyLevel.Owner && (
+                                    <Action onClick={() => onShare(pet.id)}>
+                                        <Icon name="shareOutline" />
+                                        <span> {t("share")}</span>
+                                    </Action>
+                                )}
+                        </ActionWrapper>
                     </ActionContainer>
                 </InfoBox>
             </InfoWrapper>
@@ -300,7 +301,7 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
             box-shadow: none;
         }
     }
-    .actionContainer {
+    .actionWrapper {
         background-color: ${({ bgColor }) => $color(bgColor || "primary")};
         color: ${({ color }) => $color(color || "dark")};
     }
@@ -364,7 +365,7 @@ const Name = styled.div`
         margin-bottom: 0;
         font-size: 1.8rem;
         font-weight: 800;
-    }
+    }   
 `;
 
 const InfoBox = styled.div`
@@ -425,25 +426,30 @@ const Ph = styled.div`
 
 const ActionContainer = styled.div`
     width: 100%;
-    height: 100%;
+    height: ${$uw(10)};
     overflow: hidden;
     position: absolute;
-    transition: max-height 0.5s ease-in;
-    max-height: 0;
-    top: 0;
+    transition: max-width 0.5s ease-in;
+    max-width: 0;
+    top: ${$uw(-2.55)};
     left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: ${$uw(5)};
-    padding-right: ${$uw(2)};
-
-    flex-wrap: wrap;
-
+    padding-top: ${$uw(2.55)};
     .edit & {
-        max-height: 100%;
+        max-width: 100%;
     }
 `;
+
+const ActionWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: ${$uw(0.5)};
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    padding: ${$cssTRBL(1.5, 1, 1.5, 5)};
+`;
+
 const Cancel = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -451,13 +457,25 @@ const Cancel = styled.div`
     position: absolute;
     right: ${$uw(0.5)};
     top: ${$uw(0.5)};
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    .edit & {
+        opacity: 1;
+        transition: opacity 1s ease-in;
+    }
 `;
 const Action = styled.div`
     display: flex;
-    gap: ${$uw(1)};
+    gap: ${$uw(0.5)};
     align-items: center;
-    height: ${$uw(3)};
+    height: ${$uw(2)};
     width: ${$uw(8)};
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    .edit & {
+        opacity: 1;
+        transition: opacity 1s ease-in;
+    }
 `;
 
 const Text = styled.p`
