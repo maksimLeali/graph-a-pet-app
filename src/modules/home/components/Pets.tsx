@@ -8,7 +8,7 @@ import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.genera
 
 import { SubOwnerList, Icon, Image2x } from "@components";
 import { useSwipe } from "@hooks";
-import { useModal } from "@contexts";
+import { useModal, useUserContext } from "@contexts";
 import { $breakPoint, $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
@@ -18,7 +18,7 @@ type props = {
 
 export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 	const [active, setActive] = useState(0);
-	const [prev, setprev] = useState(0);
+	const [prev, setprev] = useState(0);	
 	const [direction, setDirection] = useState<"clock" | "counter">("clock");
 	const [canShare, setCanShare] = useState(true);
 	const { openModal, closeModal } = useModal();
@@ -29,6 +29,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 		onRight,
 	});
 	const { t } = useTranslation();
+	const { user} = useUserContext();
 	const changeMain = (i: number) => {
 		if (i !== active) {
 			setprev(active);
@@ -93,7 +94,7 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 				<SubOwnerList
 					ownerships={
 						(pets[active].ownerships?.items.filter(
-							(item) => item
+							(item) => item && item.user.id !== user.id
 						) as PetMinSubOwnerFragment[]) ?? []
 					}
 					onSelected={(str) => {}}

@@ -1001,10 +1001,10 @@
             },
             "pet_list_page": {
                 "owned": "I miei animali",
-                "on_loan": "In affidamwento",
+                "on_loan": "In affidamento",
                 "empty": "Nesun animale",
-                "delete_pet":"Sicuro di voler cancellare {{name}}? ",
-                "report": "Segnala smarrimento",
+                "delete_pet": "Sicuro di voler cancellare {{name}}? ",
+                "report": "Smarrito",
                 "delete_loan": "Vuoi togliere {{name}} dai tuoi animali in affido?"
             },
             "desc_pet_sitter": "Un <b>Pet Sitter</b> si occupa dell'animale per <b>lavoro</b>",

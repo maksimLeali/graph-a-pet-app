@@ -7,12 +7,13 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
 import { $breakPoint, $color, $uw } from "@theme";
-import { Image2x, Icon, NewReportForm } from "@components";
+import { Image2x, Icon, NewReportForm, SubOwnerList } from "@components";
 import { gendersColor } from "@utils";
 import { useDeletePetMutation } from "../operations/__generated__/deletePet.generated";
 import { useModal, useUserContext } from "@contexts";
 import { CustodyLevel, useDeleteOwnershipMutation } from "@types";
 import { FormProvider, useForm } from "react-hook-form";
+import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
 
 type Prop = {
     pet: DashboardPetFragment;
@@ -75,9 +76,9 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
         console.log(t("pet.age_years", { years: 3 }));
     }, []);
 
-    const enterEdit = useCallback(() => {
-        setMode("edit");
-    }, []);
+    const switchMode = useCallback(() => {
+        setMode(mode == "edit" ? "view" : "edit");
+    }, [mode]);
 
     const openDeletePet = useCallback(() => {
         openModal({
@@ -105,6 +106,22 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
         });
     }, []);
 
+    const openCoOwnerModal = useCallback(() => {
+        openModal({
+            onClose: () => closeModal(),
+            children: (
+                <SubOwnerList
+                    ownerships={
+                        (pet.ownerships?.items.filter(
+                            (item) => item && item.user.id !== user.id
+                        ) as PetMinSubOwnerFragment[]) ?? []
+                    }
+                    onSelected={(str) => {}}
+                />
+            ),
+        });
+    }, []);
+
     const openNewReportForm = useCallback(() => {
         openModal({
             onClose: () => {
@@ -114,7 +131,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                 closeModal();
             },
             onConfirm: () => {
-                console.log(methods.getValues())
+                console.log(methods.getValues());
                 closeModal();
             },
             children: (
@@ -132,7 +149,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
             color={pet.main_picture?.main_color?.contrast}
             onContextMenu={(e) => {
                 e.preventDefault();
-                enterEdit();
+                switchMode();
             }}
         >
             {ready && pet.main_picture ? (
@@ -176,75 +193,79 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                     </IconContainer>
                     <span className="mainInfo">{pet.name}</span>
                 </Name>
-                <InfoBox className="info-box custom-pet-border-color">
-                    {mode !== "edit" ? (
-                        <>
-                            <InfoRow>
-                                <span>
-                                    {breedT(
-                                        `${pet.body.breed.toLocaleLowerCase()}`
-                                    )}
-                                </span>
-                            </InfoRow>
-                            <InfoRow>
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html:
-                                            t("pets.age_years", {
-                                                count: dayjs().diff(
-                                                    pet.birthday,
-                                                    "years"
-                                                ),
-                                            }) ?? "",
-                                    }}
-                                />
-                                <span
-                                    dangerouslySetInnerHTML={{
-                                        __html:
-                                            t("pets.weight_kg", {
-                                                weight_kg: pet.weight_kg,
-                                            }) ?? "",
-                                    }}
-                                />
-                            </InfoRow>
-                            <InfoRow>
-                                {pet.neutered && (
-                                    <span className="sub">
-                                        {t(
-                                            `pets.neutered_${
-                                                pet.gender == "FEMALE"
-                                                    ? "female"
-                                                    : "male"
-                                            }`
-                                        )}
-                                    </span>
+                <InfoBox className={`info-box custom-pet-border-color ${mode}`}>
+                    <InfoRow>
+                        <span>
+                            {breedT(`${pet.body.breed.toLocaleLowerCase()}`)}
+                        </span>
+                    </InfoRow>
+                    <InfoRow>
+                        <span
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    t("pets.age_years", {
+                                        count: dayjs().diff(
+                                            pet.birthday,
+                                            "years"
+                                        ),
+                                    }) ?? "",
+                            }}
+                        />
+                        <span
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    t("pets.weight_kg", {
+                                        weight_kg: pet.weight_kg,
+                                    }) ?? "",
+                            }}
+                        />
+                    </InfoRow>
+                    <InfoRow>
+                        {pet.neutered && (
+                            <span className="sub">
+                                {t(
+                                    `pets.neutered_${
+                                        pet.gender == "FEMALE"
+                                            ? "female"
+                                            : "male"
+                                    }`
                                 )}
-                            </InfoRow>{" "}
-                        </>
-                    ) : (
-                        <ActionContainer>
-                            <Cancel onClick={() => setMode("view")}>
-                                <Icon name="closeCircleOutline" />
-                            </Cancel>
-
-                            {onShare &&
-                                ownership.type === CustodyLevel.Owner && (
-                                    <Action onClick={() => onShare(pet.id)}>
-                                        {t("share")}
-                                        <Icon name="shareOutline" />
-                                    </Action>
-                                )}
-                            <Action onClick={openNewReportForm}>
-                                {t("pets.pet_list_page.report")}
-                                <Icon
-                                    className="icon"
-                                    name="alertCircle"
-                                    color="danger"
-                                    uw={1.6}
-                                />
+                            </span>
+                        )}
+                    </InfoRow>
+                    <ActionContainer className="actionContainer custom-pet-color">
+                        <Cancel onClick={() => setMode("view")}>
+                            <Icon name="closeCircleOutline" />
+                        </Cancel>
+                        <Action onClick={() => openCoOwnerModal()}>
+                            <Icon name="peopleOutline" color="dark" />
+                            {t("home.co_owners")}
+                        </Action>
+                        <Action onClick={openNewReportForm}>
+                            <Icon
+                                className="icon"
+                                name="alertCircle"
+                                color="dark"
+                                
+                            />
+                            {t("pets.pet_list_page.report")}
+                        </Action>
+                        <Action>
+                            <Icon
+                                name="informationCircleOutline"
+                                color="dark"
+                            />
+                            {t("home.profile")}
+                        </Action>
+                        {onShare && ownership.type === CustodyLevel.Owner ? (
+                            <Action onClick={() => onShare(pet.id)}>
+                                <Icon name="shareOutline" />
+                                {t("share")}
                             </Action>
-                        </ActionContainer>
-                    )}
+                        ) : (
+                            <Action />
+                        )}
+                    </ActionContainer>
                 </InfoBox>
             </InfoWrapper>
         </Container>
@@ -278,6 +299,10 @@ const Container = styled.div<{ bgColor?: string; color?: string }>`
         .dark & {
             box-shadow: none;
         }
+    }
+    .actionContainer {
+        background-color: ${({ bgColor }) => $color(bgColor || "primary")};
+        color: ${({ color }) => $color(color || "dark")};
     }
 `;
 
@@ -346,11 +371,10 @@ const InfoBox = styled.div`
     display: flex;
     padding: ${$uw(0.5)};
     width: ${$uw(24)};
-    height: ${$uw(7.5)};
+    height: ${$uw(7.7)};
     margin-left: ${$uw(5)};
     padding-left: ${$uw(6)};
     position: relative;
-    top: -2px;
     border-radius: 0 2px 2px 0px;
     flex-wrap: wrap;
     flex-direction: column;
@@ -401,15 +425,39 @@ const Ph = styled.div`
 
 const ActionContainer = styled.div`
     width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    transition: max-height 0.5s ease-in;
+    max-height: 0;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: ${$uw(5)};
+    padding-right: ${$uw(2)};
+
+    flex-wrap: wrap;
+
+    .edit & {
+        max-height: 100%;
+    }
 `;
 const Cancel = styled.div`
     display: flex;
     justify-content: flex-end;
     margin-bottom: ${$uw(1)};
+    position: absolute;
+    right: ${$uw(0.5)};
+    top: ${$uw(0.5)};
 `;
 const Action = styled.div`
     display: flex;
-    justify-content: space-between;
+    gap: ${$uw(1)};
+    align-items: center;
+    height: ${$uw(3)};
+    width: ${$uw(8)};
 `;
 
 const Text = styled.p`

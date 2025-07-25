@@ -141,7 +141,7 @@ export const CustomCalendar: React.FC<props> = ({
 							<span>{date.getDate()}</span>
 							<CircleContainer>
 								{activePeriod.map((date, i) => (
-									<Circle key={i} color={date.color} />
+									<Circle key={i} color={date.color} className="custom-pet-color"/>
 								))}
 							</CircleContainer>
 						</TileContainer>
