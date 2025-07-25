@@ -143,7 +143,7 @@ export const Step3 = React.memo(() => {
                     >
                         <input
                             type="file"
-                            accept="image/*"
+                            accept="image/*;capture=camera"
                             ref={fileInputRef}
                             style={{ display: "none" }}
                             onChange={handleFileChange}
