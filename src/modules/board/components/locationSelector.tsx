@@ -1,11 +1,19 @@
-import React, { useCallback, useEffect, useState, FC } from "react";
+import React, {
+    FC,
+    useEffect,
+    useState,
+    useCallback,
+    useMemo,
+    useRef,
+} from "react";
 import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-  useMapEvents,
+    MapContainer,
+    TileLayer,
+    Marker,
+    Popup,
+    useMap,
+    CircleMarker,
+    useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
 import { debounce } from "lodash";
@@ -13,194 +21,267 @@ import { TextInput, Option as UIOption } from "@components";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import "leaflet/dist/leaflet.css";
-import { $uw } from "@theme";
+import { $cssTRBL, $uw } from "@theme";
 import { useGeolocation } from "@hooks";
 
-// Correzione percorsi icone Leaflet
+// Configure Leaflet icons once
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
+    iconRetinaUrl:
+        "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png",
+    iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
 });
 
-interface NominatimResult {
-  place_id: string;
-  display_name: string;
-  lat: string;
-  lon: string;
-  address: Record<string, any>;
-}
-
-type Props = {
-  onSelected: (option: UIOption | null) => void;
-  changeLocationText: (value: string) => void;
-  selectedLocation: UIOption | null;
-};
-
-// Centra la vista della mappa sui marker
-const BoundsComponent: FC<{ positions: [number, number][] }> = ({
-  positions,
+// Recenter helper for dynamic center/zoom
+const RecenterMap: FC<{ center: [number, number]; zoom: number }> = ({
+    center,
+    zoom,
 }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (positions.length > 0) {
-      map.fitBounds(positions as any, { padding: [50, 50] });
-    }
-  }, [positions, map]);
-  return null;
+    const map = useMap();
+    useEffect(() => {
+        map.setView(center, zoom, { animate: true });
+    }, [center, zoom, map]);
+    return null;
 };
 
-// Ricentra la mappa su coordinate dinamiche
-const RecenterMap: FC<{
-  lat?: number;
-  lon?: number;
-  zoom?: number;
-}> = ({ lat, lon, zoom = 16 }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (lat != null && lon != null) {
-      map.setView([lat, lon], zoom);
-    }
-  }, [lat, lon, zoom, map]);
-  return null;
-};
-
-export const LocationSelector: FC<Props> = React.memo(
-  ({ onSelected, changeLocationText, selectedLocation }) => {
-    const { t } = useTranslation();
-    const [query, setQuery] = useState<string>("");
+function useNominatimSearch(query: string) {
     const [options, setOptions] = useState<UIOption[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { coords, requestLocation } = useGeolocation({
-      enableHighAccuracy: true,
-      timeout: 10000,
-    });
-
-    // Al mount chiedo permesso e coordinate
-    useEffect(() => {
-      requestLocation();
-    }, []);
-
-    // Debug
-    useEffect(() => {
-      console.log("User coords:", coords);
-    }, [coords]);
-
-    const handleChange = (v: string) => {
-      setQuery(v);
-      changeLocationText(v);
-      onSelected(null);
-      // qui potresti anche debounced fetch delle opzioni Nominatim…
-    };
-
-    const handleSelect = (opt: UIOption) => {
-      onSelected(opt);
-      changeLocationText(opt.label);
-    };
-
-    // Estrazione lat/lon dalle options per i marker
-    const positions = options.map((opt) => {
-      const [lat, lon] = opt.value.split(",").map(Number);
-      return [lat, lon] as [number, number];
-    });
-
-    // Centro iniziale: primo marker o vista mondiale
-    const center: [number, number] =
-      positions.length > 0 ? positions[0] : [20, 0];
-
-    // Solo per catturare click e loggare lat/lng
-    const MapEvents = () => {
-      useMapEvents({
-        click(e) {
-          console.log("Clicked at:", e.latlng);
-        },
-      });
-      return null;
-    };
-
-    return (
-      <Container>
-        <SearchBar>
-          <TextInput
-            name="location"
-            value={query}
-            bgColor="light"
-            onChange={(e) => handleChange(e)}
-          />
-        </SearchBar>
-
-        {loading && <InfoText>{t("loading")}</InfoText>}
-        {error && (
-          <ErrorText>
-            {t("error")}: {error}
-          </ErrorText>
-        )}
-
-        {query.length > 1 && (
-          <MapWrapper>
-            <MapContainer
-              center={center}
-              zoom={16}
-              style={{ height: "100%", width: "100%" }}
-            >
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-              {/* Ricentra su coords dell’utente appena disponibili */}
-              {coords?.latitude != null && coords?.longitude != null && (
-                <RecenterMap
-                  lat={coords.latitude}
-                  lon={coords.longitude}
-                  zoom={16}
-                />
-              )}
-
-              {options.map((opt) => {
-                const [lat, lon] = opt.value.split(",").map(Number);
-                return (
-                  <Marker
-                    key={opt.value}
-                    position={[lat, lon]}
-                    eventHandlers={{ click: () => handleSelect(opt) }}
-                  >
-                    <Popup>{opt.label}</Popup>
-                  </Marker>
+    const fetchPlaces = useCallback(
+        debounce(async (q: string) => {
+            if (q.length < 2) {
+                setOptions([]);
+                setLoading(false);
+                return;
+            }
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(
+                        q
+                    )}`,
+                    {
+                        headers: {
+                            "Accept-Language": "it",
+                            "User-Agent":
+                                "GraphAPet/1.0 (xmaksimlealix@gmail.com)",
+                        },
+                    }
                 );
-              })}
-
-              <BoundsComponent positions={positions} />
-              <MapEvents />
-            </MapContainer>
-          </MapWrapper>
-        )}
-      </Container>
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = (await res.json()) as Array<{
+                    display_name: string;
+                    lat: string;
+                    lon: string;
+                }>;
+                setOptions(
+                    data.map((d) => ({
+                        label: d.display_name,
+                        value: `${d.lat},${d.lon}`,
+                        fullItem: d,
+                    }))
+                );
+            } catch (e: any) {
+                setError(e.message);
+            } finally {
+                setLoading(false);
+            }
+        }, 500),
+        []
     );
-  }
+
+    useEffect(() => {
+        fetchPlaces(query);
+        return () => fetchPlaces.cancel();
+    }, [query, fetchPlaces]);
+
+    return { options, loading, error };
+}
+
+const MapEvents: FC<{
+    onSelect: (data: {
+        coordinates: { latitude: string; longitude: string };
+        label: string;
+    }) => void;
+}> = ({ onSelect }) => {
+    const map = useMapEvents({
+        click: async ({ latlng }) => {
+            try {
+                const url = new URL(
+                    "https://nominatim.openstreetmap.org/reverse"
+                );
+                url.searchParams.set("format", "json");
+                url.searchParams.set("addressdetails", "1");
+                url.searchParams.set("lat", latlng.lat.toString());
+                url.searchParams.set("lon", latlng.lng.toString());
+
+                const res = await fetch(url.toString(), {
+                    headers: {
+                        "Accept-Language": "it",
+                        "User-Agent": "GraphAPet/1.0 (xmaksimlealix@gmail.com)",
+                    },
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                const { address } = data;
+                const city =
+                    address.city || address.town || address.village || "—";
+                const province = address.county || address.state || "—";
+                const road = address.road;
+                L.popup()
+                    .setLatLng(latlng)
+                    .setContent(
+                        `<strong>${province}</strong><br/>${city} - ${road}`
+                    )
+                    .openOn(map);
+                console.log(data);
+                onSelect({
+                    coordinates: { latitude: data.lat, longitude: data.lon },
+                    label: `${province} ${city} - ${road}`,
+                });
+            } catch (err) {
+                console.error("Reverse geocode failed:", err);
+            }
+        },
+    });
+    return null;
+};
+
+interface Props {
+    onSelected: (opt: UIOption | null) => void;
+    changeLocationText: (text: string) => void;
+    selectedLocation: UIOption | null;
+}
+
+export const LocationSelector: FC<Props> = React.memo(
+    ({ onSelected, changeLocationText, selectedLocation }) => {
+        const { t } = useTranslation();
+        const [initPosition, setInitPosition] = useState<{
+            latitude: number | null;
+            longitude: number | null;
+        }>();
+        const [query, setQuery] = useState("");
+        const {
+            options: searchOptions,
+            loading,
+            error,
+        } = useNominatimSearch(query);
+        const { coords, requestLocation } = useGeolocation({
+            timeout: 10000,
+        });
+
+        const [mapZoom, setMapZoom] = useState<number>(10);
+
+        useEffect(() => {
+            requestLocation();
+        }, []);
+
+        // Center on geolocation when available
+        useEffect(() => {
+            console.log(coords);
+            if (coords?.latitude && coords?.longitude) {
+                setInitPosition(coords);
+                setMapZoom(16);
+            }
+        }, [coords]);
+
+        const options = useMemo(() => {
+            const locOpts = initPosition
+                ? [
+                      {
+                          label: "current_location",
+                          value: `${initPosition.latitude},${initPosition.longitude}`,
+                          fullItem: null,
+                      },
+                  ]
+                : [];
+            return [...locOpts, ...searchOptions];
+        }, [coords, searchOptions, t]);
+
+        const mapCenter = useMemo(() => {
+            if (options?.length) {
+                return options[options.length > 1 ? 1 : 0].value
+                    .split(",")
+                    .map(Number);
+            }
+            return [20, 0];
+        }, [options]);
+
+        const handleChange = useCallback(
+            (val: string) => {
+                setQuery(val);
+                changeLocationText(val);
+                onSelected(null);
+            },
+            [changeLocationText, onSelected]
+        );
+
+        return (
+            <Container>
+                <SearchBar>
+                    <TextInput
+                        name="location"
+                        value={query}
+                        bgColor="light"
+                        onChange={handleChange}
+                    />
+                </SearchBar>
+                <MapWrapper>
+                    <MapContainer
+                        center={mapCenter}
+                        zoom={mapZoom}
+                        style={{ height: "100%", width: "100%" }}
+                    >
+                        <RecenterMap center={mapCenter} zoom={mapZoom} />
+                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+                        {coords?.latitude && coords?.longitude && (
+                            <>
+                                <CircleMarker
+                                    center={[coords.latitude, coords.longitude]}
+                                    radius={14}
+                                    pathOptions={{ fillOpacity: 0 }}
+                                />
+                                <CircleMarker
+                                    center={[coords.latitude, coords.longitude]}
+                                    radius={6}
+                                    pathOptions={{ fillOpacity: 1 }}
+                                />
+                            </>
+                        )}
+                        <MapEvents onSelect={(data)=>{}}/>
+                    </MapContainer>
+                </MapWrapper>
+            </Container>
+        );
+    }
 );
 
 const Container = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  height: ${$uw(50)};
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: ${$uw(35)};
+    padding: ${$cssTRBL(1, 1)};
 `;
 
 const SearchBar = styled.div`
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
 `;
 
 const MapWrapper = styled.div`
-  flex: 1;
+    flex: 1;
 `;
 
 const InfoText = styled.p`
-  padding: 8px;
-  font-size: 0.9rem;
+    padding: 8px;
+    font-size: 0.9rem;
 `;
 
 const ErrorText = styled(InfoText)`
-  color: red;
+    color: red;
 `;

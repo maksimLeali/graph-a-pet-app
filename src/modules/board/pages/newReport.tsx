@@ -95,7 +95,7 @@ export const NewReport: React.FC<props> = () => {
 
     return (
         <IonContent fullscreen>
-            <Modal
+            {openLocationSelector && <Modal
                 open={openLocationSelector}
                 onClose={() => {
                     setOpenLocationSelector(false);
@@ -120,7 +120,8 @@ export const NewReport: React.FC<props> = () => {
                     changeLocationText={(v) => setLocationText(v)}
                     selectedLocation={selectedLocation}
                 />
-            </Modal>
+            </Modal>}
+
             <FormProvider {...methods}>
                 <Form
                     onSubmit={(e) => {
