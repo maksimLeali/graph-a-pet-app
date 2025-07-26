@@ -23,6 +23,7 @@ import styled from "styled-components";
 import "leaflet/dist/leaflet.css";
 import { $cssTRBL, $uw } from "@theme";
 import { useGeolocation } from "@hooks";
+import { IonButton } from "@ionic/react";
 
 // Configure Leaflet icons once
 L.Icon.Default.mergeOptions({
@@ -33,9 +34,9 @@ L.Icon.Default.mergeOptions({
 });
 
 type Location = {
-  coordinates: { latitude: string; longitude: string };
-  label: string;
-} 
+    coordinates: { latitude: number; longitude: number };
+    label: string;
+};
 
 // Recenter helper for dynamic center/zoom
 const RecenterMap: FC<{ center: [number, number]; zoom: number }> = ({
@@ -141,17 +142,13 @@ const MapEvents: FC<{
                     .openOn(map);
                 console.log(data);
                 onSelect({
-                    coordinates: { latitude: data.lat, longitude: data.lon },
+                    coordinates: { latitude: latlng.lat, longitude: latlng.lng },
                     label: `${province} ${city} - ${road}`,
                 });
             } catch (err) {
                 console.error("Reverse geocode failed:", err);
             }
-        },
-        popupclose: () => {
-          // qui l’utente ha chiuso la popup
-          // onSelect(null);
-        },
+        },      
     });
     return null;
 };
@@ -159,25 +156,31 @@ const MapEvents: FC<{
 interface Props {
     onSelected: (opt: Location | null) => void;
     changeLocationText: (text: string) => void;
+    onCancel: () => void;
     selectedLocation: Location | null;
 }
 
 export const LocationSelector: FC<Props> = React.memo(
-    ({ onSelected, changeLocationText, selectedLocation }) => {
+    ({ onSelected, changeLocationText, onCancel, selectedLocation }) => {
         const { t } = useTranslation();
-        const [selected, setSelected] = useState<Location | null>(null)
+        const [selected, setSelected] = useState<Location | null>(selectedLocation);
         const [initPosition, setInitPosition] = useState<{
             latitude: number | null;
             longitude: number | null;
-        }>();
-        const [query, setQuery] = useState("");
-        const {
-            options: searchOptions,            
-        } = useNominatimSearch(query);
+        } | null>(
+            selectedLocation?.coordinates
+                ? {
+                      latitude: selectedLocation.coordinates.latitude,
+                      longitude: selectedLocation.coordinates.longitude
+                  }
+                : null
+        );
+        const [query, setQuery] = useState(selectedLocation?.label ?? "");
+        const { options: searchOptions } = useNominatimSearch(query);
         const { coords, requestLocation } = useGeolocation({
             timeout: 10000,
         });
-        
+
         const [mapZoom, setMapZoom] = useState<number>(10);
 
         useEffect(() => {
@@ -187,11 +190,12 @@ export const LocationSelector: FC<Props> = React.memo(
         // Center on geolocation when available
         useEffect(() => {
             console.log(coords);
+            setMapZoom(16);
+            if(initPosition ) return;
             if (coords?.latitude && coords?.longitude) {
                 setInitPosition(coords);
-                setMapZoom(16);
             }
-        }, [coords]);
+        }, [coords, initPosition]);
 
         const options = useMemo(() => {
             const locOpts = initPosition
@@ -217,22 +221,20 @@ export const LocationSelector: FC<Props> = React.memo(
 
         const handleChange = useCallback(
             (val: string) => {
-                setQuery(val);                
+                setQuery(val);
             },
             [onSelected]
         );
 
         return (
             <Container>
-                <SearchBar>
-                    <TextInput
-                        name="location"
-                        value={query}
-                        bgColor="light"
-                        onChange={handleChange}
-                        
-                    />
-                </SearchBar>
+                <TextInput
+                    name="location"
+                    value={query}
+                    bgColor="light"
+                    onChange={handleChange}
+                />
+
                 <MapWrapper>
                     <MapContainer
                         center={mapCenter}
@@ -256,9 +258,42 @@ export const LocationSelector: FC<Props> = React.memo(
                                 />
                             </>
                         )}
-                        <MapEvents onSelect={(data)=>{ console.log('data', data); onSelected(data); changeLocationText(data?.label ?? "")}}/>
+                        { selected && (
+                              <CircleMarker
+                              center={[selected.coordinates.latitude, selected.coordinates.longitude]}
+                              radius={6}
+                              pathOptions={{ fillOpacity: 1 }}
+                              eventHandlers={{
+                                mouseover: (event) => event.target.openPopup(),
+                              }}
+                              
+                            />
+                        )
+                            
+                        }
+                        <MapEvents
+                            onSelect={(data) => {
+                                console.log("data", data);
+                                setQuery(data?.label ?? "");
+                                setSelected(data);
+                            }}
+                        />
                     </MapContainer>
                 </MapWrapper>
+                <Actions>
+                    <IonButton fill="outline" color="danger" onClick={()=> onCancel()}>
+                        {t("actions.cancel")}
+                    </IonButton>
+                    <IonButton
+                        disabled={!selected}
+                        color="primary"
+                        onClick={() => {
+                            onSelected(selected);
+                        }}
+                    >
+                        {t("actions.confirm")}
+                    </IonButton>
+                </Actions>
             </Container>
         );
     }
@@ -268,17 +303,13 @@ const Container = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    height: ${$uw(35)};
-    padding: ${$cssTRBL(1, 1)};
-`;
-
-const SearchBar = styled.div`
-    padding: 8px;
-    border-bottom: 1px solid #ccc;
+    height: min(${$uw(50)}, 80dvh);
+    padding: ${$cssTRBL(0, 1, 1)};
 `;
 
 const MapWrapper = styled.div`
     flex: 1;
+    margin-bottom: ${$uw(2)};
 `;
 
 const InfoText = styled.p`
@@ -288,4 +319,10 @@ const InfoText = styled.p`
 
 const ErrorText = styled(InfoText)`
     color: red;
+`;
+
+const Actions = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 `;

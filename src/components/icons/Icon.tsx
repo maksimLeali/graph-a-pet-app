@@ -35,7 +35,7 @@ export const Icon: React.FC<Props> = ({
 		<Container
 			dropShadow={dropShadow}
 			onMouseUp={onMouseUp ? onMouseUp : () => {}}
-			onClick={onClick ? () => onClick() : () => {}}
+			onClick={onClick ? (e) =>{ e.preventDefault() ;e.stopPropagation(); onClick()} : () => {}}
 			time={time}
 			uw={uw}
 			size={size}

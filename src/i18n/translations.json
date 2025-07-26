@@ -949,7 +949,10 @@
                 "date": "Data",
                 "time": "Ora",
                 "insert_location": "Luogo",
-                "notes":"Note"
+                "notes":"Note",
+                "save": "Invia segnalazione",
+                "save_error" :"Segnalazione fallita",
+                "save_success": "Segnalazione riuscita"
             }
         },
         "pages": {

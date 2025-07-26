@@ -1,0 +1,11 @@
+mutation createReport($data: ReportCreate!){
+	createReport(data: $data){
+		report{
+			id
+		}
+		error{
+			message
+			code
+		}
+	}
+}

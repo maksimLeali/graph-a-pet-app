@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { RegisterOptions, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -22,6 +22,7 @@ type props = {
 	pattern?: RegExp;
 	icon?: IconName;
 	errorColor?: string;
+	rightElement?: ReactNode;
 	bgColor?: string;
 	disabled?: boolean;
 	onClick: () => void;
@@ -37,6 +38,7 @@ export const FakeInput: React.FC<props> = ({
 	focusColor = "primary",
 	disabledColor = "lightGray",
 	errorColor = "danger",
+	rightElement,
 	disabled = false,
 	errorText,
 	bgColor,
@@ -96,7 +98,8 @@ export const FakeInput: React.FC<props> = ({
 					textColor={textColor}
 					bgColor={bgColor}
 				>
-					{value}
+					<span>{value}</span>
+					{rightElement}
 				</StyledLabel>
 				{icon ? (
 					<Icon
@@ -156,13 +159,7 @@ const InputLabel = styled.label<labelProps>`
 	color: var(--ion-color-${({ color }) => color});
 	transition: top 0.5s ease-in, left 0.5s ease-in, color 0.5s ease-in,
 		font-size 0.5s ease-in;
-	&.focused {
-		font-size: 1.8rem;
-		top: ${$uw(-2)};
-		left: 0px;
-		color: var(--ion-color-${({ focusColor }) => focusColor});
-	}
-	&.compiled {
+	&.focused,&.compiled {
 		font-size: 1.8rem;
 		top: ${$uw(-2)};
 		left: 0px;
@@ -179,7 +176,7 @@ const InputWrapper = styled.div<wrapperProps>`
 	padding: 0 0 2px 2px;
 	border-radius: 2px;
 	border-top-right-radius: 0;
-	height: ${$uw(2)};
+	height: ${$uw(3)};
 	margin-bottom: 12px;
 	overflow: hidden;
 	z-index: 1;
@@ -233,10 +230,12 @@ const StyledLabel = styled.label<{ textColor: string; bgColor?: string }>`
 	-moz-box-shadow: none;
 	font-size: 1.6rem;
 	box-shadow: none;
+	justify-content: space-between;
 	height: 100%;
 	width: 100%;
 	box-sizing: border-box;
 	padding-left: 20px;
+	align-items:center;
 	padding-bottom: 10px;
 	background-color: ${({ bgColor }) =>
 		bgColor

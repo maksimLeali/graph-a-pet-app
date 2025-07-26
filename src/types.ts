@@ -1190,6 +1190,13 @@ export type VerifyMutationVariables = Exact<{
 
 export type VerifyMutation = { __typename?: 'Mutation', verifyUser: { __typename?: 'NewTokenResult', token?: string | null, success: boolean, error?: { __typename?: 'Error', code: string, message: string, extra?: string | null } | null, user?: { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null } | null } };
 
+export type CreateReportMutationVariables = Exact<{
+  data: ReportCreate;
+}>;
+
+
+export type CreateReportMutation = { __typename?: 'Mutation', createReport: { __typename?: 'ReportResult', report?: { __typename?: 'Report', id: string } | null, error?: { __typename?: 'Error', message: string, code: string } | null } };
+
 export type ListReportsQueryVariables = Exact<{
   commonSearch: CommonSearch;
 }>;
@@ -1683,6 +1690,45 @@ export function useVerifyMutation(baseOptions?: Apollo.MutationHookOptions<Verif
 export type VerifyMutationHookResult = ReturnType<typeof useVerifyMutation>;
 export type VerifyMutationResult = Apollo.MutationResult<VerifyMutation>;
 export type VerifyMutationOptions = Apollo.BaseMutationOptions<VerifyMutation, VerifyMutationVariables>;
+export const CreateReportDocument = gql`
+    mutation createReport($data: ReportCreate!) {
+  createReport(data: $data) {
+    report {
+      id
+    }
+    error {
+      message
+      code
+    }
+  }
+}
+    `;
+export type CreateReportMutationFn = Apollo.MutationFunction<CreateReportMutation, CreateReportMutationVariables>;
+
+/**
+ * __useCreateReportMutation__
+ *
+ * To run a mutation, you first call `useCreateReportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReportMutation, { data, loading, error }] = useCreateReportMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateReportMutation(baseOptions?: Apollo.MutationHookOptions<CreateReportMutation, CreateReportMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateReportMutation, CreateReportMutationVariables>(CreateReportDocument, options);
+      }
+export type CreateReportMutationHookResult = ReturnType<typeof useCreateReportMutation>;
+export type CreateReportMutationResult = Apollo.MutationResult<CreateReportMutation>;
+export type CreateReportMutationOptions = Apollo.BaseMutationOptions<CreateReportMutation, CreateReportMutationVariables>;
 export const ListReportsDocument = gql`
     query listReports($commonSearch: CommonSearch!) {
   listReports(commonSearch: $commonSearch) {

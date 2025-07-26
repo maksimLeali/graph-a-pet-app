@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 import { IonContent } from "@ionic/react";
-import { useLocation, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
@@ -10,22 +10,25 @@ import styled from "styled-components";
 import {
     DateTimePicker,
     FakeInput,
+    Icon,
     Image2x,
     Modal,
     Option,
     SelectInput,
+    SubmitInput,
     TextAreaInput,
     TextInput,
     Toggle,
 } from "@components";
 import { FormProvider, useForm } from "react-hook-form";
-import { DashboardPetFragment, MutationCreateReportArgs } from "@types";
+import { DashboardPetFragment, MutationCreateReportArgs, ReportType, useCreateReportMutation } from "@types";
 import { useQueryParams } from "@hooks";
 import { LocationSelector } from "../components";
+import toast from "react-hot-toast";
 
 type props = {};
 type Location = {
-    coordinates: { latitude: string; longitude: string };
+    coordinates: { latitude: number; longitude: number };
     label: string;
 };
 
@@ -33,10 +36,10 @@ export const NewReport: React.FC<props> = () => {
     const [useCurrentDate, setUseCurrentDate] = useState(true);
     const [isMissing, setIsMissing] = useState(false);
     const queryParams = useQueryParams();
-    const { setPage, fadeBackground, ownedPets } = useUserContext();
-
+    const { setPage, fadeBackground, ownedPets, user } = useUserContext();
+    const [inited, setInited] = useState(false);
     const { t } = useTranslation();
-
+    const history = useHistory()
     const [openLocationSelector, setOpenLocationSelector] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(
         null
@@ -65,9 +68,25 @@ export const NewReport: React.FC<props> = () => {
         };
     });
 
+    
+    const [createReport, {loading}] = useCreateReportMutation({
+        onCompleted:({createReport})=>{
+            if(createReport.error || !createReport.report?.id ) {
+                toast.error(t('board.new_report.save_error'));
+                return
+            }
+
+            toast.success(t('board.new_report.save_success'));
+            setTimeout(()=>{
+                history.push('/board');
+            }, 1500)
+        }
+    })
+
     const methods = useForm<
-        MutationCreateReportArgs & {
+         {
             notes: string;
+            location: string;
             date_date: string;
             date_time: string;
             pet_id: string;
@@ -88,16 +107,36 @@ export const NewReport: React.FC<props> = () => {
 
     useEffect(() => {
         setPage({ visible: true, name: t("board.new_report.page_name") });
+        setInited(true);
     }, []);
 
     useEffect(() => {
-        checkDefualt();
+        checkDefualt();        
     }, [ownedPets]);
 
     const openLocationsModal = useCallback(() => {
         setOpenLocationSelector(true);
         fadeBackground(true);
     }, [locationText, selectedLocation, openLocationSelector]);
+
+
+    useEffect(()=>{
+        if(!inited) return;
+        if(!isMissing ){
+            methods.clearErrors("pet_id")
+            methods.setValue('pet_id', "")
+        }
+    }, [isMissing, inited])
+    useEffect(()=>{
+        if(!inited) return;
+        if(useCurrentDate ){
+            methods.clearErrors("date_date")
+            methods.clearErrors("date_time")
+            methods.setValue("date_date", "")
+            methods.setValue("date_time", "")
+
+        }
+    }, [useCurrentDate, inited])
 
     return (
         <IonContent fullscreen>
@@ -108,14 +147,7 @@ export const NewReport: React.FC<props> = () => {
                         setOpenLocationSelector(false);
                         fadeBackground(false);
                     }}
-                    onCancel={() => {
-                        setOpenLocationSelector(false);
-                        fadeBackground(false);
-                    }}
-                    onConfirm={() => {
-                        setOpenLocationSelector(false);
-                        fadeBackground(false);
-                    }}
+                   
                 >
                     <LocationSelector
                         onSelected={(v) => {
@@ -124,6 +156,11 @@ export const NewReport: React.FC<props> = () => {
                             // if (!v) return;
                             setLocationText(v?.label ?? "");
                             console.log("Selected location:", v);
+                            setOpenLocationSelector(false);
+                        }}
+                        onCancel={() => {
+                            setOpenLocationSelector(false);
+                            fadeBackground(false);
                         }}
                         changeLocationText={(v) => setLocationText(v)}
                         selectedLocation={selectedLocation}
@@ -133,10 +170,26 @@ export const NewReport: React.FC<props> = () => {
 
             <FormProvider {...methods}>
                 <Form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }}
+                    onSubmit={
+                        methods.handleSubmit((data)=>{
+                            if(!selectedLocation ) return
+                            createReport({variables: {
+                                data: {
+                                    pet_id: isMissing ? data.pet_id : undefined,
+                                    type: isMissing ? ReportType.Missing : ReportType.Found,
+                                    latitude: selectedLocation.coordinates.latitude,
+                                    longitude: selectedLocation.coordinates.longitude,
+                                    place: selectedLocation.label,
+                                    reporter: {
+                                        email: user.email,
+                                        first_name: user.first_name,
+                                        last_name: user.last_name,
+                                        user_id: user.id
+                                    }
+                                }
+                            }})
+                        })
+                    }
                 >
                     <Row>
                         <p>{t("board.new_report.is_missing")}</p>
@@ -152,6 +205,7 @@ export const NewReport: React.FC<props> = () => {
                         disabled={!isMissing}
                         textLabel="board.new_report.pet"
                     />
+                    {/* <TextInput name="test" required /> */}
 
                     <FakeInput
                         name="location"
@@ -159,6 +213,7 @@ export const NewReport: React.FC<props> = () => {
                         textLabel="board.new_report.insert_location"
                         onClick={openLocationsModal}
                         value={locationText}
+                        rightElement={locationText.length > 0 && <Icon onClick={()=>{  setSelectedLocation(null); setLocationText("")}} name="closeCircleOutline" />}
                     />
                     <Row>
                         <p>{t("board.new_report.use_current_time")}</p>
@@ -186,25 +241,35 @@ export const NewReport: React.FC<props> = () => {
                     />
                     <TextAreaInput
                         name="notes"
+                        required
                         textLabel="board.new_report.notes"
                     />
+
+                    <SubmitInput submitting={loading}  color="primary"   >
+                        {t('board.new_report.save')}
+                    </SubmitInput>
                 </Form>
             </FormProvider>
         </IonContent>
     );
 };
 
-const Form = styled.div`
+const Form = styled.form`
     width: 100%;
     display: flex;
     padding: ${$cssTRBL(2, 1)};
     flex-wrap: wrap;
+    height: calc(100dvh - ${$uw(12)});
     justify-content: space-between;
     .main_date {
         width: 55%;
     }
     .main_time {
         width: 40%;
+    }
+    .submit-input{
+        align-self: flex-end;
+        width: 100%;
     }
 `;
 
