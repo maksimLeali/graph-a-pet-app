@@ -878,6 +878,7 @@ export type Report = {
   __typename?: 'Report';
   coordinates: Coordinates;
   created_at: Scalars['String']['output'];
+  date: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   latitude: Scalars['Float']['output'];
   longitude: Scalars['Float']['output'];
@@ -891,6 +892,7 @@ export type Report = {
 };
 
 export type ReportCreate = {
+  date?: InputMaybe<Scalars['String']['input']>;
   latitude: Scalars['Float']['input'];
   longitude: Scalars['Float']['input'];
   notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;

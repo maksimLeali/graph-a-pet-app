@@ -18,8 +18,7 @@
     "serve:local": "NODE_ENV=local serve -p 3100 -s dist",
     "fetch:translations": "node fetchTranslation.js --url=https://graph-a-pet.makso.me",
     "fetch:graphql": "graphql-codegen --config codegen-introspection.yml",
-    "fetch:graphql:dev": "env-cmd -x -f .env.development yarn fetch:graphql",
-    "fetch:graphql:local": "rover graph introspect http://localhost:5000/graphql > graphql-schema.json",
+    "fetch:graphql:local": "graphql-codegen --config codegen-introspection-local.yml",
     "generate": "graphql-codegen --config codegen.yml"
   },
   "resolutions": {

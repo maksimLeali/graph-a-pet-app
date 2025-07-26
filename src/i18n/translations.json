@@ -952,7 +952,11 @@
                 "notes":"Note",
                 "save": "Invia segnalazione",
                 "save_error" :"Segnalazione fallita",
-                "save_success": "Segnalazione riuscita"
+                "save_success": "Segnalazione riuscita",
+                "understood": "Ho capitpo",
+                "disclaimer_title": "Attenzione",
+                "disclaimer_body_1": "Capiamo che questo sia un momento delicato, ma cerca di <b>mantenere la calma</b>, ricorda che andare nel panico può solo che peggiorare le cose.</br>Cerca di <b>dare maggiori informazioni</b> e il più <b>precise</b> possibili.",
+                "disclaimer_body_2": "Nelle <b>note</b> prova ad indicare: <ui><li>il cibo preferito<del cane</li> <li>è spaventato o litigioso?</li> <li>si lascia avvicinare?</ul>" 
             }
         },
         "pages": {

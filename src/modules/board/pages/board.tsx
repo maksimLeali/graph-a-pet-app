@@ -90,6 +90,7 @@ export const Board: React.FC = () => {
                 ...p,
                 ...(listReports.items as MinReportFragment[]),
             ]);
+            // setReachedMaxFound(true);
         },
     });
 
@@ -103,16 +104,13 @@ export const Board: React.FC = () => {
         fetchRepots();
     }, []);
 
-    const reportList = useMemo(() => {
-        console.log("repprts type", reportsType);
-        if (!reportsType) {
-            return _.sortBy([...missingReports, ...foundReports], "created_at");
-        }
+    const reportList = useMemo(() => {        
+        
+        return _.sortBy([...missingReports, ...foundReports], "created_at");
+        
 
-        if (reportsType === ReportType.Found) return foundReports;
-
-        return missingReports;
-    }, [missingReports, foundReports, reportsType]);
+        
+    }, [missingReports, foundReports]);
 
     const reachedMax = useMemo(() => {
         if (!reportsType) {
@@ -151,24 +149,28 @@ export const Board: React.FC = () => {
                 />
             </Container>
 
-            <InfiniteScroll
+            {/* <InfiniteScroll
                 disabled={reachedMax}
                 onIonInfinite={(ev: any) => {
                     handleNewData();
                     setTimeout(() => ev.target.complete(), 500);
                 }}
-            >
-                <IonInfiniteScrollContent>
+            > */}
+                
                     <List>
-                        {reportList.map((item) => (
+                        {reportList.filter((report)=> {
+                            console.log(reportsType,report.type, report.type === reportsType)
+                            if(!reportsType) return true;
+                            return report.type === reportsType
+                        }).map((item) => (
                             <MinReport report={item} />
                         ))}
                     </List>
-                </IonInfiniteScrollContent>
                     <AddReportCta to="/board/new">
                         {t("board.add_report")}
                     </AddReportCta>
-            </InfiniteScroll>
+                
+            {/* </InfiniteScroll> */}
 
             {/* <ReportsPreview loading={loading} reports={reports} /> */}
         </IonContent>

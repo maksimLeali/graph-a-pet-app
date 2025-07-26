@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { useTranslation } from "react-i18next";
-import { IonContent } from "@ionic/react";
+import { IonButton, IonContent } from "@ionic/react";
 import { useHistory, useLocation, useParams } from "react-router";
 
 import { useUserContext } from "@contexts";
@@ -21,10 +21,16 @@ import {
     Toggle,
 } from "@components";
 import { FormProvider, useForm } from "react-hook-form";
-import { DashboardPetFragment, MutationCreateReportArgs, ReportType, useCreateReportMutation } from "@types";
+import {
+    DashboardPetFragment,
+    MutationCreateReportArgs,
+    ReportType,
+    useCreateReportMutation,
+} from "@types";
 import { useQueryParams } from "@hooks";
 import { LocationSelector } from "../components";
 import toast from "react-hot-toast";
+import dayjs from "dayjs";
 
 type props = {};
 type Location = {
@@ -35,11 +41,13 @@ type Location = {
 export const NewReport: React.FC<props> = () => {
     const [useCurrentDate, setUseCurrentDate] = useState(true);
     const [isMissing, setIsMissing] = useState(false);
+    const [disclaimerSeen, setDisclaimerSeen] = useState(false);
+    const [disclaimerOpen, setDisclaimerOpen] = useState(false);
     const queryParams = useQueryParams();
     const { setPage, fadeBackground, ownedPets, user } = useUserContext();
     const [inited, setInited] = useState(false);
     const { t } = useTranslation();
-    const history = useHistory()
+    const history = useHistory();
     const [openLocationSelector, setOpenLocationSelector] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(
         null
@@ -68,30 +76,27 @@ export const NewReport: React.FC<props> = () => {
         };
     });
 
-    
-    const [createReport, {loading}] = useCreateReportMutation({
-        onCompleted:({createReport})=>{
-            if(createReport.error || !createReport.report?.id ) {
-                toast.error(t('board.new_report.save_error'));
-                return
+    const [createReport, { loading }] = useCreateReportMutation({
+        onCompleted: ({ createReport }) => {
+            if (createReport.error || !createReport.report?.id) {
+                toast.error(t("board.new_report.save_error"));
+                return;
             }
 
-            toast.success(t('board.new_report.save_success'));
-            setTimeout(()=>{
-                history.push('/board');
-            }, 1500)
-        }
-    })
+            toast.success(t("board.new_report.save_success"));
+            setTimeout(() => {
+                history.push("/board");
+            }, 1500);
+        },
+    });
 
-    const methods = useForm<
-         {
-            notes: string;
-            location: string;
-            date_date: string;
-            date_time: string;
-            pet_id: string;
-        }
-    >({
+    const methods = useForm<{
+        notes: string;
+        location: string;
+        date_date: string;
+        date_time: string;
+        pet_id: string;
+    }>({
         mode: "onSubmit",
     });
 
@@ -111,7 +116,7 @@ export const NewReport: React.FC<props> = () => {
     }, []);
 
     useEffect(() => {
-        checkDefualt();        
+        checkDefualt();
     }, [ownedPets]);
 
     const openLocationsModal = useCallback(() => {
@@ -119,24 +124,27 @@ export const NewReport: React.FC<props> = () => {
         fadeBackground(true);
     }, [locationText, selectedLocation, openLocationSelector]);
 
+    useEffect(() => {
+        if (!inited) return;
+        if (!isMissing) {
+            methods.clearErrors("pet_id");
+            methods.setValue("pet_id", "");
+        }
+    }, [isMissing, inited]);
+    useEffect(() => {
+        if (!inited) return;
+        if (useCurrentDate) {
+            methods.clearErrors("date_date");
+            methods.clearErrors("date_time");
+            methods.setValue("date_date", "");
+            methods.setValue("date_time", "");
+        }
+    }, [useCurrentDate, inited]);
 
     useEffect(()=>{
-        if(!inited) return;
-        if(!isMissing ){
-            methods.clearErrors("pet_id")
-            methods.setValue('pet_id', "")
-        }
-    }, [isMissing, inited])
-    useEffect(()=>{
-        if(!inited) return;
-        if(useCurrentDate ){
-            methods.clearErrors("date_date")
-            methods.clearErrors("date_time")
-            methods.setValue("date_date", "")
-            methods.setValue("date_time", "")
-
-        }
-    }, [useCurrentDate, inited])
+        if(disclaimerSeen ) return;
+        setDisclaimerOpen(isMissing)
+    }, [disclaimerSeen, isMissing])
 
     return (
         <IonContent fullscreen>
@@ -147,15 +155,12 @@ export const NewReport: React.FC<props> = () => {
                         setOpenLocationSelector(false);
                         fadeBackground(false);
                     }}
-                   
                 >
                     <LocationSelector
-                        onSelected={(v) => {
-                            console.log("*é*é*é*é*é*é", v);
+                        onSelected={(v) => {                            
                             setSelectedLocation(v);
-                            // if (!v) return;
-                            setLocationText(v?.label ?? "");
-                            console.log("Selected location:", v);
+                            setLocationText(v?.label ?? "");      
+                            fadeBackground(false);                      
                             setOpenLocationSelector(false);
                         }}
                         onCancel={() => {
@@ -170,26 +175,41 @@ export const NewReport: React.FC<props> = () => {
 
             <FormProvider {...methods}>
                 <Form
-                    onSubmit={
-                        methods.handleSubmit((data)=>{
-                            if(!selectedLocation ) return
-                            createReport({variables: {
+                    onSubmit={methods.handleSubmit((data) => {
+                        if (!selectedLocation)  return;
+                        let date = undefined;
+                        if(!useCurrentDate){
+                            const time = dayjs(data.date_time);
+                            date = dayjs(data.date_date)
+                                .set("hour", time.hour())
+                                .set("minute", time.minute())
+                                .toISOString();
+                        }
+
+                        createReport({
+                            variables: {
                                 data: {
                                     pet_id: isMissing ? data.pet_id : undefined,
-                                    type: isMissing ? ReportType.Missing : ReportType.Found,
-                                    latitude: selectedLocation.coordinates.latitude,
-                                    longitude: selectedLocation.coordinates.longitude,
+                                    type: isMissing
+                                        ? ReportType.Missing
+                                        : ReportType.Found,
+                                    latitude:
+                                        selectedLocation.coordinates.latitude,
+                                    longitude:
+                                        selectedLocation.coordinates.longitude,
                                     place: selectedLocation.label,
+                                    date,
+                                    notes: [data.notes],
                                     reporter: {
                                         email: user.email,
                                         first_name: user.first_name,
                                         last_name: user.last_name,
-                                        user_id: user.id
-                                    }
-                                }
-                            }})
-                        })
-                    }
+                                        user_id: user.id,
+                                    },
+                                },
+                            },
+                        });
+                    })}
                 >
                     <Row>
                         <p>{t("board.new_report.is_missing")}</p>
@@ -213,7 +233,17 @@ export const NewReport: React.FC<props> = () => {
                         textLabel="board.new_report.insert_location"
                         onClick={openLocationsModal}
                         value={locationText}
-                        rightElement={locationText.length > 0 && <Icon onClick={()=>{  setSelectedLocation(null); setLocationText("")}} name="closeCircleOutline" />}
+                        rightElement={
+                            locationText.length > 0 && (
+                                <Icon
+                                    onClick={() => {
+                                        setSelectedLocation(null);
+                                        setLocationText("");
+                                    }}
+                                    name="closeCircleOutline"
+                                />
+                            )
+                        }
                     />
                     <Row>
                         <p>{t("board.new_report.use_current_time")}</p>
@@ -245,9 +275,33 @@ export const NewReport: React.FC<props> = () => {
                         textLabel="board.new_report.notes"
                     />
 
-                    <SubmitInput submitting={loading}  color="primary"   >
-                        {t('board.new_report.save')}
+                    <SubmitInput submitting={loading} color="primary">
+                        {t("board.new_report.save")}
                     </SubmitInput>
+                    {disclaimerOpen && <Disclaimer>
+                        <Icon onClick={()=>{setDisclaimerSeen(true); setDisclaimerOpen(false)}} className="closeDisclaimer" name="close"></Icon>
+                        <Title>
+                            <Icon color="danger" name="alertCircleOutline" />{" "}
+                            {t("board.new_report.disclaimer_title")}
+                        </Title>
+                        <Body
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    t("board.new_report.disclaimer_body_1") ??
+                                    "",
+                            }}
+                        />
+                        <Body
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    t("board.new_report.disclaimer_body_2") ??
+                                    "",
+                            }}
+                        />
+                        <IonButton onClick={()=>{setDisclaimerSeen(true); setDisclaimerOpen(false)}}  >
+                            {t('board.new_report.understood')}
+                        </IonButton>
+                    </Disclaimer>}
                 </Form>
             </FormProvider>
         </IonContent>
@@ -256,6 +310,7 @@ export const NewReport: React.FC<props> = () => {
 
 const Form = styled.form`
     width: 100%;
+    position: relative;
     display: flex;
     padding: ${$cssTRBL(2, 1)};
     flex-wrap: wrap;
@@ -267,7 +322,7 @@ const Form = styled.form`
     .main_time {
         width: 40%;
     }
-    .submit-input{
+    .submit-input {
         align-self: flex-end;
         width: 100%;
     }
@@ -294,4 +349,35 @@ const MinImageWrapper = styled.div<{ color?: string }>`
     height: ${$uw(2.3)};
     border-radius: 100%;
     border: 2px solid ${({ color }) => $color(color || "primary")};
+`;
+
+const Disclaimer = styled.div`
+    background-color: ${$color("light")};
+    position: absolute;
+    width: 100%;
+    bottom: ${$uw(1)};
+    border-radius: 4px;
+    padding: ${$cssTRBL(2)};
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    .closeDisclaimer {
+        position: absolute;
+        right : ${$uw(2)};
+        top: ${$uw(1)};
+    }
+    >.button{
+        margin-left: auto;
+    }
+`;
+
+const Title = styled.h3`
+    display: flex;
+    gap: ${$uw(1)};
+    margin-bottom: ${$uw(1)};
+`;
+
+const Body = styled.p`
+    width: 100%;
+    margin-bottom: ${$uw(1)};
 `;

@@ -142,13 +142,16 @@ const MapEvents: FC<{
                     .openOn(map);
                 console.log(data);
                 onSelect({
-                    coordinates: { latitude: latlng.lat, longitude: latlng.lng },
+                    coordinates: {
+                        latitude: latlng.lat,
+                        longitude: latlng.lng,
+                    },
                     label: `${province} ${city} - ${road}`,
                 });
             } catch (err) {
                 console.error("Reverse geocode failed:", err);
             }
-        },      
+        },
     });
     return null;
 };
@@ -163,7 +166,9 @@ interface Props {
 export const LocationSelector: FC<Props> = React.memo(
     ({ onSelected, changeLocationText, onCancel, selectedLocation }) => {
         const { t } = useTranslation();
-        const [selected, setSelected] = useState<Location | null>(selectedLocation);
+        const [selected, setSelected] = useState<Location | null>(
+            selectedLocation
+        );
         const [initPosition, setInitPosition] = useState<{
             latitude: number | null;
             longitude: number | null;
@@ -171,13 +176,18 @@ export const LocationSelector: FC<Props> = React.memo(
             selectedLocation?.coordinates
                 ? {
                       latitude: selectedLocation.coordinates.latitude,
-                      longitude: selectedLocation.coordinates.longitude
+                      longitude: selectedLocation.coordinates.longitude,
                   }
                 : null
         );
         const [query, setQuery] = useState(selectedLocation?.label ?? "");
         const { options: searchOptions } = useNominatimSearch(query);
-        const { coords, requestLocation } = useGeolocation({
+        const {
+            coords,
+            requestLocation,
+            loading: geoLoading,
+            error: geoError,
+        } = useGeolocation({
             timeout: 10000,
         });
 
@@ -191,11 +201,14 @@ export const LocationSelector: FC<Props> = React.memo(
         useEffect(() => {
             console.log(coords);
             setMapZoom(16);
-            if(initPosition ) return;
-            if (coords?.latitude && coords?.longitude) {
-                setInitPosition(coords);
+            if (initPosition) return;
+            if (geoError || (!coords?.latitude && !coords?.longitude)) {
+                setInitPosition({ latitude: 45.538353, longitude: 10.219192 });
+                return;
             }
-        }, [coords, initPosition]);
+
+            setInitPosition(coords);
+        }, [coords, initPosition, geoError]);
 
         const options = useMemo(() => {
             const locOpts = initPosition
@@ -216,7 +229,7 @@ export const LocationSelector: FC<Props> = React.memo(
                     .split(",")
                     .map(Number);
             }
-            return [20, 0];
+            return [45.538353,10.219192];
         }, [options]);
 
         const handleChange = useCallback(
@@ -258,19 +271,20 @@ export const LocationSelector: FC<Props> = React.memo(
                                 />
                             </>
                         )}
-                        { selected && (
-                              <CircleMarker
-                              center={[selected.coordinates.latitude, selected.coordinates.longitude]}
-                              radius={6}
-                              pathOptions={{ fillOpacity: 1 }}
-                              eventHandlers={{
-                                mouseover: (event) => event.target.openPopup(),
-                              }}
-                              
+                        {selected && (
+                            <CircleMarker
+                                center={[
+                                    selected.coordinates.latitude,
+                                    selected.coordinates.longitude,
+                                ]}
+                                radius={6}
+                                pathOptions={{ fillOpacity: 1 }}
+                                eventHandlers={{
+                                    mouseover: (event) =>
+                                        event.target.openPopup(),
+                                }}
                             />
-                        )
-                            
-                        }
+                        )}
                         <MapEvents
                             onSelect={(data) => {
                                 console.log("data", data);
@@ -281,7 +295,11 @@ export const LocationSelector: FC<Props> = React.memo(
                     </MapContainer>
                 </MapWrapper>
                 <Actions>
-                    <IonButton fill="outline" color="danger" onClick={()=> onCancel()}>
+                    <IonButton
+                        fill="outline"
+                        color="danger"
+                        onClick={() => onCancel()}
+                    >
                         {t("actions.cancel")}
                     </IonButton>
                     <IonButton

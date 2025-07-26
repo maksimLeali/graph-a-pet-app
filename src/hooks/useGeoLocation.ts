@@ -16,13 +16,13 @@ export const useGeolocation = (options: PositionOptions = {}) => {
 
     setLoading(true);
     setError(undefined);
-
+    console.log('getting position', navigator.geolocation)
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
         setCoords({ latitude: coords.latitude, longitude: coords.longitude });
         setLoading(false);
       },
-      (err) => {
+      (err) => {        
         setError(err.message);
         setLoading(false);
       },
