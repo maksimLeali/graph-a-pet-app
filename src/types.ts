@@ -620,6 +620,7 @@ export type Pet = {
   neutered: Scalars['Boolean']['output'];
   ownerships?: Maybe<PaginatedOwnerships>;
   pictures?: Maybe<PaginatedMedias>;
+  report?: Maybe<Report>;
   temperament?: Maybe<Scalars['String']['output']>;
   weight_kg?: Maybe<Scalars['Float']['output']>;
 };
@@ -882,6 +883,7 @@ export type Report = {
   id: Scalars['ID']['output'];
   latitude: Scalars['Float']['output'];
   longitude: Scalars['Float']['output'];
+  medias?: Maybe<Array<Maybe<Media>>>;
   notes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   pet?: Maybe<Pet>;
   place: Scalars['String']['output'];
@@ -1139,6 +1141,8 @@ export enum TreatmentDuration {
   TwoHours = 'TWO_HOURS'
 }
 
+export type FullReportFragment = { __typename?: 'Report', id: string, notes?: Array<string | null> | null, place: string, type: ReportType, date: string, medias?: Array<{ __typename?: 'Media', id: string, url: string } | null> | null, reporter: { __typename?: 'Reporter', email: string, first_name: string, last_name: string, user_id?: string | null }, responders: Array<{ __typename?: 'Reporter', email: string } | null>, coordinates: { __typename?: 'Coordinates', latitude?: number | null, longitude?: number | null }, pet?: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } | null };
+
 export type MinReportFragment = { __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } };
 
 export type AppointmentFragment = { __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null };
@@ -1198,6 +1202,13 @@ export type CreateReportMutationVariables = Exact<{
 
 
 export type CreateReportMutation = { __typename?: 'Mutation', createReport: { __typename?: 'ReportResult', report?: { __typename?: 'Report', id: string } | null, error?: { __typename?: 'Error', message: string, code: string } | null } };
+
+export type GetReportQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetReportQuery = { __typename?: 'Query', getReport?: { __typename?: 'ReportResult', success: boolean, report?: { __typename?: 'Report', id: string, notes?: Array<string | null> | null, place: string, type: ReportType, date: string, medias?: Array<{ __typename?: 'Media', id: string, url: string } | null> | null, reporter: { __typename?: 'Reporter', email: string, first_name: string, last_name: string, user_id?: string | null }, responders: Array<{ __typename?: 'Reporter', email: string } | null>, coordinates: { __typename?: 'Coordinates', latitude?: number | null, longitude?: number | null }, pet?: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } | null };
 
 export type ListReportsQueryVariables = Exact<{
   commonSearch: CommonSearch;
@@ -1295,6 +1306,42 @@ export type GetFullPetQueryVariables = Exact<{
 
 export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
+export const FullReportFragmentDoc = gql`
+    fragment FullReport on Report {
+  id
+  medias {
+    id
+    url
+  }
+  reporter {
+    email
+    first_name
+    last_name
+    user_id
+  }
+  responders {
+    email
+  }
+  notes
+  coordinates {
+    latitude
+    longitude
+  }
+  place
+  pet {
+    id
+    name
+    main_picture {
+      id
+    }
+  }
+  type
+  date
+  medias {
+    id
+  }
+}
+    `;
 export const MinReportFragmentDoc = gql`
     fragment MinReport on Report {
   id
@@ -1731,6 +1778,53 @@ export function useCreateReportMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateReportMutationHookResult = ReturnType<typeof useCreateReportMutation>;
 export type CreateReportMutationResult = Apollo.MutationResult<CreateReportMutation>;
 export type CreateReportMutationOptions = Apollo.BaseMutationOptions<CreateReportMutation, CreateReportMutationVariables>;
+export const GetReportDocument = gql`
+    query getReport($id: ID!) {
+  getReport(id: $id) {
+    report {
+      ...FullReport
+    }
+    success
+    error {
+      code
+      message
+    }
+  }
+}
+    ${FullReportFragmentDoc}`;
+
+/**
+ * __useGetReportQuery__
+ *
+ * To run a query within a React component, call `useGetReportQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReportQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReportQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetReportQuery(baseOptions: Apollo.QueryHookOptions<GetReportQuery, GetReportQueryVariables> & ({ variables: GetReportQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetReportQuery, GetReportQueryVariables>(GetReportDocument, options);
+      }
+export function useGetReportLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReportQuery, GetReportQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetReportQuery, GetReportQueryVariables>(GetReportDocument, options);
+        }
+export function useGetReportSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetReportQuery, GetReportQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetReportQuery, GetReportQueryVariables>(GetReportDocument, options);
+        }
+export type GetReportQueryHookResult = ReturnType<typeof useGetReportQuery>;
+export type GetReportLazyQueryHookResult = ReturnType<typeof useGetReportLazyQuery>;
+export type GetReportSuspenseQueryHookResult = ReturnType<typeof useGetReportSuspenseQuery>;
+export type GetReportQueryResult = Apollo.QueryResult<GetReportQuery, GetReportQueryVariables>;
 export const ListReportsDocument = gql`
     query listReports($commonSearch: CommonSearch!) {
   listReports(commonSearch: $commonSearch) {

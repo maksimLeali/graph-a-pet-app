@@ -7,6 +7,7 @@ import { Icon } from "@components";
 import { IconName } from "@components";
 import { ReportType } from "@types";
 import { $uw, $color } from "@theme";
+import { Link } from "react-router-dom";
 
 type Props = {
 	report: MinReportFragment;
@@ -25,7 +26,7 @@ export const MinReport: React.FC<Props> = React.memo(({ report }) => {
 			  };
 
 	return (
-		<Container color={reportUtils.mainColor}>
+		<Container to={`/board/${report.id}`} color={reportUtils.mainColor} >
 			<Header>
 				<Icon
 					className="icon"
@@ -45,7 +46,7 @@ export const MinReport: React.FC<Props> = React.memo(({ report }) => {
 	);
 });
 
-const Container = styled.div<{ color: string }>`
+const Container = styled(Link)<{ color: string }>`
 	display: flex;
 	padding: ${$uw(1)};
 	flex-direction: column;
@@ -56,6 +57,7 @@ const Container = styled.div<{ color: string }>`
 	margin-bottom: ${$uw(2)};
 	position: relative;
 	overflow: hidden;
+	text-decoration: none;
 	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
 		rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 	.dark & {
@@ -70,6 +72,10 @@ const Container = styled.div<{ color: string }>`
 		top: ${$uw(-4)};
 		left: ${$uw(-2)};
 		background-color: ${({ color }) => $color(color)};
+	}
+	p {
+		color:${$color('dark')};
+		text-decoration: none;
 	}
 `;
 

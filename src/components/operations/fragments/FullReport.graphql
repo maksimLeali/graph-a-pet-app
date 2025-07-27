@@ -1,0 +1,34 @@
+fragment FullReport on Report {
+    id
+    medias {
+        id
+        url
+    }
+    reporter {
+        email
+        first_name
+        last_name
+        user_id
+    }
+    responders {
+        email
+    }
+    notes
+    coordinates {
+        latitude
+        longitude
+    }
+    place
+    pet {
+        id
+        name
+        main_picture {
+            id
+        }
+    }
+    type
+    date
+    medias {
+        id
+    }
+}

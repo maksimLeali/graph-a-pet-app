@@ -941,6 +941,10 @@
             "lost": "Smarriti",
             "found": "Avvistamenti",
             "add_report": "Nuova segnalazione",
+            "detail": {
+                "missing": "Segnalazione di {{name}}",
+                "found": "Segnalazione del {{date}}"
+            },
             "new_report": {
                 "page_name": "Segnalazione",
                 "use_current_time": "Usare data e ora di adesso",

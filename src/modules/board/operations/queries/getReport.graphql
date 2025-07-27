@@ -1,0 +1,12 @@
+query getReport($id: ID!) {
+    getReport(id: $id) {
+        report {
+            ...FullReport
+        }
+        success
+        error {
+            code
+            message
+        }
+    }
+}
