@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 import { IonButton, IonContent } from "@ionic/react";
@@ -25,12 +25,14 @@ import {
     DashboardPetFragment,
     MutationCreateReportArgs,
     ReportType,
+    useCreateMediaMutation,
     useCreateReportMutation,
 } from "@types";
 import { useQueryParams } from "@hooks";
 import { LocationSelector } from "../components";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
+import axios from "axios";
 
 type props = {};
 type Location = {
@@ -47,6 +49,9 @@ export const NewReport: React.FC<props> = () => {
     const { setPage, fadeBackground, ownedPets, user } = useUserContext();
     const [inited, setInited] = useState(false);
     const { t } = useTranslation();
+    const [loadingCreate, setLoadingCreate] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [pictures, setPictures] = useState<{ url: string, type:string}[]>([]);
     const history = useHistory();
     const [openLocationSelector, setOpenLocationSelector] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(
@@ -77,18 +82,25 @@ export const NewReport: React.FC<props> = () => {
     });
 
     const [createReport, { loading }] = useCreateReportMutation({
-        onCompleted: ({ createReport }) => {
+        onCompleted: async ({ createReport }) => {
             if (createReport.error || !createReport.report?.id) {
                 toast.error(t("board.new_report.save_error"));
                 return;
             }
 
+            if(pictures) {
+               await handlesUploadPictures(pictures,createReport.report.id);
+            }
             toast.success(t("board.new_report.save_success"));
             setTimeout(() => {
                 history.push("/board");
             }, 1500);
         },
     });
+
+    const [createMedia, ] = useCreateMediaMutation({onCompleted: ()=>{
+		console.log('media created'  )
+    }})
 
     const methods = useForm<{
         notes: string;
@@ -99,6 +111,61 @@ export const NewReport: React.FC<props> = () => {
     }>({
         mode: "onSubmit",
     });
+
+    const handleUpload = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const files = event.target?.files;
+        const temp: { url: string, type:string}[] = [];
+        if (!files) return;
+        for (const file of files) {
+            if (file) {
+                const tempImageURL = URL.createObjectURL(file);
+                temp.push({url: tempImageURL, type: file.type})
+            }
+        }
+        console.log('pictures', temp.length)
+        setPictures(p=>[...p, ...temp])
+    }, []);
+
+    const uploadImage = async (image: {url: string, type: string}, id: string, index: number) => {
+        try {
+            
+			
+            // Convert base64 URL to Blob
+            const response = await fetch(image.url);
+            const blob = await response.blob();
+
+            // Prepare FormData
+            const formData = new FormData();
+            formData.append("file", blob, `${id}_${index}.png`);
+
+            // API Call
+            const apiResponse = await axios.post("https://graph-a-pet.makso.me/media/upload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "User-Agent": "insomnia/8.6.1",
+                },
+            });
+			const mediaData = apiResponse.data;
+			createMedia({variables: { data : {
+				type:image.type,
+				scope: "report_medias",
+				ref_id: id,
+				main_colors: [],				
+				url: mediaData.public_url,
+
+			}}})
+            console.log("Upload Success:", apiResponse.data);
+            
+        } catch (error) {
+            console.error("Upload Error:", error);          
+        } 
+    };
+
+    const handlesUploadPictures = useCallback(async (images: { url: string, type:string}[], report_id: string)=>{
+        await Promise.all(images.map(async(image, i)=>{
+            await uploadImage(image, report_id, i);
+        }))
+    }, [])
 
     const checkDefualt = useCallback(() => {
         const defaultPet = petsOptions.find(
@@ -141,10 +208,10 @@ export const NewReport: React.FC<props> = () => {
         }
     }, [useCurrentDate, inited]);
 
-    useEffect(()=>{
-        if(disclaimerSeen ) return;
-        setDisclaimerOpen(isMissing)
-    }, [disclaimerSeen, isMissing])
+    useEffect(() => {
+        if (disclaimerSeen) return;
+        setDisclaimerOpen(isMissing);
+    }, [disclaimerSeen, isMissing]);
 
     return (
         <IonContent fullscreen>
@@ -157,10 +224,10 @@ export const NewReport: React.FC<props> = () => {
                     }}
                 >
                     <LocationSelector
-                        onSelected={(v) => {                            
+                        onSelected={(v) => {
                             setSelectedLocation(v);
-                            setLocationText(v?.label ?? "");      
-                            fadeBackground(false);                      
+                            setLocationText(v?.label ?? "");
+                            fadeBackground(false);
                             setOpenLocationSelector(false);
                         }}
                         onCancel={() => {
@@ -176,9 +243,9 @@ export const NewReport: React.FC<props> = () => {
             <FormProvider {...methods}>
                 <Form
                     onSubmit={methods.handleSubmit((data) => {
-                        if (!selectedLocation)  return;
+                        if (!selectedLocation) return;
                         let date = undefined;
-                        if(!useCurrentDate){
+                        if (!useCurrentDate) {
                             const time = dayjs(data.date_time);
                             date = dayjs(data.date_date)
                                 .set("hour", time.hour())
@@ -252,56 +319,98 @@ export const NewReport: React.FC<props> = () => {
                             onChange={(v) => setUseCurrentDate(v)}
                         />
                     </Row>
-                    <DateTimePicker
-                        name="date_date"
-                        textLabel="board.new_report.date"
-                        type="date"
-                        className="main_date"
-                        disabled={useCurrentDate}
-                        required={!useCurrentDate}
-                    />
+                    <Row>
+                        <DateTimePicker
+                            name="date_date"
+                            textLabel="board.new_report.date"
+                            type="date"
+                            className="main_date"
+                            disabled={useCurrentDate}
+                            required={!useCurrentDate}
+                        />
 
-                    <DateTimePicker
-                        name="date_time"
-                        textLabel="board.new_report.time"
-                        type="time"
-                        className="main_time"
-                        required={!useCurrentDate}
-                        disabled={useCurrentDate}
-                    />
+                        <DateTimePicker
+                            name="date_time"
+                            textLabel="board.new_report.time"
+                            type="time"
+                            className="main_time"
+                            required={!useCurrentDate}
+                            disabled={useCurrentDate}
+                        />
+                    </Row>
                     <TextAreaInput
                         name="notes"
                         required
                         textLabel="board.new_report.notes"
                     />
-
+                    <IconWrapper
+                        onClick={(e) => {
+                            console.log("click");
+                            inputRef.current?.click();
+                        }}
+                    >
+                        <input
+                            ref={inputRef}
+                            style={{ display: "none" }}
+                            type="file"
+                            accept="image/*;capture=camera"
+                            multiple
+                            onChange={(e) => handleUpload(e)}
+                        />
+                        <Icon name="cameraOutline" color="white" />
+                        <span>{t("board.new_report.add_pictures")}</span>
+                    </IconWrapper>
+                    {pictures.length> 0 && (
+                        <PicturesContainer>
+                            {pictures.map((picture, i)=><Picture src={picture.url} key={i} />)}
+                        </PicturesContainer>
+                    )}
                     <SubmitInput submitting={loading} color="primary">
                         {t("board.new_report.save")}
                     </SubmitInput>
-                    {disclaimerOpen && <Disclaimer>
-                        <Icon onClick={()=>{setDisclaimerSeen(true); setDisclaimerOpen(false)}} className="closeDisclaimer" name="close"></Icon>
-                        <Title>
-                            <Icon color="danger" name="alertCircleOutline" />{" "}
-                            {t("board.new_report.disclaimer_title")}
-                        </Title>
-                        <Body
-                            dangerouslySetInnerHTML={{
-                                __html:
-                                    t("board.new_report.disclaimer_body_1") ??
-                                    "",
-                            }}
-                        />
-                        <Body
-                            dangerouslySetInnerHTML={{
-                                __html:
-                                    t("board.new_report.disclaimer_body_2") ??
-                                    "",
-                            }}
-                        />
-                        <IonButton onClick={()=>{setDisclaimerSeen(true); setDisclaimerOpen(false)}}  >
-                            {t('board.new_report.understood')}
-                        </IonButton>
-                    </Disclaimer>}
+                    {disclaimerOpen && (
+                        <Disclaimer>
+                            <Icon
+                                onClick={() => {
+                                    setDisclaimerSeen(true);
+                                    setDisclaimerOpen(false);
+                                }}
+                                className="closeDisclaimer"
+                                name="close"
+                            ></Icon>
+                            <Title>
+                                <Icon
+                                    color="danger"
+                                    name="alertCircleOutline"
+                                />{" "}
+                                {t("board.new_report.disclaimer_title")}
+                            </Title>
+                            <Body
+                                dangerouslySetInnerHTML={{
+                                    __html:
+                                        t(
+                                            "board.new_report.disclaimer_body_1"
+                                        ) ?? "",
+                                }}
+                            />
+                            <Body
+                                dangerouslySetInnerHTML={{
+                                    __html:
+                                        t(
+                                            "board.new_report.disclaimer_body_2"
+                                        ) ?? "",
+                                }}
+                            />
+                            <IonButton
+                                onClick={() => {
+                                    setDisclaimerSeen(true);
+                                    setDisclaimerOpen(false);
+                                }}
+                            >
+                                {t("board.new_report.understood")}
+                            </IonButton>
+                        </Disclaimer>
+                    )}
                 </Form>
             </FormProvider>
         </IonContent>
@@ -312,19 +421,28 @@ const Form = styled.form`
     width: 100%;
     position: relative;
     display: flex;
+    flex-direction: column;
     padding: ${$cssTRBL(2, 1)};
     flex-wrap: wrap;
-    height: calc(100dvh - ${$uw(12)});
-    justify-content: space-between;
+    
+    justify-content: flex-start;
     .main_date {
         width: 55%;
     }
     .main_time {
         width: 40%;
     }
+    .main_date,
+    .main_time {
+        margin-bottom: 0;
+    }
     .submit-input {
-        align-self: flex-end;
-        width: 100%;
+        z-index: 2;
+        
+        position: fixed;
+        width: ${$uw(28)};
+        left: calc(50% - ${$uw(14)});
+        bottom: ${$uw(7)};
     }
 `;
 
@@ -351,11 +469,29 @@ const MinImageWrapper = styled.div<{ color?: string }>`
     border: 2px solid ${({ color }) => $color(color || "primary")};
 `;
 
+const IconWrapper = styled.div`
+    display: flex;
+
+    width: fit-content;
+    padding: ${$cssTRBL(1)};
+    align-items: center;
+    gap: ${$uw(1)};
+    border-radius: 10px;
+    background-color: ${$color("primary-light")};
+    > .icon {
+        height: 100%;
+        aspect-ratio: 1;
+    }
+    margin-bottom:${$uw(2)};
+`;
+
 const Disclaimer = styled.div`
     background-color: ${$color("light")};
-    position: absolute;
-    width: 100%;
-    bottom: ${$uw(1)};
+    
+    position: fixed;
+    width: ${$uw(30)};
+    left: calc(50% - ${$uw(15)});
+    bottom: ${$uw(7)};
     border-radius: 4px;
     padding: ${$cssTRBL(2)};
     z-index: 99;
@@ -363,10 +499,10 @@ const Disclaimer = styled.div`
     flex-direction: column;
     .closeDisclaimer {
         position: absolute;
-        right : ${$uw(2)};
+        right: ${$uw(2)};
         top: ${$uw(1)};
     }
-    >.button{
+    > .button {
         margin-left: auto;
     }
 `;
@@ -381,3 +517,21 @@ const Body = styled.p`
     width: 100%;
     margin-bottom: ${$uw(1)};
 `;
+
+const PicturesContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding-bottom :${$uw(2)};
+    
+`
+
+const Picture = styled.img`
+    width: calc(50% - ${$uw(.5)});
+    flex: 0 0 calc(50% - ${$uw(.5)});
+    aspect-ratio: 1;
+    margin-bottom:${$uw(1)};
+    object-fit: cover;
+    
+`
