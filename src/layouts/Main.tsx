@@ -14,7 +14,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 
 	return (
 		<ModalContextProvider>
-			<Main id="mainWrapper" className={!useCustomColors ? 'force-primary' : ''}>
+			<Main id="mainWrapper" className={`${!useCustomColors ? 'force-primary' : ''}`}>
 				{/* @ts-ignore */}
 				<DebugGrid visible={gridVisible} setVisible={handleGridVisibility}/>
 				{nodes}
@@ -27,7 +27,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({
 const Main = styled.div`
 	width: 100%;
 	height: 100%;
-	overflow-y: scroll;
+	/* overflow-y: hidden; */
 	padding-top: ${$uw(5)};
 	max-width: var(--max-width);
 	margin-left: auto;

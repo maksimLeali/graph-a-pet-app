@@ -59,8 +59,8 @@ export const ImageCanvas: React.FC<ImageCanvasProps> = ({
     ctx.clearRect(0, 0, cw, ch);
     ctx.save();
     ctx.beginPath();
-    ctx.arc(cw / 2, ch / 2, cw / 2, 0, Math.PI * 2);
-    ctx.clip();
+    // ctx.arc(cw / 2, ch / 2, cw / 2, 0, Math.PI * 2);
+    // ctx.clip();
     ctx.drawImage(
       imgRef.current,
       position.x,

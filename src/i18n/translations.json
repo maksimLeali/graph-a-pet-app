@@ -943,7 +943,16 @@
             "add_report": "Nuova segnalazione",
             "detail": {
                 "missing": "Segnalazione di {{name}}",
-                "found": "Segnalazione del {{date}}"
+                "found": "Segnalazione del {{date}}",
+                "date": "Data e ora",
+                "place": "Luogo",
+                "notes": "Dettagli aggiuntivi:",
+                "gallery": "Immagini",
+                "no_images": "Nessun immagine",
+                "pet_name": "Nome del cane",
+                "pet_weight": "Peso",
+                "pet_gender": "Peso",
+                "pet_years": "Anni"
             },
             "new_report": {
                 "page_name": "Segnalazione",

@@ -22,6 +22,9 @@ fragment FullReport on Report {
     pet {
         id
         name
+        years
+        weight_kg
+        gender
         main_picture {
             id
         }

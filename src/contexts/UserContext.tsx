@@ -25,7 +25,7 @@ export type IUserContext = {
     setPage: (page: Page) => void;
     updatePets: (pets: DashboardPetFragment[]) => void;
     refetchDashboard: () => void;
-    setUseCustomColorHandler: (v: boolean) => void;
+    setUseCustomColorHandler: (v: boolean) => void;    
     pets: (DashboardPetFragment & { owner: boolean })[];
     ownedPets: (DashboardPetFragment & { owner: boolean })[];
     loanPets: (DashboardPetFragment & { owner: boolean })[];
@@ -45,6 +45,7 @@ export type IUserContext = {
 type Page = {
     name: string;
     visible?: boolean;
+    noScroll?: boolean;
 };
 
 const defaultValue: IUserContext = {
@@ -76,7 +77,8 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
     const [pageName, setPageName] = useState("");
     const [cookie] = useCookies(["jwt", "user"]);
     const [visible, setVisible] = useState(true);
-    const [fade, setFade] = useState(false);
+    const [pageNoScroll,setPageNoScroll] = useState(false);
+    const [fade, setFade] = useState(false);    
     const [useCustomColors, setUseCustomColors] = useState(true);
     const [gridVisible, setGridVisible] = useState(false);
     const [alreadyRequested, setAlreadyRequested] = useState(false);
@@ -94,12 +96,13 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 		refetch()
     };
 
-    const setPage = ({ name, visible = true }: Page) => {
+    const setPage = ({ name, visible = true, noScroll = false}: Page) => {
         setPageName(name);
         if (!alreadyRequested) {
             getUserDashboardQuery();
         }
         setVisible(visible);
+        setPageNoScroll(noScroll)
     };
 
     useEffect(() => {
@@ -204,6 +207,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
             <CustomIonHeader
                 visible={visible}
                 fade={fade}
+                noScroll={pageNoScroll}
                 className="MainHeader"
             >
                 <IonToolbar>
@@ -235,7 +239,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
 
 export const useUserContext = () => useContext(UserContext);
 
-const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean }>`
+const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean, noScroll: boolean }>`
     position: absolute;
     top: ${({ visible }) => (visible ? "0" : "-100%")};
     height: ${$uw(5)};
@@ -247,6 +251,9 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean }>`
     box-sizing: border-box;
     background-color: ${$color("background-color")};
     display: flex;
+    .mainWrapper {
+        overflow-y: ${({noScroll})=> noScroll ? 'hidden' : 'scroll'};
+    }
     .dark & {
         background-color: ${$color("toolbar-background")};
     }
