@@ -1,4 +1,4 @@
-import { MinReport, ReportsPreview } from "@components";
+import { Icon, MinReport, ReportsPreview } from "@components";
 import { useUserContext } from "@contexts";
 import {
     IonContent,
@@ -14,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ChoiseContainer } from "../components";
 import { useListReportsLazyQuery } from "../operations/__generated__/listReports.generated";
-import { ReportType } from "@types";
+import { GetReportLazyQueryHookResult, ListReportsLazyQueryHookResult, ListReportsQuery, ReportType } from "@types";
 import { MinReportFragment } from "@graphql_generated/MinReport.generated";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
@@ -22,119 +22,113 @@ import { Link } from "react-router-dom";
 
 export const Board: React.FC = () => {
     const { setPage } = useUserContext();
-    const [pageMissing, setPageMissing] = useState(0);
-    const [pageFound, setPageFound] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    
     const [reportsType, setReportsType] = useState<ReportType>();
-    const [reachedMaxMissing, setReachedMaxMissing] = useState(false);
-    const [reachedMaxFound, setReachedMaxFound] = useState(false);
-    const [missingReports, setMissingReports] = useState<MinReportFragment[]>(
+    const [reachedMax, setReachedMax] = useState(false);
+    
+    const [reports, setReports] = useState<MinReportFragment[]>(
         []
-    );
-    const [foundReports, setFoundReports] = useState<MinReportFragment[]>([]);
-    const PAGE_SIZE = 4;
+    );    
+    const PAGE_SIZE = 10;
     const { t } = useTranslation();
-    const [
-        listMissinggReports,
-        { loading: loadingMissing, refetch: refetchMissing },
-    ] = useListReportsLazyQuery({
-        variables: {
-            commonSearch: {
-                filters: {
-                    fixed: [
-                        {
-                            key: "type",
-                            value: ReportType.Missing,
-                        },
-                    ],
-                },
-                page_size: PAGE_SIZE,
-                page: pageMissing,
-            },
-        },
-        onCompleted: ({ listReports }) => {
-            if (!listReports?.items?.length || listReports.error) {
-                return;
-            }
 
-            setMissingReports((p) => [
-                ...p,
-                ...(listReports.items as MinReportFragment[]),
-            ]);
-            setReachedMaxMissing(true);
-        },
-    });
+
+
+    const onCompleted = useCallback(({ listReports  } :ListReportsQuery) => {
+        if (!listReports?.items?.length || listReports.error) {
+            return;
+        }
+        const totalReports = [...reports, ...listReports.items]
+        setReports((p) => [
+            ...p,
+            ...(listReports.items as MinReportFragment[]),
+        ]);
+    console.log(listReports.pagination.total_items , totalReports.length)
+    console.log(listReports.pagination.total_items == totalReports.length)
+    if(listReports.pagination.total_items == totalReports.length){
+            setReachedMax(true)
+        }
+    },[reports])
+
     const [
-        listFoundgReports,
-        { loading: loadingFound, refetch: refetchFound },
+        listReports,     
+        {refetch}   
     ] = useListReportsLazyQuery({
+        // fetchPolicy: "network-only",
         variables: {
             commonSearch: {
-                filters: {
-                    fixed: [
-                        {
-                            key: "type",
-                            value: ReportType.Found,
-                        },
-                    ],
-                },
+                order_by: "date",
+                order_direction: "DESC",
                 page_size: PAGE_SIZE,
-                page: pageFound,
+                page: currentPage,
             },
         },
-        onCompleted: ({ listReports }) => {
-            console.log(listReports);
-            if (!listReports?.items?.length || listReports.error) {
-                return;
-            }
-            setFoundReports((p) => [
-                ...p,
-                ...(listReports.items as MinReportFragment[]),
-            ]);
-            // setReachedMaxFound(true);
-        },
-    });
+        onCompleted
+
+        })
+
+    // const [
+    //     listFoundgReports,
+    //     { loading: loadingFound, refetch: refetchFound },
+    // ] = useListReportsLazyQuery({
+    //     fetchPolicy: "network-only",
+    //     variables: {
+    //         commonSearch: {
+    //             filters: {
+    //                 fixed: [
+    //                     {
+    //                         key: "type",
+    //                         value: ReportType.Found,
+    //                     },
+    //                 ],
+    //             },
+    //             page_size: PAGE_SIZE,
+    //             page: pageFound,
+    //         },
+    //     },
+    //     onCompleted: ({ listReports }) => {
+    //         console.log(listReports);
+    //         if (!listReports?.items?.length || listReports.error) {
+    //             return;
+    //         }
+    //         setFoundReports((p) => [
+    //             ...p,
+    //             ...(listReports.items as MinReportFragment[]),
+    //         ]);
+    //         // setReachedMaxFound(true);
+    //     },
+    // });
+
 
     const fetchRepots = useCallback(() => {
-        listMissinggReports();
-        listFoundgReports();
-    }, [pageMissing, pageFound]);
+        listReports()        
+    }, [currentPage]);
 
     useEffect(() => {
         setPage({ name: t("board.page_name") });
         fetchRepots();
-    }, []);
+    }, []);    
 
-    const reportList = useMemo(() => {        
-        
-        return _.sortBy([...missingReports, ...foundReports], "created_at");
-        
-
-        
-    }, [missingReports, foundReports]);
-
-    const reachedMax = useMemo(() => {
-        if (!reportsType) {
-            return reachedMaxMissing && reachedMaxFound;
-        }
-
-        if (reportsType === ReportType.Found) return reachedMaxFound;
-
-        return reachedMaxMissing;
-    }, [reachedMaxMissing, reachedMaxFound, reportsType]);
+    
+ 
 
     const handleRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-        setPageFound(0);
-        setPageMissing(0);
-        setMissingReports([]);
-        setFoundReports([]);
-        fetchRepots();
-        event.detail.complete();
+        refetch().then((res) => {
+            const newItems = res.data?.listReports?.items as MinReportFragment[] || [];
+            setReports(newItems);
+            setCurrentPage(0); // resetta anche la pagina
+            event.detail.complete();            
+        });
     };
 
-    const handleNewData = () => {
-        setPageFound((p) => p + 1);
-        setPageMissing((p) => p + 1);
-    };
+    const handleNewData = useCallback(() => {
+        console.log(reachedMax)
+        if(!reachedMax){
+
+            setCurrentPage((p) => p + 1);
+        }
+    }, [reachedMax]);
 
     return (
         <IonContent fullscreen>
@@ -149,28 +143,28 @@ export const Board: React.FC = () => {
                 />
             </Container>
 
-            {/* <InfiniteScroll
-                disabled={reachedMax}
+            <InfiniteScroll
+                // disabled={reachedMax}
                 onIonInfinite={(ev: any) => {
                     handleNewData();
-                    setTimeout(() => ev.target.complete(), 500);
+                    setTimeout(() => ev.target.complete(), 1000);
                 }}
-            > */}
-                
-                    <List>
-                        {reportList.filter((report)=> {
-                            console.log(reportsType,report.type, report.type === reportsType)
-                            if(!reportsType) return true;
-                            return report.type === reportsType
-                        }).map((item) => (
-                            <MinReport report={item} />
+            >
+                <List>
+                    {reports
+                        .filter((report) => {                       
+                            if (!reportsType) return true;
+                            return report.type === reportsType;
+                        })
+                        .map((item) => (
+                            <MinReport key={item.id} report={item} />
                         ))}
-                    </List>
-                    <AddReportCta to="/board/new">
-                        {t("board.add_report")}
-                    </AddReportCta>
-                
-            {/* </InfiniteScroll> */}
+                </List>
+                <AddReportCta to="/board/new">
+                        <Icon name="addCircleOutline" />
+                    {t("board.add_report")}
+                </AddReportCta>
+            </InfiniteScroll>
 
             {/* <ReportsPreview loading={loading} reports={reports} /> */}
         </IonContent>
@@ -198,9 +192,21 @@ const InfiniteScroll = styled(IonInfiniteScroll)`
 
 const AddReportCta = styled(Link)`
     width: 100%;
-    display: block;
+    
     color: ${$color("primary")};
     text-decoration: underline;
     text-align: end;
-    padding: ${$cssTRBL(0, 2, 1, 2)};
+    padding: ${$cssTRBL(1, 2, 1, 2)};
+    position: sticky;
+    align-items: center;
+    bottom:${$uw(3)};
+    width: fit-content;
+    margin-left: auto;
+    margin-right:${$uw(1)};
+    background-color: ${$color('primary')};
+    color:${$color("dark")};
+    text-decoration: none;
+    border-radius: 4px;
+    display: flex;
+    gap:${$uw(1)};
 `;

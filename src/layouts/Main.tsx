@@ -28,7 +28,7 @@ const Main = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow-y: scroll;
-	padding-top: ${$uw(6)};
+	padding-top: ${$uw(5)};
 	max-width: var(--max-width);
 	margin-left: auto;
 	margin-right: auto;

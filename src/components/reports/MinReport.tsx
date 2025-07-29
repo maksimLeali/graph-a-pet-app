@@ -26,8 +26,8 @@ export const MinReport: React.FC<Props> = React.memo(({ report }) => {
 			  };
 
 	return (
-		<Container to={`/board/${report.id}`} color={reportUtils.mainColor} >
-			<Header>
+		<Container key={report.id} color={reportUtils.mainColor} >
+			<Header to={`/board/${report.id}`} >
 				<Icon
 					className="icon"
 					name={reportUtils.iconName}
@@ -46,7 +46,7 @@ export const MinReport: React.FC<Props> = React.memo(({ report }) => {
 	);
 });
 
-const Container = styled(Link)<{ color: string }>`
+const Container = styled.div<{ color: string }>`
 	display: flex;
 	padding: ${$uw(1)};
 	flex-direction: column;
@@ -79,11 +79,12 @@ const Container = styled(Link)<{ color: string }>`
 	}
 `;
 
-const Header = styled.div`
+const Header = styled(Link)`
 	width: 100%;
 	display: flex;
+	text-decoration: none;
 	gap: ${$uw(1)};
-	margin-bottom: ${$uw(1)};
+	margin-bottom: ${$uw(.5)};
 	> * {
 		margin: 0;
 	}
@@ -107,6 +108,8 @@ const Header = styled.div`
 
 const LocationLink = styled.a`
 	display: flex;
-	align-items: end;
+	align-items: center;
 	text-decoration: none;
+	justify-content: space-between;
+	padding-left: ${$uw(2.5)};
 `;

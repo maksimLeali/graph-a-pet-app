@@ -201,7 +201,7 @@ export const LocationSelector: FC<Props> = React.memo(
         useEffect(() => {
             console.log(coords);
             setMapZoom(16);
-            if (initPosition) return;
+            // if (initPosition) return;
             if (geoError || (!coords?.latitude && !coords?.longitude)) {
                 setInitPosition({ latitude: 45.538353, longitude: 10.219192 });
                 return;

@@ -9,4 +9,5 @@ fragment MinReport on Report {
 	longitude
 	created_at
 	type
+	date
 }
