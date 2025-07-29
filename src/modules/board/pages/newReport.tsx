@@ -51,7 +51,9 @@ export const NewReport: React.FC<props> = () => {
     const { t } = useTranslation();
     const [loadingCreate, setLoadingCreate] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const [pictures, setPictures] = useState<{ url: string, type:string}[]>([]);
+    const [pictures, setPictures] = useState<{ url: string; type: string }[]>(
+        []
+    );
     const history = useHistory();
     const [openLocationSelector, setOpenLocationSelector] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(
@@ -88,9 +90,10 @@ export const NewReport: React.FC<props> = () => {
                 return;
             }
 
-            if(pictures) {
-               await handlesUploadPictures(pictures,createReport.report.id);
+            if (pictures) {
+                await handlesUploadPictures(pictures, createReport.report.id);
             }
+            setLoadingCreate(false)
             toast.success(t("board.new_report.save_success"));
             setTimeout(() => {
                 history.push("/board");
@@ -98,9 +101,7 @@ export const NewReport: React.FC<props> = () => {
         },
     });
 
-    const [createMedia, ] = useCreateMediaMutation({onCompleted: ()=>{
-		console.log('media created'  )
-    }})
+    const [createMedia] = useCreateMediaMutation();
 
     const methods = useForm<{
         notes: string;
@@ -114,22 +115,24 @@ export const NewReport: React.FC<props> = () => {
 
     const handleUpload = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target?.files;
-        const temp: { url: string, type:string}[] = [];
+        const temp: { url: string; type: string }[] = [];
         if (!files) return;
         for (const file of files) {
             if (file) {
                 const tempImageURL = URL.createObjectURL(file);
-                temp.push({url: tempImageURL, type: file.type})
+                temp.push({ url: tempImageURL, type: file.type });
             }
         }
-        console.log('pictures', temp.length)
-        setPictures(p=>[...p, ...temp])
+        console.log("pictures", temp.length);
+        setPictures((p) => [...p, ...temp]);
     }, []);
 
-    const uploadImage = async (image: {url: string, type: string}, id: string, index: number) => {
+    const uploadImage = async (
+        image: { url: string; type: string },
+        id: string,
+        index: number
+    ) => {
         try {
-            
-			
             // Convert base64 URL to Blob
             const response = await fetch(image.url);
             const blob = await response.blob();
@@ -139,33 +142,44 @@ export const NewReport: React.FC<props> = () => {
             formData.append("file", blob, `${id}_${index}.png`);
 
             // API Call
-            const apiResponse = await axios.post("https://graph-a-pet.makso.me/media/upload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    "User-Agent": "insomnia/8.6.1",
+            const apiResponse = await axios.post(
+                "https://graph-a-pet.makso.me/media/upload",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "User-Agent": "insomnia/8.6.1",
+                    },
+                }
+            );
+            const mediaData = apiResponse.data;
+            createMedia({
+                variables: {
+                    data: {
+                        type: image.type,
+                        scope: "report_medias",
+                        ref_id: id,
+                        main_colors: [],
+                        url: mediaData.public_url,
+                    },
                 },
             });
-			const mediaData = apiResponse.data;
-			createMedia({variables: { data : {
-				type:image.type,
-				scope: "report_medias",
-				ref_id: id,
-				main_colors: [],				
-				url: mediaData.public_url,
-
-			}}})
             console.log("Upload Success:", apiResponse.data);
-            
         } catch (error) {
-            console.error("Upload Error:", error);          
-        } 
+            console.error("Upload Error:", error);
+        }
     };
 
-    const handlesUploadPictures = useCallback(async (images: { url: string, type:string}[], report_id: string)=>{
-        await Promise.all(images.map(async(image, i)=>{
-            await uploadImage(image, report_id, i);
-        }))
-    }, [])
+    const handlesUploadPictures = useCallback(
+        async (images: { url: string; type: string }[], report_id: string) => {
+            await Promise.all(
+                images.map(async (image, i) => {
+                    await uploadImage(image, report_id, i);
+                })
+            );
+        },
+        []
+    );
 
     const checkDefualt = useCallback(() => {
         const defaultPet = petsOptions.find(
@@ -252,7 +266,7 @@ export const NewReport: React.FC<props> = () => {
                                 .set("minute", time.minute())
                                 .toISOString();
                         }
-
+                        setLoadingCreate(true);
                         createReport({
                             variables: {
                                 data: {
@@ -266,7 +280,10 @@ export const NewReport: React.FC<props> = () => {
                                         selectedLocation.coordinates.longitude,
                                     place: selectedLocation.label,
                                     date,
-                                    notes: [data.notes],
+                                    notes:
+                                        data.notes && data.notes.length > 0
+                                            ? [data.notes]
+                                            : undefined,
                                     reporter: {
                                         email: user.email,
                                         first_name: user.first_name,
@@ -360,12 +377,14 @@ export const NewReport: React.FC<props> = () => {
                         <Icon name="cameraOutline" color="white" />
                         <span>{t("board.new_report.add_pictures")}</span>
                     </IconWrapper>
-                    {pictures.length> 0 && (
+                    {pictures.length > 0 && (
                         <PicturesContainer>
-                            {pictures.map((picture, i)=><Picture src={picture.url} key={i} />)}
+                            {pictures.map((picture, i) => (
+                                <Picture src={picture.url} key={i} />
+                            ))}
                         </PicturesContainer>
                     )}
-                    <SubmitInput submitting={loading} color="primary">
+                    <SubmitInput submitting={loadingCreate} color="primary">
                         {t("board.new_report.save")}
                     </SubmitInput>
                     {disclaimerOpen && (
@@ -401,7 +420,7 @@ export const NewReport: React.FC<props> = () => {
                                         ) ?? "",
                                 }}
                             />
-                            <IonButton
+                            <IonButton                                
                                 onClick={() => {
                                     setDisclaimerSeen(true);
                                     setDisclaimerOpen(false);
@@ -424,7 +443,7 @@ const Form = styled.form`
     flex-direction: column;
     padding: ${$cssTRBL(2, 1)};
     flex-wrap: wrap;
-    
+
     justify-content: flex-start;
     .main_date {
         width: 55%;
@@ -438,7 +457,7 @@ const Form = styled.form`
     }
     .submit-input {
         z-index: 2;
-        
+
         position: fixed;
         width: ${$uw(28)};
         left: calc(50% - ${$uw(14)});
@@ -482,12 +501,12 @@ const IconWrapper = styled.div`
         height: 100%;
         aspect-ratio: 1;
     }
-    margin-bottom:${$uw(2)};
+    margin-bottom: ${$uw(2)};
 `;
 
 const Disclaimer = styled.div`
     background-color: ${$color("light")};
-    
+
     position: fixed;
     width: ${$uw(30)};
     left: calc(50% - ${$uw(15)});
@@ -523,15 +542,13 @@ const PicturesContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding-bottom :${$uw(2)};
-    
-`
+    padding-bottom: ${$uw(2)};
+`;
 
 const Picture = styled.img`
-    width: calc(50% - ${$uw(.5)});
-    flex: 0 0 calc(50% - ${$uw(.5)});
+    width: calc(50% - ${$uw(0.5)});
+    flex: 0 0 calc(50% - ${$uw(0.5)});
     aspect-ratio: 1;
-    margin-bottom:${$uw(1)};
+    margin-bottom: ${$uw(1)};
     object-fit: cover;
-    
-`
+`;
