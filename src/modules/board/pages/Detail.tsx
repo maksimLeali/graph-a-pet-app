@@ -90,6 +90,10 @@ export const ReportDetails: React.FC<props> = () => {
                                             <p>{report.pet.name}</p>
                                         </Row>
                                         <Row>
+                                            <p>{t("board.detail.breed")}</p>
+                                            <p>{report.pet.body.breed}</p>
+                                        </Row>
+                                        <Row>
                                             <p>
                                                 {t("board.detail.pet_gender")}
                                             </p>

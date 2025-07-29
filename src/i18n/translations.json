@@ -952,6 +952,7 @@
                 "pet_name": "Nome del cane",
                 "pet_weight": "Peso",
                 "pet_gender": "Sesso",
+                "pet_breed": "Razza",
                 "pet_years": "Anni"
             },
             "new_report": {
