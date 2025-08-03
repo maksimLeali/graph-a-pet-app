@@ -71,6 +71,9 @@ const LanguageSelectorContainer = styled.div`
 	.select-input{
 		margin-bottom: 0;
 	}
+	.focusBox.compiled{
+		width: 101%;
+	}
 `;
 
 const LanguageItem = styled.div`

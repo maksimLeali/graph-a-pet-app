@@ -25,9 +25,9 @@ fragment FullReport on Report {
         years
         weight_kg
         gender
-        body {
-            breed
-        }
+        
+        breed
+        
         main_picture {
             id
         }

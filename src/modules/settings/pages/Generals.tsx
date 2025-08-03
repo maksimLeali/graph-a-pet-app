@@ -39,9 +39,11 @@ const Section = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	padding-bottom: ${$uw(2)};
+	padding: ${$cssTRBL(1, 0, 1.5 ,0)};
+	justify-content: center;
 	border-bottom: 1px solid ${$color("medium")};
 	* {
 		color: ${$color("dark")};
 	}
+	
 `;

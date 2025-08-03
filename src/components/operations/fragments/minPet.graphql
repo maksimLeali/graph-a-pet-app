@@ -23,9 +23,8 @@ fragment MinPet on Pet {
     birthday
     gender
     neutered
-    body{
-        breed
-        family
-        coat_length
-    }
+    
+    breed
+    coat_length
+    
 }

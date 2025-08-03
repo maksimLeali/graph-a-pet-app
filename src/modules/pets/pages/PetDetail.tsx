@@ -97,17 +97,7 @@ export const PetDetails: React.FC = () => {
                         >
                             {pet && <span>{pet.name}</span>}
                         </NameBox>
-                    </MainPetContainer>
-                    <InfoBox className="info1">
-                        <span>{t("pets.family")}</span>
-                        <InfoChip
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {pet && <span>{pet.body.family}</span>}
-                        </InfoChip>
-                    </InfoBox>
+                    </MainPetContainer>                   
                     <InfoBox className="info2">
                         <span>{t("pets.gender")}</span>
                         <InfoChip

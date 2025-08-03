@@ -607,8 +607,9 @@ export type Pagination = {
 export type Pet = {
   __typename?: 'Pet';
   birthday: Scalars['String']['output'];
-  body: PetBody;
+  breed: Scalars['String']['output'];
   chip_code?: Maybe<Scalars['String']['output']>;
+  coat_length: CoatLength;
   diet?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   disciplines?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   gender: Gender;
@@ -643,32 +644,11 @@ export type PetAddedResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type PetBody = {
-  __typename?: 'PetBody';
-  breed: Scalars['String']['output'];
-  coat_length: CoatLength;
-  family: PetFamily;
-  id: Scalars['ID']['output'];
-  image: Media;
-  tags: Array<Maybe<Tag>>;
-};
-
-export type PetBodyCreate = {
-  breed: Scalars['String']['input'];
-  coat_length?: InputMaybe<CoatLength>;
-  family: PetFamily;
-};
-
-export type PetBodyUpdate = {
-  breed?: InputMaybe<Scalars['String']['input']>;
-  coat_length?: InputMaybe<CoatLength>;
-  family?: InputMaybe<PetFamily>;
-};
-
 export type PetCreate = {
   birthday: Scalars['String']['input'];
-  body: PetBodyCreate;
+  breed: Scalars['String']['input'];
   chip_code?: InputMaybe<Scalars['String']['input']>;
+  coat_length?: InputMaybe<CoatLength>;
   diet?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   disciplines?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   gender: Gender;
@@ -696,8 +676,9 @@ export type PetResult = {
 
 export type PetUpdate = {
   birthday?: InputMaybe<Scalars['String']['input']>;
-  body?: InputMaybe<PetBodyUpdate>;
+  breed?: InputMaybe<Scalars['String']['input']>;
   chip_code?: InputMaybe<Scalars['String']['input']>;
+  coat_length?: InputMaybe<CoatLength>;
   diet?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   disciplines?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   gender?: InputMaybe<Gender>;
@@ -1142,19 +1123,19 @@ export enum TreatmentDuration {
   TwoHours = 'TWO_HOURS'
 }
 
-export type FullReportFragment = { __typename?: 'Report', id: string, notes?: Array<string | null> | null, place: string, type: ReportType, date: string, medias?: Array<{ __typename?: 'Media', id: string, url: string } | null> | null, reporter: { __typename?: 'Reporter', email: string, first_name: string, last_name: string, user_id?: string | null }, responders: Array<{ __typename?: 'Reporter', email: string } | null>, coordinates: { __typename?: 'Coordinates', latitude?: number | null, longitude?: number | null }, pet?: { __typename?: 'Pet', id: string, name: string, years?: number | null, weight_kg?: number | null, gender: Gender, body: { __typename?: 'PetBody', breed: string }, main_picture?: { __typename?: 'Media', id: string } | null } | null };
+export type FullReportFragment = { __typename?: 'Report', id: string, notes?: Array<string | null> | null, place: string, type: ReportType, date: string, medias?: Array<{ __typename?: 'Media', id: string, url: string } | null> | null, reporter: { __typename?: 'Reporter', email: string, first_name: string, last_name: string, user_id?: string | null }, responders: Array<{ __typename?: 'Reporter', email: string } | null>, coordinates: { __typename?: 'Coordinates', latitude?: number | null, longitude?: number | null }, pet?: { __typename?: 'Pet', id: string, name: string, years?: number | null, weight_kg?: number | null, gender: Gender, breed: string, main_picture?: { __typename?: 'Media', id: string } | null } | null };
 
 export type MinReportFragment = { __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, date: string, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } };
 
 export type AppointmentFragment = { __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null };
 
-export type DashboardPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, name: string, type: TreatmentType } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
+export type DashboardPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, breed: string, coat_length: CoatLength, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, name: string, type: TreatmentType } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null };
 
-export type FullPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null> } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
+export type FullPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, breed: string, coat_length: CoatLength, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null> } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null };
 
 export type FullTreatmentFragment = { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, frequency_unit?: FrequencyUnit | null, frequency_value?: number | null, frequency_times?: number | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null };
 
-export type MinPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } };
+export type MinPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, breed: string, coat_length: CoatLength, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null };
 
 export type MinUserFragment = { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null };
 
@@ -1209,7 +1190,7 @@ export type GetReportQueryVariables = Exact<{
 }>;
 
 
-export type GetReportQuery = { __typename?: 'Query', getReport?: { __typename?: 'ReportResult', success: boolean, report?: { __typename?: 'Report', id: string, notes?: Array<string | null> | null, place: string, type: ReportType, date: string, medias?: Array<{ __typename?: 'Media', id: string, url: string } | null> | null, reporter: { __typename?: 'Reporter', email: string, first_name: string, last_name: string, user_id?: string | null }, responders: Array<{ __typename?: 'Reporter', email: string } | null>, coordinates: { __typename?: 'Coordinates', latitude?: number | null, longitude?: number | null }, pet?: { __typename?: 'Pet', id: string, name: string, years?: number | null, weight_kg?: number | null, gender: Gender, body: { __typename?: 'PetBody', breed: string }, main_picture?: { __typename?: 'Media', id: string } | null } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } | null };
+export type GetReportQuery = { __typename?: 'Query', getReport?: { __typename?: 'ReportResult', success: boolean, report?: { __typename?: 'Report', id: string, notes?: Array<string | null> | null, place: string, type: ReportType, date: string, medias?: Array<{ __typename?: 'Media', id: string, url: string } | null> | null, reporter: { __typename?: 'Reporter', email: string, first_name: string, last_name: string, user_id?: string | null }, responders: Array<{ __typename?: 'Reporter', email: string } | null>, coordinates: { __typename?: 'Coordinates', latitude?: number | null, longitude?: number | null }, pet?: { __typename?: 'Pet', id: string, name: string, years?: number | null, weight_kg?: number | null, gender: Gender, breed: string, main_picture?: { __typename?: 'Media', id: string } | null } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } | null };
 
 export type ListReportsQueryVariables = Exact<{
   commonSearch: CommonSearch;
@@ -1245,7 +1226,7 @@ export type GetUserDashboardQueryVariables = Exact<{
 }>;
 
 
-export type GetUserDashboardQuery = { __typename?: 'Query', getUserDashboard: { __typename?: 'UserDashboardResult', success?: boolean | null, dashboard?: { __typename?: 'UserDashboard', ownerships?: { __typename?: 'PaginatedOwnerships', success?: boolean | null, items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, name: string, type: TreatmentType } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } | null, reports?: { __typename?: 'PaginatedReports', success?: boolean | null, items: Array<{ __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, date: string, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type GetUserDashboardQuery = { __typename?: 'Query', getUserDashboard: { __typename?: 'UserDashboardResult', success?: boolean | null, dashboard?: { __typename?: 'UserDashboard', ownerships?: { __typename?: 'PaginatedOwnerships', success?: boolean | null, items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, breed: string, coat_length: CoatLength, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, name: string, type: TreatmentType } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } | null, reports?: { __typename?: 'PaginatedReports', success?: boolean | null, items: Array<{ __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, date: string, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export type GetOrCreateQueryVariables = Exact<{
   ref_id: Scalars['String']['input'];
@@ -1261,7 +1242,7 @@ export type GetPetQueryVariables = Exact<{
 }>;
 
 
-export type GetPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type GetPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, breed: string, coat_length: CoatLength, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export type AddPetToMeMutationVariables = Exact<{
   data: PetCreate;
@@ -1269,7 +1250,7 @@ export type AddPetToMeMutationVariables = Exact<{
 }>;
 
 
-export type AddPetToMeMutation = { __typename?: 'Mutation', addPetToMe: { __typename?: 'PetAddedResult', data?: { __typename?: 'NewOwnership', pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } } | null } };
+export type AddPetToMeMutation = { __typename?: 'Mutation', addPetToMe: { __typename?: 'PetAddedResult', data?: { __typename?: 'NewOwnership', pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, breed: string, coat_length: CoatLength, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } } | null } };
 
 export type CheckCodeMutationVariables = Exact<{
   code: Scalars['String']['input'];
@@ -1298,14 +1279,14 @@ export type LinkPetToMeMutationVariables = Exact<{
 }>;
 
 
-export type LinkPetToMeMutation = { __typename?: 'Mutation', linkPetToMe: { __typename?: 'OwnershipResult', success: boolean, ownership?: { __typename?: 'Ownership', id: string, custody_level: CustodyLevel, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } } | null, error?: { __typename?: 'Error', message: string, code: string } | null } };
+export type LinkPetToMeMutation = { __typename?: 'Mutation', linkPetToMe: { __typename?: 'OwnershipResult', success: boolean, ownership?: { __typename?: 'Ownership', id: string, custody_level: CustodyLevel, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, breed: string, coat_length: CoatLength, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } } | null, error?: { __typename?: 'Error', message: string, code: string } | null } };
 
 export type GetFullPetQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null, body: { __typename?: 'PetBody', breed: string, family: PetFamily, coat_length: CoatLength } } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday: string, gender: Gender, neutered: boolean, breed: string, coat_length: CoatLength, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export const FullReportFragmentDoc = gql`
     fragment FullReport on Report {
@@ -1335,9 +1316,7 @@ export const FullReportFragmentDoc = gql`
     years
     weight_kg
     gender
-    body {
-      breed
-    }
+    breed
     main_picture {
       id
     }
@@ -1435,11 +1414,8 @@ export const MinPetFragmentDoc = gql`
   birthday
   gender
   neutered
-  body {
-    breed
-    family
-    coat_length
-  }
+  breed
+  coat_length
 }
     ${PetMinSubOwnerFragmentDoc}`;
 export const DashboardPetFragmentDoc = gql`
@@ -1501,11 +1477,8 @@ export const FullPetFragmentDoc = gql`
   weight_kg
   birthday
   gender
-  body {
-    breed
-    family
-    coat_length
-  }
+  breed
+  coat_length
 }
     ${PetMinSubOwnerFragmentDoc}`;
 export const FullTreatmentFragmentDoc = gql`

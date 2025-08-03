@@ -2,7 +2,7 @@ export enum COAT_LENGHTS {
     HAIRLESS = "HAIRLESS",
     SHORT = "SHORT",
     MEDIUM = "MEDIUM",
-    LENGHT = "LENGHT",
+    LONG = "LONG",
 }
 
 export enum COAT_PATTERNS {

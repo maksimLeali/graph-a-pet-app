@@ -33,9 +33,7 @@ fragment FullPet on Pet {
 	weight_kg
 	birthday
 	gender
-	body {
-		breed
-		family
-		coat_length			
-	}
+	breed
+	coat_length			
+	
 }

@@ -198,7 +198,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                 <InfoBox className={`info-box custom-pet-border-color ${mode}`}>
                     <InfoRow>
                         <span>
-                            {breedT(`${pet.body.breed.toLocaleLowerCase()}`)}
+                            {breedT(`${pet.breed.toLocaleLowerCase()}`)}
                         </span>
                     </InfoRow>
                     <InfoRow>

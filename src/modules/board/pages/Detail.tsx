@@ -91,7 +91,7 @@ export const ReportDetails: React.FC<props> = () => {
                                         </Row>
                                         <Row>
                                             <p>{t("board.detail.pet_breed")}</p>
-                                            <p>{report.pet.body.breed}</p>
+                                            <p>{report.pet.breed}</p>
                                         </Row>
                                         <Row>
                                             <p>
@@ -142,7 +142,9 @@ export const ReportDetails: React.FC<props> = () => {
 
                                 {report?.medias && report.medias.length > 0 ? (
                                     <Gallery>
-                                        <GallryTitle className="title">{t("board.detail.gallery")}</GallryTitle>
+                                        <GallryTitle className="title">
+                                            {t("board.detail.gallery")}
+                                        </GallryTitle>
                                         {report.medias.map((media) => (
                                             <GalleryItem>
                                                 <Image2x id={media?.id ?? ""} />
@@ -184,7 +186,7 @@ const MainPicture = styled.div`
 
 const BodyContainer = styled.div`
     width: 100%;
-    max-height: 100%;    
+    max-height: 100%;
     padding-top: ${$uw(30)};
     overflow-y: scroll;
     position: relative;
@@ -211,18 +213,17 @@ const Gallery = styled.div`
     flex-wrap: wrap;
     justify-content: space-around;
     padding-bottom: ${$uw(5)};
-    `;
+`;
 
 const GallryTitle = styled.h3`
     width: 100%;
     text-align: center;
-    padding:${$cssTRBL(2)}; 
-`
+    padding: ${$cssTRBL(2)};
+`;
 const GalleryItem = styled.div`
     width: calc(50% - ${$uw(0.5)});
     aspect-ratio: 1;
     margin-bottom: ${$uw(1)};
-    
 `;
 
 const Row = styled.div`
