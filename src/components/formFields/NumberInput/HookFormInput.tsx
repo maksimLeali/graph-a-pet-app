@@ -46,6 +46,7 @@ export const HookFormInput: React.FC<HookFormProps & CommonProps> = ({
 	} = useFormContext();
 
 	useEffect(() => {
+		console.log('number input ', getValues(name))
 		if ([undefined, null].includes(getValues(name))) {
 			setCompiled(false);
 			return;

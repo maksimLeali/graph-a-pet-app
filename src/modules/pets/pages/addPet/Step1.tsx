@@ -81,23 +81,13 @@ export const Step1 =() => {
                             dangerouslySetInnerHTML={{
                                 __html:
                                     t(
-                                        `pets.add_pet_page.step_2.birthday_${
-                                            cookies?.add_pet_step_1?.gender ==
-                                            "FEMALE"
-                                                ? "female"
-                                                : "male"
-                                        }`,
-                                        {
-                                            name:
-                                                cookies.add_pet_step_1?.name ??
-                                                "",
-                                        }
+                                        `pets.add_pet_page.step_1.birthday`,
                                     ) ?? "",
                             }}
                         />
                         <DateTimePicker
                             name="birthday"
-                            textLabel="pets.add_pet_page.step_2.insert_birthday"
+                            textLabel="pets.add_pet_page.step_1.insert_birthday"
                             type="date"
                             required
                         />

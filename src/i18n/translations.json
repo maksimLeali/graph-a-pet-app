@@ -987,18 +987,15 @@
                 "start": "Iniziamo",
                 "step_1": {
                     "continue": "Vai allo step successivo",
-                    
+                    "birthday": "Data di nascita",    
+                    "insert_birthday": "Data di nascita",                
                     "insert_name": "Nome",
                     "intro": "Iniziamo con il capire chi è il/la cucciolo/a",
                     "name": "Come si chiama ?"
                 },
-                "step_2": {
-                    
-                    
+                "step_2": {                
                     "save_picture": "Salva immagine",
-                    
                     "intro": "Scegli un immagne",
-                    
                     "skip": "Salta",
                     "insert_weight": "peso in Kg"
                 },
@@ -1006,7 +1003,7 @@
                     "intro": "Qualche informazione in più su <b>{{name}}</b>",
                     "picture": "Hai una foto?",
                     "continue": "Continua a compilare",
-                    "insert_birthday": "Data di nascita",
+                    
                     "neutered_female": "Sterilizzata?",
                     "breed": "a che razza appartiene?",
                     "coat": "Che tipo di pelo ha?",

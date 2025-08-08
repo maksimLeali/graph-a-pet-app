@@ -196,7 +196,7 @@ export const Step3
                         <span>
                             {t(
                                 `pets.add_pet_page.step_3.neutered_${
-                                    cookies?.add_pet_step_1?.gender == "FEMALE"
+                                    methods.getValues("gender") == "FEMALE"
                                         ? "female"
                                         : "male"
                                 }`
