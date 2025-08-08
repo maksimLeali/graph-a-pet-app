@@ -11,7 +11,7 @@ import { Image2x, Icon, NewReportForm, SubOwnerList } from "@components";
 import { gendersColor } from "@utils";
 import { useDeletePetMutation } from "../operations/__generated__/deletePet.generated";
 import { useModal, useUserContext } from "@contexts";
-import { CustodyLevel, useDeleteOwnershipMutation } from "@types";
+import { CustodyLevel, Gender, useDeleteOwnershipMutation } from "@types";
 import { FormProvider, useForm } from "react-hook-form";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
 import { useHistory } from "react-router";
@@ -189,8 +189,8 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                     <IconContainer className="icon-container">
                         <Icon
                             size="100%"
-                            color={gendersColor[pet.gender].color}
-                            name={gendersColor[pet.gender].iconName}
+                            color={gendersColor[pet.gender ?? Gender.NotSaid].color}
+                            name={gendersColor[pet.gender ?? Gender.NotSaid].iconName}
                         ></Icon>
                     </IconContainer>
                     <span className="mainInfo">{pet.name}</span>
@@ -198,7 +198,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                 <InfoBox className={`info-box custom-pet-border-color ${mode}`}>
                     <InfoRow>
                         <span>
-                            {breedT(`${pet.breed.toLocaleLowerCase()}`)}
+                            {pet.breed && breedT(`${pet.breed.toLocaleLowerCase()}`)}
                         </span>
                     </InfoRow>
                     <InfoRow>

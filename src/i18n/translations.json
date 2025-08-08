@@ -987,38 +987,39 @@
                 "start": "Iniziamo",
                 "step_1": {
                     "continue": "Vai allo step successivo",
-                    "gender": "Maschio o femmina?",
-                    "insert_gender": "Sesso",
+                    
                     "insert_name": "Nome",
                     "intro": "Iniziamo con il capire chi è il/la cucciolo/a",
                     "name": "Come si chiama ?"
                 },
                 "step_2": {
-                    "breed": "a che razza appartiene?",
-                    "coat": "Che tipo di pelo ha?",
-                    "insert_coat": "Scegli lungezza pelo",
-                    "family": "Che animale è?",
-                    "insert_family": "Scegli animale",
-                    "breed_alert": "Se la razza che vuoi inserire non è presente nella lista, confermando verrà comunque salvata, ci preoccuperemo il prima possibile di sopperire alla mancanza.",
-                    "continue": "Vai all'ultimo step",
-                    "insert_breed": "Segli razza",
-                    "intro": "Qualche informazione in più su <b>{{name}}</b>",
-                    "neutered_female": "Sterilizzata?",
-                    "neutered_male": "Castrato?",
-                    "birthday_female": "Quando è nata <b>{{name}}</b>?",
-                    "birthday_male": "Quando è nato <b>{{name}}</b>?",
-                    "insert_birthday": "Compleanno",
-                    "weight": "Quanto pesa?",
+                    
+                    
+                    "save_picture": "Salva immagine",
+                    
+                    "intro": "Scegli un immagne",
+                    
+                    "skip": "Salta",
                     "insert_weight": "peso in Kg"
                 },
                 "step_3": {
-                    "intro": "Diamo un immagine a <b>{{name}}</b>",
+                    "intro": "Qualche informazione in più su <b>{{name}}</b>",
                     "picture": "Hai una foto?",
                     "continue": "Continua a compilare",
                     "insert_birthday": "Data di nascita",
+                    "neutered_female": "Sterilizzata?",
+                    "breed": "a che razza appartiene?",
+                    "coat": "Che tipo di pelo ha?",
+                    "insert_coat": "Scegli lungezza pelo",
+                    "breed_alert": "Se la razza che vuoi inserire non è presente nella lista, confermando verrà comunque salvata, ci preoccuperemo il prima possibile di sopperire alla mancanza.",
+                    "insert_breed": "Segli razza",
+                    "neutered_male": "Castrato?",           
+                    "gender": "Maschio o femmina?",
+                    "insert_gender": "Sesso",         
                     "insert_weight": "peso in Kg",
                     "optionale_steps_skip": "Abbiamo inserito tutto il necessario per {{name}}!</br>Se vuoi puoi inserire altre informazioni già ora, oppure farlo in segugito con più calma, sta a te decidere",
-                    "skip": "Salta",
+                    "skip": "Continua senza salvare",
+                    "save": "Salva",
                     "weight": "Quanto pesa?"
                 },
                 "step_4": {

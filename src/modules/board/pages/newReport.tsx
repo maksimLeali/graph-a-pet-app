@@ -140,7 +140,7 @@ export const NewReport: React.FC<props> = () => {
             // Prepare FormData
             const formData = new FormData();
             formData.append("file", blob, `${id}_${index}.png`);
-
+            formData.append("disable_colors", "true");
             // API Call
             const apiResponse = await axios.post(
                 "https://graph-a-pet.makso.me/media/upload",

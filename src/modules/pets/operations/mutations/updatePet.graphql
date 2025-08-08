@@ -1,0 +1,8 @@
+mutation updatePet($data: PetUpdate!, $id: ID!) {
+	updatePet(data: $data, id: $id) {
+		pet {
+			id
+			
+		}
+	}
+}
