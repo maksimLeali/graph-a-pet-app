@@ -92,12 +92,7 @@ export const Step3
     const handleSubmit = methods.handleSubmit((data) => {
         data.breed = breedText;
         data.neutered = neutered;
-        console.log(data);
-        setCookies("add_pet_step_2", data);
-        console.log({
-            ...data,
-            ...cookies.add_pet_step_1,
-        });
+        
         addPetToMe({
             variables: {      
                 id: cookies.add_pet_step_1.pet_id,    
