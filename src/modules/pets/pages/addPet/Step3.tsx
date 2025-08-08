@@ -31,20 +31,23 @@ export const Step3
     const [neutered, setNeutered] = useState(false);
     const [openBreedSelector, setOpenBreedSelector] = useState(false);
 
+    
+
+    const [cookies, setCookies, removeCookie] = useCookies([
+        "add_pet_step_1",
+        "add_pet_step_2",
+    ]);
+
     const [addPetToMe, { loading }] = useUpdatePetMutation({
         onCompleted: async (data) => {
             if (!data.updatePet.pet?.id) return;
             console.log("here");
             refetchDashboard();
-            
+            removeCookie("add_pet_step_1");
             history.push("/home");
         },
     });
 
-    const [cookies, setCookies] = useCookies([
-        "add_pet_step_1",
-        "add_pet_step_2",
-    ]);
     const history = useHistory();
 
     const methods = useForm<{
