@@ -531,7 +531,7 @@
                     "insert_gender": "Género",
                     "insert_name": "Nombre",
                     "intro": "Vamos a empezar por entender quién es la mascota",
-                    "name": "¿Cómo se llama?"
+                    "name": "¿Cómo se llama?"           
                 },
                 "step_2": {
                     "breed": "¿Qué raza es?",
@@ -991,7 +991,9 @@
                     "insert_birthday": "Data di nascita",                
                     "insert_name": "Nome",
                     "intro": "Iniziamo con il capire chi è il/la cucciolo/a",
-                    "name": "Come si chiama ?"
+                    "name": "Come si chiama ?",
+                    "no_day": "Non ricordo il giorno preciso",
+                    "no_day_warning": "Se non ricordi il giorno precisio do nascita del/la cucciolo/a basta inserire l'anno e il mese"
                 },
                 "step_2": {                
                     "save_picture": "Salva immagine",

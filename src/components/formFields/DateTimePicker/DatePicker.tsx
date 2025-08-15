@@ -11,6 +11,7 @@ type props = {
 	selectedMonth?: number;
 	selectedDay?: number;
 	showDatePicker: boolean;
+	noDay : boolean
 	handleSelectDay: (day?: number) => void;
 	handleSelectMonth: (month?: number) => void;
 	handleSelectYear: (year?: number) => void;
@@ -25,6 +26,7 @@ export const DatePicker: React.FC<props> = ({
 	selectedMonth,
 	selectedYear,
 	showDatePicker,
+	noDay= false,
 	handleSelectDay,
 	handleSelectMonth,
 	handleSelectYear,
@@ -216,8 +218,9 @@ export const DatePicker: React.FC<props> = ({
 				handleDaySelect(undefined);
 			}
 		}
+		
 		if (!month) handleSelectDay(undefined);
-
+		
 		handleSelectMonth(month);
 		pseudoMonthHandler(month);
 	};
@@ -441,7 +444,7 @@ export const DatePicker: React.FC<props> = ({
 						)}
 					</Columnitems>
 				</Column>
-				<Column>
+				{!noDay && <Column>
 					<ColumnTitle className="columnTitle">
 						{t("system.day")}
 					</ColumnTitle>
@@ -484,7 +487,7 @@ export const DatePicker: React.FC<props> = ({
 							}
 						)}
 					</Columnitems>
-				</Column>
+				</Column>}
 			</DatePickerColumns>
 			<Actions>
 				<IonButton color="danger" fill="outline" onClick={reset}>
@@ -494,7 +497,7 @@ export const DatePicker: React.FC<props> = ({
 					color="primary"
 					onClick={confirm}
 					disabled={
-						!selectedDay ||
+						( !noDay && !selectedDay) ||
 						!selectedYear ||
 						selectedMonth == undefined
 					}

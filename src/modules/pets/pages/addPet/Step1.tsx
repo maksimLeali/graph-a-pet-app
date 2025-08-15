@@ -1,5 +1,5 @@
 import { IonContent } from "@ionic/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm ,Controller } from "react-hook-form";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
@@ -7,14 +7,14 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import { CustodyLevel, Gender, PetCreate, PetFamily, useAddPetToMeMutation } from "@types";
-import { SelectInput, TextInput, Option, SubmitInput, DateTimePicker } from "@components";
+import { SelectInput, TextInput, Option, SubmitInput, DateTimePicker, Toggle } from "@components";
 import { $cssTRBL, $uw } from "@theme";
 import { useUserContext } from "@contexts";
 
 export const Step1 =() => {
 	const { setPage, refetchDashboard } = useUserContext();
 	const [cookies, setCookies] = useCookies(["add_pet_step_1"]);
-
+	const [noDay, setNoDay] = useState(false);
 	const methods = useForm<
 		Pick<PetCreate, "name" | "birthday" > 
 	>({
@@ -89,9 +89,22 @@ export const Step1 =() => {
                             name="birthday"
                             textLabel="pets.add_pet_page.step_1.insert_birthday"
                             type="date"
-                            required
+							noDay={noDay}
+                            required							
                         />
                     </Row>		
+					<Row>
+                        <span
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    t(
+                                        `pets.add_pet_page.step_1.no_day`,
+                                    ) ?? "",
+                            }}
+                        />
+                        <Toggle value={noDay} onChange={(v)=> setNoDay(v)} />
+						<span> {t('pets.add_pet_page.step_1.no_day_warning')} </span>
+                    </Row>						
 					<SubmitInput color="primary" disabled={loading} >
 						{t("pets.add_pet_page.step_1.continue")}
 					</SubmitInput>
