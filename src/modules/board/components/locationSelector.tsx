@@ -192,45 +192,82 @@ export const LocationSelector: FC<Props> = React.memo(
         });
 
         const [mapZoom, setMapZoom] = useState<number>(10);
+        const [showLocationWarning, setShowLocationWarning] = useState(false);
 
         useEffect(() => {
             requestLocation();
         }, []);
 
+        // Check if we're in a secure context for geolocation
+        const isSecureContext =
+            window.isSecureContext ||
+            window.location.protocol === "https:" ||
+            window.location.hostname === "localhost";
+
+        useEffect(() => {
+            if (!isSecureContext) {
+                setShowLocationWarning(true);
+                console.warn(
+                    "Geolocation requires HTTPS or localhost. Current protocol:",
+                    window.location.protocol
+                );
+            }
+        }, [isSecureContext]);
+
         // Center on geolocation when available
         useEffect(() => {
-            console.log(coords);
-            setMapZoom(16);
-            // if (initPosition) return;
-            if (geoError || (!coords?.latitude && !coords?.longitude)) {
-                setInitPosition({ latitude: 45.538353, longitude: 10.219192 });
+            console.log("Geolocation result:", coords, "Error:", geoError);
+
+            if (geoError) {
+                console.warn("Geolocation failed:", geoError);
+                // Only set fallback position if we don't have any position yet
+                if (!initPosition) {
+                    setInitPosition({
+                        latitude: 45.538353,
+                        longitude: 10.219192,
+                    });
+                }
                 return;
             }
 
-            setInitPosition(coords);
-        }, [coords, initPosition, geoError]);
+            if (coords?.latitude && coords?.longitude) {
+                console.log("Setting position from geolocation:", coords);
+                setMapZoom(16);
+                setInitPosition(coords);
+            } else if (!initPosition) {
+                // Set fallback only if we have no position and no coords
+                setInitPosition({ latitude: 45.538353, longitude: 10.219192 });
+            }
+        }, [coords, geoError]);
 
         const options = useMemo(() => {
-            const locOpts = initPosition
-                ? [
-                      {
-                          label: "current_location",
-                          value: `${initPosition.latitude},${initPosition.longitude}`,
-                          fullItem: null,
-                      },
-                  ]
-                : [];
+            const locOpts =
+                initPosition && coords?.latitude && coords?.longitude
+                    ? [
+                          {
+                              label: t("current_location", "Current Location"),
+                              value: `${initPosition.latitude},${initPosition.longitude}`,
+                              fullItem: null,
+                          },
+                      ]
+                    : [];
             return [...locOpts, ...searchOptions];
-        }, [coords, searchOptions, t]);
+        }, [initPosition, coords, searchOptions, t]);
 
-        const mapCenter = useMemo(() => {
-            if (options?.length) {
-                return options[options.length > 1 ? 1 : 0].value
-                    .split(",")
-                    .map(Number);
+        const mapCenter = useMemo((): [number, number] => {
+            // Priority: selected location > user's geolocation > fallback
+            if (selected?.coordinates) {
+                return [
+                    selected.coordinates.latitude,
+                    selected.coordinates.longitude,
+                ];
             }
-            return [45.538353,10.219192];
-        }, [options]);
+            if (initPosition?.latitude && initPosition?.longitude) {
+                return [initPosition.latitude, initPosition.longitude];
+            }
+            // Fallback to Northern Italy (Brescia area)
+            return [45.538353, 10.219192];
+        }, [selected, initPosition]);
 
         const handleChange = useCallback(
             (val: string) => {
@@ -247,6 +284,24 @@ export const LocationSelector: FC<Props> = React.memo(
                     bgColor="light"
                     onChange={handleChange}
                 />
+
+                {showLocationWarning && (
+                    <InfoText style={{ color: "#ff6b35" }}>
+                        {t(
+                            "geolocation_https_warning",
+                            "Location access requires HTTPS or localhost. Please use the search or click on the map to select a location."
+                        )}
+                    </InfoText>
+                )}
+
+                {geoError && !showLocationWarning && (
+                    <ErrorText>
+                        {t(
+                            "geolocation_error",
+                            "Unable to access your location. Please search for your location or click on the map."
+                        )}
+                    </ErrorText>
+                )}
 
                 <MapWrapper>
                     <MapContainer

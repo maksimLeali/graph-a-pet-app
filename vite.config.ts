@@ -5,6 +5,9 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), VitePWA({ registerType: 'autoUpdate' })],
+  server: {
+    allowedHosts: ['localhost', '.ngrok-free.app', '.makso.me', '.eu.devtunnels.ms']
+  },
   resolve: {
     alias: {
       "@config": path.resolve(__dirname, './src/config'),
