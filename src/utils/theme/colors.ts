@@ -4,6 +4,7 @@ export type ColorKeys =
   | "antiparasitic"
   | "operation"
   | "reminder"
+  | "walk"
   | "tablet"
   | "training"
   | "male-color"
@@ -86,6 +87,7 @@ export const colors: Record<ColorKeys, string>  = {
   "vaccine": "var(--vaccine)",
   "antiparasitic": "var(--antiparasitic)",
   "operation": "var(--operation)",
+  "walk": "var(--walk)",
   "reminder": "var(--reminder)",
   "tablet": "var(--tablet)",
   "training": "var(--training)",

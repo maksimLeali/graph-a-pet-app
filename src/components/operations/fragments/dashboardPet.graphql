@@ -12,6 +12,12 @@ fragment DashboardPet on Pet {
 							key: "date"
 							value: { min: $date_from, max: $date_to }
 						}
+					],
+					lists: [
+						{
+							key: "type",
+							value: [ "REMINDER", "TABLET", "OPERATION", "TRAINING", "ANTIPARASITIC"]
+						}
 					]
 				}
 			}

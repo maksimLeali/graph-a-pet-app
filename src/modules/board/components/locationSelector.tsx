@@ -317,19 +317,19 @@ export const LocationSelector: FC<Props> = React.memo(
                                 <CircleMarker
                                     center={[coords.latitude, coords.longitude]}
                                     radius={10}
-                                    pathOptions={{ 
+                                    pathOptions={{
                                         fillOpacity: 0,
-                                        color: '#007bff',
-                                        weight: 2
+                                        color: "#007bff",
+                                        weight: 2,
                                     }}
                                 />
                                 <CircleMarker
                                     center={[coords.latitude, coords.longitude]}
                                     radius={6}
-                                    pathOptions={{ 
-                                        fillOpacity: .5,
-                                        color: '#007bff',
-                                        weight: 2
+                                    pathOptions={{
+                                        fillOpacity: 0.5,
+                                        color: "#007bff",
+                                        weight: 2,
                                     }}
                                 />
                             </>

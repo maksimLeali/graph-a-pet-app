@@ -13,6 +13,7 @@ export const treatmentsColors: Record<TreatmentType, string> = {
   OPERATION: "operation",
   REMINDER: "reminder",
   TABLET: "tablet",
+  WALK: "walk",
   TRAINING: "training"
 }
 

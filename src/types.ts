@@ -277,6 +277,7 @@ export type MediaUpdate = {
 export type MinTreatment = {
   __typename?: 'MinTreatment';
   date: Scalars['String']['output'];
+  duration?: Maybe<TreatmentDuration>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   type: TreatmentType;
@@ -295,9 +296,11 @@ export type Mutation = {
   createReport: ReportResult;
   createTreatment: TreatmentResult;
   createUser: UserResult;
+  createWalk: WalkResult;
   deleteOwnership: DeleteResult;
   deletePet: DeleteResult;
   deleteUser: DeleteResult;
+  deleteWalk: DeleteResult;
   linkPetToMe: OwnershipResult;
   linkPetToUser: OwnershipResult;
   login: NewTokenResult;
@@ -315,6 +318,7 @@ export type Mutation = {
   updateReport: ReportResult;
   updateTreatment: TreatmentResult;
   updateUser: UserResult;
+  updateWalk: WalkResult;
   verifyUser: NewTokenResult;
 };
 
@@ -376,6 +380,11 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationCreateWalkArgs = {
+  data: WalkCreate;
+};
+
+
 export type MutationDeleteOwnershipArgs = {
   id: Scalars['ID']['input'];
 };
@@ -387,6 +396,11 @@ export type MutationDeletePetArgs = {
 
 
 export type MutationDeleteUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteWalkArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -474,6 +488,12 @@ export type MutationUpdateTreatmentArgs = {
 
 export type MutationUpdateUserArgs = {
   data: UserUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateWalkArgs = {
+  data: WalkUpdate;
   id: Scalars['ID']['input'];
 };
 
@@ -595,6 +615,14 @@ export type PaginatedUsers = {
   success?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export type PaginatedWalks = {
+  __typename?: 'PaginatedWalks';
+  error?: Maybe<Error>;
+  items: Array<Maybe<Walk>>;
+  pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
 /** how a list is owganized by how many items has been found, in which page we are, the number of element per page and how many pages there are */
 export type Pagination = {
   __typename?: 'Pagination';
@@ -712,6 +740,7 @@ export type Query = {
   getTreatment?: Maybe<TreatmentResult>;
   getUser: UserResult;
   getUserDashboard: UserDashboardResult;
+  getWalk: Walk;
   listCodes: PaginatedCodes;
   listDamnationesMemoriae?: Maybe<PaginatedDamnationesMemoriae>;
   listHealthCards: PaginatedHealthCards;
@@ -723,6 +752,7 @@ export type Query = {
   listReports: PaginatedReports;
   listTreatments: PaginatedTreatments;
   listUsers: PaginatedUsers;
+  listWalks: PaginatedWalks;
   me: UserResult;
 };
 
@@ -786,6 +816,11 @@ export type QueryGetUserArgs = {
 };
 
 
+export type QueryGetWalkArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryListCodesArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
@@ -837,6 +872,11 @@ export type QueryListTreatmentsArgs = {
 
 
 export type QueryListUsersArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListWalksArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
 
@@ -993,6 +1033,7 @@ export type Treatment = {
 export type TreatmentCreate = {
   booster_date?: InputMaybe<Scalars['String']['input']>;
   date: Scalars['String']['input'];
+  duration?: InputMaybe<TreatmentDuration>;
   frequency_times?: InputMaybe<Scalars['Int']['input']>;
   frequency_unit?: InputMaybe<FrequencyUnit>;
   frequency_value?: InputMaybe<Scalars['Int']['input']>;
@@ -1015,7 +1056,8 @@ export enum TreatmentType {
   Reminder = 'REMINDER',
   Tablet = 'TABLET',
   Training = 'TRAINING',
-  Vaccine = 'VACCINE'
+  Vaccine = 'VACCINE',
+  Walk = 'WALK'
 }
 
 export type TreatmentUpdate = {
@@ -1027,6 +1069,7 @@ export type TreatmentUpdate = {
   frequency_value?: InputMaybe<Scalars['Int']['input']>;
   logs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   name?: InputMaybe<Scalars['String']['input']>;
+  treatmentDuration?: InputMaybe<TreatmentDuration>;
   type?: InputMaybe<TreatmentType>;
 };
 
@@ -1111,6 +1154,49 @@ export type UsersResult = {
   error?: Maybe<Error>;
   success: Scalars['Boolean']['output'];
   users: Array<Maybe<User>>;
+};
+
+export type Walk = {
+  __typename?: 'Walk';
+  behavior_rating?: Maybe<Scalars['Int']['output']>;
+  created_at: Scalars['String']['output'];
+  date: Scalars['String']['output'];
+  distance_km: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  leash_pulling_rating?: Maybe<Scalars['Int']['output']>;
+  notes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  overall_rating?: Maybe<Scalars['Int']['output']>;
+  treatment: MinTreatment;
+};
+
+export type WalkCreate = {
+  behavior_rating?: InputMaybe<Scalars['Int']['input']>;
+  date: Scalars['String']['input'];
+  distance_km: Scalars['Float']['input'];
+  duration?: InputMaybe<TreatmentDuration>;
+  health_card_id: Scalars['ID']['input'];
+  leash_pulling_rating?: InputMaybe<Scalars['Int']['input']>;
+  notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  overall_rating?: InputMaybe<Scalars['Int']['input']>;
+  type: TreatmentType;
+};
+
+export type WalkResult = {
+  __typename?: 'WalkResult';
+  error?: Maybe<Error>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  walk?: Maybe<Walk>;
+};
+
+export type WalkUpdate = {
+  behavior_rating?: InputMaybe<Scalars['Int']['input']>;
+  date?: InputMaybe<Scalars['String']['input']>;
+  distance_km?: InputMaybe<Scalars['Float']['input']>;
+  duration?: InputMaybe<TreatmentDuration>;
+  leash_pulling_rating?: InputMaybe<Scalars['Int']['input']>;
+  notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  overall_rating?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<TreatmentType>;
 };
 
 export enum TreatmentDuration {
@@ -1432,7 +1518,7 @@ export const DashboardPetFragmentDoc = gql`
   health_card {
     id
     treatments(
-      commonSearch: {order_by: "date", order_direction: "asc", filters: {ranges: [{key: "date", value: {min: $date_from, max: $date_to}}]}}
+      commonSearch: {order_by: "date", order_direction: "asc", filters: {ranges: [{key: "date", value: {min: $date_from, max: $date_to}}], lists: [{key: "type", value: ["REMINDER", "TABLET", "OPERATION", "TRAINING", "ANTIPARASITIC"]}]}}
     ) {
       items {
         id

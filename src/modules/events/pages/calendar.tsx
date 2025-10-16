@@ -54,6 +54,18 @@ export const CalendarEvents: React.FC = () => {
 								},
 							},
 						],
+						lists: [
+								{
+									key: "type",
+									value: [
+										"REMINDER",
+										"TABLET",
+										"OPERATION",
+										"TRAINING",
+										"ANTIPARASITIC",
+									],
+								},					
+						],
 						join: [
 							{
 								key: "health_cards",

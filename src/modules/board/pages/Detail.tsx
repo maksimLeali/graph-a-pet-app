@@ -7,8 +7,7 @@ import { useParams } from "react-router";
 import { FullTreatmentFragment } from "@graphql_generated/fullTreatment.generated";
 
 import { useUserContext } from "@contexts";
-import { SpecialIconName, SpecialIcon, Image2x } from "@components";
-import { treatmentsColors } from "@utils";
+import { Image2x } from "@components";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { FullReportFragment, Gender, useGetReportLazyQuery } from "@types";
 import dayjs from "dayjs";
@@ -141,10 +140,7 @@ export const ReportDetails: React.FC<props> = () => {
                                 )}
 
                                 {report?.medias && report.medias.length > 0 ? (
-                                    <Gallery>
-                                        <GallryTitle className="title">
-                                            {t("board.detail.gallery")}
-                                        </GallryTitle>
+                                    <Gallery>                                      
                                         {report.medias.map((media) => (
                                             <GalleryItem>
                                                 <Image2x id={media?.id ?? ""} />
@@ -213,13 +209,9 @@ const Gallery = styled.div`
     flex-wrap: wrap;
     justify-content: space-around;
     padding-bottom: ${$uw(5)};
+    padding-top: ${$uw(1)};
 `;
 
-const GallryTitle = styled.h3`
-    width: 100%;
-    text-align: center;
-    padding: ${$cssTRBL(2)};
-`;
 const GalleryItem = styled.div`
     width: calc(50% - ${$uw(0.5)});
     aspect-ratio: 1;
