@@ -14,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ChoiseContainer } from "../components";
 import { useListReportsLazyQuery } from "../operations/__generated__/listReports.generated";
-import { GetReportLazyQueryHookResult, ListReportsLazyQueryHookResult, ListReportsQuery, ReportType } from "@types";
+import { ListReportsQuery, ReportType } from "@types";
 import { MinReportFragment } from "@graphql_generated/MinReport.generated";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
@@ -67,39 +67,6 @@ export const Board: React.FC = () => {
         onCompleted
 
         })
-
-    // const [
-    //     listFoundgReports,
-    //     { loading: loadingFound, refetch: refetchFound },
-    // ] = useListReportsLazyQuery({
-    //     fetchPolicy: "network-only",
-    //     variables: {
-    //         commonSearch: {
-    //             filters: {
-    //                 fixed: [
-    //                     {
-    //                         key: "type",
-    //                         value: ReportType.Found,
-    //                     },
-    //                 ],
-    //             },
-    //             page_size: PAGE_SIZE,
-    //             page: pageFound,
-    //         },
-    //     },
-    //     onCompleted: ({ listReports }) => {
-    //         console.log(listReports);
-    //         if (!listReports?.items?.length || listReports.error) {
-    //             return;
-    //         }
-    //         setFoundReports((p) => [
-    //             ...p,
-    //             ...(listReports.items as MinReportFragment[]),
-    //         ]);
-    //         // setReachedMaxFound(true);
-    //     },
-    // });
-
 
     const fetchRepots = useCallback(() => {
         listReports()        
@@ -161,8 +128,7 @@ export const Board: React.FC = () => {
                         ))}
                 </List>
                 <AddReportCta to="/board/new">
-                        <Icon name="addCircleOutline" />
-                    {t("board.add_report")}
+                        <Icon size={$uw(2.5)} name="addCircleOutline" />                  
                 </AddReportCta>
             </InfiniteScroll>
 
@@ -192,14 +158,14 @@ const InfiniteScroll = styled(IonInfiniteScroll)`
 
 const AddReportCta = styled(Link)`
     width: 100%;
-    
     color: ${$color("primary")};
     text-decoration: underline;
     text-align: end;
-    padding: ${$cssTRBL(1, 2, 1, 2)};
-    position: sticky;
+    padding: ${$cssTRBL(.5)};
+    position: fixed;
+    justify-self: end;
     align-items: center;
-    bottom:${$uw(3)};
+    bottom:${$uw(7)};
     width: fit-content;
     margin-left: auto;
     margin-right:${$uw(1)};

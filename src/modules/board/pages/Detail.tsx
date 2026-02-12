@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { IonContent } from "@ionic/react";
@@ -6,8 +6,8 @@ import { useParams } from "react-router";
 
 import { FullTreatmentFragment } from "@graphql_generated/fullTreatment.generated";
 
-import { useUserContext } from "@contexts";
-import { Image2x } from "@components";
+import { useModal, useUserContext } from "@contexts";
+import { Icon, Image2x } from "@components";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { FullReportFragment, Gender, useGetReportLazyQuery } from "@types";
 import dayjs from "dayjs";
@@ -18,6 +18,7 @@ export const ReportDetails: React.FC<props> = () => {
     const { id } = useParams<{ id: string }>();
     const [report, setReport] = useState<FullReportFragment>();
     const { setPage } = useUserContext();
+    const { openModal, closeModal } = useModal();
     const { t } = useTranslation();
     const [getEvent, { loading }] = useGetReportLazyQuery({
         onCompleted: ({ getReport }) => {
@@ -64,6 +65,36 @@ export const ReportDetails: React.FC<props> = () => {
         return null;
     }, [report]);
 
+    const openGalleryModal = useCallback(
+        (startIndex: number) => {
+            const medias = (report?.medias ?? []).filter(
+                (media): media is NonNullable<typeof media> =>
+                    Boolean(media?.id),
+            );
+            if (medias.length === 0) {
+                return;
+            }
+
+            const clickedMediaId = report?.medias?.[startIndex]?.id;
+            const normalizedIndex = medias.findIndex(
+                (media) => media?.id === clickedMediaId,
+            );
+            const safeIndex = normalizedIndex >= 0 ? normalizedIndex : 0;
+
+            openModal({
+                onClose: () => closeModal(),
+                
+                children: (
+                    <GalleryPreview
+                        medias={medias.map((media) => ({ id: media?.id }))}
+                        startIndex={safeIndex}
+                    />
+                ),
+            });
+        },
+        [report?.medias, openModal, closeModal],
+    );
+
     return (
         <CustomIonContent fullscreen>
             <Container>
@@ -102,9 +133,9 @@ export const ReportDetails: React.FC<props> = () => {
                                                         Gender.Male
                                                         ? "pets.gender_male"
                                                         : report.pet.gender ===
-                                                          Gender.Female
-                                                        ? "pets.gender_female"
-                                                        : "pets.gender_not_said"
+                                                            Gender.Female
+                                                          ? "pets.gender_female"
+                                                          : "pets.gender_not_said",
                                                 )}
                                             </p>
                                         </Row>
@@ -140,9 +171,14 @@ export const ReportDetails: React.FC<props> = () => {
                                 )}
 
                                 {report?.medias && report.medias.length > 0 ? (
-                                    <Gallery>                                      
-                                        {report.medias.map((media) => (
-                                            <GalleryItem>
+                                    <Gallery>
+                                        {report.medias.map((media, index) => (
+                                            <GalleryItem
+                                                key={media?.id ?? index}
+                                                onClick={() =>
+                                                    openGalleryModal(index)
+                                                }
+                                            >
                                                 <Image2x id={media?.id ?? ""} />
                                             </GalleryItem>
                                         ))}
@@ -216,6 +252,7 @@ const GalleryItem = styled.div`
     width: calc(50% - ${$uw(0.5)});
     aspect-ratio: 1;
     margin-bottom: ${$uw(1)};
+    cursor: pointer;
 `;
 
 const Row = styled.div`
@@ -240,4 +277,105 @@ const NoImage = styled.p`
     width: 100%;
     text-align: center;
     padding: ${$uw(4)};
+`;
+
+type GalleryPreviewProps = {
+    medias: { id?: string | null }[];
+    startIndex: number;
+};
+
+const GalleryPreview: React.FC<GalleryPreviewProps> = ({
+    medias,
+    startIndex,
+}) => {
+    if (medias.length === 0) {
+        return null;
+    }
+
+    const total = medias.length;
+    const normalize = (value: number) => ((value % total) + total) % total;
+    const [activeIndex, setActiveIndex] = useState(() => normalize(startIndex));
+
+    const goTo = (delta: number) => {
+        setActiveIndex((prev) => normalize(prev + delta));
+    };
+
+    const currentMedia = medias[activeIndex];
+
+    return (
+        <GalleryModalContent>
+            <GalleryModalImage>
+                {currentMedia?.id && <Image2x id={currentMedia.id} />}
+            </GalleryModalImage>
+            <GalleryModalCounter>
+                {activeIndex + 1}/{total}
+            </GalleryModalCounter>
+            <GalleryModalArrow
+                type="button"
+                className="left"
+                onClick={() => goTo(-1)}
+            >
+                <Icon name="chevronBackOutline" color="light" />
+            </GalleryModalArrow>
+            <GalleryModalArrow
+                type="button"
+                className="right"
+                onClick={() => goTo(1)}
+            >
+                <Icon name="chevronForwardOutline" color="light" />
+            </GalleryModalArrow>
+        </GalleryModalContent>
+    );
+};
+
+const GalleryModalContent = styled.div`
+    position: relative;
+    width: 100%;
+    min-height: 70dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: ${$cssTRBL(2, 2, 4)};
+    background-color: ${$color("light")};
+`;
+
+const GalleryModalImage = styled.div`
+    width: 100%;
+    height: min(70dvh, ${$uw(60)});
+    max-height: 70dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    > .img2x {
+        width: 100%;
+        height: 100%;
+    }
+`;
+
+const GalleryModalArrow = styled.button`
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background:${$color("dark")};
+    width: ${$uw(3)};
+    height: ${$uw(3)};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    &.left {
+        left: ${$uw(1)};
+    }
+    &.right {
+        right: ${$uw(1)};
+    }
+`;
+
+const GalleryModalCounter = styled.span`
+    position: absolute;
+    bottom: ${$uw(1)};
+    right: ${$uw(2)};
+    color: ${$color("light")};
 `;
