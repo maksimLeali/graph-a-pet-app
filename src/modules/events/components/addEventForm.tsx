@@ -19,7 +19,7 @@ import { TreatmentType } from "@types";
 import { EventOption } from "./EventOption";
 import { $cssTRBL, $uw } from "@theme";
 
-export const AddEventForm = () => {
+export const AddEventFormStep1 = () => {
 	const { pets } = useUserContext();
 	const { t } = useTranslation();
 
@@ -29,13 +29,11 @@ export const AddEventForm = () => {
 			if (!a.owner && b.owner) return 1;
 			return 0;
 		})
-		.map((pet: DashboardPetFragment) => {
-			return {
-				value: pet.health_card!.id,
-				label: pet.name,
-				render: <PetName>{pet.name}</PetName>,
-			};
-		});
+		.map((pet: DashboardPetFragment) => ({
+			value: pet.health_card!.id,
+			label: pet.name,
+			render: <PetName>{pet.name}</PetName>,
+		}));
 
 	const typeOptions: Option[] = Object.values(TreatmentType).map((key) => ({
 		value: key,
@@ -83,7 +81,6 @@ export const AddEventForm = () => {
 				className="main_date"
 				bgColor="light"
 				required
-				
 			/>
 			<DateTimePicker
 				name="date_time"
@@ -93,6 +90,20 @@ export const AddEventForm = () => {
 				bgColor="light"
 				required
 			/>
+		</Form>
+	);
+};
+
+export const AddEventFormStep2 = () => {
+	const { t } = useTranslation();
+
+	return (
+		<Form
+			onSubmit={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+			}}
+		>
 			<TextAreaInput
 				name="notes"
 				textLabel="events.notes"

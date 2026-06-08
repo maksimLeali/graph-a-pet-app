@@ -143,7 +143,7 @@ export const NewReport: React.FC<props> = () => {
             formData.append("disable_colors", "true");
             // API Call
             const apiResponse = await axios.post(
-                "https://graph-a-pet.makso.me/media/upload",
+                `${import.meta.env.VITE_MEDIA_URL}/upload`,
                 formData,
                 {
                     headers: {

@@ -147,7 +147,7 @@ export const Step2 = React.memo(() => {
 
             // API Call
             const apiResponse = await axios.post(
-                `https://graph-a-pet.makso.me/media/upload`,
+                `${import.meta.env.VITE_MEDIA_URL}/upload`,
                 formData,
                 {
                     headers: {

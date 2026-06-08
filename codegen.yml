@@ -3,8 +3,10 @@ schema: "./graphql-schema.json"
 documents:
   - "src/**/*.graphql"
   - "src/**/*.{ts,tsx}"
-  # escludi i file già generati
+  # escludi i file già generati (in src e a livello root)
   - "!src/**/__generated__/**"
+  - "!**/__generated__/**"
+  - "!src/types.ts"
 generates:
   src/types.ts:
     plugins:

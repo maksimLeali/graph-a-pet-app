@@ -13,7 +13,7 @@ import { useCreateTreatmentMutation } from "../operations/__generated__/createTr
 
 import { useUserContext, useModal } from "@contexts";
 import { AppointmentsList, CustomCalendar } from "@components";
-import { AddEventForm } from "../components/addEventForm";
+import { AddEventFormStep1, AddEventFormStep2 } from "../components/addEventForm";
 import { MutationCreateTreatmentArgs } from "@types";
 import { $color, $uw } from "@theme";
 
@@ -180,14 +180,29 @@ export const CalendarEvents: React.FC = () => {
 				closeModal();
 			},
 			onConfirm: () => {
-				createEvent();
-				getMyAppointments()
-				refetchDashboard();
-				closeModal();
+				openModal({
+					onClose: () => {
+						closeModal();
+					},
+					onCancel: () => {
+						closeModal();
+					},
+					onConfirm: () => {
+						createEvent();
+						getMyAppointments();
+						refetchDashboard();
+						closeModal();
+					},
+					children: (
+						<FormProvider {...methods}>
+							<AddEventFormStep2 />
+						</FormProvider>
+					),
+				});
 			},
 			children: (
 				<FormProvider {...methods}>
-					<AddEventForm />
+					<AddEventFormStep1 />
 				</FormProvider>
 			),
 		});
