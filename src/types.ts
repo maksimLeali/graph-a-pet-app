@@ -1052,6 +1052,8 @@ export type TreatmentResult = {
 
 export enum TreatmentType {
   Antiparasitic = 'ANTIPARASITIC',
+  Check = 'CHECK',
+  Cure = 'CURE',
   Operation = 'OPERATION',
   Reminder = 'REMINDER',
   Tablet = 'TABLET',
