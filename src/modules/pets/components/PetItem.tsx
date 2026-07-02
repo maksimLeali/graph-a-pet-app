@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DashboardPetFragment } from "../../../components/operations/__generated__/dashboardPet.generated";
+import { MinPetFragment } from "@graphql_generated/minPet.generated";
 import gsap from "gsap";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
@@ -17,12 +17,13 @@ import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.genera
 import { useHistory } from "react-router";
 
 type Prop = {
-    pet: DashboardPetFragment;
+    pet: MinPetFragment;
     index: number;
     onShare?: (id: string) => void;
+    readOnly?: boolean;
 };
 
-export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
+export const PetItem: React.FC<Prop> = ({ pet, index, onShare, readOnly = false }) => {
     const [ready, setReady] = useState(false);
     const [imageReady, setImageReady] = useState(false);
     const itemRef = useRef<HTMLDivElement>(null);
@@ -149,10 +150,23 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
             bgColor={pet.main_picture?.main_color?.color}
             color={pet.main_picture?.main_color?.contrast}
             className={`${mode}`}
-            onContextMenu={(e) => {
-                e.preventDefault();
-                switchMode();
-            }}
+            onClick={
+                readOnly
+                    ? undefined
+                    : () => {
+                          if (mode !== "edit") {
+                              history.push(`/pets/detail/${pet.id}`);
+                          }
+                      }
+            }
+            onContextMenu={
+                readOnly
+                    ? undefined
+                    : (e) => {
+                          e.preventDefault();
+                          switchMode();
+                      }
+            }
         >
             {ready && pet.main_picture ? (
                 <ImageWrapper className="image-wrapper custom-pet-border-color">
@@ -162,26 +176,30 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                         id={pet.main_picture!.id}
                         onLoad={() => setImageReady(true)} // Set ready state to true when image is loaded
                     />
-                    <DeleteWrapper
-                        onClick={() => {
-                            openDeletePet();
-                        }}
-                        className={`${mode}`}
-                    >
-                        <Icon name="trashOutline" />
-                    </DeleteWrapper>
+                    {!readOnly && (
+                        <DeleteWrapper
+                            onClick={() => {
+                                openDeletePet();
+                            }}
+                            className={`${mode}`}
+                        >
+                            <Icon name="trashOutline" />
+                        </DeleteWrapper>
+                    )}
                 </ImageWrapper>
             ) : (
                 <ImageWrapper className="image-wrapper custom-pet-border-color">
                     <Ph />
-                    <DeleteWrapper
-                        onClick={() => {
-                            openDeletePet();
-                        }}
-                        className={`${mode === "edit" ? "edit" : "view"}`}
-                    >
-                        <Icon name="trashOutline" />
-                    </DeleteWrapper>
+                    {!readOnly && (
+                        <DeleteWrapper
+                            onClick={() => {
+                                openDeletePet();
+                            }}
+                            className={`${mode === "edit" ? "edit" : "view"}`}
+                        >
+                            <Icon name="trashOutline" />
+                        </DeleteWrapper>
+                    )}
                 </ImageWrapper>
             )}
             <InfoWrapper>
@@ -235,6 +253,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                             </span>
                         )}
                     </InfoRow>
+                    {!readOnly && (
                     <ActionContainer className="actionContainer">
                         <Cancel onClick={() => setMode("view")}>
                             <Icon name="closeCircleOutline" />
@@ -254,7 +273,11 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                                 />
                                 <span>{t("pets.pet_list_page.report")}</span>
                             </Action>
-                            <Action>
+                            <Action
+                                onClick={() =>
+                                    history.push(`/pets/detail/${pet.id}`)
+                                }
+                            >
                                 <Icon
                                     name="informationCircleOutline"
                                     color="dark"
@@ -270,6 +293,7 @@ export const PetItem: React.FC<Prop> = ({ pet, index, onShare }) => {
                                 )}
                         </ActionWrapper>
                     </ActionContainer>
+                    )}
                 </InfoBox>
             </InfoWrapper>
         </Container>

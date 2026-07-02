@@ -1,6 +1,6 @@
 import { Redirect, Route } from "@router-components";
 import { useRouteMatch } from "react-router-dom";
-import { AddPetRoutes, PetsList, Sharing } from ".";
+import { AddPetRoutes, PetsList, PetProfile, Sharing } from ".";
 
 export const PetsRouter = () => {
 	const { path } = useRouteMatch();
@@ -9,7 +9,11 @@ export const PetsRouter = () => {
 			<Route path={`${path}/sharing/:code`}>
 				<Sharing />
 			</Route>
-			
+
+			<Route exact path={`${path}/detail/:id`}>
+				<PetProfile />
+			</Route>
+
       <Route exact path={`${path}`}>
 				<PetsList />
 			</Route>

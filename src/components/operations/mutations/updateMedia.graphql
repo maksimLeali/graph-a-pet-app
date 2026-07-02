@@ -1,0 +1,16 @@
+mutation updateMedia($id: ID!, $data: MediaUpdate!) {
+	updateMedia(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		media {
+			id
+			main_color {
+				color
+				contrast
+			}
+		}
+	}
+}

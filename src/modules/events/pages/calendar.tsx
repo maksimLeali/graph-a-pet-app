@@ -4,8 +4,11 @@ import dayjs from "dayjs";
 import { FormProvider, useForm } from "react-hook-form";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 import "react-calendar/dist/Calendar.css";
 import { Maybe } from "graphql/jsutils/Maybe";
+
+import { I18NKey } from "@i18n";
 
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { useListMyTreatmentsLazyQuery } from "../operations/__generated__/getMyAppointments.generated";
@@ -121,19 +124,23 @@ export const CalendarEvents: React.FC = () => {
 	const [createTreatment, { loading: creationLoading }] =
 		useCreateTreatmentMutation({
 			onCompleted: ({ createTreatment }) => {
-				console.log('createTreatment:', createTreatment);
-				if (!createTreatment || createTreatment.error) {
+				if (!createTreatment?.success || createTreatment.error) {
+					toast.error(
+						createTreatment?.error?.message
+							? t(createTreatment.error.message as I18NKey)
+							: t("messages.errors.fetch")
+					);
 					return;
-				}				
+				}
 
-				methods.setValue("date_date", undefined!);
-				methods.setValue("date_time", undefined!);
-				methods.setValue("notes", undefined!);
-				methods.setValue("data.name", undefined!);
-				methods.setValue("data.type", undefined!);
-				methods.setValue("data.health_card_id", undefined!);
-				
+				toast.success(t("messages.success.event_created"));
+				methods.reset();
 				closeModal();
+				getMyAppointments();
+				refetchDashboard();
+			},
+			onError: () => {
+				toast.error(t("messages.errors.fetch"));
 			},
 		});
 
@@ -148,28 +155,32 @@ export const CalendarEvents: React.FC = () => {
 	});
 	const { openModal, closeModal } = useModal();
 
-	const createEvent = methods.handleSubmit(async (data) => {
-		const time = dayjs(data.date_time);
-		const date = dayjs(data.date_date)
-			.set("hour", time.hour())
-			.set("minute", time.minute())
-			.toISOString();
-		await createTreatment({
-			variables: {
-				treatment: {
-					health_card_id: data.data.health_card_id,
-					name: data.data.name,
-					type: data.data.type,
-					date,
-					logs: [data.notes],
-					...(data.data.booster_date
-						? { booster_date: data.data.booster_date }
-						: {}),
+	const createEvent = methods.handleSubmit(
+		async (data) => {
+			const time = dayjs(data.date_time);
+			const date = dayjs(data.date_date)
+				.set("hour", time.hour())
+				.set("minute", time.minute())
+				.toISOString();
+			await createTreatment({
+				variables: {
+					treatment: {
+						health_card_id: data.data.health_card_id,
+						name: data.data.name,
+						type: data.data.type,
+						date,
+						...(data.notes ? { logs: [data.notes] } : {}),
+						...(data.data.booster_date
+							? { booster_date: data.data.booster_date }
+							: {}),
+					},
 				},
-			},
-		});
-		methods.reset()
-	});
+			});
+		},
+		() => {
+			toast.error(t("messages.errors.required"));
+		}
+	);
 
 	const openAddCalendarModal = useCallback(() => {
 		openModal({
@@ -189,9 +200,6 @@ export const CalendarEvents: React.FC = () => {
 					},
 					onConfirm: () => {
 						createEvent();
-						getMyAppointments();
-						refetchDashboard();
-						closeModal();
 					},
 					children: (
 						<FormProvider {...methods}>

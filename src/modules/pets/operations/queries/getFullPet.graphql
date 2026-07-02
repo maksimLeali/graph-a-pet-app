@@ -1,13 +1,43 @@
-query getFullPet($id: ID!){
-	getPet(id: $id){
-		pet{
+query getFullPet($id: ID!, $date_from: String!, $date_to: String!) {
+	getPet(id: $id) {
+		pet {
 			...MinPet
+			pictures(
+				commonSearch: {
+					order_by: "created_at"
+					order_direction: "desc"
+					filters: {
+						fixed: [{ key: "scope", value: "pet_picture" }]
+					}
+				}
+			) {
+				items {
+					id
+				}
+			}
+			health_card {
+				id
+				treatments(
+					commonSearch: {
+						order_by: "date"
+						order_direction: "asc"
+						filters: {
+							ranges: [
+								{ key: "date", value: { min: $date_from, max: $date_to } }
+							]
+						}
+					}
+				) {
+					items {
+						...Appointment
+					}
+				}
+			}
 		}
 		success
-		error{
+		error {
 			code
 			message
 		}
-		
 	}
 }

@@ -4,9 +4,12 @@ fragment FullTreatment on Treatment {
     date
     logs
     type
-    frequency_unit
-    frequency_value
-    frequency_times
+    health_card{
+        id
+        pet{
+            ...MinPet
+        }
+    }
     booster{
         id
     }

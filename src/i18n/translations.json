@@ -252,6 +252,7 @@
         },
         "events": {
             "add_event": "Add event",
+            "save": "Save",
             "antiparasitic": "Antiparasitic",
             "booster_date_time_from": "Booster start date and time",
             "boster_date_from": "Booster start date",
@@ -297,6 +298,8 @@
             "success": {
                 "login": "Login successful",
                 "logout": "Logout successful",
+                "event_created": "Event created successfully",
+                "event_updated": "Event updated successfully",
                 "pet_linked_succesfully": "Pet successfully added",
                 "pet_updated": "Pet data successfully updated",
                 "signup": "Registration completed, check your email"
@@ -362,6 +365,13 @@
             "desc_sub_owner": "A <b>Sub-owner</b> takes care of the pet like the owner.<br/>Usually a <b>family member</b> or a <b>friend</b>",
             "family": "Pet",
             "gender": "Gender",
+            "birthday": "Birthday",
+            "breed": "Breed",
+            "coat": "Coat",
+            "gallery": "Gallery",
+            "events_week": "Events (next 7 days)",
+            "yes": "Yes",
+            "no": "No",
             "gender_female": "Female",
             "gender_male": "Male",
             "gender_not_said": "Prefer not to specify",
@@ -890,6 +900,7 @@
         },
         "events": {
             "add_event": "Aggiungi evento",
+            "save": "Salva",
             "antiparasitic": "Antiparassitario",
             "booster_date_time_from": "Data e ora inizio del richiamo",
             "boster_date_from": "Data inizio del richiamo",
@@ -936,6 +947,8 @@
             "success": {
                 "login": "Accesso effettuato",
                 "logout": "Uscita effettuata con successo",
+                "event_created": "Evento creato con successo",
+                "event_updated": "Evento aggiornato con successo",
                 "pet_linked_succesfully": "Animale aggiunto correttamente",
                 "pet_updated": "Dati Pet aggiornati con successo",
                 "signup": "Reggistrazione completata, controlla la tua mail"
@@ -1054,6 +1067,13 @@
             "desc_sub_owner": "Un <b>Affidatario</b> si occupa dell'animale come il padrone.<br/>Di solito è un <b>famigliare</b> o un <b>Amico</b>",
             "family": "Pet",
             "gender": "Sesso",
+            "birthday": "Data di nascita",
+            "breed": "Razza",
+            "coat": "Pelo",
+            "gallery": "Galleria",
+            "events_week": "Eventi (prossimi 7 giorni)",
+            "yes": "Sì",
+            "no": "No",
             "gender_female": "Femmina",
             "gender_male": "Maschio",
             "gender_not_said": "Preferisco non specificarlo",

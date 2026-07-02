@@ -71,9 +71,14 @@ export const ImageCanvas: React.FC<ImageCanvasProps> = ({
     ctx.restore();
   }, [position, scale]);
 
-  // Redraw su cambio posizione o scala
+  // Redraw su cambio posizione o scala + emissione crop
+  // (così il crop iniziale è disponibile anche senza interazione utente)
   useEffect(() => {
-    requestAnimationFrame(drawImage);
+    requestAnimationFrame(() => {
+      drawImage();
+      const canvas = canvasRef.current;
+      if (canvas) onCropChange(canvas.toDataURL());
+    });
   }, [drawImage]);
 
   // Calcola coordinate interne al canvas

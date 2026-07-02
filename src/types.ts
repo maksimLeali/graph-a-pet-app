@@ -1219,7 +1219,7 @@ export type DashboardPetFragment = { __typename?: 'Pet', name: string, id: strin
 
 export type FullPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, breed?: string | null, coat_length?: CoatLength | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null> } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null };
 
-export type FullTreatmentFragment = { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, frequency_unit?: FrequencyUnit | null, frequency_value?: number | null, frequency_times?: number | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null };
+export type FullTreatmentFragment = { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, health_card?: { __typename?: 'HealthCard', id: string, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } } | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null };
 
 export type MinPetFragment = { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null };
 
@@ -1233,6 +1233,14 @@ export type CreateMediaMutationVariables = Exact<{
 
 
 export type CreateMediaMutation = { __typename?: 'Mutation', createMedia: { __typename?: 'MediaResult', media?: { __typename?: 'Media', id: string, ref_id: string, type: string, scope: string } | null } };
+
+export type UpdateMediaMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  data: MediaUpdate;
+}>;
+
+
+export type UpdateMediaMutation = { __typename?: 'Mutation', updateMedia: { __typename?: 'MediaResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, media?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -1292,12 +1300,20 @@ export type CreateTreatmentMutationVariables = Exact<{
 
 export type CreateTreatmentMutation = { __typename?: 'Mutation', createTreatment: { __typename?: 'TreatmentResult', success?: boolean | null, error?: { __typename?: 'Error', extra?: string | null, code: string, message: string } | null, treatment?: { __typename?: 'Treatment', id: string, name: string, date: string, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string } | null> | null } | null } };
 
+export type UpdateTreatmentMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  data: TreatmentUpdate;
+}>;
+
+
+export type UpdateTreatmentMutation = { __typename?: 'Mutation', updateTreatment: { __typename?: 'TreatmentResult', success?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, treatment?: { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, health_card?: { __typename?: 'HealthCard', id: string, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } } | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null } | null } };
+
 export type GetTreatmentQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetTreatmentQuery = { __typename?: 'Query', getTreatment?: { __typename?: 'TreatmentResult', error?: { __typename?: 'Error', code: string, message: string } | null, treatment?: { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, frequency_unit?: FrequencyUnit | null, frequency_value?: number | null, frequency_times?: number | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null } | null } | null };
+export type GetTreatmentQuery = { __typename?: 'Query', getTreatment?: { __typename?: 'TreatmentResult', error?: { __typename?: 'Error', code: string, message: string } | null, treatment?: { __typename?: 'Treatment', id: string, name: string, date: string, logs?: Array<string | null> | null, type: TreatmentType, health_card?: { __typename?: 'HealthCard', id: string, pet: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } } | null, booster?: { __typename?: 'Treatment', id: string } | null, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string, name: string, type: TreatmentType } | null> | null } | null } | null };
 
 export type ListMyTreatmentsQueryVariables = Exact<{
   commonSearch: CommonSearch;
@@ -1373,14 +1389,16 @@ export type UpdatePetMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'PetResult', pet?: { __typename?: 'Pet', id: string } | null } };
+export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'PetResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null } };
 
 export type GetFullPetQueryVariables = Exact<{
   id: Scalars['ID']['input'];
+  date_from: Scalars['String']['input'];
+  date_to: Scalars['String']['input'];
 }>;
 
 
-export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string } | null> } | null, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', items: Array<{ __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null } | null> } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export const FullReportFragmentDoc = gql`
     fragment FullReport on Report {
@@ -1582,9 +1600,12 @@ export const FullTreatmentFragmentDoc = gql`
   date
   logs
   type
-  frequency_unit
-  frequency_value
-  frequency_times
+  health_card {
+    id
+    pet {
+      ...MinPet
+    }
+  }
   booster {
     id
   }
@@ -1595,7 +1616,7 @@ export const FullTreatmentFragmentDoc = gql`
     type
   }
 }
-    `;
+    ${MinPetFragmentDoc}`;
 export const MinUserFragmentDoc = gql`
     fragment minUser on User {
   id
@@ -1646,6 +1667,51 @@ export function useCreateMediaMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateMediaMutationHookResult = ReturnType<typeof useCreateMediaMutation>;
 export type CreateMediaMutationResult = Apollo.MutationResult<CreateMediaMutation>;
 export type CreateMediaMutationOptions = Apollo.BaseMutationOptions<CreateMediaMutation, CreateMediaMutationVariables>;
+export const UpdateMediaDocument = gql`
+    mutation updateMedia($id: ID!, $data: MediaUpdate!) {
+  updateMedia(id: $id, data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    media {
+      id
+      main_color {
+        color
+        contrast
+      }
+    }
+  }
+}
+    `;
+export type UpdateMediaMutationFn = Apollo.MutationFunction<UpdateMediaMutation, UpdateMediaMutationVariables>;
+
+/**
+ * __useUpdateMediaMutation__
+ *
+ * To run a mutation, you first call `useUpdateMediaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMediaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMediaMutation, { data, loading, error }] = useUpdateMediaMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateMediaMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMediaMutation, UpdateMediaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMediaMutation, UpdateMediaMutationVariables>(UpdateMediaDocument, options);
+      }
+export type UpdateMediaMutationHookResult = ReturnType<typeof useUpdateMediaMutation>;
+export type UpdateMediaMutationResult = Apollo.MutationResult<UpdateMediaMutation>;
+export type UpdateMediaMutationOptions = Apollo.BaseMutationOptions<UpdateMediaMutation, UpdateMediaMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -1998,6 +2064,47 @@ export function useCreateTreatmentMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateTreatmentMutationHookResult = ReturnType<typeof useCreateTreatmentMutation>;
 export type CreateTreatmentMutationResult = Apollo.MutationResult<CreateTreatmentMutation>;
 export type CreateTreatmentMutationOptions = Apollo.BaseMutationOptions<CreateTreatmentMutation, CreateTreatmentMutationVariables>;
+export const UpdateTreatmentDocument = gql`
+    mutation UpdateTreatment($id: ID!, $data: TreatmentUpdate!) {
+  updateTreatment(id: $id, data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    treatment {
+      ...FullTreatment
+    }
+  }
+}
+    ${FullTreatmentFragmentDoc}`;
+export type UpdateTreatmentMutationFn = Apollo.MutationFunction<UpdateTreatmentMutation, UpdateTreatmentMutationVariables>;
+
+/**
+ * __useUpdateTreatmentMutation__
+ *
+ * To run a mutation, you first call `useUpdateTreatmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTreatmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTreatmentMutation, { data, loading, error }] = useUpdateTreatmentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateTreatmentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTreatmentMutation, UpdateTreatmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTreatmentMutation, UpdateTreatmentMutationVariables>(UpdateTreatmentDocument, options);
+      }
+export type UpdateTreatmentMutationHookResult = ReturnType<typeof useUpdateTreatmentMutation>;
+export type UpdateTreatmentMutationResult = Apollo.MutationResult<UpdateTreatmentMutation>;
+export type UpdateTreatmentMutationOptions = Apollo.BaseMutationOptions<UpdateTreatmentMutation, UpdateTreatmentMutationVariables>;
 export const GetTreatmentDocument = gql`
     query getTreatment($id: ID!) {
   getTreatment(id: $id) {
@@ -2472,12 +2579,17 @@ export type LinkPetToMeMutationOptions = Apollo.BaseMutationOptions<LinkPetToMeM
 export const UpdatePetDocument = gql`
     mutation updatePet($data: PetUpdate!, $id: ID!) {
   updatePet(data: $data, id: $id) {
+    success
+    error {
+      code
+      message
+    }
     pet {
-      id
+      ...MinPet
     }
   }
 }
-    `;
+    ${MinPetFragmentDoc}`;
 export type UpdatePetMutationFn = Apollo.MutationFunction<UpdatePetMutation, UpdatePetMutationVariables>;
 
 /**
@@ -2506,10 +2618,27 @@ export type UpdatePetMutationHookResult = ReturnType<typeof useUpdatePetMutation
 export type UpdatePetMutationResult = Apollo.MutationResult<UpdatePetMutation>;
 export type UpdatePetMutationOptions = Apollo.BaseMutationOptions<UpdatePetMutation, UpdatePetMutationVariables>;
 export const GetFullPetDocument = gql`
-    query getFullPet($id: ID!) {
+    query getFullPet($id: ID!, $date_from: String!, $date_to: String!) {
   getPet(id: $id) {
     pet {
       ...MinPet
+      pictures(
+        commonSearch: {order_by: "created_at", order_direction: "desc", filters: {fixed: [{key: "scope", value: "pet_picture"}]}}
+      ) {
+        items {
+          id
+        }
+      }
+      health_card {
+        id
+        treatments(
+          commonSearch: {order_by: "date", order_direction: "asc", filters: {ranges: [{key: "date", value: {min: $date_from, max: $date_to}}]}}
+        ) {
+          items {
+            ...Appointment
+          }
+        }
+      }
     }
     success
     error {
@@ -2518,7 +2647,8 @@ export const GetFullPetDocument = gql`
     }
   }
 }
-    ${MinPetFragmentDoc}`;
+    ${MinPetFragmentDoc}
+${AppointmentFragmentDoc}`;
 
 /**
  * __useGetFullPetQuery__
@@ -2533,6 +2663,8 @@ export const GetFullPetDocument = gql`
  * const { data, loading, error } = useGetFullPetQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      date_from: // value for 'date_from'
+ *      date_to: // value for 'date_to'
  *   },
  * });
  */

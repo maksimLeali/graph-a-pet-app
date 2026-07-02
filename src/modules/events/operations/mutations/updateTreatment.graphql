@@ -1,0 +1,12 @@
+mutation UpdateTreatment($id: ID!, $data: TreatmentUpdate!) {
+	updateTreatment(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		treatment {
+			...FullTreatment
+		}
+	}
+}

@@ -1,8 +1,12 @@
 mutation updatePet($data: PetUpdate!, $id: ID!) {
 	updatePet(data: $data, id: $id) {
+		success
+		error {
+			code
+			message
+		}
 		pet {
-			id
-			
+			...MinPet
 		}
 	}
 }
