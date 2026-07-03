@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from "react";
 import styled from "styled-components";
 import { $uw } from "@theme";
 
@@ -17,6 +23,11 @@ export const ImageCanvas: React.FC<ImageCanvasProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(new Image());
 
+  // bitmap size = CSS size (square). Measured, not hard-coded,
+  // così coordinate puntatore e disegno coincidono anche su mobile.
+  const [size, setSize] = useState(0);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState<{ x: number; y: number } | null>(null);
 
@@ -32,35 +43,53 @@ export const ImageCanvas: React.FC<ImageCanvasProps> = ({
     y: number;
   } | null>(null);
 
-  // Carica immagine e inizializza scale + posizione
+  // Misura il container e allinea la bitmap del canvas alla sua size CSS.
+  // Su mobile $uw(24) != 300px: senza questo la bitmap resterebbe 300x300.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const s = Math.round(Math.min(el.clientWidth, el.clientHeight));
+      if (s > 0) setSize((prev) => (prev === s ? prev : s));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // Carica immagine. onload PRIMA di src + fallback img.complete:
+  // su mobile il blob può risolversi prima dell'assegnazione del handler.
   useEffect(() => {
     const img = imgRef.current;
+    setImgLoaded(false);
+    img.onload = () => setImgLoaded(true);
     img.src = imageUrl;
-    img.onload = () => {
-      const cw = containerRef.current!.clientWidth;
-      const ch = containerRef.current!.clientHeight;
-      const newMin = Math.max(cw / img.width, ch / img.height);
-      setMinScale(newMin);
-      setScale(newMin);
-      setPosition({
-        x: (cw - img.width * newMin) / 2,
-        y: (ch - img.height * newMin) / 2,
-      });
-    };
+    if (img.complete && img.naturalWidth) setImgLoaded(true);
   }, [imageUrl]);
+
+  // Inizializza scale + posizione una volta noti immagine e size
+  useEffect(() => {
+    if (!imgLoaded || !size) return;
+    const img = imgRef.current;
+    const newMin = Math.max(size / img.width, size / img.height);
+    setMinScale(newMin);
+    setScale(newMin);
+    setPosition({
+      x: (size - img.width * newMin) / 2,
+      y: (size - img.height * newMin) / 2,
+    });
+  }, [imgLoaded, size]);
 
   // Funzione di disegno
   const drawImage = useCallback(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    if (!canvas || !ctx) return;
+    if (!canvas || !ctx || !imgLoaded) return;
 
     const { width: cw, height: ch } = canvas;
     ctx.clearRect(0, 0, cw, ch);
     ctx.save();
     ctx.beginPath();
-    // ctx.arc(cw / 2, ch / 2, cw / 2, 0, Math.PI * 2);
-    // ctx.clip();
     ctx.drawImage(
       imgRef.current,
       position.x,
@@ -69,17 +98,17 @@ export const ImageCanvas: React.FC<ImageCanvasProps> = ({
       imgRef.current.height * scale
     );
     ctx.restore();
-  }, [position, scale]);
+  }, [position, scale, imgLoaded]);
 
-  // Redraw su cambio posizione o scala + emissione crop
+  // Redraw su cambio posizione/scala/size + emissione crop
   // (così il crop iniziale è disponibile anche senza interazione utente)
   useEffect(() => {
     requestAnimationFrame(() => {
       drawImage();
       const canvas = canvasRef.current;
-      if (canvas) onCropChange(canvas.toDataURL());
+      if (canvas && imgLoaded) onCropChange(canvas.toDataURL());
     });
-  }, [drawImage]);
+  }, [drawImage, size, imgLoaded]);
 
   // Calcola coordinate interne al canvas
   const toCanvasCoords = (x: number, y: number) => {
@@ -165,16 +194,16 @@ export const ImageCanvas: React.FC<ImageCanvasProps> = ({
     setPinchStartDist(null);
 
     // Emissione del crop
-    const dataUrl = canvasRef.current!.toDataURL();
-    onCropChange(dataUrl);
+    const canvas = canvasRef.current;
+    if (canvas && imgLoaded) onCropChange(canvas.toDataURL());
   };
 
   return (
     <Container ref={containerRef}>
       <canvas
         ref={canvasRef}
-        width={containerRef.current?.clientWidth ?? 300}
-        height={containerRef.current?.clientHeight ?? 300}
+        width={size || 300}
+        height={size || 300}
         onMouseDown={onPointerDown}
         onMouseMove={onPointerMove}
         onMouseUp={onPointerUp}

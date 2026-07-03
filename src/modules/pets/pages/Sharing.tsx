@@ -16,7 +16,7 @@ import { Image2x, SubOwnerList, SubOwnerListItem } from "@components";
 import { CustodyLevel } from "@types";
 import { ShareBox } from "../components";
 import { useUserContext } from "@contexts";
-import { $color } from "../../../utils/theme/functions";
+import { $color, $uw } from "../../../utils/theme/functions";
 
 
 export const Sharing: React.FC = () => {
@@ -75,53 +75,46 @@ export const Sharing: React.FC = () => {
         checkCode({ variables: { code } });
     }, []);
 
+    const loadingPet = getPetLoading || checkLoading;
+
     return (
         <Container>
-            {getPetLoading || checkLoading || pet ? (
-                <PetInfoBox>
-                    <MainPetContainer>
-                        <ImageWrapper
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {!(getPetLoading || checkLoading) &&
-                            pet?.main_picture ? (
+            {loadingPet || pet ? (
+                <>
+                    <Header>
+                        <PetImage className={loadingPet ? "skeleton" : ""}>
+                            {!loadingPet && pet?.main_picture ? (
                                 <Image2x id={pet?.main_picture.id} />
                             ) : (
-                                <FillBox></FillBox>
+                                <Fill />
                             )}
-                        </ImageWrapper>
-                        <NameBox
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {pet && <span>{pet.name}</span>}
-                        </NameBox>
-                    </MainPetContainer>
-                   
-                    <InfoBox className="info2">
-                        <span>{t("pets.gender")}</span>
-                        <InfoChip
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {pet && <span>{pet.gender}</span>}
-                        </InfoChip>
-                    </InfoBox>
-                    <InfoBox className="info3">
-                        <span>{t("pets.weight")}</span>
-                        <InfoChip
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {pet && <span>{pet.weight_kg} Kg</span>}
-                        </InfoChip>
-                    </InfoBox>
-                </PetInfoBox>
+                        </PetImage>
+                        <NameRow className={loadingPet ? "skeleton" : ""}>
+                            {pet && <h2>{pet.name}</h2>}
+                        </NameRow>
+                    </Header>
+
+                    <Fields>
+                        <Card>
+                            <CardLabel>{t("pets.gender")}</CardLabel>
+                            <CardValue>
+                                {pet?.gender
+                                    ? t(
+                                          `pets.gender_${pet.gender.toLowerCase()}` as any
+                                      )
+                                    : "—"}
+                            </CardValue>
+                        </Card>
+                        <Card>
+                            <CardLabel>{t("pets.weight")}</CardLabel>
+                            <CardValue>
+                                {pet?.weight_kg != null
+                                    ? `${pet.weight_kg} Kg`
+                                    : "—"}
+                            </CardValue>
+                        </Card>
+                    </Fields>
+                </>
             ) : (
                 <Empty>
                     <h1>{t("messages.errors.no_pet_found")}</h1>
@@ -177,31 +170,23 @@ const Container = styled.div`
     }
 `;
 
-const PetInfoBox = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 80px);
-`;
-
-const MainPetContainer = styled.div`
+const Header = styled.div`
+    width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    justify-content: space-between;
-    grid-row-start: 1;
-    grid-row-end: 4;
-    grid-column: 1;
+    align-items: center;
+    gap: ${$uw(2)};
+    padding: ${$uw(3)} 12px;
+    box-sizing: border-box;
 `;
 
-const ImageWrapper = styled.div`
+const PetImage = styled.div`
     width: 100%;
     max-width: 180px;
     aspect-ratio: 1/1;
     border: 2px solid ${$color('primary')};
     border-radius: 260px;
-    margin-bottom: 20px;
-    overflow-y: hidden;
+    overflow: hidden;
     > .img2x {
         width: 100%;
         height: 100%;
@@ -211,63 +196,60 @@ const ImageWrapper = styled.div`
     }
 `;
 
-const NameBox = styled.div`
-    min-width: 80px;
-    height: 30px;
-    padding: 5px 24px;
-    border-radius: 30px;
-    box-sizing: border-box;
-    background-color: ${$color('primary')};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    > span {
-        text-transform: uppercase;
-        font-weight: 600;
-    }
-`;
-
-const FillBox = styled.span`
+const Fill = styled.span`
     width: 100%;
     height: 100%;
+    display: block;
     background-color: ${$color('primary')};
 `;
-const InfoBox = styled.div`
-    grid-column: 2;
-    padding: 10px 12px 0;
-    width: 100%;
+
+const NameRow = styled.div`
     display: flex;
-    flex-direction: column;
-    justify-self: center;
-    justify-content: flex-end;
-    gap: 10px;
-    > span {
-        text-align: center;
-        color: ${$color('dark')};
-    }
-    &.info1 {
-        align-self: flex-start;
-        grid-row: 1;
-    }
-    &.info2 {
-        align-self: center;
-        grid-row: 2;
-    }
-    &.info3 {
-        grid-row: 3;
+    align-items: center;
+    gap: ${$uw(1)};
+    padding: ${$uw(0.5)} ${$uw(1)};
+    border-radius: 12px;
+    background: ${$color('background')};
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    > h2 {
+        margin: 0;
+        text-transform: uppercase;
     }
 `;
 
-const InfoChip = styled.span`
+const Fields = styled.div`
     width: 100%;
-    padding: 5px;
-    height: 30px;
-    border-radius: 30px;
-    background-color: ${$color('primary')};
-    color: ${$color('light')} !important;
-    .dark & {
-        color: ${$color('dark')} !important;
-    }
+    padding: 0 12px ${$uw(4)};
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${$uw(2.5)} ${$uw(2)};
+    align-items: start;
+`;
+
+const Card = styled.div`
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: ${$uw(0.5)};
+    padding: ${$uw(0.75)};
+    border-radius: 12px;
+    background: ${$color('background')};
+    border: 1px solid rgba(255, 255, 255, 0.12);
+`;
+
+const CardLabel = styled.span`
+    font-size: 1.3rem;
+    color: ${$color('primary')};
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+`;
+
+const CardValue = styled.span`
+    font-size: 1.9rem;
+    font-weight: 700;
+    word-break: break-word;
 `;
 
 const Empty = styled.div`

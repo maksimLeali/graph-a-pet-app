@@ -1,6 +1,8 @@
 export { AuthenticatedRoute } from "./PrivateRoute";
 export { Image2x } from './Image2x'
 export { Modal, type ModalProps } from './Modal'
+export { SimpleImageEditor } from './SimpleImageEditor'
+export { MultiImageUploader } from './MultiImageUploader'
 export { Chip } from './Chip'
 export {SubOwnerList} from './SubOwnersList'
 export {SubOwnerListItem} from './SubOwnersListItem'

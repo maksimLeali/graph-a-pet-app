@@ -24,6 +24,7 @@ import { MinReportFragment } from "@graphql_generated/MinReport.generated";
 export type IUserContext = {
     setPage: (page: Page) => void;
     updatePets: (pets: DashboardPetFragment[]) => void;
+    updateUserData: (patch: Partial<MinUserFragment>) => void;
     refetchDashboard: () => void;
     setUseCustomColorHandler: (v: boolean) => void;    
     pets: (DashboardPetFragment & { owner: boolean })[];
@@ -51,6 +52,7 @@ type Page = {
 const defaultValue: IUserContext = {
     setPage: () => {},
     updatePets: () => {},
+    updateUserData: () => {},
     refetchDashboard: () => {},
     setUseCustomColorHandler: () => {},
     pets: [],
@@ -75,7 +77,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
     children,
 }) => {
     const [pageName, setPageName] = useState("");
-    const [cookie] = useCookies(["jwt", "user"]);
+    const [cookie, setCookie] = useCookies(["jwt", "user"]);
     const [visible, setVisible] = useState(true);
     const [pageNoScroll,setPageNoScroll] = useState(false);
     const [fade, setFade] = useState(false);    
@@ -163,6 +165,19 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
         setGridVisible(v);
     };
 
+    // aggiorna user in stato + cookie (senza CookiesProvider il setCookie
+    // esterno non ri-renderizza questo context, quindi lo facciamo qui)
+    const updateUserData = useCallback(
+        (patch: Partial<MinUserFragment>) => {
+            setUser((prev) => {
+                const next = { ...(prev ?? {}), ...patch } as MinUserFragment;
+                setCookie("user", JSON.stringify(next));
+                return next;
+            });
+        },
+        [setCookie]
+    );
+
     const value = useMemo(
         () => ({
             ...defaultValue,
@@ -171,6 +186,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
             loanPets,
             ownedPets,
             setPage,
+            updateUserData,
             refetchDashboard,
             visible,
             gridVisible,

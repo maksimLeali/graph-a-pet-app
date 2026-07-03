@@ -1052,8 +1052,6 @@ export type TreatmentResult = {
 
 export enum TreatmentType {
   Antiparasitic = 'ANTIPARASITIC',
-  Check = 'CHECK',
-  Cure = 'CURE',
   Operation = 'OPERATION',
   Reminder = 'REMINDER',
   Tablet = 'TABLET',
@@ -1243,6 +1241,14 @@ export type UpdateMediaMutationVariables = Exact<{
 
 
 export type UpdateMediaMutation = { __typename?: 'Mutation', updateMedia: { __typename?: 'MediaResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, media?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } };
+
+export type UpdateUserMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  data: UserUpdate;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'UserResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, user?: { __typename?: 'User', id: string, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null } | null } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -1714,6 +1720,53 @@ export function useUpdateMediaMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateMediaMutationHookResult = ReturnType<typeof useUpdateMediaMutation>;
 export type UpdateMediaMutationResult = Apollo.MutationResult<UpdateMediaMutation>;
 export type UpdateMediaMutationOptions = Apollo.BaseMutationOptions<UpdateMediaMutation, UpdateMediaMutationVariables>;
+export const UpdateUserDocument = gql`
+    mutation updateUser($id: ID!, $data: UserUpdate!) {
+  updateUser(id: $id, data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    user {
+      id
+      first_name
+      last_name
+      email
+      profile_picture {
+        id
+      }
+    }
+  }
+}
+    `;
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options);
+      }
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {

@@ -16,7 +16,8 @@ import { MinPetFragment } from "@graphql_generated/minPet.generated";
 
 type FullPet = NonNullable<GetFullPetQuery["getPet"]["pet"]>;
 
-import { useUserContext, useModal } from "@contexts";
+import { useUserContext, useModal, useAppContext } from "@contexts";
+import { config } from "@config";
 import {
 	Image2x,
 	SelectInput,
@@ -27,6 +28,7 @@ import {
 	Icon,
 	Option,
 	AppointmentsList,
+	MultiImageUploader,
 } from "@components";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { BreedSeletor } from "../components";
@@ -96,6 +98,21 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 	const { t: breedT } = useTranslation("breeds");
 	const { openModal, closeModal } = useModal();
 	const [imgOpen, setImgOpen] = useState(false);
+	const [galleryPics, setGalleryPics] = useState<
+		{ url: string; type: string }[]
+	>([]);
+
+	const onPickGallery = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = e.target.files;
+		if (!files) return;
+		setGalleryPics(
+			Array.from(files).map((f) => ({
+				url: URL.createObjectURL(f),
+				type: f.type,
+			}))
+		);
+		e.target.value = "";
+	};
 
 	const methods = useForm<{
 		name: string;
@@ -387,21 +404,28 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 				</EventsSection>
 			)}
 
-			{pictures.length > 0 && (
-				<EventsSection>
-					<SectionTitle>{t("pets.gallery")}</SectionTitle>
-					<Gallery>
-						{pictures.map((media, index) => (
-							<GalleryItem
-								key={media!.id}
-								onClick={() => openGallery(index)}
-							>
-								<Image2x id={media!.id} />
-							</GalleryItem>
-						))}
-					</Gallery>
-				</EventsSection>
-			)}
+			<GallerySection>
+				<SectionTitle>{t("pets.gallery")}</SectionTitle>
+				<Gallery>
+					{pictures.map((media, index) => (
+						<GalleryItem
+							key={media!.id}
+							onClick={() => openGallery(index)}
+						>
+							<Image2x id={media!.id} />
+						</GalleryItem>
+					))}
+				</Gallery>
+				<GalleryAdd>
+					<input
+						type="file"
+						accept="image/*"
+						multiple
+						onChange={onPickGallery}
+					/>
+					<Icon name="add" color="light" />
+				</GalleryAdd>
+			</GallerySection>
 
 			<PetImageEditor
 				open={imgOpen}
@@ -411,6 +435,14 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 				mediaId={pet.main_picture?.id}
 				mainColors={pet.main_picture?.main_colors ?? undefined}
 				mainColor={pet.main_picture?.main_color ?? undefined}
+				onSaved={reload}
+			/>
+
+			<MultiImageUploader
+				pictures={galleryPics}
+				onClose={() => setGalleryPics([])}
+				refId={pet.id}
+				scope="pet_picture"
 				onSaved={reload}
 			/>
 		</>
@@ -496,6 +528,7 @@ const GalleryPreview: React.FC<GalleryPreviewProps> = ({
 	medias,
 	startIndex,
 }) => {
+	const { webpSupported } = useAppContext();
 	const total = medias.length;
 	const normalize = (value: number) => ((value % total) + total) % total;
 	const [activeIndex, setActiveIndex] = useState(() => normalize(startIndex));
@@ -506,11 +539,17 @@ const GalleryPreview: React.FC<GalleryPreviewProps> = ({
 		setActiveIndex((prev) => normalize(prev + delta));
 
 	const currentMedia = medias[activeIndex];
+	const mediaBase = config.baseUrl?.replace("graphql", "media");
+	const mediaSrc = currentMedia?.id
+		? `${mediaBase}/${currentMedia.id}${
+				webpSupported ? "?format=webp" : ""
+			}`
+		: undefined;
 
 	return (
 		<GalleryModalContent>
 			<GalleryModalImage>
-				{currentMedia?.id && <Image2x id={currentMedia.id} />}
+				{mediaSrc && <img src={mediaSrc} alt={currentMedia?.id ?? ""} />}
 			</GalleryModalImage>
 			<GalleryModalCounter>
 				{activeIndex + 1}/{total}
@@ -555,6 +594,40 @@ const GalleryItem = styled.div`
 	}
 `;
 
+const GallerySection = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	padding-bottom: ${$uw(2)};
+	position: relative;
+`;
+
+const GalleryAdd = styled.label`
+	position: absolute;
+	right: ${$uw(2)};
+	bottom: ${$uw(2)};
+	width: ${$uw(3)};
+	height: ${$uw(3)};
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: ${$color("primary")};
+	border-radius: 999px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	z-index: 2;
+	transition: transform 0.15s ease;
+	> input {
+		display: none;
+	}
+	> .icon {
+		width: ${$uw(3)};
+		height: ${$uw(3)};
+	}
+	&:active {
+		transform: scale(0.92);
+	}
+`;
+
 const GalleryModalContent = styled.div`
 	position: relative;
 	width: 100%;
@@ -572,16 +645,16 @@ const GalleryModalImage = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	> .img2x {
-		width: 100%;
-		height: 100%;
+	> img {
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: contain;
 	}
 `;
 
 const GalleryModalArrow = styled.button`
 	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
+	bottom: ${$uw(1)};
 	border: none;
 	background: ${$color("dark")};
 	width: ${$uw(3)};
@@ -592,10 +665,12 @@ const GalleryModalArrow = styled.button`
 	justify-content: center;
 	cursor: pointer;
 	&.left {
-		left: ${$uw(1)};
+		left: 50%;
+		transform: translateX(calc(-100% - ${$uw(0.5)}));
 	}
 	&.right {
-		right: ${$uw(1)};
+		left: 50%;
+		transform: translateX(${$uw(0.5)});
 	}
 `;
 
@@ -748,6 +823,7 @@ const EventsSection = styled.div`
 	width: 100%;
 	box-sizing: border-box;
 	padding-bottom: ${$uw(2)};
+	margin-bottom: ${$uw(6)};
 `;
 
 const SectionTitle = styled.h3`
