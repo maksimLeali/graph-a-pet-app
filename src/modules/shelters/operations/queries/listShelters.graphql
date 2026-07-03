@@ -1,0 +1,18 @@
+query listShelters($commonSearch: CommonSearch) {
+	listShelters(commonSearch: $commonSearch) {
+		items {
+			...MinShelter
+		}
+		success
+		error {
+			code
+			message
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

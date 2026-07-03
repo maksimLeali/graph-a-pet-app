@@ -73,6 +73,41 @@ export type Coordinates = {
   longitude?: Maybe<Scalars['Float']['output']>;
 };
 
+export type Cure = {
+  __typename?: 'Cure';
+  created_at: Scalars['String']['output'];
+  date: Scalars['String']['output'];
+  frequency_times?: Maybe<Scalars['Int']['output']>;
+  frequency_unit?: Maybe<FrequencyUnit>;
+  frequency_value?: Maybe<Scalars['Int']['output']>;
+  id: Scalars['ID']['output'];
+  treatment: MinTreatment;
+};
+
+export type CureCreate = {
+  date: Scalars['String']['input'];
+  frequency_times?: InputMaybe<Scalars['Int']['input']>;
+  frequency_unit?: InputMaybe<FrequencyUnit>;
+  frequency_value?: InputMaybe<Scalars['Int']['input']>;
+  health_card_id: Scalars['ID']['input'];
+  notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type CureResult = {
+  __typename?: 'CureResult';
+  cure?: Maybe<Cure>;
+  error?: Maybe<Error>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type CureUpdate = {
+  date?: InputMaybe<Scalars['String']['input']>;
+  frequency_times?: InputMaybe<Scalars['Int']['input']>;
+  frequency_unit?: InputMaybe<FrequencyUnit>;
+  frequency_value?: InputMaybe<Scalars['Int']['input']>;
+  notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
 export enum CustodyLevel {
   Owner = 'OWNER',
   PetSitter = 'PET_SITTER',
@@ -290,17 +325,28 @@ export type Mutation = {
   addPetToUser: PetAddedResult;
   checkCode: CodeValidationResult;
   createCode: CodeResult;
+  createCure: CureResult;
   createHealthCard: HealthCardResult;
   createMedia: MediaResult;
   createPet: PetResult;
   createReport: ReportResult;
+  createShelter: ShelterResult;
+  createShelterPet: ShelterPetResult;
+  createShelterPets: ShelterPetsResult;
+  createShelterRole: ShelterRoleResult;
   createTreatment: TreatmentResult;
   createUser: UserResult;
   createWalk: WalkResult;
+  createWalkRating: WalkRatingResult;
+  deleteCure: DeleteResult;
   deleteOwnership: DeleteResult;
   deletePet: DeleteResult;
+  deleteShelter: DeleteResult;
+  deleteShelterPet: DeleteResult;
+  deleteShelterRole: DeleteResult;
   deleteUser: DeleteResult;
   deleteWalk: DeleteResult;
+  deleteWalkRating: DeleteResult;
   linkPetToMe: OwnershipResult;
   linkPetToUser: OwnershipResult;
   login: NewTokenResult;
@@ -310,15 +356,19 @@ export type Mutation = {
   respondToReport: ReportResult;
   restoreMemoriae: RestoredResult;
   signUp: UserResult;
+  updateCure: CureResult;
   updateHealthCard: HealthCardResult;
   updateMe: UserResult;
   updateMedia: MediaResult;
   updateOwnership: OwnershipResult;
   updatePet: PetResult;
   updateReport: ReportResult;
+  updateShelter: ShelterResult;
+  updateShelterRole: ShelterRoleResult;
   updateTreatment: TreatmentResult;
   updateUser: UserResult;
   updateWalk: WalkResult;
+  updateWalkRating: WalkRatingResult;
   verifyUser: NewTokenResult;
 };
 
@@ -350,6 +400,11 @@ export type MutationCreateCodeArgs = {
 };
 
 
+export type MutationCreateCureArgs = {
+  data: CureCreate;
+};
+
+
 export type MutationCreateHealthCardArgs = {
   data: HealthCardCreate;
 };
@@ -370,6 +425,26 @@ export type MutationCreateReportArgs = {
 };
 
 
+export type MutationCreateShelterArgs = {
+  data: ShelterCreate;
+};
+
+
+export type MutationCreateShelterPetArgs = {
+  data: ShelterPetCreate;
+};
+
+
+export type MutationCreateShelterPetsArgs = {
+  data: ShelterPetsCreate;
+};
+
+
+export type MutationCreateShelterRoleArgs = {
+  data: ShelterRoleCreate;
+};
+
+
 export type MutationCreateTreatmentArgs = {
   data: TreatmentCreate;
 };
@@ -385,6 +460,16 @@ export type MutationCreateWalkArgs = {
 };
 
 
+export type MutationCreateWalkRatingArgs = {
+  data: WalkRatingCreate;
+};
+
+
+export type MutationDeleteCureArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationDeleteOwnershipArgs = {
   id: Scalars['ID']['input'];
 };
@@ -395,12 +480,32 @@ export type MutationDeletePetArgs = {
 };
 
 
+export type MutationDeleteShelterArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteShelterPetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteShelterRoleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationDeleteUserArgs = {
   id: Scalars['ID']['input'];
 };
 
 
 export type MutationDeleteWalkArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteWalkRatingArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -445,6 +550,12 @@ export type MutationSignUpArgs = {
 };
 
 
+export type MutationUpdateCureArgs = {
+  data: CureUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationUpdateHealthCardArgs = {
   data: HealthCardUpdate;
   id: Scalars['ID']['input'];
@@ -480,6 +591,18 @@ export type MutationUpdateReportArgs = {
 };
 
 
+export type MutationUpdateShelterArgs = {
+  data: ShelterUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateShelterRoleArgs = {
+  data: ShelterRoleUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationUpdateTreatmentArgs = {
   data: TreatmentUpdate;
   id: Scalars['ID']['input'];
@@ -494,6 +617,12 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateWalkArgs = {
   data: WalkUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateWalkRatingArgs = {
+  data: WalkRatingUpdate;
   id: Scalars['ID']['input'];
 };
 
@@ -551,6 +680,14 @@ export type PaginatedCodes = {
   success?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export type PaginatedCures = {
+  __typename?: 'PaginatedCures';
+  error?: Maybe<Error>;
+  items: Array<Maybe<Cure>>;
+  pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type PaginatedDamnationesMemoriae = {
   __typename?: 'PaginatedDamnationesMemoriae';
   error?: Maybe<Error>;
@@ -599,6 +736,30 @@ export type PaginatedReports = {
   success?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export type PaginatedShelterPets = {
+  __typename?: 'PaginatedShelterPets';
+  error?: Maybe<Error>;
+  items: Array<Maybe<ShelterPet>>;
+  pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type PaginatedShelterRoles = {
+  __typename?: 'PaginatedShelterRoles';
+  error?: Maybe<Error>;
+  items: Array<Maybe<ShelterRole>>;
+  pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type PaginatedShelters = {
+  __typename?: 'PaginatedShelters';
+  error?: Maybe<Error>;
+  items: Array<Maybe<Shelter>>;
+  pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type PaginatedTreatments = {
   __typename?: 'PaginatedTreatments';
   error?: Maybe<Error>;
@@ -611,6 +772,14 @@ export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
   error?: Maybe<Error>;
   items: Array<Maybe<User>>;
+  pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type PaginatedWalkRatings = {
+  __typename?: 'PaginatedWalkRatings';
+  error?: Maybe<Error>;
+  items: Array<Maybe<WalkRating>>;
   pagination: Pagination;
   success?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -727,6 +896,7 @@ export type PetsResult = {
 export type Query = {
   __typename?: 'Query';
   getCode: CodeResult;
+  getCure: Cure;
   getDamnatioMemoriae?: Maybe<DamnatioMemoriaeResult>;
   getDashboard: DashboardResult;
   getGroupedStatistics: StatisticsResult;
@@ -737,11 +907,16 @@ export type Query = {
   getPet: PetResult;
   getRealTimeStatistic: RealTimeStatisticResult;
   getReport?: Maybe<ReportResult>;
+  getShelter: ShelterResult;
+  getShelterPet: ShelterPetResult;
+  getShelterRole: ShelterRoleResult;
   getTreatment?: Maybe<TreatmentResult>;
   getUser: UserResult;
   getUserDashboard: UserDashboardResult;
   getWalk: Walk;
+  getWalkRating: WalkRatingResult;
   listCodes: PaginatedCodes;
+  listCures: PaginatedCures;
   listDamnationesMemoriae?: Maybe<PaginatedDamnationesMemoriae>;
   listHealthCards: PaginatedHealthCards;
   listMedias: PaginatedMedias;
@@ -750,14 +925,23 @@ export type Query = {
   listOwnerships: PaginatedOwnerships;
   listPets: PaginatedPets;
   listReports: PaginatedReports;
+  listShelterPets: PaginatedShelterPets;
+  listShelterRoles: PaginatedShelterRoles;
+  listShelters: PaginatedShelters;
   listTreatments: PaginatedTreatments;
   listUsers: PaginatedUsers;
+  listWalkRatings: PaginatedWalkRatings;
   listWalks: PaginatedWalks;
   me: UserResult;
 };
 
 
 export type QueryGetCodeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetCureArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -806,6 +990,21 @@ export type QueryGetReportArgs = {
 };
 
 
+export type QueryGetShelterArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetShelterPetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetShelterRoleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryGetTreatmentArgs = {
   id: Scalars['ID']['input'];
 };
@@ -821,7 +1020,17 @@ export type QueryGetWalkArgs = {
 };
 
 
+export type QueryGetWalkRatingArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryListCodesArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListCuresArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
 
@@ -866,12 +1075,32 @@ export type QueryListReportsArgs = {
 };
 
 
+export type QueryListShelterPetsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListShelterRolesArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListSheltersArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
 export type QueryListTreatmentsArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
 
 
 export type QueryListUsersArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListWalkRatingsArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
 
@@ -969,9 +1198,143 @@ export type RestoredResult = {
   table?: Maybe<Scalars['String']['output']>;
 };
 
+export enum RoleLevel {
+  Manager = 'MANAGER',
+  Owner = 'OWNER',
+  Staff = 'STAFF',
+  Volunteer = 'VOLUNTEER'
+}
+
 export type SearchFilter = {
   fields?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   value?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Shelter = {
+  __typename?: 'Shelter';
+  city: Scalars['String']['output'];
+  contacts?: Maybe<Array<Maybe<ShelterContact>>>;
+  created_at: Scalars['String']['output'];
+  district?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  pets?: Maybe<PaginatedShelterPets>;
+  postal_code: Scalars['String']['output'];
+  province_code: Scalars['String']['output'];
+  region?: Maybe<Scalars['String']['output']>;
+  roles?: Maybe<PaginatedShelterRoles>;
+  street: Scalars['String']['output'];
+  street_number: Scalars['String']['output'];
+};
+
+
+export type ShelterPetsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type ShelterRolesArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+export type ShelterContact = {
+  __typename?: 'ShelterContact';
+  type?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+export type ShelterContactInput = {
+  type: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+export type ShelterCreate = {
+  city: Scalars['String']['input'];
+  contacts?: InputMaybe<Array<InputMaybe<ShelterContactInput>>>;
+  district?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  postal_code: Scalars['String']['input'];
+  province_code: Scalars['String']['input'];
+  region?: InputMaybe<Scalars['String']['input']>;
+  street: Scalars['String']['input'];
+  street_number: Scalars['String']['input'];
+};
+
+export type ShelterPet = {
+  __typename?: 'ShelterPet';
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  pet: Pet;
+  shelter: Shelter;
+};
+
+export type ShelterPetCreate = {
+  pet_id: Scalars['ID']['input'];
+  shelter_id: Scalars['ID']['input'];
+};
+
+export type ShelterPetResult = {
+  __typename?: 'ShelterPetResult';
+  error?: Maybe<Error>;
+  shelter_pet?: Maybe<ShelterPet>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type ShelterPetsCreate = {
+  pet_ids: Array<Scalars['ID']['input']>;
+  shelter_id: Scalars['ID']['input'];
+};
+
+export type ShelterPetsResult = {
+  __typename?: 'ShelterPetsResult';
+  error?: Maybe<Error>;
+  shelter_pets?: Maybe<Array<Maybe<ShelterPet>>>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type ShelterResult = {
+  __typename?: 'ShelterResult';
+  error?: Maybe<Error>;
+  shelter?: Maybe<Shelter>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type ShelterRole = {
+  __typename?: 'ShelterRole';
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  role: RoleLevel;
+  shelter: Shelter;
+  user: User;
+};
+
+export type ShelterRoleCreate = {
+  role: RoleLevel;
+  shelter_id: Scalars['ID']['input'];
+  user_id: Scalars['ID']['input'];
+};
+
+export type ShelterRoleResult = {
+  __typename?: 'ShelterRoleResult';
+  error?: Maybe<Error>;
+  shelter_role?: Maybe<ShelterRole>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type ShelterRoleUpdate = {
+  role?: InputMaybe<RoleLevel>;
+};
+
+export type ShelterUpdate = {
+  city?: InputMaybe<Scalars['String']['input']>;
+  contacts?: InputMaybe<Array<InputMaybe<ShelterContactInput>>>;
+  district?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  postal_code?: InputMaybe<Scalars['String']['input']>;
+  province_code?: InputMaybe<Scalars['String']['input']>;
+  region?: InputMaybe<Scalars['String']['input']>;
+  street?: InputMaybe<Scalars['String']['input']>;
+  street_number?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Statistic = {
@@ -1019,9 +1382,6 @@ export type Treatment = {
   created_at: Scalars['String']['output'];
   date: Scalars['String']['output'];
   duration?: Maybe<TreatmentDuration>;
-  frequency_times?: Maybe<Scalars['Int']['output']>;
-  frequency_unit?: Maybe<FrequencyUnit>;
-  frequency_value?: Maybe<Scalars['Int']['output']>;
   health_card?: Maybe<HealthCard>;
   id: Scalars['ID']['output'];
   logs?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -1034,9 +1394,6 @@ export type TreatmentCreate = {
   booster_date?: InputMaybe<Scalars['String']['input']>;
   date: Scalars['String']['input'];
   duration?: InputMaybe<TreatmentDuration>;
-  frequency_times?: InputMaybe<Scalars['Int']['input']>;
-  frequency_unit?: InputMaybe<FrequencyUnit>;
-  frequency_value?: InputMaybe<Scalars['Int']['input']>;
   health_card_id: Scalars['ID']['input'];
   logs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   name: Scalars['String']['input'];
@@ -1052,6 +1409,8 @@ export type TreatmentResult = {
 
 export enum TreatmentType {
   Antiparasitic = 'ANTIPARASITIC',
+  Check = 'CHECK',
+  Cure = 'CURE',
   Operation = 'OPERATION',
   Reminder = 'REMINDER',
   Tablet = 'TABLET',
@@ -1064,9 +1423,6 @@ export type TreatmentUpdate = {
   booster_date?: InputMaybe<Scalars['String']['input']>;
   date?: InputMaybe<Scalars['String']['input']>;
   delete_old?: InputMaybe<Scalars['Boolean']['input']>;
-  frequency_times?: InputMaybe<Scalars['Int']['input']>;
-  frequency_unit?: InputMaybe<FrequencyUnit>;
-  frequency_value?: InputMaybe<Scalars['Int']['input']>;
   logs?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   name?: InputMaybe<Scalars['String']['input']>;
   treatmentDuration?: InputMaybe<TreatmentDuration>;
@@ -1158,27 +1514,60 @@ export type UsersResult = {
 
 export type Walk = {
   __typename?: 'Walk';
-  behavior_rating?: Maybe<Scalars['Int']['output']>;
   created_at: Scalars['String']['output'];
   date: Scalars['String']['output'];
   distance_km: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
-  leash_pulling_rating?: Maybe<Scalars['Int']['output']>;
-  notes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  overall_rating?: Maybe<Scalars['Int']['output']>;
+  ratings?: Maybe<PaginatedWalkRatings>;
   treatment: MinTreatment;
 };
 
+
+export type WalkRatingsArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
 export type WalkCreate = {
-  behavior_rating?: InputMaybe<Scalars['Int']['input']>;
   date: Scalars['String']['input'];
   distance_km: Scalars['Float']['input'];
   duration?: InputMaybe<TreatmentDuration>;
   health_card_id: Scalars['ID']['input'];
-  leash_pulling_rating?: InputMaybe<Scalars['Int']['input']>;
   notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  overall_rating?: InputMaybe<Scalars['Int']['input']>;
-  type: TreatmentType;
+};
+
+export type WalkRating = {
+  __typename?: 'WalkRating';
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  rating: Scalars['Int']['output'];
+  type: WalkRatingType;
+  walk: Walk;
+};
+
+export type WalkRatingCreate = {
+  rating: Scalars['Int']['input'];
+  type: WalkRatingType;
+  walk_id: Scalars['ID']['input'];
+};
+
+export type WalkRatingResult = {
+  __typename?: 'WalkRatingResult';
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
+  walk_rating?: Maybe<WalkRating>;
+};
+
+export enum WalkRatingType {
+  Aggression = 'AGGRESSION',
+  Behavior = 'BEHAVIOR',
+  Calm = 'CALM',
+  LeashPulling = 'LEASH_PULLING',
+  Overall = 'OVERALL'
+}
+
+export type WalkRatingUpdate = {
+  rating?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<WalkRatingType>;
 };
 
 export type WalkResult = {
@@ -1189,14 +1578,10 @@ export type WalkResult = {
 };
 
 export type WalkUpdate = {
-  behavior_rating?: InputMaybe<Scalars['Int']['input']>;
   date?: InputMaybe<Scalars['String']['input']>;
   distance_km?: InputMaybe<Scalars['Float']['input']>;
   duration?: InputMaybe<TreatmentDuration>;
-  leash_pulling_rating?: InputMaybe<Scalars['Int']['input']>;
   notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  overall_rating?: InputMaybe<Scalars['Int']['input']>;
-  type?: InputMaybe<TreatmentType>;
 };
 
 export enum TreatmentDuration {
@@ -1407,6 +1792,15 @@ export type GetFullPetQueryVariables = Exact<{
 
 
 export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string } | null> } | null, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', items: Array<{ __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null } | null> } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type MinShelterFragment = { __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, street: string, street_number: string, postal_code: string, province_code: string, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null };
+
+export type ListSheltersQueryVariables = Exact<{
+  commonSearch?: InputMaybe<CommonSearch>;
+}>;
+
+
+export type ListSheltersQuery = { __typename?: 'Query', listShelters: { __typename?: 'PaginatedShelters', success?: boolean | null, items: Array<{ __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, street: string, street_number: string, postal_code: string, province_code: string, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
 
 export const FullReportFragmentDoc = gql`
     fragment FullReport on Report {
@@ -1634,6 +2028,22 @@ export const MinUserFragmentDoc = gql`
   email
   profile_picture {
     id
+  }
+}
+    `;
+export const MinShelterFragmentDoc = gql`
+    fragment MinShelter on Shelter {
+  id
+  name
+  city
+  region
+  street
+  street_number
+  postal_code
+  province_code
+  contacts {
+    type
+    value
   }
 }
     `;
@@ -2739,3 +3149,56 @@ export type GetFullPetQueryHookResult = ReturnType<typeof useGetFullPetQuery>;
 export type GetFullPetLazyQueryHookResult = ReturnType<typeof useGetFullPetLazyQuery>;
 export type GetFullPetSuspenseQueryHookResult = ReturnType<typeof useGetFullPetSuspenseQuery>;
 export type GetFullPetQueryResult = Apollo.QueryResult<GetFullPetQuery, GetFullPetQueryVariables>;
+export const ListSheltersDocument = gql`
+    query listShelters($commonSearch: CommonSearch) {
+  listShelters(commonSearch: $commonSearch) {
+    items {
+      ...MinShelter
+    }
+    success
+    error {
+      code
+      message
+    }
+    pagination {
+      current_page
+      page_size
+      total_items
+      total_pages
+    }
+  }
+}
+    ${MinShelterFragmentDoc}`;
+
+/**
+ * __useListSheltersQuery__
+ *
+ * To run a query within a React component, call `useListSheltersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListSheltersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListSheltersQuery({
+ *   variables: {
+ *      commonSearch: // value for 'commonSearch'
+ *   },
+ * });
+ */
+export function useListSheltersQuery(baseOptions?: Apollo.QueryHookOptions<ListSheltersQuery, ListSheltersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListSheltersQuery, ListSheltersQueryVariables>(ListSheltersDocument, options);
+      }
+export function useListSheltersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListSheltersQuery, ListSheltersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListSheltersQuery, ListSheltersQueryVariables>(ListSheltersDocument, options);
+        }
+export function useListSheltersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListSheltersQuery, ListSheltersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListSheltersQuery, ListSheltersQueryVariables>(ListSheltersDocument, options);
+        }
+export type ListSheltersQueryHookResult = ReturnType<typeof useListSheltersQuery>;
+export type ListSheltersLazyQueryHookResult = ReturnType<typeof useListSheltersLazyQuery>;
+export type ListSheltersSuspenseQueryHookResult = ReturnType<typeof useListSheltersSuspenseQuery>;
+export type ListSheltersQueryResult = Apollo.QueryResult<ListSheltersQuery, ListSheltersQueryVariables>;

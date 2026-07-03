@@ -13,6 +13,7 @@ export const BottomMenu= () => {
 		{ to: "/pets", icon: "paw" },
 		{ to: "/board", icon: "warning" },
 		{ to: "/events", icon: "calendar" },
+		{ to: "/shelters", icon: "business" },
 	];
 	return (
 		<Container fade={fade}>

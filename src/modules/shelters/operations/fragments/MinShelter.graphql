@@ -1,0 +1,14 @@
+fragment MinShelter on Shelter {
+	id
+	name
+	city
+	region
+	street
+	street_number
+	postal_code
+	province_code
+	contacts {
+		type
+		value
+	}
+}
