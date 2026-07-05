@@ -13,10 +13,11 @@ import { MinPetFragment } from "@graphql_generated/minPet.generated";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
 
 import { ShareBox } from "../components";
-import { Image2x, SubOwnerList, SubOwnerListItem } from "@components";
+import { Image2x, SubOwnerList, SubOwnerListItem, Icon } from "@components";
 import { useUserContext } from "@contexts";
-import { CustodyLevel } from "@types";
-import { $color } from "@theme";
+import { CustodyLevel, Gender } from "@types";
+import { gendersColor } from "@utils";
+import { $color, $uw } from "@theme";
 
 
 export const PetDetails: React.FC = () => {
@@ -91,11 +92,24 @@ export const PetDetails: React.FC = () => {
                             )}
                         </ImageWrapper>
                         <NameBox
+                            $bg={pet?.main_picture?.main_color?.color}
+                            $fg={pet?.main_picture?.main_color?.contrast}
                             className={`${
                                 getPetLoading || checkLoading ? "skeleton" : ""
                             }`}
                         >
-                            {pet && <span>{pet.name}</span>}
+                            {pet && (
+                                <>
+                                    <IconContainer>
+                                        <Icon
+                                            size="100%"
+                                            color={gendersColor[pet.gender ?? Gender.NotSaid].color}
+                                            name={gendersColor[pet.gender ?? Gender.NotSaid].iconName}
+                                        />
+                                    </IconContainer>
+                                    <span className="mainInfo">{pet.name}</span>
+                                </>
+                            )}
                         </NameBox>
                     </MainPetContainer>                   
                     <InfoBox className="info2">
@@ -159,7 +173,7 @@ export const PetDetails: React.FC = () => {
 
 const Container = styled.div`
     width: 100%;
-    padding: 20px 12px 20px;
+    padding: 24px 16px 24px;
     box-sizing: border-box;
     @media (max-height: 700px) {
         padding-bottom: 0;
@@ -168,6 +182,7 @@ const Container = styled.div`
     > .sharing-title {
         text-align: center;
         margin-bottom: 24px;
+        letter-spacing: 0.3px;
     }
     .ownerships-list {
         max-height: unset;
@@ -178,6 +193,11 @@ const PetInfoBox = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, 80px);
+    padding: ${$uw(2)} ${$uw(1)};
+    border-radius: 16px;
+    background: ${$color('background')};
+    border: 1px solid rgba(var(--ion-color-primary-rgb), 0.22);
+    margin-bottom: ${$uw(2)};
 `;
 
 const MainPetContainer = styled.div`
@@ -195,52 +215,92 @@ const ImageWrapper = styled.div`
     width: 100%;
     max-width: 180px;
     aspect-ratio: 1/1;
-    border: 2px solid ${$color('primary')};
+    padding: 4px;
+    box-sizing: border-box;
+    background: linear-gradient(
+        135deg,
+        ${$color('primary')},
+        ${$color('secondary')}
+    );
     border-radius: 260px;
     margin-bottom: 20px;
-    overflow-y: hidden;
     > .img2x {
         width: 100%;
         height: 100%;
+        border-radius: 260px;
+        overflow: hidden;
+        display: block;
     }
     &.skeleton {
-        border: 0;
+        background: none;
+        padding: 0;
+        box-shadow: none;
     }
 `;
 
-const NameBox = styled.div`
-    min-width: 80px;
-    height: 30px;
-    padding: 5px 24px;
-    border-radius: 30px;
-    box-sizing: border-box;
-    background-color: ${$color('primary')};
+const NameBox = styled.div<{ $bg?: string; $fg?: string }>`
     display: flex;
     align-items: center;
-    justify-content: center;
-    > span {
-        text-transform: uppercase;
-        font-weight: 600;
+    position: relative;
+    width: fit-content;
+    font-size: 2rem;
+    padding: 0 ${$uw(2)} 0 ${$uw(0.6)};
+    height: ${$uw(2.5)};
+    font-weight: 600;
+    border-radius: 99px;
+    box-sizing: border-box;
+    background-color: ${({ $bg }) => $color($bg || 'primary')};
+    color: ${({ $fg }) => $color($fg || 'dark')};
+    > span.mainInfo {
+        height: auto;
+        margin-bottom: 0;
+        font-size: 1.8rem;
+        font-weight: 800;
     }
+    &.skeleton {
+        background-color: unset;
+    }
+`;
+
+const IconContainer = styled.div`
+    width: ${$uw(1.5)};
+    height: ${$uw(1.5)};
+    flex: 0 0 ${$uw(1.5)};
+    display: block;
+    border-radius: 100px;
+    background-color: ${$color('white')};
+    margin-right: ${$uw(0.5)};
+    padding: ${$uw(0.2)};
+    box-sizing: border-box;
 `;
 
 const FillBox = styled.span`
     width: 100%;
     height: 100%;
-    background-color: ${$color('primary')};
+    border-radius: 260px;
+    display: block;
+    background: linear-gradient(
+        135deg,
+        ${$color('primary')},
+        ${$color('secondary')}
+    );
 `;
 const InfoBox = styled.div`
     grid-column: 2;
-    padding: 10px 12px 0;
+    padding: 10px 14px 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-self: center;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 8px;
     > span {
         text-align: center;
-        color: ${$color('dark')};
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: ${$color('primary')};
+        font-weight: 600;
     }
     &.info1 {
         align-self: flex-start;
@@ -257,13 +317,19 @@ const InfoBox = styled.div`
 
 const InfoChip = styled.span`
     width: 100%;
-    padding: 5px;
-    height: 30px;
+    padding: 8px;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 30px;
-    background-color: ${$color('primary')};
-    color: ${$color('light')} !important;
+    font-weight: 700;
+    text-transform: capitalize;
+    background: rgba(var(--ion-color-primary-rgb), 0.12);
+    border: 1px solid rgba(var(--ion-color-primary-rgb), 0.35);
+    color: ${$color('primary')} !important;
     .dark & {
-        color: ${$color('dark')} !important;
+        color: ${$color('primary-tint')} !important;
     }
 `;
 

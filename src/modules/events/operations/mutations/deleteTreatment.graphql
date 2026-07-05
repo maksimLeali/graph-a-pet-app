@@ -1,0 +1,10 @@
+mutation deleteTreatment($id: ID!) {
+    deleteTreatment(id: $id) {
+        error {
+            code
+            message
+        }
+        success
+        id
+    }
+}

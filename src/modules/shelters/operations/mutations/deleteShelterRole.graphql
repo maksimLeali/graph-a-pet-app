@@ -1,0 +1,10 @@
+mutation deleteShelterRole($id: ID!) {
+	deleteShelterRole(id: $id) {
+		success
+		id
+		error {
+			code
+			message
+		}
+	}
+}

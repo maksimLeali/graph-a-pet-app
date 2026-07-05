@@ -1,0 +1,40 @@
+fragment FullShelter on Shelter {
+	id
+	name
+	city
+	region
+	district
+	street
+	street_number
+	postal_code
+	province_code
+	contacts {
+		type
+		value
+	}
+	roles {
+		items {
+			id
+			role
+			user {
+				...minUser
+			}
+		}
+	}
+	pets {
+		items {
+			id
+			pet {
+				id
+				name
+				main_picture {
+					id
+					main_color {
+						color
+						contrast
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,19 @@
+query getWalkByTreatment($commonSearch: CommonSearch) {
+    listWalks(commonSearch: $commonSearch) {
+        error {
+            code
+            message
+        }
+        items {
+            id
+            distance_km
+            ratings {
+                items {
+                    id
+                    type
+                    rating
+                }
+            }
+        }
+    }
+}

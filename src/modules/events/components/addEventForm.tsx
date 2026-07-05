@@ -18,7 +18,7 @@ import {
 	TextInput,
 	SpecialIconName,
 } from "@components";
-import { FrequencyUnit, TreatmentType } from "@types";
+import { FrequencyUnit, TreatmentType, WalkRatingType } from "@types";
 import { EventOption } from "./EventOption";
 import { $cssTRBL, $uw } from "@theme";
 
@@ -97,6 +97,14 @@ export const AddEventFormStep1 = () => {
 	);
 };
 
+const walkRatingLabels: Record<WalkRatingType, string> = {
+	[WalkRatingType.Overall]: "Generale",
+	[WalkRatingType.Behavior]: "Comportamento",
+	[WalkRatingType.Calm]: "Calma",
+	[WalkRatingType.Aggression]: "Aggressività",
+	[WalkRatingType.LeashPulling]: "Tiro al guinzaglio",
+};
+
 export const AddEventFormStep2 = () => {
 	const { t } = useTranslation();
 	const { watch } = useFormContext();
@@ -129,10 +137,14 @@ export const AddEventFormStep2 = () => {
 						ntTextLabel="Distanza (km)"
 						bgColor="light"
 					/>
-					<StarRating
-						name="walk.rating"
-						ntTextLabel="Qualità della passeggiata"
-					/>
+					{Object.values(WalkRatingType).map((rt) => (
+						<StarRating
+							key={rt}
+							name={`walk.ratings.${rt}`}
+							ntTextLabel={walkRatingLabels[rt]}
+							size={$uw(2)}
+						/>
+					))}
 				</>
 			)}
 

@@ -1,0 +1,12 @@
+query getShelter($id: ID!) {
+	getShelter(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter {
+			...FullShelter
+		}
+	}
+}

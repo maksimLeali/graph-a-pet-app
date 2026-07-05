@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { IonContent } from "@ionic/react";
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
@@ -12,6 +12,8 @@ import {
 	GetFullPetQuery,
 } from "../operations/__generated__/getFullPet.generated";
 import { useUpdatePetMutation } from "../operations/__generated__/updatePet.generated";
+import { useDeletePetMutation } from "../operations/__generated__/deletePet.generated";
+import { useListPetWalkRatingsLazyQuery } from "../operations/__generated__/listPetWalkRatings.generated";
 import { MinPetFragment } from "@graphql_generated/minPet.generated";
 
 type FullPet = NonNullable<GetFullPetQuery["getPet"]["pet"]>;
@@ -33,7 +35,8 @@ import {
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { BreedSeletor } from "../components";
 import { PetImageEditor } from "../components/PetImageEditor";
-import { Gender, CoatLength, PetUpdate } from "@types";
+import { Gender, CoatLength, PetUpdate, WalkRatingType } from "@types";
+import { gendersColor } from "@utils";
 import { I18NKey } from "@i18n";
 import { $color, $uw } from "@theme";
 
@@ -93,11 +96,87 @@ type detailProps = {
 
 type EditableField = "name" | "gender" | "birthday" | "weight_kg" | "coat_length";
 
+const walkRatingLabels: Record<WalkRatingType, string> = {
+	[WalkRatingType.Overall]: "Generale",
+	[WalkRatingType.Behavior]: "Comportamento",
+	[WalkRatingType.Calm]: "Calma",
+	[WalkRatingType.Aggression]: "Aggressività",
+	[WalkRatingType.LeashPulling]: "Tiro al guinzaglio",
+};
+
+type WalkRatingAvg = { type: WalkRatingType; rating: number };
+
 const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 	const { t } = useTranslation();
 	const { t: breedT } = useTranslation("breeds");
 	const { openModal, closeModal } = useModal();
+	const history = useHistory();
 	const [imgOpen, setImgOpen] = useState(false);
+	const [walkRatings, setWalkRatings] = useState<WalkRatingAvg[]>([]);
+
+	const [fetchWalkRatings] = useListPetWalkRatingsLazyQuery({
+		fetchPolicy: "no-cache",
+		onCompleted: ({ listWalkRatings }) => {
+			const items = (listWalkRatings?.items ?? []).filter(
+				(r): r is NonNullable<typeof r> => !!r
+			);
+			// average rating per type across all the pet's walks
+			const acc = new Map<WalkRatingType, { sum: number; count: number }>();
+			for (const r of items) {
+				const cur = acc.get(r.type) ?? { sum: 0, count: 0 };
+				acc.set(r.type, { sum: cur.sum + r.rating, count: cur.count + 1 });
+			}
+			setWalkRatings(
+				Object.values(WalkRatingType)
+					.filter((type) => acc.has(type))
+					.map((type) => {
+						const { sum, count } = acc.get(type)!;
+						return {
+							type,
+							rating: Math.round((sum / count) * 10) / 10,
+						};
+					})
+			);
+		},
+	});
+
+	useEffect(() => {
+		fetchWalkRatings({
+			variables: {
+				commonSearch: {
+					filters: {
+						join: [
+							{
+								key: "walks",
+								value: {
+									join: [
+										{
+											key: "treatments",
+											value: {
+												join: [
+													{
+														key: "health_cards",
+														value: {
+															lists: [
+																{
+																	key: "pet_id",
+																	value: [pet.id],
+																},
+															],
+														},
+													},
+												],
+											},
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+			},
+		});
+	}, [pet.id]);
 	const [galleryPics, setGalleryPics] = useState<
 		{ url: string; type: string }[]
 	>([]);
@@ -159,6 +238,35 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 
 	const saveField = (data: PetUpdate) =>
 		updatePet({ variables: { id: pet.id, data } });
+
+	const [deletePet] = useDeletePetMutation({
+		onError: () => toast.error(t("messages.errors.fetch")),
+	});
+
+	const confirmDelete = () =>
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: async () => {
+				const res = await deletePet({ variables: { id: pet.id } });
+				const del = res.data?.deletePet;
+				if (!del?.success || del.error) {
+					toast.error(t("messages.errors.fetch"));
+					return;
+				}
+				toast.success(t("messages.success.pet_deleted"));
+				closeModal();
+				history.replace("/pets");
+			},
+			children: (
+				<ConfirmBox>
+					<ConfirmTitle>{t("pets.delete_title")}</ConfirmTitle>
+					<ConfirmText>
+						{t("pets.delete_confirm", { name: pet.name })}
+					</ConfirmText>
+				</ConfirmBox>
+			),
+		});
 
 	const genderOptions: Option[] = Object.values(Gender).map((k) => ({
 		value: k,
@@ -275,6 +383,8 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 				<NameRow
 					role="button"
 					tabIndex={0}
+					$bg={pet.main_picture?.main_color?.color}
+					$fg={pet.main_picture?.main_color?.contrast}
 					onClick={() =>
 						openFieldEdit(
 							"name",
@@ -288,8 +398,14 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 						)
 					}
 				>
-					<h2>{pet.name}</h2>
-					<Chevron name="chevronForward" color="medium" />
+					<IconContainer>
+						<Icon
+							size="100%"
+							color={gendersColor[pet.gender ?? Gender.NotSaid].color}
+							name={gendersColor[pet.gender ?? Gender.NotSaid].iconName}
+						/>
+					</IconContainer>
+					<span className="mainInfo">{pet.name}</span>
 				</NameRow>
 			</Header>
 
@@ -404,6 +520,23 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 				</EventsSection>
 			)}
 
+			{walkRatings.length > 0 && (
+				<RatingsSection>
+					<SectionTitle>{t("events.walk")}</SectionTitle>
+					<RatingsGrid>
+						{walkRatings.map((r) => (
+							<RatingItem key={r.type}>
+								<RatingName>{walkRatingLabels[r.type]}</RatingName>
+								<RatingValue>
+									<Icon name="star" color="primary" />
+									<span>{r.rating}</span>
+								</RatingValue>
+							</RatingItem>
+						))}
+					</RatingsGrid>
+				</RatingsSection>
+			)}
+
 			<GallerySection>
 				<SectionTitle>{t("pets.gallery")}</SectionTitle>
 				<Gallery>
@@ -445,6 +578,13 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 				scope="pet_picture"
 				onSaved={reload}
 			/>
+
+			<DangerZone>
+				<DeleteButton type="button" onClick={confirmDelete}>
+					<Icon name="trashOutline" color="danger" />
+					<span>{t("actions.delete")}</span>
+				</DeleteButton>
+			</DangerZone>
 		</>
 	);
 };
@@ -585,12 +725,22 @@ const Gallery = styled.div`
 const GalleryItem = styled.div`
 	width: calc(50% - ${$uw(0.5)});
 	aspect-ratio: 1;
-	border-radius: 8px;
+	border-radius: 12px;
 	overflow: hidden;
 	cursor: pointer;
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
 	> .img2x {
 		width: 100%;
 		height: 100%;
+		transition: transform 0.25s ease;
+	}
+	&:active > .img2x {
+		transform: scale(1.05);
+	}
+	@media (hover: hover) {
+		&:hover > .img2x {
+			transform: scale(1.05);
+		}
 	}
 `;
 
@@ -695,16 +845,29 @@ const PetImage = styled.div<{ $borderColor?: string }>`
 	width: 100%;
 	max-width: 180px;
 	aspect-ratio: 1/1;
-	border: 2px solid ${({ $borderColor }) => $color($borderColor || 'primary')};
+	padding: 4px;
+	box-sizing: border-box;
+	background: ${({ $borderColor }) =>
+		$borderColor
+			? $color($borderColor)
+			: `linear-gradient(135deg, ${$color('primary')}, ${$color('secondary')})`};
 	border-radius: 260px;
 	overflow: hidden;
 	cursor: pointer;
+	transition: transform 0.2s ease;
 	> .img2x {
 		width: 100%;
 		height: 100%;
+		border-radius: 260px;
+		overflow: hidden;
+		display: block;
+	}
+	&:active {
+		transform: scale(0.97);
 	}
 	&.skeleton {
-		border: 0;
+		background: none;
+		padding: 0;
 	}
 `;
 
@@ -712,31 +875,45 @@ const Fill = styled.span`
 	width: 100%;
 	height: 100%;
 	display: block;
-	background-color: ${$color('primary')};
+	border-radius: 260px;
+	background: linear-gradient(135deg, ${$color('primary')}, ${$color('secondary')});
 `;
 
-const NameRow = styled.div`
+const NameRow = styled.div<{ $bg?: string; $fg?: string }>`
 	display: flex;
 	align-items: center;
-	gap: ${$uw(1)};
-	padding: ${$uw(0.5)} ${$uw(1)};
-	border-radius: 12px;
-	background: ${$color('background')};
-	border: 1px solid rgba(255, 255, 255, 0.12);
+	position: relative;
+	width: fit-content;
+	font-size: 2rem;
+	padding: 0 ${$uw(2)} 0 ${$uw(0.6)};
+	height: ${$uw(2.5)};
+	font-weight: 600;
+	border-radius: 99px;
+	background-color: ${({ $bg }) => $color($bg || 'primary')};
+	color: ${({ $fg }) => $color($fg || 'dark')};
 	cursor: pointer;
-	transition: background 0.15s ease, border-color 0.15s ease;
-	> h2 {
-		margin: 0;
-		text-transform: uppercase;
+	transition: transform 0.15s ease;
+	> span.mainInfo {
+		height: auto;
+		margin-bottom: 0;
+		font-size: 1.8rem;
+		font-weight: 800;
 	}
 	&:active {
-		border-color: ${$color('primary')};
+		transform: scale(0.98);
 	}
-	@media (hover: hover) {
-		&:hover {
-			border-color: ${$color('primary')};
-		}
-	}
+`;
+
+const IconContainer = styled.div`
+	width: ${$uw(1.5)};
+	height: ${$uw(1.5)};
+	flex: 0 0 ${$uw(1.5)};
+	display: block;
+	border-radius: 100px;
+	background-color: ${$color('white')};
+	margin-right: ${$uw(0.5)};
+	padding: ${$uw(0.2)};
+	box-sizing: border-box;
 `;
 
 const Fields = styled.div`
@@ -755,12 +932,12 @@ const Card = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: ${$uw(0.5)};
-	padding: ${$uw(0.75)};
-	border-radius: 12px;
+	padding: ${$uw(1.25)};
+	border-radius: 14px;
 	background: ${$color('background')};
-	border: 1px solid rgba(255, 255, 255, 0.12);
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
 	cursor: pointer;
-	transition: background 0.15s ease, border-color 0.15s ease;
+	transition: border-color 0.15s ease;
 	&:active {
 		border-color: ${$color('primary')};
 	}
@@ -779,7 +956,18 @@ const CardLabel = styled.span`
 	font-size: 1.3rem;
 	color: ${$color('primary')};
 	text-transform: uppercase;
-	letter-spacing: 0.4px;
+	letter-spacing: 0.6px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	&::before {
+		content: "";
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: ${$color('primary')};
+	}
 `;
 
 const CardValueRow = styled.div`
@@ -819,6 +1007,102 @@ const ModalField = styled.div`
 	box-sizing: border-box;
 `;
 
+const DangerZone = styled.div`
+	width: 100%;
+	padding: ${$uw(2)} 12px ${$uw(6)};
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+`;
+
+const DeleteButton = styled.button`
+	display: flex;
+	align-items: center;
+	gap: ${$uw(1)};
+	padding: ${$uw(1.25)} ${$uw(3)};
+	border-radius: 999px;
+	background: rgba(var(--ion-color-danger-rgb), 0.1);
+	border: 1px solid rgba(var(--ion-color-danger-rgb), 0.4);
+	color: ${$color("danger")};
+	font-size: 1.6rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background 0.15s ease, transform 0.15s ease;
+	> .icon {
+		width: ${$uw(2)};
+		height: ${$uw(2)};
+	}
+	&:active {
+		transform: scale(0.97);
+		background: rgba(var(--ion-color-danger-rgb), 0.18);
+	}
+`;
+
+const ConfirmBox = styled.div`
+	width: 100%;
+	padding: ${$uw(2)} ${$uw(2)} ${$uw(1)};
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: ${$uw(1)};
+`;
+
+const ConfirmTitle = styled.h2`
+	margin: 0;
+	font-size: 2rem;
+	color: ${$color("danger")};
+`;
+
+const ConfirmText = styled.p`
+	margin: 0;
+	font-size: 1.6rem;
+	line-height: 1.4;
+`;
+
+const RatingsSection = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0 12px ${$uw(4)};
+`;
+
+const RatingsGrid = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: ${$uw(1)} ${$uw(2)};
+	padding: ${$uw(1.25)};
+	border-radius: 14px;
+	background: ${$color("background")};
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
+`;
+
+const RatingItem = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${$uw(1)};
+	padding: ${$uw(0.5)} 0;
+	border-bottom: 1px solid rgba(var(--ion-color-primary-rgb), 0.12);
+`;
+
+const RatingName = styled.span`
+	font-size: 1.5rem;
+	color: ${$color("medium")};
+	word-break: break-word;
+`;
+
+const RatingValue = styled.span`
+	display: flex;
+	align-items: center;
+	gap: ${$uw(0.5)};
+	font-size: 1.8rem;
+	font-weight: 700;
+	white-space: nowrap;
+	> .icon {
+		width: ${$uw(1.75)};
+		height: ${$uw(1.75)};
+	}
+`;
+
 const EventsSection = styled.div`
 	width: 100%;
 	box-sizing: border-box;
@@ -827,9 +1111,24 @@ const EventsSection = styled.div`
 `;
 
 const SectionTitle = styled.h3`
-	margin: 0;
+	margin: 0 0 ${$uw(1.5)};
 	padding: 0 12px;
 	font-size: 1.5rem;
 	color: ${$color('primary')};
 	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	display: flex;
+	align-items: center;
+	gap: ${$uw(1)};
+	&::after {
+		content: "";
+		flex: 1;
+		height: 2px;
+		border-radius: 2px;
+		background: linear-gradient(
+			90deg,
+			rgba(var(--ion-color-primary-rgb), 0.5),
+			transparent
+		);
+	}
 `;

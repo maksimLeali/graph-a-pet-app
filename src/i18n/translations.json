@@ -5,7 +5,8 @@
       "cancel": "Abbrechen",
       "close": "Schließen",
       "confirm": "Bestätigen",
-      "refuse": "Ablehnen"
+      "refuse": "Ablehnen",
+      "delete": "Löschen"
     },
     "auth": {
       "already_registered": "Bereits registriert?",
@@ -54,6 +55,8 @@
       "pet": "Für wen?",
       "walk": "Spaziergang",
       "reminder": "Erinnerung",
+      "cure": "Behandlung",
+      "check": "Kontrolle",
       "tablet": "Tablette",
       "time": "Zeit",
       "time_from": "Startzeit",
@@ -68,7 +71,12 @@
       },
       "previous": "Vorheriges",
       "next": "Nächstes",
-      "recurrences": "Wiederholungen"
+      "recurrences": "Wiederholungen",
+      "delete_title": "Ereignis löschen?",
+      "delete_confirm": "Du bist dabei, \"{{name}}\" zu löschen. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "delete_related_hint": "Dieses Ereignis hat verknüpfte Wiederholungen. Nur dieses oder alle löschen?",
+      "delete_this": "Nur dieses löschen",
+      "delete_all": "Alle löschen"
     },
     "home": {
       "co_owners": "Pflegefamilie",
@@ -95,7 +103,10 @@
         "logout": "Abmeldung erfolgreich",
         "pet_linked_succesfully": "Haustier erfolgreich hinzugefügt",
         "pet_updated": "Haustierdaten erfolgreich aktualisiert",
-        "signup": "Registrierung abgeschlossen, überprüfen Sie Ihre E-Mail"
+        "signup": "Registrierung abgeschlossen, überprüfen Sie Ihre E-Mail",
+        "event_deleted": "Ereignis erfolgreich gelöscht",
+        "pet_deleted": "Haustier erfolgreich gelöscht",
+        "member_removed": "Mitglied entfernt"
       }
     },
     "pages": {
@@ -183,7 +194,9 @@
       "sub_owner_short": "Zus. Besitzer",
       "subowner": "Zusätzlicher Besitzer",
       "weight": "Gewicht",
-      "weight_kg": "<b>{{weight_kg}}</b> kg"
+      "weight_kg": "<b>{{weight_kg}}</b> kg",
+      "delete_title": "Haustier löschen?",
+      "delete_confirm": "Du löschst \"{{name}}\" und alle zugehörigen Daten. Diese Aktion kann nicht rückgängig gemacht werden."
     },
     "settings": {
       "general": {
@@ -221,7 +234,23 @@
       }
     },
     "shelters": {
-      "empty": "Keine Tierheime gefunden"
+      "empty": "Keine Tierheime gefunden",
+      "people": "Personen",
+      "members": "Mitglieder",
+      "pets": "Tiere",
+      "no_people": "Keine Personen",
+      "no_pets": "Keine Tiere",
+      "address": "Adresse",
+      "contacts": "Kontakte",
+      "remove_member": "Entfernen",
+      "remove_member_title": "Mitglied entfernen?",
+      "remove_member_confirm": "Du entfernst \"{{name}}\" aus diesem Tierheim. Die Person wird nicht gelöscht.",
+      "roles": {
+        "owner": "Inhaber",
+        "manager": "Manager",
+        "staff": "Personal",
+        "volunteer": "Freiwilliger"
+      }
     }
   },
   "en": {
@@ -231,7 +260,8 @@
       "close": "Close",
       "confirm": "Confirm",
       "refuse": "Refuse",
-      "save": "Save"
+      "save": "Save",
+      "delete": "Delete"
     },
     "auth": {
       "already_registered": "Already a user?",
@@ -280,6 +310,8 @@
       "operation": "Operation",
       "pet": "For whom?",
       "reminder": "Reminder",
+      "cure": "Treatment",
+      "check": "Check",
       "tablet": "Tablet",
       "time": "Time",
       "walk": "Walk",
@@ -295,7 +327,12 @@
       },
       "previous": "Previous",
       "next": "Next",
-      "recurrences": "Recurrences"
+      "recurrences": "Recurrences",
+      "delete_title": "Delete event?",
+      "delete_confirm": "You are about to delete \"{{name}}\". This action cannot be undone.",
+      "delete_related_hint": "This event has linked occurrences. Delete only this one or all of them?",
+      "delete_this": "Delete only this",
+      "delete_all": "Delete all"
     },
     "home": {
       "co_owners": "Foster",
@@ -324,7 +361,10 @@
         "event_updated": "Event updated successfully",
         "pet_linked_succesfully": "Pet successfully added",
         "pet_updated": "Pet data successfully updated",
-        "signup": "Registration completed, check your email"
+        "signup": "Registration completed, check your email",
+        "event_deleted": "Event deleted successfully",
+        "pet_deleted": "Pet deleted successfully",
+        "member_removed": "Member removed"
       }
     },
     "pages": {
@@ -420,7 +460,9 @@
       "sub_owner_short": "Sub-owner",
       "subowner": "Sub-owner",
       "weight": "Weight",
-      "weight_kg": "<b>{{weight_kg}}</b> Kg"
+      "weight_kg": "<b>{{weight_kg}}</b> Kg",
+      "delete_title": "Delete pet?",
+      "delete_confirm": "You are about to delete \"{{name}}\" and all related data. This action cannot be undone."
     },
     "settings": {
       "general": {
@@ -458,7 +500,23 @@
       }
     },
     "shelters": {
-      "empty": "No shelters found"
+      "empty": "No shelters found",
+      "people": "People",
+      "members": "Members",
+      "pets": "Pets",
+      "no_people": "No people yet",
+      "no_pets": "No pets yet",
+      "address": "Address",
+      "contacts": "Contacts",
+      "remove_member": "Remove",
+      "remove_member_title": "Remove member?",
+      "remove_member_confirm": "You are about to remove \"{{name}}\" from this shelter. The person will not be deleted.",
+      "roles": {
+        "owner": "Owner",
+        "manager": "Manager",
+        "staff": "Staff",
+        "volunteer": "Volunteer"
+      }
     }
   },
   "es": {
@@ -467,7 +525,8 @@
       "cancel": "Cancelar",
       "close": "Cerrar",
       "confirm": "Confirmar",
-      "refuse": "Rechazar"
+      "refuse": "Rechazar",
+      "delete": "Eliminar"
     },
     "auth": {
       "already_registered": "¿Ya estás registrado?",
@@ -515,6 +574,8 @@
       "operation": "Operación",
       "pet": "¿Para quién?",
       "reminder": "Recordatorio",
+      "cure": "Tratamiento",
+      "check": "Control",
       "tablet": "Tableta",
       "walk": "Paseo",
       "time": "Hora",
@@ -530,7 +591,12 @@
       },
       "previous": "Anterior",
       "next": "Siguiente",
-      "recurrences": "Recurrencias"
+      "recurrences": "Recurrencias",
+      "delete_title": "¿Eliminar el evento?",
+      "delete_confirm": "Estás a punto de eliminar \"{{name}}\". Esta acción no se puede deshacer.",
+      "delete_related_hint": "Este evento tiene repeticiones vinculadas. ¿Eliminar solo este o todos?",
+      "delete_this": "Eliminar solo este",
+      "delete_all": "Eliminar todos"
     },
     "home": {
       "co_owners": "Familia temporal",
@@ -557,7 +623,10 @@
         "logout": "Cierre de sesión exitoso",
         "pet_linked_succesfully": "Mascota agregada con éxito",
         "pet_updated": "Datos de la mascota actualizados con éxito",
-        "signup": "Registro completado, revisa tu correo electrónico"
+        "signup": "Registro completado, revisa tu correo electrónico",
+        "event_deleted": "Evento eliminado correctamente",
+        "pet_deleted": "Mascota eliminada correctamente",
+        "member_removed": "Miembro eliminado"
       }
     },
     "pages": {
@@ -645,7 +714,9 @@
       "sub_owner_short": "Sub-propietario",
       "subowner": "Sub-propietario",
       "weight": "Peso",
-      "weight_kg": "<b>{{weight_kg}}</b> kg"
+      "weight_kg": "<b>{{weight_kg}}</b> kg",
+      "delete_title": "¿Eliminar la mascota?",
+      "delete_confirm": "Estás a punto de eliminar \"{{name}}\" y todos sus datos. Esta acción no se puede deshacer."
     },
     "settings": {
       "general": {
@@ -683,7 +754,23 @@
       }
     },
     "shelters": {
-      "empty": "No se encontraron refugios"
+      "empty": "No se encontraron refugios",
+      "people": "Personas",
+      "members": "Miembros",
+      "pets": "Mascotas",
+      "no_people": "Sin personas",
+      "no_pets": "Sin mascotas",
+      "address": "Dirección",
+      "contacts": "Contactos",
+      "remove_member": "Quitar",
+      "remove_member_title": "¿Quitar miembro?",
+      "remove_member_confirm": "Vas a quitar a \"{{name}}\" de este refugio. La persona no se eliminará.",
+      "roles": {
+        "owner": "Propietario",
+        "manager": "Responsable",
+        "staff": "Personal",
+        "volunteer": "Voluntario"
+      }
     }
   },
   "fr": {
@@ -692,7 +779,8 @@
       "cancel": "Annuler",
       "close": "Fermer",
       "confirm": "Confirmer",
-      "refuse": "Refuser"
+      "refuse": "Refuser",
+      "delete": "Supprimer"
     },
     "auth": {
       "already_registered": "Déjà utilisateur?",
@@ -741,6 +829,8 @@
       "walk": "Promenade",
       "pet": "Pour qui?",
       "reminder": "Rappel",
+      "cure": "Soin",
+      "check": "Contrôle",
       "tablet": "Comprimé",
       "time": "Heure",
       "time_from": "Heure de début",
@@ -755,7 +845,12 @@
       },
       "previous": "Précédent",
       "next": "Suivant",
-      "recurrences": "Récurrences"
+      "recurrences": "Récurrences",
+      "delete_title": "Supprimer l'événement ?",
+      "delete_confirm": "Vous êtes sur le point de supprimer « {{name}} ». Cette action est irréversible.",
+      "delete_related_hint": "Cet événement a des occurrences liées. Supprimer uniquement celui-ci ou tous ?",
+      "delete_this": "Supprimer celui-ci",
+      "delete_all": "Tout supprimer"
     },
     "home": {
       "co_owners": "Famille d'accueil",
@@ -782,7 +877,10 @@
         "logout": "Déconnexion réussie",
         "pet_linked_succesfully": "Animal ajouté avec succès",
         "pet_updated": "Données de l'animal mises à jour avec succès",
-        "signup": "Inscription terminée, vérifiez votre email"
+        "signup": "Inscription terminée, vérifiez votre email",
+        "event_deleted": "Événement supprimé avec succès",
+        "pet_deleted": "Animal supprimé avec succès",
+        "member_removed": "Membre retiré"
       }
     },
     "pages": {
@@ -870,7 +968,9 @@
       "sub_owner_short": "Sous-propriétaire",
       "subowner": "Sous-propriétaire",
       "weight": "Poids",
-      "weight_kg": "<b>{{weight_kg}}</b> Kg"
+      "weight_kg": "<b>{{weight_kg}}</b> Kg",
+      "delete_title": "Supprimer l'animal ?",
+      "delete_confirm": "Vous allez supprimer « {{name}} » et toutes les données associées. Cette action est irréversible."
     },
     "settings": {
       "general": {
@@ -908,7 +1008,23 @@
       }
     },
     "shelters": {
-      "empty": "Aucun refuge trouvé"
+      "empty": "Aucun refuge trouvé",
+      "people": "Personnes",
+      "members": "Membres",
+      "pets": "Animaux",
+      "no_people": "Aucune personne",
+      "no_pets": "Aucun animal",
+      "address": "Adresse",
+      "contacts": "Contacts",
+      "remove_member": "Retirer",
+      "remove_member_title": "Retirer le membre ?",
+      "remove_member_confirm": "Vous allez retirer « {{name}} » de ce refuge. La personne ne sera pas supprimée.",
+      "roles": {
+        "owner": "Propriétaire",
+        "manager": "Responsable",
+        "staff": "Personnel",
+        "volunteer": "Bénévole"
+      }
     }
   },
   "it": {
@@ -918,7 +1034,8 @@
       "close": "Chiudi",
       "confirm": "Conferma",
       "refuse": "Rifiuta",
-      "save": "Salva"
+      "save": "Salva",
+      "delete": "Elimina"
     },
     "auth": {
       "already_registered": "Sei già un utente ?",
@@ -968,6 +1085,8 @@
       "pet": "Per chi?",
       "walk": "Passeggiata",
       "reminder": "Promemoria",
+      "cure": "Cura",
+      "check": "Controllo",
       "tablet": "Pastiglia",
       "time": "Ora",
       "time_from": "Ora inizio",
@@ -982,7 +1101,12 @@
       },
       "previous": "Precedente",
       "next": "Prossimo",
-      "recurrences": "Ricorrenze"
+      "recurrences": "Ricorrenze",
+      "delete_title": "Eliminare l'evento?",
+      "delete_confirm": "Stai per eliminare \"{{name}}\". L'azione non può essere annullata.",
+      "delete_related_hint": "Questo evento ha ricorrenze collegate. Eliminare solo questo o tutti?",
+      "delete_this": "Elimina solo questo",
+      "delete_all": "Elimina tutti"
     },
     "home": {
       "co_owners": "Affidatari",
@@ -1012,7 +1136,10 @@
         "event_updated": "Evento aggiornato con successo",
         "pet_linked_succesfully": "Animale aggiunto correttamente",
         "pet_updated": "Dati Pet aggiornati con successo",
-        "signup": "Reggistrazione completata, controlla la tua mail"
+        "signup": "Reggistrazione completata, controlla la tua mail",
+        "event_deleted": "Evento eliminato con successo",
+        "pet_deleted": "Animale eliminato con successo",
+        "member_removed": "Membro rimosso"
       }
     },
     "board": {
@@ -1160,7 +1287,9 @@
       "sub_owner_short": "Aff.",
       "subowner": "Affidatario",
       "weight": "Peso",
-      "weight_kg": "<b>{{weight_kg}}</b> Kg"
+      "weight_kg": "<b>{{weight_kg}}</b> Kg",
+      "delete_title": "Eliminare l'animale?",
+      "delete_confirm": "Stai per eliminare \"{{name}}\" e tutti i dati collegati. L'azione non può essere annullata."
     },
     "settings": {
       "general": {
@@ -1198,7 +1327,23 @@
       }
     },
     "shelters": {
-      "empty": "Nessun rifugio trovato"
+      "empty": "Nessun rifugio trovato",
+      "people": "Persone",
+      "members": "Membri",
+      "pets": "Animali",
+      "no_people": "Nessuna persona",
+      "no_pets": "Nessun animale",
+      "address": "Indirizzo",
+      "contacts": "Contatti",
+      "remove_member": "Rimuovi",
+      "remove_member_title": "Rimuovere il membro?",
+      "remove_member_confirm": "Stai per rimuovere \"{{name}}\" da questo rifugio. La persona non verrà eliminata.",
+      "roles": {
+        "owner": "Proprietario",
+        "manager": "Responsabile",
+        "staff": "Staff",
+        "volunteer": "Volontario"
+      }
     }
   },
   "ru": {
@@ -1208,7 +1353,8 @@
       "close": "Закрыть",
       "confirm": "Подтвердить",
       "refuse": "Отклонить",
-      "save": "Сохранить"
+      "save": "Сохранить",
+      "delete": "Удалить"
     },
     "auth": {
       "already_registered": "Вы уже зарегистрированы?",
@@ -1257,6 +1403,8 @@
       "pet": "Для кого?",
       "walk": "Прогулка",
       "reminder": "Напоминание",
+      "cure": "Лечение",
+      "check": "Осмотр",
       "tablet": "Таблетка",
       "time": "Время",
       "time_from": "Время начала",
@@ -1271,7 +1419,12 @@
       },
       "previous": "Предыдущий",
       "next": "Следующий",
-      "recurrences": "Повторения"
+      "recurrences": "Повторения",
+      "delete_title": "Удалить событие?",
+      "delete_confirm": "Вы собираетесь удалить «{{name}}». Это действие нельзя отменить.",
+      "delete_related_hint": "У этого события есть связанные повторения. Удалить только это или все?",
+      "delete_this": "Только это",
+      "delete_all": "Удалить все"
     },
     "home": {
       "co_owners": "Опекуны",
@@ -1299,7 +1452,10 @@
         "logout": "Выход выполнен успешно",
         "pet_linked_succesfully": "Животное успешно добавлено",
         "pet_updated": "Данные питомца успешно обновлены",
-        "signup": "Регистрация завершена, проверьте свою почту"
+        "signup": "Регистрация завершена, проверьте свою почту",
+        "event_deleted": "Событие успешно удалено",
+        "pet_deleted": "Питомец успешно удалён",
+        "member_removed": "Участник удалён"
       }
     },
     "pages": {
@@ -1395,7 +1551,9 @@
       "sub_owner_short": "Опк.",
       "subowner": "Опекун",
       "weight": "Вес",
-      "weight_kg": "<b>{{weight_kg}}</b> кг"
+      "weight_kg": "<b>{{weight_kg}}</b> кг",
+      "delete_title": "Удалить питомца?",
+      "delete_confirm": "Вы удаляете «{{name}}» и все связанные данные. Это действие нельзя отменить."
     },
     "settings": {
       "general": {
@@ -1433,7 +1591,23 @@
       }
     },
     "shelters": {
-      "empty": "Приюты не найдены"
+      "empty": "Приюты не найдены",
+      "people": "Люди",
+      "members": "Участники",
+      "pets": "Питомцы",
+      "no_people": "Пока никого",
+      "no_pets": "Пока нет питомцев",
+      "address": "Адрес",
+      "contacts": "Контакты",
+      "remove_member": "Убрать",
+      "remove_member_title": "Убрать участника?",
+      "remove_member_confirm": "Вы убираете «{{name}}» из этого приюта. Человек не будет удалён.",
+      "roles": {
+        "owner": "Владелец",
+        "manager": "Менеджер",
+        "staff": "Персонал",
+        "volunteer": "Волонтёр"
+      }
     }
   }
 }

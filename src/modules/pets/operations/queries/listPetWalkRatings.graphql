@@ -1,0 +1,13 @@
+query listPetWalkRatings($commonSearch: CommonSearch) {
+    listWalkRatings(commonSearch: $commonSearch) {
+        error {
+            code
+            message
+        }
+        items {
+            id
+            type
+            rating
+        }
+    }
+}

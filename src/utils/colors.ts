@@ -15,8 +15,8 @@ export const treatmentsColors: Record<TreatmentType, string> = {
   TABLET: "tablet",
   WALK: "walk",
   TRAINING: "training",
-  CHECK: "reminder",
-  CURE: "tablet"
+  CHECK: "check",
+  CURE: "cure"
 }
 
 export const gendersColor: Record<Gender, { color: string, iconName: IconName }> = {

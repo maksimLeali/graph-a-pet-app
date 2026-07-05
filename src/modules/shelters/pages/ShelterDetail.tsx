@@ -1,0 +1,501 @@
+import { useEffect } from "react";
+import styled from "styled-components";
+import { useTranslation } from "react-i18next";
+import { useParams, useHistory } from "react-router";
+import toast from "react-hot-toast";
+import { IonContent } from "@ionic/react";
+
+import { useUserContext, useModal } from "@contexts";
+import { Image2x, Chip, Icon } from "@components";
+import { I18NKey } from "@i18n";
+import { RoleLevel } from "@types";
+import { $color, $uw } from "@theme";
+
+import { useGetShelterLazyQuery } from "../operations/__generated__/getShelter.generated";
+import { useDeleteShelterRoleMutation } from "../operations/__generated__/deleteShelterRole.generated";
+import { FullShelterFragment } from "../operations/__generated__/FullShelter.generated";
+
+type Role = NonNullable<
+	NonNullable<FullShelterFragment["roles"]>["items"][number]
+>;
+type ShelterPet = NonNullable<
+	NonNullable<FullShelterFragment["pets"]>["items"][number]
+>;
+
+const roleColors: Record<RoleLevel, string> = {
+	[RoleLevel.Owner]: "primary",
+	[RoleLevel.Manager]: "warning",
+	[RoleLevel.Staff]: "success",
+	[RoleLevel.Volunteer]: "medium",
+};
+
+export const ShelterDetail: React.FC = () => {
+	const { id } = useParams<{ id: string }>();
+	const { t } = useTranslation();
+	const { setPage } = useUserContext();
+
+	const [getShelter, { data, loading }] = useGetShelterLazyQuery({
+		fetchPolicy: "no-cache",
+	});
+
+	const shelter = data?.getShelter?.shelter ?? undefined;
+
+	useEffect(() => {
+		setPage({ name: t("pages.shelters") });
+		getShelter({ variables: { id } });
+	}, [id]);
+
+	return (
+		<IonContent>
+			{shelter ? (
+				<Detail shelter={shelter} reload={() => getShelter({ variables: { id } })} />
+			) : (
+				<Header>
+					<h2 className={loading ? "skeleton" : ""} />
+				</Header>
+			)}
+		</IonContent>
+	);
+};
+
+type detailProps = {
+	shelter: FullShelterFragment;
+	reload: () => void;
+};
+
+const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
+	const { t } = useTranslation();
+	const history = useHistory();
+	const { openModal, closeModal } = useModal();
+
+	const [deleteShelterRole] = useDeleteShelterRoleMutation({
+		onError: () => toast.error(t("messages.errors.fetch")),
+	});
+
+	const roles = (shelter.roles?.items ?? []).filter(
+		(r): r is Role => !!r
+	);
+	const pets = (shelter.pets?.items ?? []).filter(
+		(p): p is ShelterPet => !!p
+	);
+
+	const address = [
+		[shelter.street, shelter.street_number].filter(Boolean).join(" "),
+		shelter.postal_code,
+		[shelter.city, shelter.province_code].filter(Boolean).join(" "),
+		shelter.region,
+	]
+		.filter(Boolean)
+		.join(", ");
+
+	const contacts = (shelter.contacts ?? []).filter(
+		(c): c is NonNullable<typeof c> => !!c?.value
+	);
+
+	const confirmRemove = (role: Role) => {
+		const name = `${role.user.first_name} ${role.user.last_name}`.trim();
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: async () => {
+				const res = await deleteShelterRole({
+					variables: { id: role.id },
+				});
+				const del = res.data?.deleteShelterRole;
+				if (!del?.success || del.error) {
+					toast.error(t("messages.errors.fetch"));
+					return;
+				}
+				toast.success(t("messages.success.member_removed"));
+				closeModal();
+				reload();
+			},
+			children: (
+				<ConfirmBox>
+					<ConfirmTitle>
+						{t("shelters.remove_member_title")}
+					</ConfirmTitle>
+					<ConfirmText>
+						{t("shelters.remove_member_confirm", { name })}
+					</ConfirmText>
+				</ConfirmBox>
+			),
+		});
+	};
+
+	return (
+		<>
+			<Header>
+				<IconBox>
+					<Icon name="home" color="light" />
+				</IconBox>
+				<h2>{shelter.name}</h2>
+				{address && <SubText>{address}</SubText>}
+				{contacts.length > 0 && (
+					<Contacts>
+						{contacts.map((c, i) => (
+							<Chip
+								key={i}
+								color="primary"
+								label={c.value!}
+							/>
+						))}
+					</Contacts>
+				)}
+			</Header>
+
+			<Section>
+				<SectionTitle>
+					{t("shelters.people")}
+					<Count>{roles.length}</Count>
+				</SectionTitle>
+				{roles.length === 0 ? (
+					<Empty>{t("shelters.no_people")}</Empty>
+				) : (
+					<People>
+						{roles.map((role) => (
+							<PersonRow key={role.id}>
+								<Avatar>
+									{role.user.profile_picture ? (
+										<Image2x
+											lazy
+											rounded
+											id={role.user.profile_picture.id}
+											alt={role.user.first_name}
+										/>
+									) : (
+										<AvatarFallback>
+											{(
+												role.user.first_name?.[0] ?? "?"
+											).toUpperCase()}
+										</AvatarFallback>
+									)}
+								</Avatar>
+								<PersonInfo>
+									<PersonName>
+										{role.user.first_name}{" "}
+										{role.user.last_name}
+									</PersonName>
+									<PersonEmail>{role.user.email}</PersonEmail>
+								</PersonInfo>
+								<Chip
+									color={roleColors[role.role]}
+									label={t(
+										`shelters.roles.${role.role.toLowerCase()}` as I18NKey
+									)}
+								/>
+								<RemoveButton
+									type="button"
+									aria-label={t("shelters.remove_member") ?? ""}
+									onClick={() => confirmRemove(role)}
+								>
+									<Icon name="closeCircle" color="danger" />
+								</RemoveButton>
+							</PersonRow>
+						))}
+					</People>
+				)}
+			</Section>
+
+			<Section>
+				<SectionTitle>
+					{t("shelters.pets")}
+					<Count>{pets.length}</Count>
+				</SectionTitle>
+				{pets.length === 0 ? (
+					<Empty>{t("shelters.no_pets")}</Empty>
+				) : (
+					<PetsGrid>
+						{pets.map((sp) => (
+							<PetCard
+								key={sp.id}
+								role="button"
+								tabIndex={0}
+								onClick={() =>
+									history.push(`/pets/detail/${sp.pet.id}`)
+								}
+							>
+								<PetImage
+									$border={
+										sp.pet.main_picture?.main_color?.color
+									}
+								>
+									{sp.pet.main_picture ? (
+										<Image2x
+											lazy
+											id={sp.pet.main_picture.id}
+											alt={sp.pet.name}
+										/>
+									) : (
+										<PetFill />
+									)}
+								</PetImage>
+								<PetName>{sp.pet.name}</PetName>
+							</PetCard>
+						))}
+					</PetsGrid>
+				)}
+			</Section>
+		</>
+	);
+};
+
+const Header = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: ${$uw(1)};
+	padding: ${$uw(3)} 12px;
+	border-bottom: 2px solid ${$color("primary")};
+	> h2 {
+		margin: 0;
+		text-align: center;
+		min-height: 28px;
+	}
+`;
+
+const IconBox = styled.div`
+	width: ${$uw(6)};
+	height: ${$uw(6)};
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(
+		135deg,
+		${$color("primary")},
+		${$color("secondary")}
+	);
+	> .icon {
+		width: ${$uw(3)};
+		height: ${$uw(3)};
+	}
+`;
+
+const SubText = styled.span`
+	font-size: 1.4rem;
+	color: ${$color("medium")};
+	text-align: center;
+	word-break: break-word;
+`;
+
+const Contacts = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: ${$uw(0.75)};
+	margin-top: ${$uw(0.5)};
+`;
+
+const Section = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	padding: ${$uw(3)} 12px 0;
+`;
+
+const SectionTitle = styled.h3`
+	margin: 0 0 ${$uw(1.5)};
+	font-size: 1.5rem;
+	color: ${$color("primary")};
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	display: flex;
+	align-items: center;
+	gap: ${$uw(1)};
+	&::after {
+		content: "";
+		flex: 1;
+		height: 2px;
+		border-radius: 2px;
+		background: linear-gradient(
+			90deg,
+			rgba(var(--ion-color-primary-rgb), 0.5),
+			transparent
+		);
+	}
+`;
+
+const Count = styled.span`
+	order: 3;
+	flex: 0 0 auto;
+	min-width: ${$uw(2.5)};
+	height: ${$uw(2.5)};
+	padding: 0 ${$uw(0.75)};
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	background: rgba(var(--ion-color-primary-rgb), 0.15);
+	color: ${$color("primary")};
+	font-size: 1.3rem;
+	font-weight: 700;
+`;
+
+const Empty = styled.p`
+	margin: 0;
+	padding: ${$uw(2)} 0;
+	text-align: center;
+	color: ${$color("medium")};
+	font-size: 1.5rem;
+`;
+
+const People = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: ${$uw(1)};
+`;
+
+const PersonRow = styled.div`
+	display: flex;
+	align-items: center;
+	gap: ${$uw(1.25)};
+	padding: ${$uw(1)} ${$uw(1.25)};
+	border-radius: 14px;
+	background: ${$color("background")};
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
+`;
+
+const Avatar = styled.div`
+	flex: 0 0 auto;
+	width: ${$uw(4)};
+	height: ${$uw(4)};
+	border-radius: 999px;
+	overflow: hidden;
+	background: rgba(var(--ion-color-primary-rgb), 0.12);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	> .img2x {
+		width: 100%;
+		height: 100%;
+	}
+`;
+
+const AvatarFallback = styled.span`
+	font-size: 1.8rem;
+	font-weight: 700;
+	color: ${$color("primary")};
+`;
+
+const PersonInfo = styled.div`
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+`;
+
+const PersonName = styled.span`
+	font-size: 1.6rem;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+`;
+
+const PersonEmail = styled.span`
+	font-size: 1.3rem;
+	color: ${$color("medium")};
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+`;
+
+const RemoveButton = styled.button`
+	flex: 0 0 auto;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	line-height: 0;
+	> .icon {
+		width: ${$uw(2.25)};
+		height: ${$uw(2.25)};
+	}
+	&:active {
+		opacity: 0.6;
+	}
+`;
+
+const PetsGrid = styled.div`
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: ${$uw(1.5)};
+	padding-bottom: ${$uw(4)};
+`;
+
+const PetCard = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: ${$uw(0.5)};
+	cursor: pointer;
+	transition: transform 0.15s ease;
+	&:active {
+		transform: scale(0.96);
+	}
+`;
+
+const PetImage = styled.div<{ $border?: string }>`
+	width: 100%;
+	aspect-ratio: 1/1;
+	padding: 3px;
+	box-sizing: border-box;
+	border-radius: 999px;
+	overflow: hidden;
+	background: ${({ $border }) =>
+		$border
+			? $color($border)
+			: `linear-gradient(135deg, ${$color("primary")}, ${$color(
+					"secondary"
+			  )})`};
+	> .img2x {
+		width: 100%;
+		height: 100%;
+		border-radius: 999px;
+		overflow: hidden;
+		display: block;
+	}
+`;
+
+const PetFill = styled.span`
+	width: 100%;
+	height: 100%;
+	display: block;
+	border-radius: 999px;
+	background: linear-gradient(
+		135deg,
+		${$color("primary")},
+		${$color("secondary")}
+	);
+`;
+
+const PetName = styled.span`
+	font-size: 1.4rem;
+	font-weight: 600;
+	text-align: center;
+	word-break: break-word;
+`;
+
+const ConfirmBox = styled.div`
+	width: 100%;
+	padding: ${$uw(2)} ${$uw(2)} ${$uw(1)};
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: ${$uw(1)};
+`;
+
+const ConfirmTitle = styled.h2`
+	margin: 0;
+	font-size: 2rem;
+	color: ${$color("danger")};
+`;
+
+const ConfirmText = styled.p`
+	margin: 0;
+	font-size: 1.6rem;
+	line-height: 1.4;
+`;

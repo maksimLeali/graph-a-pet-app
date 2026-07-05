@@ -9,7 +9,10 @@ import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.genera
 import { SubOwnerList, Icon, Image2x } from "@components";
 import { useSwipe } from "@hooks";
 import { useModal, useUserContext } from "@contexts";
+import { gendersColor } from "@utils";
+import { Gender } from "@types";
 import { $breakPoint, $color, $cssTRBL, $uw } from "@theme";
+import { IconContainer } from "../../../components/formFields/SelectInput/components";
 
 type props = {
 	pets: DashboardPetFragment[];
@@ -147,7 +150,31 @@ export const Pets: React.FC<props> = ({ pets, onActiveChange }) => {
 				</ActionChip>
 			</BoxContainer>
 
-			{pets && pets.length && <Title className="custom-pet-color">{pets[active].name}</Title>}
+			{pets && pets.length && (
+				<Title
+					className="custom-pet-color"
+					$bg={pets[active].main_picture?.main_color?.color}
+					$fg={pets[active].main_picture?.main_color?.contrast}
+				>
+					<IconContainer
+						className="icon-container"
+						style={
+							{
+								"--gc": $color(
+									gendersColor[pets[active].gender ?? Gender.NotSaid].color
+								),
+							} as React.CSSProperties
+						}
+					>
+						<Icon
+							size="100%"
+							color={gendersColor[pets[active].gender ?? Gender.NotSaid].color}
+							name={gendersColor[pets[active].gender ?? Gender.NotSaid].iconName}
+						/>
+					</IconContainer>
+					<span className="mainInfo">{pets[active].name}</span>
+				</Title>
+			)}
 
 			<DotsContainer>
 				{pets &&
@@ -280,16 +307,35 @@ const ActionChip = styled.span`
 	}
 `;
 
-const Title = styled.h2`
-	padding: 0 ${$uw(2)};
-	height: ${$uw(3)};
-	margin: 0;
+const Title = styled.h2<{ $bg?: string; $fg?: string }>`
 	display: flex;
-	justify-content: center;
 	align-items: center;
-	border-radius: ${$uw(3)};
-	margin-bottom: ${$uw(2)};
-	text-transform: uppercase;
+	width: fit-content;
+	font-size: 2rem;
+	height: ${$uw(2.5)};
+	padding: 0 ${$uw(2)} 0 ${$uw(0.6)};
+	margin: 0 0 ${$uw(2)};
+	font-weight: 600;
+	border-radius: 99px;
+	background-color: ${({ $bg }) => $color($bg || "primary")} !important;
+	> .icon-container {
+		width: ${$uw(1.5)};
+		height: ${$uw(1.5)};
+		flex: 0 0 ${$uw(1.5)};
+		border-radius: 100px;
+		background-color: ${$color("white")} !important;
+		margin-right: ${$uw(0.5)};
+		padding: ${$uw(0.2)};
+		box-sizing: border-box;
+		* {
+			color: var(--gc) !important;
+		}
+	}
+	> span.mainInfo {
+		font-size: 1.8rem;
+		font-weight: 800;
+		color: ${({ $fg }) => $color($fg || "dark")} !important;
+	}
 	${$breakPoint(450)} {
 		font-size: 2rem;
 	}

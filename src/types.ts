@@ -90,6 +90,7 @@ export type CureCreate = {
   frequency_unit?: InputMaybe<FrequencyUnit>;
   frequency_value?: InputMaybe<Scalars['Int']['input']>;
   health_card_id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
   notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
@@ -344,6 +345,7 @@ export type Mutation = {
   deleteShelter: DeleteResult;
   deleteShelterPet: DeleteResult;
   deleteShelterRole: DeleteResult;
+  deleteTreatment: DeleteResult;
   deleteUser: DeleteResult;
   deleteWalk: DeleteResult;
   deleteWalkRating: DeleteResult;
@@ -491,6 +493,11 @@ export type MutationDeleteShelterPetArgs = {
 
 
 export type MutationDeleteShelterRoleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteTreatmentArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1715,6 +1722,13 @@ export type CreateWalkRatingMutationVariables = Exact<{
 
 export type CreateWalkRatingMutation = { __typename?: 'Mutation', createWalkRating: { __typename?: 'WalkRatingResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, walk_rating?: { __typename?: 'WalkRating', id: string, type: WalkRatingType, rating: number } | null } };
 
+export type DeleteTreatmentMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteTreatmentMutation = { __typename?: 'Mutation', deleteTreatment: { __typename?: 'DeleteResult', success?: boolean | null, id?: string | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
 export type UpdateTreatmentMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   data: TreatmentUpdate;
@@ -1736,6 +1750,13 @@ export type ListMyTreatmentsQueryVariables = Exact<{
 
 
 export type ListMyTreatmentsQuery = { __typename?: 'Query', listMyTreatments: { __typename?: 'PaginatedTreatments', success?: boolean | null, items: Array<{ __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', page_size?: number | null, total_items?: number | null } } };
+
+export type GetWalkByTreatmentQueryVariables = Exact<{
+  commonSearch?: InputMaybe<CommonSearch>;
+}>;
+
+
+export type GetWalkByTreatmentQuery = { __typename?: 'Query', listWalks: { __typename?: 'PaginatedWalks', error?: { __typename?: 'Error', code: string, message: string } | null, items: Array<{ __typename?: 'Walk', id: string, distance_km: number, ratings?: { __typename?: 'PaginatedWalkRatings', items: Array<{ __typename?: 'WalkRating', id: string, type: WalkRatingType, rating: number } | null> } | null } | null> } };
 
 export type GetUserDashboardQueryVariables = Exact<{
   date_from: Scalars['String']['input'];
@@ -1815,7 +1836,30 @@ export type GetFullPetQueryVariables = Exact<{
 
 export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string } | null> } | null, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', items: Array<{ __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null } | null> } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
+export type ListPetWalkRatingsQueryVariables = Exact<{
+  commonSearch?: InputMaybe<CommonSearch>;
+}>;
+
+
+export type ListPetWalkRatingsQuery = { __typename?: 'Query', listWalkRatings: { __typename?: 'PaginatedWalkRatings', error?: { __typename?: 'Error', code: string, message: string } | null, items: Array<{ __typename?: 'WalkRating', id: string, type: WalkRatingType, rating: number } | null> } };
+
+export type FullShelterFragment = { __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, district?: string | null, street: string, street_number: string, postal_code: string, province_code: string, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null, roles?: { __typename?: 'PaginatedShelterRoles', items: Array<{ __typename?: 'ShelterRole', id: string, role: RoleLevel, user: { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null } } | null> } | null, pets?: { __typename?: 'PaginatedShelterPets', items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null };
+
 export type MinShelterFragment = { __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, street: string, street_number: string, postal_code: string, province_code: string, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null };
+
+export type DeleteShelterRoleMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteShelterRoleMutation = { __typename?: 'Mutation', deleteShelterRole: { __typename?: 'DeleteResult', success?: boolean | null, id?: string | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type GetShelterQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetShelterQuery = { __typename?: 'Query', getShelter: { __typename?: 'ShelterResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter?: { __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, district?: string | null, street: string, street_number: string, postal_code: string, province_code: string, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null, roles?: { __typename?: 'PaginatedShelterRoles', items: Array<{ __typename?: 'ShelterRole', id: string, role: RoleLevel, user: { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null } } | null> } | null, pets?: { __typename?: 'PaginatedShelterPets', items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null } };
 
 export type ListSheltersQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
@@ -2053,6 +2097,48 @@ export const MinUserFragmentDoc = gql`
   }
 }
     `;
+export const FullShelterFragmentDoc = gql`
+    fragment FullShelter on Shelter {
+  id
+  name
+  city
+  region
+  district
+  street
+  street_number
+  postal_code
+  province_code
+  contacts {
+    type
+    value
+  }
+  roles {
+    items {
+      id
+      role
+      user {
+        ...minUser
+      }
+    }
+  }
+  pets {
+    items {
+      id
+      pet {
+        id
+        name
+        main_picture {
+          id
+          main_color {
+            color
+            contrast
+          }
+        }
+      }
+    }
+  }
+}
+    ${MinUserFragmentDoc}`;
 export const MinShelterFragmentDoc = gql`
     fragment MinShelter on Shelter {
   id
@@ -2677,6 +2763,44 @@ export function useCreateWalkRatingMutation(baseOptions?: Apollo.MutationHookOpt
 export type CreateWalkRatingMutationHookResult = ReturnType<typeof useCreateWalkRatingMutation>;
 export type CreateWalkRatingMutationResult = Apollo.MutationResult<CreateWalkRatingMutation>;
 export type CreateWalkRatingMutationOptions = Apollo.BaseMutationOptions<CreateWalkRatingMutation, CreateWalkRatingMutationVariables>;
+export const DeleteTreatmentDocument = gql`
+    mutation deleteTreatment($id: ID!) {
+  deleteTreatment(id: $id) {
+    error {
+      code
+      message
+    }
+    success
+    id
+  }
+}
+    `;
+export type DeleteTreatmentMutationFn = Apollo.MutationFunction<DeleteTreatmentMutation, DeleteTreatmentMutationVariables>;
+
+/**
+ * __useDeleteTreatmentMutation__
+ *
+ * To run a mutation, you first call `useDeleteTreatmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTreatmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTreatmentMutation, { data, loading, error }] = useDeleteTreatmentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTreatmentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTreatmentMutation, DeleteTreatmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTreatmentMutation, DeleteTreatmentMutationVariables>(DeleteTreatmentDocument, options);
+      }
+export type DeleteTreatmentMutationHookResult = ReturnType<typeof useDeleteTreatmentMutation>;
+export type DeleteTreatmentMutationResult = Apollo.MutationResult<DeleteTreatmentMutation>;
+export type DeleteTreatmentMutationOptions = Apollo.BaseMutationOptions<DeleteTreatmentMutation, DeleteTreatmentMutationVariables>;
 export const UpdateTreatmentDocument = gql`
     mutation UpdateTreatment($id: ID!, $data: TreatmentUpdate!) {
   updateTreatment(id: $id, data: $data) {
@@ -2815,6 +2939,60 @@ export type ListMyTreatmentsQueryHookResult = ReturnType<typeof useListMyTreatme
 export type ListMyTreatmentsLazyQueryHookResult = ReturnType<typeof useListMyTreatmentsLazyQuery>;
 export type ListMyTreatmentsSuspenseQueryHookResult = ReturnType<typeof useListMyTreatmentsSuspenseQuery>;
 export type ListMyTreatmentsQueryResult = Apollo.QueryResult<ListMyTreatmentsQuery, ListMyTreatmentsQueryVariables>;
+export const GetWalkByTreatmentDocument = gql`
+    query getWalkByTreatment($commonSearch: CommonSearch) {
+  listWalks(commonSearch: $commonSearch) {
+    error {
+      code
+      message
+    }
+    items {
+      id
+      distance_km
+      ratings {
+        items {
+          id
+          type
+          rating
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWalkByTreatmentQuery__
+ *
+ * To run a query within a React component, call `useGetWalkByTreatmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWalkByTreatmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWalkByTreatmentQuery({
+ *   variables: {
+ *      commonSearch: // value for 'commonSearch'
+ *   },
+ * });
+ */
+export function useGetWalkByTreatmentQuery(baseOptions?: Apollo.QueryHookOptions<GetWalkByTreatmentQuery, GetWalkByTreatmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWalkByTreatmentQuery, GetWalkByTreatmentQueryVariables>(GetWalkByTreatmentDocument, options);
+      }
+export function useGetWalkByTreatmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWalkByTreatmentQuery, GetWalkByTreatmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWalkByTreatmentQuery, GetWalkByTreatmentQueryVariables>(GetWalkByTreatmentDocument, options);
+        }
+export function useGetWalkByTreatmentSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetWalkByTreatmentQuery, GetWalkByTreatmentQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWalkByTreatmentQuery, GetWalkByTreatmentQueryVariables>(GetWalkByTreatmentDocument, options);
+        }
+export type GetWalkByTreatmentQueryHookResult = ReturnType<typeof useGetWalkByTreatmentQuery>;
+export type GetWalkByTreatmentLazyQueryHookResult = ReturnType<typeof useGetWalkByTreatmentLazyQuery>;
+export type GetWalkByTreatmentSuspenseQueryHookResult = ReturnType<typeof useGetWalkByTreatmentSuspenseQuery>;
+export type GetWalkByTreatmentQueryResult = Apollo.QueryResult<GetWalkByTreatmentQuery, GetWalkByTreatmentQueryVariables>;
 export const GetUserDashboardDocument = gql`
     query getUserDashboard($date_from: String!, $date_to: String!) {
   getUserDashboard {
@@ -3297,6 +3475,139 @@ export type GetFullPetQueryHookResult = ReturnType<typeof useGetFullPetQuery>;
 export type GetFullPetLazyQueryHookResult = ReturnType<typeof useGetFullPetLazyQuery>;
 export type GetFullPetSuspenseQueryHookResult = ReturnType<typeof useGetFullPetSuspenseQuery>;
 export type GetFullPetQueryResult = Apollo.QueryResult<GetFullPetQuery, GetFullPetQueryVariables>;
+export const ListPetWalkRatingsDocument = gql`
+    query listPetWalkRatings($commonSearch: CommonSearch) {
+  listWalkRatings(commonSearch: $commonSearch) {
+    error {
+      code
+      message
+    }
+    items {
+      id
+      type
+      rating
+    }
+  }
+}
+    `;
+
+/**
+ * __useListPetWalkRatingsQuery__
+ *
+ * To run a query within a React component, call `useListPetWalkRatingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListPetWalkRatingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListPetWalkRatingsQuery({
+ *   variables: {
+ *      commonSearch: // value for 'commonSearch'
+ *   },
+ * });
+ */
+export function useListPetWalkRatingsQuery(baseOptions?: Apollo.QueryHookOptions<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>(ListPetWalkRatingsDocument, options);
+      }
+export function useListPetWalkRatingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>(ListPetWalkRatingsDocument, options);
+        }
+export function useListPetWalkRatingsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>(ListPetWalkRatingsDocument, options);
+        }
+export type ListPetWalkRatingsQueryHookResult = ReturnType<typeof useListPetWalkRatingsQuery>;
+export type ListPetWalkRatingsLazyQueryHookResult = ReturnType<typeof useListPetWalkRatingsLazyQuery>;
+export type ListPetWalkRatingsSuspenseQueryHookResult = ReturnType<typeof useListPetWalkRatingsSuspenseQuery>;
+export type ListPetWalkRatingsQueryResult = Apollo.QueryResult<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>;
+export const DeleteShelterRoleDocument = gql`
+    mutation deleteShelterRole($id: ID!) {
+  deleteShelterRole(id: $id) {
+    success
+    id
+    error {
+      code
+      message
+    }
+  }
+}
+    `;
+export type DeleteShelterRoleMutationFn = Apollo.MutationFunction<DeleteShelterRoleMutation, DeleteShelterRoleMutationVariables>;
+
+/**
+ * __useDeleteShelterRoleMutation__
+ *
+ * To run a mutation, you first call `useDeleteShelterRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteShelterRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteShelterRoleMutation, { data, loading, error }] = useDeleteShelterRoleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteShelterRoleMutation(baseOptions?: Apollo.MutationHookOptions<DeleteShelterRoleMutation, DeleteShelterRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteShelterRoleMutation, DeleteShelterRoleMutationVariables>(DeleteShelterRoleDocument, options);
+      }
+export type DeleteShelterRoleMutationHookResult = ReturnType<typeof useDeleteShelterRoleMutation>;
+export type DeleteShelterRoleMutationResult = Apollo.MutationResult<DeleteShelterRoleMutation>;
+export type DeleteShelterRoleMutationOptions = Apollo.BaseMutationOptions<DeleteShelterRoleMutation, DeleteShelterRoleMutationVariables>;
+export const GetShelterDocument = gql`
+    query getShelter($id: ID!) {
+  getShelter(id: $id) {
+    success
+    error {
+      code
+      message
+    }
+    shelter {
+      ...FullShelter
+    }
+  }
+}
+    ${FullShelterFragmentDoc}`;
+
+/**
+ * __useGetShelterQuery__
+ *
+ * To run a query within a React component, call `useGetShelterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShelterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShelterQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShelterQuery(baseOptions: Apollo.QueryHookOptions<GetShelterQuery, GetShelterQueryVariables> & ({ variables: GetShelterQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShelterQuery, GetShelterQueryVariables>(GetShelterDocument, options);
+      }
+export function useGetShelterLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShelterQuery, GetShelterQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShelterQuery, GetShelterQueryVariables>(GetShelterDocument, options);
+        }
+export function useGetShelterSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetShelterQuery, GetShelterQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShelterQuery, GetShelterQueryVariables>(GetShelterDocument, options);
+        }
+export type GetShelterQueryHookResult = ReturnType<typeof useGetShelterQuery>;
+export type GetShelterLazyQueryHookResult = ReturnType<typeof useGetShelterLazyQuery>;
+export type GetShelterSuspenseQueryHookResult = ReturnType<typeof useGetShelterSuspenseQuery>;
+export type GetShelterQueryResult = Apollo.QueryResult<GetShelterQuery, GetShelterQueryVariables>;
 export const ListSheltersDocument = gql`
     query listShelters($commonSearch: CommonSearch) {
   listShelters(commonSearch: $commonSearch) {

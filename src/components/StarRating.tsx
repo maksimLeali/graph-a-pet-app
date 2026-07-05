@@ -14,6 +14,7 @@ type Props = {
 	max?: number;
 	color?: string;
 	emptyColor?: string;
+	size?: string;
 };
 
 /**
@@ -28,6 +29,7 @@ export const StarRating: React.FC<Props> = ({
 	max = 5,
 	color = "primary",
 	emptyColor = "medium",
+	size = $uw(3),
 }) => {
 	const { t } = useTranslation();
 	const { setValue, watch } = useFormContext();
@@ -62,7 +64,7 @@ export const StarRating: React.FC<Props> = ({
 						<Icon
 							name={n <= active ? "star" : "starOutline"}
 							color={n <= active ? color : emptyColor}
-							size="32px"
+							size={size}
 						/>
 					</StarButton>
 				))}

@@ -4,6 +4,8 @@ const userColors = {
     "grid-color": "var(--grid-color)",
     "vaccine": "#3e92cc",
     "antiparasitic": "#008148",
+    "cure": "#fcbf49",
+    "check": "#f77f00",
     "operation": "#02c39a",
     "reminder": "#9550b5",
     "tablet": "#a07178",

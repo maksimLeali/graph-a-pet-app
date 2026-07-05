@@ -132,7 +132,10 @@ export const CalendarEvents: React.FC = () => {
 			notes: string;
 			date_date: string;
 			date_time: string;
-			walk?: { distance_km?: string; rating?: number };
+			walk?: {
+				distance_km?: string;
+				ratings?: Partial<Record<WalkRatingType, number>>;
+			};
 			cure?: {
 				frequency_times?: string;
 				frequency_value?: string;
@@ -181,17 +184,27 @@ export const CalendarEvents: React.FC = () => {
 						toast.error(t("messages.errors.fetch"));
 						return;
 					}
-					const rating = Number(data.walk?.rating);
-					if (w.walk?.id && rating) {
-						await createWalkRating({
-							variables: {
-								walkRating: {
-									walk_id: w.walk.id,
-									type: WalkRatingType.Overall,
-									rating,
-								},
-							},
-						});
+					if (w.walk?.id) {
+						const ratings = data.walk?.ratings ?? {};
+						await Promise.all(
+							Object.values(WalkRatingType)
+								.map((type) => ({
+									type,
+									rating: Number(ratings[type]),
+								}))
+								.filter(({ rating }) => rating)
+								.map(({ type, rating }) =>
+									createWalkRating({
+										variables: {
+											walkRating: {
+												walk_id: w.walk!.id,
+												type,
+												rating,
+											},
+										},
+									})
+								)
+						);
 					}
 					finishSuccess();
 					return;
@@ -202,6 +215,7 @@ export const CalendarEvents: React.FC = () => {
 					const res = await createCure({
 						variables: {
 							cure: {
+								name,
 								date,
 								health_card_id,
 								...(data.cure?.frequency_times

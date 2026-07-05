@@ -10,48 +10,88 @@ type Props = {
 };
 
 export const ShelterCard: React.FC<Props> = ({ shelter, onClick }) => {
+	const address = [shelter.city, shelter.region]
+		.filter(Boolean)
+		.join(", ");
 	return (
 		<Card role="button" tabIndex={0} onClick={onClick}>
-			<House>
-				<Icon name="paw" color="light" size="40px" />
-			</House>
-			<Name>{shelter.name}</Name>
-			{shelter.city && <City>{shelter.city}</City>}
+			<IconBox>
+				<Icon name="home" color="light" />
+			</IconBox>
+			<Info>
+				<Name>{shelter.name}</Name>
+				{address && <Address>{address}</Address>}
+			</Info>
+			<Chevron name="chevronForward" color="medium" />
 		</Card>
 	);
 };
 
 const Card = styled.div`
-	width: 30%;
+	width: 100%;
 	box-sizing: border-box;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-	gap: ${$uw(1)};
+	gap: ${$uw(1.5)};
+	padding: ${$uw(1.25)} ${$uw(1.5)};
+	border-radius: 16px;
+	background: ${$color("background")};
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
 	cursor: pointer;
+	transition: border-color 0.15s ease, transform 0.15s ease;
+	&:active {
+		transform: scale(0.99);
+		border-color: ${$color("primary")};
+	}
+	@media (hover: hover) {
+		&:hover {
+			border-color: ${$color("primary")};
+		}
+	}
 `;
 
-const House = styled.div`
-	width: 100%;
-	aspect-ratio: 1/1;
-	background: ${$color("primary")};
-	clip-path: polygon(50% 0, 100% 38%, 100% 100%, 0 100%, 0 38%);
+const IconBox = styled.div`
+	flex: 0 0 auto;
+	width: ${$uw(4)};
+	height: ${$uw(4)};
+	border-radius: 12px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding-top: 18%;
-	box-sizing: border-box;
+	background: linear-gradient(
+		135deg,
+		${$color("primary")},
+		${$color("secondary")}
+	);
+	> .icon {
+		width: ${$uw(2)};
+		height: ${$uw(2)};
+	}
+`;
+
+const Info = styled.div`
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: ${$uw(0.25)};
 `;
 
 const Name = styled.span`
-	text-align: center;
-	font-weight: 600;
+	font-size: 1.8rem;
+	font-weight: 700;
 	word-break: break-word;
 `;
 
-const City = styled.span`
-	text-align: center;
-	font-size: 0.8em;
-	opacity: 0.6;
+const Address = styled.span`
+	font-size: 1.4rem;
+	color: ${$color("medium")};
 	word-break: break-word;
+`;
+
+const Chevron = styled(Icon)`
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	opacity: 0.6;
 `;
