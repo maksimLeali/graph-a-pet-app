@@ -13,11 +13,19 @@ import { I18NKey } from "@i18n";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { useListMyTreatmentsLazyQuery } from "../operations/__generated__/getMyAppointments.generated";
 import { useCreateTreatmentMutation } from "../operations/__generated__/createTreatment.generated";
+import { useCreateWalkMutation } from "../operations/__generated__/createWalk.generated";
+import { useCreateWalkRatingMutation } from "../operations/__generated__/createWalkRating.generated";
+import { useCreateCureMutation } from "../operations/__generated__/createCure.generated";
 
 import { useUserContext, useModal } from "@contexts";
 import { AppointmentsList, CustomCalendar } from "@components";
 import { AddEventFormStep1, AddEventFormStep2 } from "../components/addEventForm";
-import { MutationCreateTreatmentArgs } from "@types";
+import {
+	FrequencyUnit,
+	MutationCreateTreatmentArgs,
+	TreatmentType,
+	WalkRatingType,
+} from "@types";
 import { $color, $uw } from "@theme";
 
 export const CalendarEvents: React.FC = () => {
@@ -56,18 +64,6 @@ export const CalendarEvents: React.FC = () => {
 									max: toDate,
 								},
 							},
-						],
-						lists: [
-								{
-									key: "type",
-									value: [
-										"REMINDER",
-										"TABLET",
-										"OPERATION",
-										"TRAINING",
-										"ANTIPARASITIC",
-									],
-								},					
 						],
 						join: [
 							{
@@ -121,39 +117,40 @@ export const CalendarEvents: React.FC = () => {
 		);
 	}, [dateSelected]);
 
-	const [createTreatment, { loading: creationLoading }] =
-		useCreateTreatmentMutation({
-			onCompleted: ({ createTreatment }) => {
-				if (!createTreatment?.success || createTreatment.error) {
-					toast.error(
-						createTreatment?.error?.message
-							? t(createTreatment.error.message as I18NKey)
-							: t("messages.errors.fetch")
-					);
-					return;
-				}
+	const onMutationError = () => toast.error(t("messages.errors.fetch"));
 
-				toast.success(t("messages.success.event_created"));
-				methods.reset();
-				closeModal();
-				getMyAppointments();
-				refetchDashboard();
-			},
-			onError: () => {
-				toast.error(t("messages.errors.fetch"));
-			},
-		});
+	const [createTreatment, { loading: creationLoading }] =
+		useCreateTreatmentMutation({ onError: onMutationError });
+	const [createWalk] = useCreateWalkMutation({ onError: onMutationError });
+	const [createWalkRating] = useCreateWalkRatingMutation({
+		onError: onMutationError,
+	});
+	const [createCure] = useCreateCureMutation({ onError: onMutationError });
 
 	const methods = useForm<
 		MutationCreateTreatmentArgs & {
 			notes: string;
 			date_date: string;
 			date_time: string;
+			walk?: { distance_km?: string; rating?: number };
+			cure?: {
+				frequency_times?: string;
+				frequency_value?: string;
+				frequency_unit?: FrequencyUnit;
+			};
 		}
 	>({
 		mode: "onSubmit",
 	});
 	const { openModal, closeModal } = useModal();
+
+	const finishSuccess = () => {
+		toast.success(t("messages.success.event_created"));
+		methods.reset();
+		closeModal();
+		getMyAppointments();
+		refetchDashboard();
+	};
 
 	const createEvent = methods.handleSubmit(
 		async (data) => {
@@ -162,20 +159,109 @@ export const CalendarEvents: React.FC = () => {
 				.set("hour", time.hour())
 				.set("minute", time.minute())
 				.toISOString();
-			await createTreatment({
-				variables: {
-					treatment: {
-						health_card_id: data.data.health_card_id,
-						name: data.data.name,
-						type: data.data.type,
-						date,
-						...(data.notes ? { logs: [data.notes] } : {}),
-						...(data.data.booster_date
-							? { booster_date: data.data.booster_date }
-							: {}),
+			const { health_card_id, name, type } = data.data;
+			const notes = data.notes ? [data.notes] : undefined;
+
+			try {
+				// WALK: create walk (spawns its treatment) + optional overall rating
+				if (type === TreatmentType.Walk) {
+					const res = await createWalk({
+						variables: {
+							walk: {
+								date,
+								health_card_id,
+								name,
+								distance_km: Number(data.walk?.distance_km) || 0,
+								...(notes ? { notes } : {}),
+							},
+						},
+					});
+					const w = res.data?.createWalk;
+					if (!w?.success || w.error) {
+						toast.error(t("messages.errors.fetch"));
+						return;
+					}
+					const rating = Number(data.walk?.rating);
+					if (w.walk?.id && rating) {
+						await createWalkRating({
+							variables: {
+								walkRating: {
+									walk_id: w.walk.id,
+									type: WalkRatingType.Overall,
+									rating,
+								},
+							},
+						});
+					}
+					finishSuccess();
+					return;
+				}
+
+				// CURE: create cure (spawns its treatment + recall chain via frequency)
+				if (type === TreatmentType.Cure) {
+					const res = await createCure({
+						variables: {
+							cure: {
+								date,
+								health_card_id,
+								...(data.cure?.frequency_times
+									? {
+											frequency_times: Number(
+												data.cure.frequency_times
+											),
+									  }
+									: {}),
+								...(data.cure?.frequency_value
+									? {
+											frequency_value: Number(
+												data.cure.frequency_value
+											),
+									  }
+									: {}),
+								...(data.cure?.frequency_unit
+									? { frequency_unit: data.cure.frequency_unit }
+									: {}),
+								...(notes ? { notes } : {}),
+							},
+						},
+					});
+					const c = res.data?.createCure;
+					if (!c?.success || c.error) {
+						toast.error(t("messages.errors.fetch"));
+						return;
+					}
+					finishSuccess();
+					return;
+				}
+
+				// default: plain treatment
+				const res = await createTreatment({
+					variables: {
+						treatment: {
+							health_card_id,
+							name,
+							type,
+							date,
+							...(notes ? { logs: notes } : {}),
+							...(data.data.booster_date
+								? { booster_date: data.data.booster_date }
+								: {}),
+						},
 					},
-				},
-			});
+				});
+				const tr = res.data?.createTreatment;
+				if (!tr?.success || tr.error) {
+					toast.error(
+						tr?.error?.message
+							? t(tr.error.message as I18NKey)
+							: t("messages.errors.fetch")
+					);
+					return;
+				}
+				finishSuccess();
+			} catch {
+				toast.error(t("messages.errors.fetch"));
+			}
 		},
 		() => {
 			toast.error(t("messages.errors.required"));

@@ -1,0 +1,14 @@
+mutation CreateWalkRating($walkRating: WalkRatingCreate!) {
+	createWalkRating(data: $walkRating) {
+		success
+		error {
+			code
+			message
+		}
+		walk_rating {
+			id
+			type
+			rating
+		}
+	}
+}

@@ -1,0 +1,13 @@
+mutation CreateWalk($walk: WalkCreate!) {
+	createWalk(data: $walk) {
+		success
+		error {
+			code
+			message
+		}
+		walk {
+			id
+			distance_km
+		}
+	}
+}

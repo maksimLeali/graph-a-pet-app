@@ -613,7 +613,9 @@ export type SpecialIconName =
     | "tablet"
     | "vaccine"
     | "training"
-    | "walk";
+    | "walk"
+    | "check"
+    | "cure";
 
 export const iconNames: SpecialIconName[] = [
     "add",
@@ -624,6 +626,8 @@ export const iconNames: SpecialIconName[] = [
     "vaccine",
     "training",
     "walk",
+    "check",
+    "cure",
 ];
 
 export const IconSelect = ({
@@ -675,6 +679,17 @@ export const IconSelect = ({
         case "walk":
             return (
                 <WalkIcon {...iconProps} color={iconProps.color || "#fff"} />
+            );
+        case "check":
+            return (
+                <ReminderIcon
+                    {...iconProps}
+                    color={iconProps.color || "#fff"}
+                />
+            );
+        case "cure":
+            return (
+                <TabletIcon {...iconProps} color={iconProps.color || "#fff"} />
             );
     }
 };

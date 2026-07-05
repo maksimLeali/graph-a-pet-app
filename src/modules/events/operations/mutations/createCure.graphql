@@ -1,0 +1,15 @@
+mutation CreateCure($cure: CureCreate!) {
+	createCure(data: $cure) {
+		success
+		error {
+			code
+			message
+		}
+		cure {
+			id
+			frequency_times
+			frequency_value
+			frequency_unit
+		}
+	}
+}

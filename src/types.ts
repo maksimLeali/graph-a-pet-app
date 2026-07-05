@@ -1532,6 +1532,7 @@ export type WalkCreate = {
   distance_km: Scalars['Float']['input'];
   duration?: InputMaybe<TreatmentDuration>;
   health_card_id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
   notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
@@ -1686,12 +1687,33 @@ export type ListReportsQueryVariables = Exact<{
 
 export type ListReportsQuery = { __typename?: 'Query', listReports: { __typename?: 'PaginatedReports', success?: boolean | null, items: Array<{ __typename?: 'Report', id: string, place: string, latitude: number, longitude: number, created_at: string, type: ReportType, date: string, reporter: { __typename?: 'Reporter', email: string, user_id?: string | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', page_size?: number | null, total_items?: number | null } } };
 
+export type CreateCureMutationVariables = Exact<{
+  cure: CureCreate;
+}>;
+
+
+export type CreateCureMutation = { __typename?: 'Mutation', createCure: { __typename?: 'CureResult', success?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, cure?: { __typename?: 'Cure', id: string, frequency_times?: number | null, frequency_value?: number | null, frequency_unit?: FrequencyUnit | null } | null } };
+
 export type CreateTreatmentMutationVariables = Exact<{
   treatment: TreatmentCreate;
 }>;
 
 
 export type CreateTreatmentMutation = { __typename?: 'Mutation', createTreatment: { __typename?: 'TreatmentResult', success?: boolean | null, error?: { __typename?: 'Error', extra?: string | null, code: string, message: string } | null, treatment?: { __typename?: 'Treatment', id: string, name: string, date: string, related?: Array<{ __typename?: 'MinTreatment', id: string, date: string } | null> | null } | null } };
+
+export type CreateWalkMutationVariables = Exact<{
+  walk: WalkCreate;
+}>;
+
+
+export type CreateWalkMutation = { __typename?: 'Mutation', createWalk: { __typename?: 'WalkResult', success?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, walk?: { __typename?: 'Walk', id: string, distance_km: number } | null } };
+
+export type CreateWalkRatingMutationVariables = Exact<{
+  walkRating: WalkRatingCreate;
+}>;
+
+
+export type CreateWalkRatingMutation = { __typename?: 'Mutation', createWalkRating: { __typename?: 'WalkRatingResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, walk_rating?: { __typename?: 'WalkRating', id: string, type: WalkRatingType, rating: number } | null } };
 
 export type UpdateTreatmentMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -2482,6 +2504,49 @@ export type ListReportsQueryHookResult = ReturnType<typeof useListReportsQuery>;
 export type ListReportsLazyQueryHookResult = ReturnType<typeof useListReportsLazyQuery>;
 export type ListReportsSuspenseQueryHookResult = ReturnType<typeof useListReportsSuspenseQuery>;
 export type ListReportsQueryResult = Apollo.QueryResult<ListReportsQuery, ListReportsQueryVariables>;
+export const CreateCureDocument = gql`
+    mutation CreateCure($cure: CureCreate!) {
+  createCure(data: $cure) {
+    success
+    error {
+      code
+      message
+    }
+    cure {
+      id
+      frequency_times
+      frequency_value
+      frequency_unit
+    }
+  }
+}
+    `;
+export type CreateCureMutationFn = Apollo.MutationFunction<CreateCureMutation, CreateCureMutationVariables>;
+
+/**
+ * __useCreateCureMutation__
+ *
+ * To run a mutation, you first call `useCreateCureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCureMutation, { data, loading, error }] = useCreateCureMutation({
+ *   variables: {
+ *      cure: // value for 'cure'
+ *   },
+ * });
+ */
+export function useCreateCureMutation(baseOptions?: Apollo.MutationHookOptions<CreateCureMutation, CreateCureMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCureMutation, CreateCureMutationVariables>(CreateCureDocument, options);
+      }
+export type CreateCureMutationHookResult = ReturnType<typeof useCreateCureMutation>;
+export type CreateCureMutationResult = Apollo.MutationResult<CreateCureMutation>;
+export type CreateCureMutationOptions = Apollo.BaseMutationOptions<CreateCureMutation, CreateCureMutationVariables>;
 export const CreateTreatmentDocument = gql`
     mutation CreateTreatment($treatment: TreatmentCreate!) {
   createTreatment(data: $treatment) {
@@ -2529,6 +2594,89 @@ export function useCreateTreatmentMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateTreatmentMutationHookResult = ReturnType<typeof useCreateTreatmentMutation>;
 export type CreateTreatmentMutationResult = Apollo.MutationResult<CreateTreatmentMutation>;
 export type CreateTreatmentMutationOptions = Apollo.BaseMutationOptions<CreateTreatmentMutation, CreateTreatmentMutationVariables>;
+export const CreateWalkDocument = gql`
+    mutation CreateWalk($walk: WalkCreate!) {
+  createWalk(data: $walk) {
+    success
+    error {
+      code
+      message
+    }
+    walk {
+      id
+      distance_km
+    }
+  }
+}
+    `;
+export type CreateWalkMutationFn = Apollo.MutationFunction<CreateWalkMutation, CreateWalkMutationVariables>;
+
+/**
+ * __useCreateWalkMutation__
+ *
+ * To run a mutation, you first call `useCreateWalkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWalkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWalkMutation, { data, loading, error }] = useCreateWalkMutation({
+ *   variables: {
+ *      walk: // value for 'walk'
+ *   },
+ * });
+ */
+export function useCreateWalkMutation(baseOptions?: Apollo.MutationHookOptions<CreateWalkMutation, CreateWalkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateWalkMutation, CreateWalkMutationVariables>(CreateWalkDocument, options);
+      }
+export type CreateWalkMutationHookResult = ReturnType<typeof useCreateWalkMutation>;
+export type CreateWalkMutationResult = Apollo.MutationResult<CreateWalkMutation>;
+export type CreateWalkMutationOptions = Apollo.BaseMutationOptions<CreateWalkMutation, CreateWalkMutationVariables>;
+export const CreateWalkRatingDocument = gql`
+    mutation CreateWalkRating($walkRating: WalkRatingCreate!) {
+  createWalkRating(data: $walkRating) {
+    success
+    error {
+      code
+      message
+    }
+    walk_rating {
+      id
+      type
+      rating
+    }
+  }
+}
+    `;
+export type CreateWalkRatingMutationFn = Apollo.MutationFunction<CreateWalkRatingMutation, CreateWalkRatingMutationVariables>;
+
+/**
+ * __useCreateWalkRatingMutation__
+ *
+ * To run a mutation, you first call `useCreateWalkRatingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWalkRatingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWalkRatingMutation, { data, loading, error }] = useCreateWalkRatingMutation({
+ *   variables: {
+ *      walkRating: // value for 'walkRating'
+ *   },
+ * });
+ */
+export function useCreateWalkRatingMutation(baseOptions?: Apollo.MutationHookOptions<CreateWalkRatingMutation, CreateWalkRatingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateWalkRatingMutation, CreateWalkRatingMutationVariables>(CreateWalkRatingDocument, options);
+      }
+export type CreateWalkRatingMutationHookResult = ReturnType<typeof useCreateWalkRatingMutation>;
+export type CreateWalkRatingMutationResult = Apollo.MutationResult<CreateWalkRatingMutation>;
+export type CreateWalkRatingMutationOptions = Apollo.BaseMutationOptions<CreateWalkRatingMutation, CreateWalkRatingMutationVariables>;
 export const UpdateTreatmentDocument = gql`
     mutation UpdateTreatment($id: ID!, $data: TreatmentUpdate!) {
   updateTreatment(id: $id, data: $data) {

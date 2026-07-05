@@ -47,8 +47,9 @@ export const EventDetails: React.FC<props> = () => {
 	});
 	useEffect(() => {
 		setPage({ visible: false, name: "" });
+		setEvent(undefined);
 		getEvent({ variables: { id } });
-	}, []);
+	}, [id]);
 
 	return (
 		<IonContent>
@@ -246,6 +247,18 @@ const Detail: React.FC<detailProps> = ({ event, onSaved }) => {
 	const pet = event.health_card?.pet;
 	const logs = (event.logs ?? []).filter(Boolean);
 
+	// prev/next occurrence from the booster chain (related)
+	const related = (event.related ?? []).filter(
+		(r): r is NonNullable<typeof r> & { date: string } => !!r?.date
+	);
+	const current = dayjs(event.date);
+	const prev = related
+		.filter((r) => dayjs(r.date).isBefore(current))
+		.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())[0];
+	const next = related
+		.filter((r) => dayjs(r.date).isAfter(current))
+		.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())[0];
+
 	return (
 		<>
 			<Header>
@@ -273,6 +286,46 @@ const Detail: React.FC<detailProps> = ({ event, onSaved }) => {
 						<Chevron name="chevronForward" color="medium" />
 					</CardValueRow>
 				</Card>
+
+				{(prev || next) && (
+					<RecurrenceCard>
+						<CardLabel>{t("events.recurrences")}</CardLabel>
+						{prev && (
+							<RecurrenceRow
+								role="button"
+								tabIndex={0}
+								onClick={() =>
+									history.push(`/events/${prev.id}`)
+								}
+							>
+								<RecurrenceName>
+									{t("events.previous")}
+								</RecurrenceName>
+								<CardValue>
+									{dayjs(prev.date).format("dddd ll, HH:mm")}
+								</CardValue>
+								<Chevron name="chevronForward" color="medium" />
+							</RecurrenceRow>
+						)}
+						{next && (
+							<RecurrenceRow
+								role="button"
+								tabIndex={0}
+								onClick={() =>
+									history.push(`/events/${next.id}`)
+								}
+							>
+								<RecurrenceName>
+									{t("events.next")}
+								</RecurrenceName>
+								<CardValue>
+									{dayjs(next.date).format("dddd ll, HH:mm")}
+								</CardValue>
+								<Chevron name="chevronForward" color="medium" />
+							</RecurrenceRow>
+						)}
+					</RecurrenceCard>
+				)}
 
 				<NotesCard role="button" tabIndex={0} onClick={openNotesEdit}>
 					<NotesHead>
@@ -430,6 +483,38 @@ const CardValue = styled.span`
 	font-size: 1.9rem;
 	font-weight: 700;
 	word-break: break-word;
+`;
+
+const RecurrenceCard = styled(Card)`
+	cursor: default;
+	gap: ${$uw(1)};
+	&:active,
+	@media (hover: hover) {
+		&:hover {
+			border-color: rgba(255, 255, 255, 0.12);
+		}
+	}
+`;
+
+const RecurrenceRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${$uw(1)};
+	padding: ${$uw(0.5)} 0;
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+	cursor: pointer;
+	> *:nth-child(2) {
+		margin-left: auto;
+	}
+	&:active {
+		opacity: 0.7;
+	}
+`;
+
+const RecurrenceName = styled.span`
+	font-size: 1.5rem;
+	color: ${$color("medium")};
 `;
 
 const NotesCard = styled(Card)`

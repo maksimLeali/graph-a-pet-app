@@ -9,11 +9,11 @@ export const BottomMenu= () => {
 
 	const {fade} = useUserContext()
     const menuItems: { to: string; icon: IconName }[] = [
-		{ to: "/home", icon: "home" },
+		{ to: "/home", icon: "heartHalf" },
 		{ to: "/pets", icon: "paw" },
 		{ to: "/board", icon: "warning" },
 		{ to: "/events", icon: "calendar" },
-		{ to: "/shelters", icon: "business" },
+		{ to: "/shelters", icon: "home" },
 	];
 	return (
 		<Container fade={fade}>
