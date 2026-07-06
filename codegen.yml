@@ -1,5 +1,5 @@
 # codegen.yml
-schema: "./graphql-schema.json"
+schema: "./graphql-schema.graphql"
 documents:
   - "src/**/*.graphql"
   - "src/**/*.{ts,tsx}"

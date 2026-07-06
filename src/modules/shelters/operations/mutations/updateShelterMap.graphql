@@ -1,0 +1,12 @@
+mutation updateShelterMap($id: ID!, $data: ShelterMapUpdate!) {
+	updateShelterMap(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		map {
+			...FullShelterMap
+		}
+	}
+}

@@ -14,6 +14,7 @@ import { useListShelterMapsQuery } from "../operations/__generated__/listShelter
 import { useGetShelterMapLazyQuery } from "../operations/__generated__/getShelterMap.generated";
 import { useCreateShelterMapMutation } from "../operations/__generated__/createShelterMap.generated";
 import { useSaveShelterMapLayoutMutation } from "../operations/__generated__/saveShelterMapLayout.generated";
+import { useUpdateShelterMapMutation } from "../operations/__generated__/updateShelterMap.generated";
 import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
 import { useAssignPetToBoxMutation } from "../operations/__generated__/assignPetToBox.generated";
 import { useReleasePetFromBoxMutation } from "../operations/__generated__/releasePetFromBox.generated";
@@ -79,10 +80,17 @@ export const ShelterMapEditor: React.FC = () => {
 	const [boxes, setBoxes] = useState<LBox[]>([]);
 	const [elements, setElements] = useState<LElement[]>([]);
 	const [dims, setDims] = useState({ width: 20, height: 20 });
+	const savedDims = useRef({ width: 20, height: 20 });
 	const deleted = useRef({ areas: [] as string[], boxes: [] as string[], elements: [] as string[] });
 	const [editMode, setEditMode] = useState(false);
 	const [selectedKey, setSelectedKey] = useState<string | null>(null);
 	const [assignBoxKey, setAssignBoxKey] = useState<string | null>(null);
+	const [clipboard, setClipboard] = useState<
+		| { kind: "box"; data: LBox }
+		| { kind: "area"; data: LArea }
+		| { kind: "element"; data: LElement }
+		| null
+	>(null);
 	const initializedFor = useRef<string | null>(null);
 
 	const { data: mapsData, loading: mapsLoading } = useListShelterMapsQuery({
@@ -102,6 +110,7 @@ export const ShelterMapEditor: React.FC = () => {
 	});
 	const [createMap, { loading: creating }] = useCreateShelterMapMutation();
 	const [saveLayout, { loading: saving }] = useSaveShelterMapLayoutMutation();
+	const [updateMap, { loading: updatingMap }] = useUpdateShelterMapMutation();
 	const [assignPet] = useAssignPetToBoxMutation();
 	const [releasePet] = useReleasePetFromBoxMutation();
 
@@ -124,6 +133,26 @@ export const ShelterMapEditor: React.FC = () => {
 		setPage({ name: t("shelters.tabs.map") });
 	}, []);
 
+	// when map shrinks, clamp all shapes inside the new bounds
+	useEffect(() => {
+		const clamp = <
+			T extends { x: number; y: number; width: number; height: number }
+		>(
+			s: T
+		): T => {
+			const nw = Math.max(1, Math.min(s.width, dims.width));
+			const nh = Math.max(1, Math.min(s.height, dims.height));
+			const nx = Math.max(0, Math.min(s.x, dims.width - nw));
+			const ny = Math.max(0, Math.min(s.y, dims.height - nh));
+			if (nw === s.width && nh === s.height && nx === s.x && ny === s.y)
+				return s;
+			return { ...s, x: nx, y: ny, width: nw, height: nh };
+		};
+		setBoxes((arr) => arr.map(clamp));
+		setAreas((arr) => arr.map(clamp));
+		setElements((arr) => arr.map(clamp));
+	}, [dims.width, dims.height]);
+
 	// pick first map
 	const maps = (mapsData?.listShelterMaps?.items ?? []).filter(
 		(m): m is NonNullable<typeof m> => !!m
@@ -139,6 +168,7 @@ export const ShelterMapEditor: React.FC = () => {
 	const fetchedMap = mapData?.getShelterMap?.map;
 	const hydrate = (m: FullShelterMapFragment) => {
 		setDims({ width: m.width, height: m.height });
+		savedDims.current = { width: m.width, height: m.height };
 		setAreas(
 			(m.areas ?? []).map((a) => ({
 				key: a.id,
@@ -250,11 +280,79 @@ export const ShelterMapEditor: React.FC = () => {
 	}, [areas, boxes, elements]);
 
 	const dragShape = (key: string, dx: number, dy: number) => {
-		const upd = <T extends { key: string; x: number; y: number }>(arr: T[]) =>
-			arr.map((s) => (s.key === key ? { ...s, x: s.x + dx, y: s.y + dy } : s));
+		const upd = <
+			T extends { key: string; x: number; y: number; width: number; height: number }
+		>(
+			arr: T[]
+		) =>
+			arr.map((s) =>
+				s.key === key
+					? { ...s, ...clampToMap(s.x + dx, s.y + dy, s.width, s.height) }
+					: s
+			);
 		if (boxes.some((b) => b.key === key)) setBoxes(upd);
 		else if (areas.some((a) => a.key === key)) setAreas(upd);
 		else setElements(upd);
+	};
+
+	const moveShape = (key: string, x: number, y: number) => {
+		const upd = <
+			T extends { key: string; x: number; y: number; width: number; height: number }
+		>(
+			arr: T[]
+		) =>
+			arr.map((s) =>
+				s.key === key ? { ...s, ...clampToMap(x, y, s.width, s.height) } : s
+			);
+		if (boxes.some((b) => b.key === key)) setBoxes(upd);
+		else if (areas.some((a) => a.key === key)) setAreas(upd);
+		else setElements(upd);
+	};
+
+	const resizeShape = (
+		key: string,
+		next: { x: number; y: number; width: number; height: number }
+	) => {
+		const clamped = clampToMap(next.x, next.y, next.width, next.height);
+		const upd = <
+			T extends { key: string; x: number; y: number; width: number; height: number }
+		>(
+			arr: T[]
+		) => arr.map((s) => (s.key === key ? { ...s, ...clamped } : s));
+		if (boxes.some((b) => b.key === key)) setBoxes(upd);
+		else if (areas.some((a) => a.key === key)) setAreas(upd);
+		else setElements(upd);
+	};
+
+	const updateSelectedSize = (patch: { width?: number; height?: number }) => {
+		if (!selectedKey) return;
+		const apply = <
+			T extends { key: string; x: number; y: number; width: number; height: number }
+		>(
+			arr: T[]
+		) =>
+			arr.map((s) => {
+				if (s.key !== selectedKey) return s;
+				const nw = Math.max(1, patch.width ?? s.width);
+				const nh = Math.max(1, patch.height ?? s.height);
+				return { ...s, ...clampToMap(s.x, s.y, nw, nh) };
+			});
+		if (boxes.some((b) => b.key === selectedKey)) setBoxes(apply);
+		else if (areas.some((a) => a.key === selectedKey)) setAreas(apply);
+		else setElements(apply);
+	};
+
+	const clampToMap = (
+		x: number,
+		y: number,
+		w: number,
+		h: number
+	): { x: number; y: number; width: number; height: number } => {
+		const nw = Math.max(1, Math.min(w, dims.width));
+		const nh = Math.max(1, Math.min(h, dims.height));
+		const nx = Math.max(0, Math.min(x, dims.width - nw));
+		const ny = Math.max(0, Math.min(y, dims.height - nh));
+		return { x: nx, y: ny, width: nw, height: nh };
 	};
 
 	const addBox = () => {
@@ -336,8 +434,131 @@ export const ShelterMapEditor: React.FC = () => {
 		setSelectedKey(null);
 	};
 
+	const getSelected = ():
+		| { kind: "box"; data: LBox }
+		| { kind: "area"; data: LArea }
+		| { kind: "element"; data: LElement }
+		| null => {
+		if (!selectedKey) return null;
+		const b = boxes.find((x) => x.key === selectedKey);
+		if (b) return { kind: "box", data: b };
+		const a = areas.find((x) => x.key === selectedKey);
+		if (a) return { kind: "area", data: a };
+		const e = elements.find((x) => x.key === selectedKey);
+		if (e) return { kind: "element", data: e };
+		return null;
+	};
+
+	const onCopy = () => {
+		const sel = getSelected();
+		if (!sel) return;
+		setClipboard(sel);
+		toast.success(t("shelters.map.copied") ?? "Copied");
+	};
+
+	const onCut = () => {
+		const sel = getSelected();
+		if (!sel) return;
+		setClipboard(sel);
+		deleteSelected();
+	};
+
+	const onPaste = () => {
+		if (!clipboard) return;
+		const OFFSET = 1;
+		if (clipboard.kind === "box") {
+			const src = clipboard.data;
+			const pos = clampToMap(
+				src.x + OFFSET,
+				src.y + OFFSET,
+				src.width,
+				src.height
+			);
+			const k = tmpKey("box");
+			setBoxes((arr) => [
+				...arr,
+				{
+					...src,
+					key: k,
+					id: undefined,
+					x: pos.x,
+					y: pos.y,
+					width: pos.width,
+					height: pos.height,
+					occupants: [],
+					status: "FREE",
+					is_out_of_service: false,
+				},
+			]);
+			setSelectedKey(k);
+		} else if (clipboard.kind === "area") {
+			const src = clipboard.data;
+			const pos = clampToMap(
+				src.x + OFFSET,
+				src.y + OFFSET,
+				src.width,
+				src.height
+			);
+			const k = tmpKey("area");
+			setAreas((arr) => [
+				...arr,
+				{
+					...src,
+					key: k,
+					id: undefined,
+					x: pos.x,
+					y: pos.y,
+					width: pos.width,
+					height: pos.height,
+				},
+			]);
+			setSelectedKey(k);
+		} else {
+			const src = clipboard.data;
+			const pos = clampToMap(
+				src.x + OFFSET,
+				src.y + OFFSET,
+				src.width,
+				src.height
+			);
+			const k = tmpKey("el");
+			setElements((arr) => [
+				...arr,
+				{
+					...src,
+					key: k,
+					id: undefined,
+					x: pos.x,
+					y: pos.y,
+					width: pos.width,
+					height: pos.height,
+				},
+			]);
+			setSelectedKey(k);
+		}
+	};
+
 	const onSave = async () => {
 		if (!mapId) return;
+		// persist map dims first if changed
+		if (
+			dims.width !== savedDims.current.width ||
+			dims.height !== savedDims.current.height
+		) {
+			const upd = await updateMap({
+				variables: {
+					id: mapId,
+					data: { width: dims.width, height: dims.height },
+				},
+			});
+			if (!upd.data?.updateShelterMap?.success) {
+				toast.error(
+					upd.data?.updateShelterMap?.error?.message ??
+						t("messages.errors.fetch")
+				);
+				return;
+			}
+		}
 		const res = await saveLayout({
 			variables: {
 				map_id: mapId,
@@ -450,7 +671,7 @@ export const ShelterMapEditor: React.FC = () => {
 	const assignBox = boxes.find((b) => b.key === assignBoxKey);
 
 	return (
-		<IonContent scrollY={false}>
+		<IonContent>
 			<Bar>
 				<Title>{fetchedMap?.name ?? t("shelters.tabs.map")}</Title>
 				<BarBtn
@@ -475,6 +696,12 @@ export const ShelterMapEditor: React.FC = () => {
 					onSelectShape={setSelectedKey}
 					onTapBox={(k) => setAssignBoxKey(k)}
 					onDragShape={dragShape}
+					onMoveShape={moveShape}
+					onResizeShape={resizeShape}
+					hasClipboard={!!clipboard}
+					onCopy={onCopy}
+					onCut={onCut}
+					onPaste={onPaste}
 				/>
 			)}
 
@@ -486,25 +713,64 @@ export const ShelterMapEditor: React.FC = () => {
 			</Legend>
 
 			{editMode && (
-				<Toolbar>
-					<ToolBtn onClick={addBox}>
-						<Icon name="cube" color="primary" size="22px" />
-						<span>{t("shelters.map.add_box")}</span>
-					</ToolBtn>
-					<ToolBtn onClick={addArea}>
-						<Icon name="square" color="primary" size="22px" />
-						<span>{t("shelters.map.add_area")}</span>
-					</ToolBtn>
-					<ToolBtn onClick={addElement}>
-						<Icon name="remove" color="primary" size="22px" />
-						<span>{t("shelters.map.add_element")}</span>
-					</ToolBtn>
-					<ToolBtn className="primary" onClick={onSave} disabled={saving}>
-						<Icon name="save" color="light" size="22px" />
-						<span>{t("shelters.map.save")}</span>
-					</ToolBtn>
-				</Toolbar>
+				<EditDock>
+					<Toolbar>
+						<ToolBtn onClick={addBox}>
+							<Icon name="cube" color="primary" size="22px" />
+							<span>{t("shelters.map.add_box")}</span>
+						</ToolBtn>
+						<ToolBtn onClick={addArea}>
+							<Icon name="square" color="primary" size="22px" />
+							<span>{t("shelters.map.add_area")}</span>
+						</ToolBtn>
+						<ToolBtn onClick={addElement}>
+							<Icon name="remove" color="primary" size="22px" />
+							<span>{t("shelters.map.add_element")}</span>
+						</ToolBtn>
+						<ToolBtn
+							className="primary"
+							onClick={onSave}
+							disabled={saving || updatingMap}
+						>
+							<Icon name="save" color="light" size="22px" />
+							<span>{t("shelters.map.save")}</span>
+						</ToolBtn>
+					</Toolbar>
+					<MapSettings>
+						<Field>
+							<label>{t("shelters.map.width")} (m)</label>
+							<input
+								type="number"
+								min={1}
+								step={0.5}
+								value={Number(dims.width.toFixed(2))}
+								onChange={(e) =>
+									setDims((d) => ({
+										...d,
+										width: Math.max(1, parseFloat(e.target.value) || 1),
+									}))
+								}
+							/>
+						</Field>
+						<Field>
+							<label>{t("shelters.map.height")} (m)</label>
+							<input
+								type="number"
+								min={1}
+								step={0.5}
+								value={Number(dims.height.toFixed(2))}
+								onChange={(e) =>
+									setDims((d) => ({
+										...d,
+										height: Math.max(1, parseFloat(e.target.value) || 1),
+									}))
+								}
+							/>
+						</Field>
+					</MapSettings>
+				</EditDock>
 			)}
+			{editMode && <DockSpacer />}
 
 			{/* edit props sheet */}
 			{editMode && selectedKey && (selBox || selArea || selEl) && (
@@ -513,6 +779,42 @@ export const ShelterMapEditor: React.FC = () => {
 						<b>{t("shelters.map.properties")}</b>
 						<Icon name="close" color="medium" onClick={() => setSelectedKey(null)} />
 					</SheetHead>
+					{(selBox || selArea || selEl) && (
+						<Row2>
+							<Field>
+								<label>{t("shelters.map.width")} (m)</label>
+								<input
+									type="number"
+									min={1}
+									step={0.5}
+									value={Number(
+										((selBox || selArea || selEl)!.width).toFixed(2)
+									)}
+									onChange={(e) =>
+										updateSelectedSize({
+											width: parseFloat(e.target.value) || 1,
+										})
+									}
+								/>
+							</Field>
+							<Field>
+								<label>{t("shelters.map.height")} (m)</label>
+								<input
+									type="number"
+									min={1}
+									step={0.5}
+									value={Number(
+										((selBox || selArea || selEl)!.height).toFixed(2)
+									)}
+									onChange={(e) =>
+										updateSelectedSize({
+											height: parseFloat(e.target.value) || 1,
+										})
+									}
+								/>
+							</Field>
+						</Row2>
+					)}
 					{selBox && (
 						<>
 							<Field>
@@ -662,11 +964,11 @@ const CreateMap: React.FC<{
 			</Field>
 			<Row2>
 				<Field>
-					<label>{t("shelters.map.width")}</label>
+					<label>{t("shelters.map.width")} (m)</label>
 					<input type="number" value={w} onChange={(e) => setW(e.target.value)} />
 				</Field>
 				<Field>
-					<label>{t("shelters.map.height")}</label>
+					<label>{t("shelters.map.height")} (m)</label>
 					<input type="number" value={h} onChange={(e) => setH(e.target.value)} />
 				</Field>
 			</Row2>
@@ -691,7 +993,7 @@ const Bar = styled.div`
 `;
 const Title = styled.h2`
 	margin: 0;
-	font-size: 1.8rem;
+	font-size: 1.4rem;
 	color: ${$color("primary")};
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -736,13 +1038,33 @@ const L = styled.span<{ $c: string }>`
 	}
 `;
 const Toolbar = styled.div`
-	position: sticky;
-	bottom: 0;
 	display: flex;
 	gap: ${$uw(0.75)};
 	padding: ${$uw(1)} 12px;
+`;
+const MapSettings = styled.div`
+	display: flex;
+	gap: ${$uw(0.75)};
+	padding: 0 12px ${$uw(1)};
+	justify-content: space-between;
+	> div {
+		width: 45%;
+	}
+`;
+const EditDock = styled.div`
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: ${$uw(6)};
+	z-index: 40;
+	max-width: var(--max-width);
+	margin: 0 auto;
 	background: ${$color("background")};
 	border-top: 1px solid rgba(var(--ion-color-primary-rgb), 0.15);
+	box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+`;
+const DockSpacer = styled.div`
+	height: ${$uw(20)};
 `;
 const ToolBtn = styled.button`
 	flex: 1 1 0;
@@ -779,7 +1101,7 @@ const Sheet = styled.div`
 	background: ${$color("background")};
 	border-radius: 18px 18px 0 0;
 	box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
-	padding: ${$uw(1.5)} ${$uw(1.5)} ${$uw(3)};
+	padding: ${$uw(1.5)} ${$uw(1.5)} ${$uw(7)};
 	display: flex;
 	flex-direction: column;
 	gap: ${$uw(1)};
@@ -791,7 +1113,7 @@ const SheetHead = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	> b {
-		font-size: 1.7rem;
+		font-size: 1.3rem;
 	}
 	> .icon-wrapper {
 		width: ${$uw(2.5)};
@@ -825,8 +1147,9 @@ const Field = styled.div`
 const Row2 = styled.div`
 	display: flex;
 	gap: ${$uw(1)};
-	> * {
-		flex: 1 1 0;
+	justify-content: space-between;
+	> div {
+		width: 45%;
 	}
 `;
 const DangerBtn = styled.button`

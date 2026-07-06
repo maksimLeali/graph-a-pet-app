@@ -2926,6 +2926,14 @@ export type StartShelterWalkMutationVariables = Exact<{
 
 export type StartShelterWalkMutation = { __typename?: 'Mutation', startShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker: { __typename?: 'User', id: string, first_name: string, last_name: string }, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null } };
 
+export type UpdateShelterMapMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  data: ShelterMapUpdate;
+}>;
+
+
+export type UpdateShelterMapMutation = { __typename?: 'Mutation', updateShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
+
 export type GetShelterQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -5593,6 +5601,47 @@ export function useStartShelterWalkMutation(baseOptions?: Apollo.MutationHookOpt
 export type StartShelterWalkMutationHookResult = ReturnType<typeof useStartShelterWalkMutation>;
 export type StartShelterWalkMutationResult = Apollo.MutationResult<StartShelterWalkMutation>;
 export type StartShelterWalkMutationOptions = Apollo.BaseMutationOptions<StartShelterWalkMutation, StartShelterWalkMutationVariables>;
+export const UpdateShelterMapDocument = gql`
+    mutation updateShelterMap($id: ID!, $data: ShelterMapUpdate!) {
+  updateShelterMap(id: $id, data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    map {
+      ...FullShelterMap
+    }
+  }
+}
+    ${FullShelterMapFragmentDoc}`;
+export type UpdateShelterMapMutationFn = Apollo.MutationFunction<UpdateShelterMapMutation, UpdateShelterMapMutationVariables>;
+
+/**
+ * __useUpdateShelterMapMutation__
+ *
+ * To run a mutation, you first call `useUpdateShelterMapMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShelterMapMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShelterMapMutation, { data, loading, error }] = useUpdateShelterMapMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateShelterMapMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShelterMapMutation, UpdateShelterMapMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateShelterMapMutation, UpdateShelterMapMutationVariables>(UpdateShelterMapDocument, options);
+      }
+export type UpdateShelterMapMutationHookResult = ReturnType<typeof useUpdateShelterMapMutation>;
+export type UpdateShelterMapMutationResult = Apollo.MutationResult<UpdateShelterMapMutation>;
+export type UpdateShelterMapMutationOptions = Apollo.BaseMutationOptions<UpdateShelterMapMutation, UpdateShelterMapMutationVariables>;
 export const GetShelterDocument = gql`
     query getShelter($id: ID!) {
   getShelter(id: $id) {
