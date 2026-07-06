@@ -1,0 +1,12 @@
+mutation movePetBetweenBoxes($shelter_pet_id: ID!, $to_box_id: ID!, $reason: String) {
+	movePetBetweenBoxes(shelter_pet_id: $shelter_pet_id, to_box_id: $to_box_id, reason: $reason) {
+		success
+		error {
+			code
+			message
+		}
+		occupancy {
+			id
+		}
+	}
+}

@@ -1,0 +1,10 @@
+mutation deleteShelterWalk($id: ID!) {
+	deleteShelterWalk(id: $id) {
+		success
+		id
+		error {
+			code
+			message
+		}
+	}
+}

@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { useParams, useHistory } from "react-router";
+import { useParams, useHistory, useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
 import { Image2x, Chip, Icon } from "@components";
 import { I18NKey } from "@i18n";
-import { RoleLevel } from "@types";
+import { RoleLevel, UserRole } from "@types";
 import { $color, $uw } from "@theme";
 
 import { useGetShelterLazyQuery } from "../operations/__generated__/getShelter.generated";
+import { useGetShelterOperationalDashboardQuery } from "../operations/__generated__/getShelterOperationalDashboard.generated";
 import { useDeleteShelterRoleMutation } from "../operations/__generated__/deleteShelterRole.generated";
 import { FullShelterFragment } from "../operations/__generated__/FullShelter.generated";
 
@@ -33,6 +34,7 @@ export const ShelterDetail: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
+	const location = useLocation();
 
 	const [getShelter, { data, loading }] = useGetShelterLazyQuery({
 		fetchPolicy: "no-cache",
@@ -42,8 +44,14 @@ export const ShelterDetail: React.FC = () => {
 
 	useEffect(() => {
 		setPage({ name: t("pages.shelters") });
-		getShelter({ variables: { id } });
 	}, [id]);
+
+	// refetch a ogni ingresso nella pagina (es. ritorno da add-pet)
+	useEffect(() => {
+		if (location.pathname === `/shelters/detail/${id}`) {
+			getShelter({ variables: { id } });
+		}
+	}, [id, location.key]);
 
 	return (
 		<IonContent>
@@ -67,6 +75,13 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 	const { t } = useTranslation();
 	const history = useHistory();
 	const { openModal, closeModal } = useModal();
+	const { user } = useUserContext();
+
+	const { data: dashData } = useGetShelterOperationalDashboardQuery({
+		variables: { shelter_id: shelter.id },
+		fetchPolicy: "cache-and-network",
+	});
+	const dash = dashData?.getShelterOperationalDashboard?.dashboard;
 
 	const [deleteShelterRole] = useDeleteShelterRoleMutation({
 		onError: () => toast.error(t("messages.errors.fetch")),
@@ -91,6 +106,12 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 	const contacts = (shelter.contacts ?? []).filter(
 		(c): c is NonNullable<typeof c> => !!c?.value
 	);
+
+	const myRole = roles.find((r) => r.user.id === user.id)?.role;
+	const canManage =
+		user.role === UserRole.Admin ||
+		myRole === RoleLevel.Owner ||
+		myRole === RoleLevel.Manager;
 
 	const confirmRemove = (role: Role) => {
 		const name = `${role.user.first_name} ${role.user.last_name}`.trim();
@@ -126,9 +147,9 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 	return (
 		<>
 			<Header>
-				<IconBox>
-					<Icon name="home" color="light" />
-				</IconBox>
+				<House>
+					<Icon name="paw" color="light" />
+				</House>
 				<h2>{shelter.name}</h2>
 				{address && <SubText>{address}</SubText>}
 				{contacts.length > 0 && (
@@ -143,6 +164,74 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 					</Contacts>
 				)}
 			</Header>
+
+			<TabNav>
+				<Tab
+					type="button"
+					onClick={() =>
+						history.push(`/shelters/detail/${shelter.id}/tasks`)
+					}
+				>
+					<Icon name="checkboxOutline" color="primary" size="20px" />
+					<span>{t("shelters.tabs.tasks")}</span>
+				</Tab>
+				<Tab
+					type="button"
+					onClick={() =>
+						history.push(`/shelters/detail/${shelter.id}/walks`)
+					}
+				>
+					<Icon name="walkOutline" color="primary" size="20px" />
+					<span>{t("shelters.tabs.walks")}</span>
+				</Tab>
+				<Tab
+					type="button"
+					onClick={() =>
+						history.push(`/shelters/detail/${shelter.id}/inventory`)
+					}
+				>
+					<Icon name="cubeOutline" color="primary" size="20px" />
+					<span>{t("shelters.tabs.inventory")}</span>
+				</Tab>
+				<Tab
+					type="button"
+					onClick={() =>
+						history.push(`/shelters/detail/${shelter.id}/map`)
+					}
+				>
+					<Icon name="mapOutline" color="primary" size="20px" />
+					<span>{t("shelters.tabs.map")}</span>
+				</Tab>
+			</TabNav>
+
+			{dash && (
+				<Dashboard>
+					<Tile $accent="danger">
+						<b>{dash.tasks_overdue}</b>
+						<span>{t("shelters.dash.tasks_overdue")}</span>
+					</Tile>
+					<Tile>
+						<b>{dash.tasks_pending}</b>
+						<span>{t("shelters.dash.tasks_pending")}</span>
+					</Tile>
+					<Tile>
+						<b>{dash.walks_completed_today}</b>
+						<span>{t("shelters.dash.walks_today")}</span>
+					</Tile>
+					<Tile>
+						<b>{dash.pets_needing_walk}</b>
+						<span>{t("shelters.dash.pets_needing_walk")}</span>
+					</Tile>
+					<Tile>
+						<b>{dash.boxes_free}</b>
+						<span>{t("shelters.dash.boxes_free")}</span>
+					</Tile>
+					<Tile $accent={dash.low_stock_count > 0 ? "warning" : undefined}>
+						<b>{dash.low_stock_count}</b>
+						<span>{t("shelters.dash.low_stock")}</span>
+					</Tile>
+				</Dashboard>
+			)}
 
 			<Section>
 				<SectionTitle>
@@ -201,6 +290,17 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 				<SectionTitle>
 					{t("shelters.pets")}
 					<Count>{pets.length}</Count>
+					{canManage && (
+						<AddPetButton
+							type="button"
+							onClick={() =>
+								history.push(`/shelters/add-pet/${shelter.id}`)
+							}
+						>
+							<Icon name="add" color="light" size="16px" />
+							<span>{t("shelters.add_pet")}</span>
+						</AddPetButton>
+					)}
 				</SectionTitle>
 				{pets.length === 0 ? (
 					<Empty>{t("shelters.no_pets")}</Empty>
@@ -256,21 +356,19 @@ const Header = styled.div`
 	}
 `;
 
-const IconBox = styled.div`
+const House = styled.div`
 	width: ${$uw(6)};
 	height: ${$uw(6)};
-	border-radius: 20px;
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	justify-content: center;
-	background: linear-gradient(
-		135deg,
-		${$color("primary")},
-		${$color("secondary")}
-	);
+	padding-bottom: ${$uw(1)};
+	box-sizing: border-box;
+	clip-path: polygon(50% 0%, 100% 35%, 100% 100%, 0% 100%, 0% 35%);
+	background: ${$color("primary")};
 	> .icon {
-		width: ${$uw(3)};
-		height: ${$uw(3)};
+		width: ${$uw(2.5)};
+		height: ${$uw(2.5)};
 	}
 `;
 
@@ -308,12 +406,7 @@ const SectionTitle = styled.h3`
 		content: "";
 		flex: 1;
 		height: 2px;
-		border-radius: 2px;
-		background: linear-gradient(
-			90deg,
-			rgba(var(--ion-color-primary-rgb), 0.5),
-			transparent
-		);
+		background: rgba(var(--ion-color-primary-rgb), 0.25);
 	}
 `;
 
@@ -446,11 +539,7 @@ const PetImage = styled.div<{ $border?: string }>`
 	border-radius: 999px;
 	overflow: hidden;
 	background: ${({ $border }) =>
-		$border
-			? $color($border)
-			: `linear-gradient(135deg, ${$color("primary")}, ${$color(
-					"secondary"
-			  )})`};
+		$border ? $color($border) : $color("primary")};
 	> .img2x {
 		width: 100%;
 		height: 100%;
@@ -465,11 +554,7 @@ const PetFill = styled.span`
 	height: 100%;
 	display: block;
 	border-radius: 999px;
-	background: linear-gradient(
-		135deg,
-		${$color("primary")},
-		${$color("secondary")}
-	);
+	background: ${$color("primary")};
 `;
 
 const PetName = styled.span`
@@ -499,3 +584,88 @@ const ConfirmText = styled.p`
 	font-size: 1.6rem;
 	line-height: 1.4;
 `;
+
+const TabNav = styled.div`
+	display: flex;
+	gap: ${$uw(1)};
+	padding: ${$uw(1.5)} 12px 0;
+	overflow-x: auto;
+`;
+
+const Tab = styled.button`
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: ${$uw(0.5)};
+	padding: ${$uw(1)} ${$uw(1.5)};
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.25);
+	border-radius: 12px;
+	background: ${$color("background")};
+	color: ${$color("primary")};
+	font-size: 1.3rem;
+	font-weight: 700;
+	cursor: pointer;
+	&:active {
+		opacity: 0.7;
+	}
+	&.disabled {
+		color: ${$color("medium")};
+		border-color: rgba(var(--ion-color-medium-rgb), 0.25);
+		cursor: default;
+		opacity: 0.6;
+	}
+`;
+
+const Dashboard = styled.div`
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: ${$uw(1)};
+	padding: ${$uw(1.5)} 12px 0;
+`;
+
+const Tile = styled.div<{ $accent?: string }>`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: ${$uw(0.25)};
+	padding: ${$uw(1.25)} ${$uw(0.5)};
+	border-radius: 12px;
+	background: ${$color("background")};
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.15);
+	> b {
+		font-size: 2.2rem;
+		font-weight: 800;
+		color: ${({ $accent }) => $color($accent || "primary")};
+	}
+	> span {
+		font-size: 1.1rem;
+		text-align: center;
+		color: ${$color("medium")};
+		line-height: 1.2;
+	}
+`;
+
+const AddPetButton = styled.button`
+	order: 4;
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: ${$uw(0.5)};
+	padding: ${$uw(0.5)} ${$uw(1.25)};
+	border: none;
+	border-radius: 999px;
+	background: ${$color("primary")};
+	color: ${$color("light")};
+	font-size: 1.3rem;
+	font-weight: 700;
+	cursor: pointer;
+	> .icon {
+		width: ${$uw(1.6)};
+		height: ${$uw(1.6)};
+	}
+	&:active {
+		opacity: 0.7;
+	}
+`;
+

@@ -1,0 +1,12 @@
+mutation skipShelterTask($id: ID!, $reason: String) {
+	skipShelterTask(id: $id, reason: $reason) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_task {
+			...MinShelterTask
+		}
+	}
+}

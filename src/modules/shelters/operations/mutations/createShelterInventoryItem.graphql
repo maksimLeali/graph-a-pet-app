@@ -1,0 +1,12 @@
+mutation createShelterInventoryItem($data: ShelterInventoryItemCreate!) {
+	createShelterInventoryItem(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		item {
+			...MinInventoryItem
+		}
+	}
+}

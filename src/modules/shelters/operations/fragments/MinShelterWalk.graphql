@@ -1,0 +1,21 @@
+fragment MinShelterWalk on ShelterWalk {
+	id
+	status
+	scheduled_at
+	started_at
+	ended_at
+	duration_minutes
+	notes
+	walker {
+		id
+		first_name
+		last_name
+	}
+	shelter_pet {
+		id
+		pet {
+			id
+			name
+		}
+	}
+}

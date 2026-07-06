@@ -1,0 +1,10 @@
+fragment MinInventoryItem on ShelterInventoryItem {
+	id
+	name
+	category
+	unit
+	minimum_threshold
+	current_quantity
+	is_below_threshold
+	notes
+}

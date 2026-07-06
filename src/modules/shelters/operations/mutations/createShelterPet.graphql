@@ -1,0 +1,16 @@
+mutation createShelterPet($data: ShelterPetCreate!) {
+	createShelterPet(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_pet {
+			id
+			pet {
+				id
+				name
+			}
+		}
+	}
+}

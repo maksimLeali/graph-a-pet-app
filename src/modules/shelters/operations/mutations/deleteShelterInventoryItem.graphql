@@ -1,0 +1,10 @@
+mutation deleteShelterInventoryItem($id: ID!) {
+	deleteShelterInventoryItem(id: $id) {
+		success
+		id
+		error {
+			code
+			message
+		}
+	}
+}

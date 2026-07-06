@@ -1,0 +1,12 @@
+mutation releasePetFromBox($occupancy_id: ID!, $reason: String) {
+	releasePetFromBox(occupancy_id: $occupancy_id, reason: $reason) {
+		success
+		error {
+			code
+			message
+		}
+		occupancy {
+			id
+		}
+	}
+}

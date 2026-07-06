@@ -1,0 +1,16 @@
+query listPetsNeedingWalk($shelter_id: ID!, $hours: Int) {
+	listPetsNeedingWalk(shelter_id: $shelter_id, hours: $hours) {
+		items {
+			id
+			pet {
+				id
+				name
+			}
+		}
+		success
+		error {
+			code
+			message
+		}
+	}
+}

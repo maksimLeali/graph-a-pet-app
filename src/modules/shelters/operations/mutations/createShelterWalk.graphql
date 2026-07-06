@@ -1,0 +1,12 @@
+mutation createShelterWalk($data: ShelterWalkCreate!) {
+	createShelterWalk(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_walk {
+			...MinShelterWalk
+		}
+	}
+}

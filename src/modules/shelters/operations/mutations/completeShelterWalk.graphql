@@ -1,0 +1,12 @@
+mutation completeShelterWalk($id: ID!, $notes: String) {
+	completeShelterWalk(id: $id, notes: $notes) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_walk {
+			...MinShelterWalk
+		}
+	}
+}

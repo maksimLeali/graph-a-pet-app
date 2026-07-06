@@ -1,0 +1,18 @@
+query listShelterInventoryItems($commonSearch: CommonSearch) {
+	listShelterInventoryItems(commonSearch: $commonSearch) {
+		items {
+			...MinInventoryItem
+		}
+		success
+		error {
+			code
+			message
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

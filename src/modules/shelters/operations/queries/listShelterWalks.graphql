@@ -1,0 +1,18 @@
+query listShelterWalks($commonSearch: CommonSearch) {
+	listShelterWalks(commonSearch: $commonSearch) {
+		items {
+			...MinShelterWalk
+		}
+		success
+		error {
+			code
+			message
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

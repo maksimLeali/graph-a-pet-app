@@ -1,0 +1,12 @@
+mutation cancelShelterWalk($id: ID!, $reason: String) {
+	cancelShelterWalk(id: $id, reason: $reason) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_walk {
+			...MinShelterWalk
+		}
+	}
+}

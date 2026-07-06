@@ -1,4 +1,5 @@
 import { MinShelterFragment } from "@types";
+import { useUserContext } from "@contexts";
 import { useListSheltersQuery } from "../operations/__generated__/listShelters.generated";
 
 const PAGE_SIZE = 30;
@@ -8,13 +9,29 @@ export const useShelters = (): {
 	loading: boolean;
 	error?: string;
 } => {
+	const { user } = useUserContext();
+
 	const { data, loading } = useListSheltersQuery({
+		skip: !user.id,
 		variables: {
 			commonSearch: {
 				order_by: "name",
 				order_direction: "ASC",
 				page: 0,
 				page_size: PAGE_SIZE,
+				// solo shelter dove l'utente ha un ruolo (qualsiasi grado)
+				filters: {
+					join: [
+						{
+							key: "shelter_roles",
+							value: {
+								fixed: [
+									{ key: "user_id", value: user.id },
+								],
+							},
+						},
+					],
+				},
 			},
 		},
 	});

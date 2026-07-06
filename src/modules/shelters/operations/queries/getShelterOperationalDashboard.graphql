@@ -1,0 +1,25 @@
+query getShelterOperationalDashboard($shelter_id: ID!) {
+	getShelterOperationalDashboard(shelter_id: $shelter_id) {
+		success
+		error {
+			code
+			message
+		}
+		dashboard {
+			shelter_id
+			walks_completed_today
+			walks_planned_today
+			pets_needing_walk
+			tasks_pending
+			tasks_overdue
+			tasks_completed_today
+			boxes_total
+			boxes_free
+			boxes_occupied
+			boxes_full
+			boxes_out_of_service
+			pets_total
+			low_stock_count
+		}
+	}
+}

@@ -1,0 +1,13 @@
+mutation createPet($data: PetCreate!) {
+	createPet(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		pet {
+			id
+			name
+		}
+	}
+}

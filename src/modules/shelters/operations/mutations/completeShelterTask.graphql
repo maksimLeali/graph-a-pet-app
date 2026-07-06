@@ -1,0 +1,12 @@
+mutation completeShelterTask($id: ID!, $notes: String) {
+	completeShelterTask(id: $id, notes: $notes) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_task {
+			...MinShelterTask
+		}
+	}
+}

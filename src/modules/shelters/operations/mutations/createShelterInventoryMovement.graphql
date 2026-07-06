@@ -1,0 +1,14 @@
+mutation createShelterInventoryMovement($data: ShelterInventoryMovementCreate!) {
+	createShelterInventoryMovement(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		movement {
+			id
+			movement_type
+			quantity
+		}
+	}
+}

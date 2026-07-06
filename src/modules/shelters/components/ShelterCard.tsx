@@ -15,14 +15,13 @@ export const ShelterCard: React.FC<Props> = ({ shelter, onClick }) => {
 		.join(", ");
 	return (
 		<Card role="button" tabIndex={0} onClick={onClick}>
-			<IconBox>
-				<Icon name="home" color="light" />
-			</IconBox>
 			<Info>
 				<Name>{shelter.name}</Name>
 				{address && <Address>{address}</Address>}
 			</Info>
-			<Chevron name="chevronForward" color="medium" />
+			<House>
+				<Paw name="paw" color="light" />
+			</House>
 		</Card>
 	);
 };
@@ -50,25 +49,6 @@ const Card = styled.div`
 	}
 `;
 
-const IconBox = styled.div`
-	flex: 0 0 auto;
-	width: ${$uw(4)};
-	height: ${$uw(4)};
-	border-radius: 12px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: linear-gradient(
-		135deg,
-		${$color("primary")},
-		${$color("secondary")}
-	);
-	> .icon {
-		width: ${$uw(2)};
-		height: ${$uw(2)};
-	}
-`;
-
 const Info = styled.div`
 	flex: 1 1 auto;
 	min-width: 0;
@@ -89,9 +69,20 @@ const Address = styled.span`
 	word-break: break-word;
 `;
 
-const Chevron = styled(Icon)`
+const House = styled.div`
 	flex: 0 0 auto;
-	width: 18px;
-	height: 18px;
-	opacity: 0.6;
+	width: ${$uw(4.5)};
+	height: ${$uw(4.5)};
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	padding-bottom: ${$uw(0.7)};
+	box-sizing: border-box;
+	clip-path: polygon(50% 0%, 100% 35%, 100% 100%, 0% 100%, 0% 35%);
+	background: ${$color("primary")};
+`;
+
+const Paw = styled(Icon)`
+	width: ${$uw(1.9)};
+	height: ${$uw(1.9)};
 `;

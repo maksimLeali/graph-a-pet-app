@@ -1,0 +1,63 @@
+fragment FullShelterMap on ShelterMap {
+	id
+	name
+	width
+	height
+	unit
+	areas {
+		id
+		name
+		area_type
+		x
+		y
+		width
+		height
+		color
+	}
+	boxes {
+		id
+		label
+		x
+		y
+		width
+		height
+		rotation
+		capacity
+		status
+		is_out_of_service
+		area {
+			id
+		}
+		current_occupants {
+			id
+			pet {
+				id
+				name
+			}
+		}
+		occupancy_history {
+			items {
+				id
+				exited_at
+				shelter_pet {
+					id
+					pet {
+						id
+						name
+					}
+				}
+			}
+		}
+	}
+	elements {
+		id
+		element_type
+		x
+		y
+		width
+		height
+		rotation
+		color
+		label
+	}
+}

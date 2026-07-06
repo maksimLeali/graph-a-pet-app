@@ -1,0 +1,22 @@
+fragment MinShelterTask on ShelterTask {
+	id
+	task_type
+	area
+	status
+	scheduled_at
+	completed_at
+	is_recurring
+	notes
+	assigned_to {
+		id
+		first_name
+		last_name
+	}
+	shelter_pet {
+		id
+		pet {
+			id
+			name
+		}
+	}
+}

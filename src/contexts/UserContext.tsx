@@ -10,7 +10,7 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 import { useCookies } from "react-cookie";
 
-import { CustodyLevel } from "@types";
+import { CustodyLevel, UserRole } from "@types";
 
 import { Image2x } from "@components";
 import { MainMenu } from "@layouts/components";
@@ -36,7 +36,7 @@ export type IUserContext = {
     useCustomColors: boolean;
     user: Pick<
         MinUserFragment,
-        "first_name" | "last_name" | "email" | "profile_picture" | "id"
+        "first_name" | "last_name" | "email" | "profile_picture" | "id" | "role"
     >;
     handleGridVisibility: (v: boolean) => void;
     fadeBackground: (value: boolean) => void;
@@ -63,7 +63,7 @@ const defaultValue: IUserContext = {
     useCustomColors: true,
     reports: [],
     fade: false,
-    user: { email: "", first_name: "", last_name: "", id: "" },
+    user: { email: "", first_name: "", last_name: "", id: "", role: UserRole.User },
     handleGridVisibility: () => {},
     fadeBackground: () => {},
 };
@@ -202,6 +202,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
                 email: user?.email ?? "",
                 profile_picture: user?.profile_picture,
                 id: user?.id ?? "",
+                role: user?.role ?? UserRole.User,
             },
         }),
         [

@@ -1,0 +1,16 @@
+query listShelterPetsMin($commonSearch: CommonSearch) {
+	listShelterPets(commonSearch: $commonSearch) {
+		items {
+			id
+			pet {
+				id
+				name
+			}
+		}
+		success
+		error {
+			code
+			message
+		}
+	}
+}

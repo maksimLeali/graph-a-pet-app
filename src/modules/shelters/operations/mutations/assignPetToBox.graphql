@@ -1,0 +1,12 @@
+mutation assignPetToBox($box_id: ID!, $shelter_pet_id: ID!, $reason: String) {
+	assignPetToBox(box_id: $box_id, shelter_pet_id: $shelter_pet_id, reason: $reason) {
+		success
+		error {
+			code
+			message
+		}
+		occupancy {
+			id
+		}
+	}
+}

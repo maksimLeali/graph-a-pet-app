@@ -1,0 +1,16 @@
+query listShelterMaps($commonSearch: CommonSearch) {
+	listShelterMaps(commonSearch: $commonSearch) {
+		items {
+			id
+			name
+			width
+			height
+			unit
+		}
+		success
+		error {
+			code
+			message
+		}
+	}
+}

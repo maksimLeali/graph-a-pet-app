@@ -1,0 +1,12 @@
+mutation startShelterWalk($id: ID!) {
+	startShelterWalk(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_walk {
+			...MinShelterWalk
+		}
+	}
+}

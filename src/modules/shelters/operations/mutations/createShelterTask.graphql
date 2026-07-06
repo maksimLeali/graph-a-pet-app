@@ -1,0 +1,12 @@
+mutation createShelterTask($data: ShelterTaskCreate!) {
+	createShelterTask(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_task {
+			...MinShelterTask
+		}
+	}
+}

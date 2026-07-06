@@ -1,0 +1,12 @@
+mutation saveShelterMapLayout($map_id: ID!, $data: ShelterMapLayoutInput!) {
+	saveShelterMapLayout(map_id: $map_id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		map {
+			...FullShelterMap
+		}
+	}
+}

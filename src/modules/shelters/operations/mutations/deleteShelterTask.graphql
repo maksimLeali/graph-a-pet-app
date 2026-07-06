@@ -1,0 +1,10 @@
+mutation deleteShelterTask($id: ID!) {
+	deleteShelterTask(id: $id) {
+		success
+		id
+		error {
+			code
+			message
+		}
+	}
+}

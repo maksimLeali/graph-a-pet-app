@@ -1,2 +1,9 @@
 export { Shelters } from "./shelters";
 export { ShelterDetail } from "./ShelterDetail";
+export { AddShelterPet } from "./AddShelterPet";
+export { ShelterTasksList } from "./ShelterTasksList";
+export { AddShelterTask } from "./AddShelterTask";
+export { ShelterWalksList } from "./ShelterWalksList";
+export { ShelterInventory } from "./ShelterInventory";
+export { AddInventoryItem } from "./AddInventoryItem";
+export { ShelterMapEditor } from "./ShelterMapEditor";

@@ -1,0 +1,12 @@
+mutation createShelterMap($data: ShelterMapCreate!) {
+	createShelterMap(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		map {
+			...FullShelterMap
+		}
+	}
+}
