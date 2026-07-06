@@ -7,6 +7,8 @@ services:
         build:
             context: .
             target: development
+            args:
+                VITE_MEDIA_URL: ${VITE_MEDIA_URL}
         env_file:
             - .env
         volumes:

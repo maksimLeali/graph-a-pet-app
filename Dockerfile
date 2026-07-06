@@ -13,7 +13,11 @@ RUN yarn install --frozen-lockfile
 # 3) Copia tutto il codice
 COPY . .
 
-# 4) Introspect + generate + build
+# 4) Build-time env (Vite inlines VITE_* during build)
+ARG VITE_MEDIA_URL
+ENV VITE_MEDIA_URL=$VITE_MEDIA_URL
+
+# 5) Introspect + generate + build
 RUN yarn fetch:graphql \
  && yarn generate \
  && yarn build
