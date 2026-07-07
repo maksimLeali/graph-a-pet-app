@@ -62,10 +62,10 @@ type LElement = {
 };
 
 const STATUS_FILL: Record<string, string> = {
-	FREE: "#ffb74d",         // arancio chiaro — libero
-	OCCUPIED: "#81c784",     // verde chiaro — occupato
-	FULL: "#2e7d32",         // verde scuro — pieno
-	OUT_OF_SERVICE: "#e53935", // rosso — fuori servizio
+    FREE: "#ffb74d", // arancio chiaro — libero
+    OCCUPIED: "#81c784", // verde chiaro — occupato
+    FULL: "#2e7d32", // verde scuro — pieno
+    OUT_OF_SERVICE: "#e53935", // rosso — fuori servizio
 };
 
 let tmpCounter = 0;
