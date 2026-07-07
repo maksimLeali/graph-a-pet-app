@@ -1,4 +1,5 @@
 import { IonContent, IonRefresher, IonRefresherContent, RefresherEventDetail } from "@ionic/react";
+import { useLocation } from "react-router";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import { FormProvider, useForm } from "react-hook-form";
@@ -45,7 +46,7 @@ export const CalendarEvents: React.FC = () => {
 	);
 
 	const { t } = useTranslation();
-
+	const location = useLocation();
 
 	const [getMyAppointments, { loading }] =
 		useListMyTreatmentsLazyQuery({
@@ -100,13 +101,9 @@ export const CalendarEvents: React.FC = () => {
 				},
 			},
 			onCompleted: ({ listMyTreatments }) => {
-				if (
-					!listMyTreatments?.items?.length ||
-					listMyTreatments.error
-				) {
-					return;
-				}
-				setAppointments(listMyTreatments.items);
+				if (listMyTreatments?.error) return;
+				// sempre set (anche []) così eliminando l'ultimo evento la lista si svuota
+				setAppointments(listMyTreatments?.items ?? []);
 			},
 		});
 
@@ -318,8 +315,12 @@ export const CalendarEvents: React.FC = () => {
 
 	useEffect(() => {
 		setPage({ visible: true, name: "Events" });
-		getMyAppointments();
 	}, []);
+
+	// load su mount + a ogni navigazione (ritorno dal dettaglio dopo delete → lista fresca)
+	useEffect(() => {
+		getMyAppointments();
+	}, [location.key]);
 
 	const handleRefresh = (event: CustomEvent<RefresherEventDetail>) => {
 		setAppointments([])

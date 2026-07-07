@@ -2934,6 +2934,13 @@ export type UpdateShelterMapMutationVariables = Exact<{
 
 export type UpdateShelterMapMutation = { __typename?: 'Mutation', updateShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
 
+export type GetCurrentBoxForPetQueryVariables = Exact<{
+  shelter_pet_id: Scalars['ID']['input'];
+}>;
+
+
+export type GetCurrentBoxForPetQuery = { __typename?: 'Query', getCurrentBoxForPet: { __typename?: 'ShelterBoxResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, box?: { __typename?: 'ShelterBox', id: string, label: string, capacity: number, status: BoxStatus, map_id: string, area?: { __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, color?: string | null } | null } | null } };
+
 export type GetShelterQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -2954,6 +2961,13 @@ export type GetShelterOperationalDashboardQueryVariables = Exact<{
 
 
 export type GetShelterOperationalDashboardQuery = { __typename?: 'Query', getShelterOperationalDashboard: { __typename?: 'ShelterOperationalDashboardResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, dashboard?: { __typename?: 'ShelterOperationalDashboard', shelter_id: string, walks_completed_today: number, walks_planned_today: number, pets_needing_walk: number, tasks_pending: number, tasks_overdue: number, tasks_completed_today: number, boxes_total: number, boxes_free: number, boxes_occupied: number, boxes_full: number, boxes_out_of_service: number, pets_total: number, low_stock_count: number } | null } };
+
+export type GetShelterPetQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetShelterPetQuery = { __typename?: 'Query', getShelterPet: { __typename?: 'ShelterPetResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } };
 
 export type ListPetsNeedingWalkQueryVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
@@ -2982,7 +2996,14 @@ export type ListShelterPetsMinQueryVariables = Exact<{
 }>;
 
 
-export type ListShelterPetsMinQuery = { __typename?: 'Query', listShelterPets: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type ListShelterPetsMinQuery = { __typename?: 'Query', listShelterPets: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, gender?: Gender | null, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
+export type ListShelterRolesMinQueryVariables = Exact<{
+  commonSearch?: InputMaybe<CommonSearch>;
+}>;
+
+
+export type ListShelterRolesMinQuery = { __typename?: 'Query', listShelterRoles: { __typename?: 'PaginatedShelterRoles', success?: boolean | null, items: Array<{ __typename?: 'ShelterRole', id: string, role: RoleLevel, user: { __typename?: 'User', id: string } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export type ListShelterTasksQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
@@ -5642,6 +5663,63 @@ export function useUpdateShelterMapMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateShelterMapMutationHookResult = ReturnType<typeof useUpdateShelterMapMutation>;
 export type UpdateShelterMapMutationResult = Apollo.MutationResult<UpdateShelterMapMutation>;
 export type UpdateShelterMapMutationOptions = Apollo.BaseMutationOptions<UpdateShelterMapMutation, UpdateShelterMapMutationVariables>;
+export const GetCurrentBoxForPetDocument = gql`
+    query getCurrentBoxForPet($shelter_pet_id: ID!) {
+  getCurrentBoxForPet(shelter_pet_id: $shelter_pet_id) {
+    success
+    error {
+      code
+      message
+    }
+    box {
+      id
+      label
+      capacity
+      status
+      map_id
+      area {
+        id
+        name
+        area_type
+        color
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCurrentBoxForPetQuery__
+ *
+ * To run a query within a React component, call `useGetCurrentBoxForPetQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentBoxForPetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurrentBoxForPetQuery({
+ *   variables: {
+ *      shelter_pet_id: // value for 'shelter_pet_id'
+ *   },
+ * });
+ */
+export function useGetCurrentBoxForPetQuery(baseOptions: Apollo.QueryHookOptions<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables> & ({ variables: GetCurrentBoxForPetQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables>(GetCurrentBoxForPetDocument, options);
+      }
+export function useGetCurrentBoxForPetLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables>(GetCurrentBoxForPetDocument, options);
+        }
+export function useGetCurrentBoxForPetSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables>(GetCurrentBoxForPetDocument, options);
+        }
+export type GetCurrentBoxForPetQueryHookResult = ReturnType<typeof useGetCurrentBoxForPetQuery>;
+export type GetCurrentBoxForPetLazyQueryHookResult = ReturnType<typeof useGetCurrentBoxForPetLazyQuery>;
+export type GetCurrentBoxForPetSuspenseQueryHookResult = ReturnType<typeof useGetCurrentBoxForPetSuspenseQuery>;
+export type GetCurrentBoxForPetQueryResult = Apollo.QueryResult<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables>;
 export const GetShelterDocument = gql`
     query getShelter($id: ID!) {
   getShelter(id: $id) {
@@ -5796,6 +5874,57 @@ export type GetShelterOperationalDashboardQueryHookResult = ReturnType<typeof us
 export type GetShelterOperationalDashboardLazyQueryHookResult = ReturnType<typeof useGetShelterOperationalDashboardLazyQuery>;
 export type GetShelterOperationalDashboardSuspenseQueryHookResult = ReturnType<typeof useGetShelterOperationalDashboardSuspenseQuery>;
 export type GetShelterOperationalDashboardQueryResult = Apollo.QueryResult<GetShelterOperationalDashboardQuery, GetShelterOperationalDashboardQueryVariables>;
+export const GetShelterPetDocument = gql`
+    query getShelterPet($id: ID!) {
+  getShelterPet(id: $id) {
+    success
+    error {
+      code
+      message
+    }
+    shelter_pet {
+      id
+      pet {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetShelterPetQuery__
+ *
+ * To run a query within a React component, call `useGetShelterPetQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShelterPetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShelterPetQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShelterPetQuery(baseOptions: Apollo.QueryHookOptions<GetShelterPetQuery, GetShelterPetQueryVariables> & ({ variables: GetShelterPetQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShelterPetQuery, GetShelterPetQueryVariables>(GetShelterPetDocument, options);
+      }
+export function useGetShelterPetLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShelterPetQuery, GetShelterPetQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShelterPetQuery, GetShelterPetQueryVariables>(GetShelterPetDocument, options);
+        }
+export function useGetShelterPetSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetShelterPetQuery, GetShelterPetQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShelterPetQuery, GetShelterPetQueryVariables>(GetShelterPetDocument, options);
+        }
+export type GetShelterPetQueryHookResult = ReturnType<typeof useGetShelterPetQuery>;
+export type GetShelterPetLazyQueryHookResult = ReturnType<typeof useGetShelterPetLazyQuery>;
+export type GetShelterPetSuspenseQueryHookResult = ReturnType<typeof useGetShelterPetSuspenseQuery>;
+export type GetShelterPetQueryResult = Apollo.QueryResult<GetShelterPetQuery, GetShelterPetQueryVariables>;
 export const ListPetsNeedingWalkDocument = gql`
     query listPetsNeedingWalk($shelter_id: ID!, $hours: Int) {
   listPetsNeedingWalk(shelter_id: $shelter_id, hours: $hours) {
@@ -5960,6 +6089,14 @@ export const ListShelterPetsMinDocument = gql`
       pet {
         id
         name
+        gender
+        main_picture {
+          id
+          main_color {
+            color
+            contrast
+          }
+        }
       }
     }
     success
@@ -6003,6 +6140,57 @@ export type ListShelterPetsMinQueryHookResult = ReturnType<typeof useListShelter
 export type ListShelterPetsMinLazyQueryHookResult = ReturnType<typeof useListShelterPetsMinLazyQuery>;
 export type ListShelterPetsMinSuspenseQueryHookResult = ReturnType<typeof useListShelterPetsMinSuspenseQuery>;
 export type ListShelterPetsMinQueryResult = Apollo.QueryResult<ListShelterPetsMinQuery, ListShelterPetsMinQueryVariables>;
+export const ListShelterRolesMinDocument = gql`
+    query listShelterRolesMin($commonSearch: CommonSearch) {
+  listShelterRoles(commonSearch: $commonSearch) {
+    items {
+      id
+      role
+      user {
+        id
+      }
+    }
+    success
+    error {
+      code
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useListShelterRolesMinQuery__
+ *
+ * To run a query within a React component, call `useListShelterRolesMinQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListShelterRolesMinQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListShelterRolesMinQuery({
+ *   variables: {
+ *      commonSearch: // value for 'commonSearch'
+ *   },
+ * });
+ */
+export function useListShelterRolesMinQuery(baseOptions?: Apollo.QueryHookOptions<ListShelterRolesMinQuery, ListShelterRolesMinQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListShelterRolesMinQuery, ListShelterRolesMinQueryVariables>(ListShelterRolesMinDocument, options);
+      }
+export function useListShelterRolesMinLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListShelterRolesMinQuery, ListShelterRolesMinQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListShelterRolesMinQuery, ListShelterRolesMinQueryVariables>(ListShelterRolesMinDocument, options);
+        }
+export function useListShelterRolesMinSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListShelterRolesMinQuery, ListShelterRolesMinQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListShelterRolesMinQuery, ListShelterRolesMinQueryVariables>(ListShelterRolesMinDocument, options);
+        }
+export type ListShelterRolesMinQueryHookResult = ReturnType<typeof useListShelterRolesMinQuery>;
+export type ListShelterRolesMinLazyQueryHookResult = ReturnType<typeof useListShelterRolesMinLazyQuery>;
+export type ListShelterRolesMinSuspenseQueryHookResult = ReturnType<typeof useListShelterRolesMinSuspenseQuery>;
+export type ListShelterRolesMinQueryResult = Apollo.QueryResult<ListShelterRolesMinQuery, ListShelterRolesMinQueryVariables>;
 export const ListShelterTasksDocument = gql`
     query listShelterTasks($commonSearch: CommonSearch) {
   listShelterTasks(commonSearch: $commonSearch) {

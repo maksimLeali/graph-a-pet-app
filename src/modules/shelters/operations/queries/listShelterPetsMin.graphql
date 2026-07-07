@@ -5,6 +5,14 @@ query listShelterPetsMin($commonSearch: CommonSearch) {
 			pet {
 				id
 				name
+				gender
+				main_picture {
+					id
+					main_color {
+						color
+						contrast
+					}
+				}
 			}
 		}
 		success

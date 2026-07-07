@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { IonContent } from "@ionic/react";
-import { useParams, useHistory } from "react-router";
+import { useParams, useHistory, useLocation } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
@@ -45,6 +45,7 @@ export const PetProfile: React.FC = () => {
 	const { setPage } = useUserContext();
 	const [pet, setPet] = useState<FullPet>();
 	const { t } = useTranslation();
+	const location = useLocation();
 
 	const [getPet, { loading }] = useGetFullPetLazyQuery({
 		fetchPolicy: "no-cache",
@@ -65,13 +66,17 @@ export const PetProfile: React.FC = () => {
 
 	useEffect(() => {
 		setPage({ name: t("home.profile") });
-		loadPet();
 	}, []);
+
+	// load su mount + a ogni navigazione (ritorno da evento eliminato → eventi freschi)
+	useEffect(() => {
+		loadPet();
+	}, [id, location.key]);
 
 	return (
 		<IonContent>
 			{pet ? (
-				<Detail
+				<PetDetailBody
 					pet={pet}
 					reload={loadPet}
 					onSaved={(p) =>
@@ -92,6 +97,10 @@ type detailProps = {
 	pet: FullPet;
 	reload: () => void;
 	onSaved: (p: MinPetFragment) => void;
+	// sezione extra iniettata sotto l'header (es. collocazione shelter)
+	topSection?: React.ReactNode;
+	// dove tornare dopo l'eliminazione (default lista pet personali)
+	deleteRedirect?: string;
 };
 
 type EditableField = "name" | "gender" | "birthday" | "weight_kg" | "coat_length";
@@ -106,10 +115,17 @@ const walkRatingLabels: Record<WalkRatingType, string> = {
 
 type WalkRatingAvg = { type: WalkRatingType; rating: number };
 
-const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
+export const PetDetailBody: React.FC<detailProps> = ({
+	pet,
+	reload,
+	onSaved,
+	topSection,
+	deleteRedirect = "/pets",
+}) => {
 	const { t } = useTranslation();
 	const { t: breedT } = useTranslation("breeds");
 	const { openModal, closeModal } = useModal();
+	const { refetchDashboard } = useUserContext();
 	const history = useHistory();
 	const [imgOpen, setImgOpen] = useState(false);
 	const [walkRatings, setWalkRatings] = useState<WalkRatingAvg[]>([]);
@@ -255,8 +271,9 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 					return;
 				}
 				toast.success(t("messages.success.pet_deleted"));
+				refetchDashboard();
 				closeModal();
-				history.replace("/pets");
+				history.replace(deleteRedirect);
 			},
 			children: (
 				<ConfirmBox>
@@ -408,6 +425,8 @@ const Detail: React.FC<detailProps> = ({ pet, reload, onSaved }) => {
 					<span className="mainInfo">{pet.name}</span>
 				</NameRow>
 			</Header>
+
+			{topSection}
 
 			<Fields>
 				<Row

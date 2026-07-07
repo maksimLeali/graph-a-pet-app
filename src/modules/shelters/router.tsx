@@ -10,6 +10,7 @@ import {
 	ShelterInventory,
 	AddInventoryItem,
 	ShelterMapEditor,
+	ShelterPetDetail,
 } from ".";
 
 export const SheltersRouter = () => {
@@ -36,6 +37,9 @@ export const SheltersRouter = () => {
 			</Route>
 			<Route exact path={`${path}/detail/:id/map`}>
 				<ShelterMapEditor />
+			</Route>
+			<Route exact path={`${path}/detail/:id/pet/:petId`}>
+				<ShelterPetDetail />
 			</Route>
 			<Route exact path={`${path}/detail/:id`}>
 				<ShelterDetail />

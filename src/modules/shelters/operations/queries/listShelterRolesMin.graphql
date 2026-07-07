@@ -1,0 +1,16 @@
+query listShelterRolesMin($commonSearch: CommonSearch) {
+	listShelterRoles(commonSearch: $commonSearch) {
+		items {
+			id
+			role
+			user {
+				id
+			}
+		}
+		success
+		error {
+			code
+			message
+		}
+	}
+}

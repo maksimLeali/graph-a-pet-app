@@ -90,6 +90,7 @@ type WalkRatingItem = { type: WalkRatingType; rating: number };
 const Detail: React.FC<detailProps> = ({ event, onSaved }) => {
 	const { t } = useTranslation();
 	const { openModal, closeModal } = useModal();
+	const { refetchDashboard } = useUserContext();
 	const history = useHistory();
 
 	const [walkRatings, setWalkRatings] = useState<WalkRatingItem[]>([]);
@@ -185,6 +186,7 @@ const Detail: React.FC<detailProps> = ({ event, onSaved }) => {
 			return;
 		}
 		toast.success(t("messages.success.event_deleted"));
+		refetchDashboard();
 		closeModal();
 		const petId = event.health_card?.pet?.id;
 		history.replace(petId ? `/pets/detail/${petId}` : "/");

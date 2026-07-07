@@ -1,0 +1,22 @@
+query getCurrentBoxForPet($shelter_pet_id: ID!) {
+	getCurrentBoxForPet(shelter_pet_id: $shelter_pet_id) {
+		success
+		error {
+			code
+			message
+		}
+		box {
+			id
+			label
+			capacity
+			status
+			map_id
+			area {
+				id
+				name
+				area_type
+				color
+			}
+		}
+	}
+}

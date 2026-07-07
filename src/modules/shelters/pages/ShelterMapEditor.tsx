@@ -5,11 +5,13 @@ import { useParams } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
-import { useUserContext } from "@contexts";
+import { useUserContext, useModal } from "@contexts";
 import { Icon } from "@components";
 import { $color, $uw } from "@theme";
-import { AreaType, MapElementType } from "@types";
+import { AreaType, MapElementType, RoleLevel, UserRole } from "@types";
 import { MapCanvas, CanvasShape } from "../components/MapCanvas";
+import { AssignPetsModal, PickablePet } from "../components/AssignPetsModal";
+import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
 import { useGetShelterMapLazyQuery } from "../operations/__generated__/getShelterMap.generated";
 import { useCreateShelterMapMutation } from "../operations/__generated__/createShelterMap.generated";
@@ -44,7 +46,7 @@ type LBox = {
 	capacity: number;
 	status?: string;
 	is_out_of_service: boolean;
-	occupants: { occId: string; name: string }[];
+	occupants: { occId: string; shelterPetId: string; name: string }[];
 };
 type LElement = {
 	key: string;
@@ -73,7 +75,7 @@ const isTmp = (k: string) => k.startsWith("tmp_");
 export const ShelterMapEditor: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
-	const { setPage } = useUserContext();
+	const { setPage, user } = useUserContext();
 
 	const [mapId, setMapId] = useState<string | null>(null);
 	const [areas, setAreas] = useState<LArea[]>([]);
@@ -85,6 +87,9 @@ export const ShelterMapEditor: React.FC = () => {
 	const [editMode, setEditMode] = useState(false);
 	const [selectedKey, setSelectedKey] = useState<string | null>(null);
 	const [assignBoxKey, setAssignBoxKey] = useState<string | null>(null);
+	// resize mode (long-press): il props sheet resta a linguetta finché non lo apro
+	const [resizeModeKey, setResizeModeKey] = useState<string | null>(null);
+	const [propsPeekOpen, setPropsPeekOpen] = useState(false);
 	const [clipboard, setClipboard] = useState<
 		| { kind: "box"; data: LBox }
 		| { kind: "area"; data: LArea }
@@ -113,6 +118,7 @@ export const ShelterMapEditor: React.FC = () => {
 	const [updateMap, { loading: updatingMap }] = useUpdateShelterMapMutation();
 	const [assignPet] = useAssignPetToBoxMutation();
 	const [releasePet] = useReleasePetFromBoxMutation();
+	const { openModal, closeModal } = useModal();
 
 	const { data: petsData } = useListShelterPetsMinQuery({
 		skip: !id,
@@ -128,6 +134,28 @@ export const ShelterMapEditor: React.FC = () => {
 	const shelterPets = (petsData?.listShelterPets?.items ?? []).filter(
 		(p): p is NonNullable<typeof p> => !!p
 	);
+
+	// ruolo dell'utente su questo shelter → permessi
+	const { data: rolesData } = useListShelterRolesMinQuery({
+		skip: !id,
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				page: 0,
+				page_size: 200,
+				filters: { fixed: [{ key: "shelter_id", value: id }] },
+			},
+		},
+	});
+	const myRole = (rolesData?.listShelterRoles?.items ?? []).find(
+		(r) => r?.user?.id === user.id
+	)?.role;
+	const isAdmin = user.role === UserRole.Admin;
+	// edit mappa: solo owner/manager (+admin)
+	const canEdit =
+		isAdmin || myRole === RoleLevel.Owner || myRole === RoleLevel.Manager;
+	// assegnazione cani: owner/manager/staff (+admin)
+	const canAssign = canEdit || myRole === RoleLevel.Staff;
 
 	useEffect(() => {
 		setPage({ name: t("shelters.tabs.map") });
@@ -200,6 +228,7 @@ export const ShelterMapEditor: React.FC = () => {
 					.filter((o) => o && !o.exited_at)
 					.map((o) => ({
 						occId: o!.id,
+						shelterPetId: o!.shelter_pet?.id ?? "",
 						name: o!.shelter_pet?.pet?.name ?? "-",
 					})),
 			}))
@@ -538,6 +567,29 @@ export const ShelterMapEditor: React.FC = () => {
 		}
 	};
 
+	// area che contiene il centro del box; la più piccola se annidate.
+	// ritorna id reale o null (box fuori da ogni area). Se l'area contenitrice
+	// è nuova (tmp, ancora senza id) mantiene l'area_id precedente del box.
+	const areaIdForBox = (b: LBox): string | null => {
+		const cx = b.x + b.width / 2;
+		const cy = b.y + b.height / 2;
+		let best: LArea | null = null;
+		for (const a of areas) {
+			if (
+				cx >= a.x &&
+				cx <= a.x + a.width &&
+				cy >= a.y &&
+				cy <= a.y + a.height
+			) {
+				if (!best || a.width * a.height < best.width * best.height)
+					best = a;
+			}
+		}
+		if (!best) return null;
+		if (isTmp(best.key)) return b.area_id ?? null;
+		return best.id ?? null;
+	};
+
 	const onSave = async () => {
 		if (!mapId) return;
 		// persist map dims first if changed
@@ -575,7 +627,9 @@ export const ShelterMapEditor: React.FC = () => {
 					})),
 					boxes: boxes.map((b) => ({
 						id: isTmp(b.key) ? undefined : b.id,
-						area_id: b.area_id ?? undefined,
+						// ricalcolo l'area dalla posizione: sempre inviato (id o null)
+						// così spostando un box tra/fuori aree si aggiorna a DB
+						area_id: areaIdForBox(b),
 						label: b.label,
 						x: b.x,
 						y: b.y,
@@ -614,20 +668,6 @@ export const ShelterMapEditor: React.FC = () => {
 
 	const refreshMap = () => mapId && loadMap({ variables: { id: mapId } });
 
-	const doAssign = async (boxRealId: string, shelterPetId: string) => {
-		const res = await assignPet({
-			variables: { box_id: boxRealId, shelter_pet_id: shelterPetId },
-		});
-		if (!res.data?.assignPetToBox?.success) {
-			toast.error(
-				res.data?.assignPetToBox?.error?.message ?? t("messages.errors.fetch")
-			);
-			return;
-		}
-		toast.success(t("shelters.map.assigned_ok"));
-		setAssignBoxKey(null);
-		refreshMap();
-	};
 	const doRelease = async (occId: string) => {
 		const res = await releasePet({ variables: { occupancy_id: occId } });
 		if (!res.data?.releasePetFromBox?.success) {
@@ -639,8 +679,69 @@ export const ShelterMapEditor: React.FC = () => {
 		refreshMap();
 	};
 
-	// --- no map yet: create form ---
+	// assegna in blocco i pet selezionati nella modale
+	const doAssignMany = async (boxRealId: string, shelterPetIds: string[]) => {
+		const results = await Promise.all(
+			shelterPetIds.map((spId) =>
+				assignPet({
+					variables: { box_id: boxRealId, shelter_pet_id: spId },
+				})
+			)
+		);
+		const ok = results.every((r) => r.data?.assignPetToBox?.success);
+		if (!ok) {
+			toast.error(t("messages.errors.fetch"));
+		} else {
+			toast.success(t("shelters.map.assigned_ok"));
+		}
+		setAssignBoxKey(null);
+		refreshMap();
+	};
+
+	// apre la modale di scelta pet per un box (view mode)
+	const openAssignModal = (box: LBox) => {
+		const remaining = box.capacity - box.occupants.length;
+		const occupantIds = new Set(box.occupants.map((o) => o.shelterPetId));
+		const pickable: PickablePet[] = shelterPets
+			.filter((sp) => !occupantIds.has(sp.id))
+			.map((sp) => ({
+				id: sp.id,
+				name: sp.pet?.name ?? "-",
+				pictureId: sp.pet?.main_picture?.id,
+				borderColor: sp.pet?.main_picture?.main_color?.color,
+			}));
+		const selection = { current: [] as string[] };
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: async () => {
+				if (!box.id || selection.current.length === 0) {
+					closeModal();
+					return;
+				}
+				await doAssignMany(box.id, selection.current);
+				closeModal();
+			},
+			children: (
+				<AssignPetsModal
+					pets={pickable}
+					max={remaining}
+					onChange={(ids) => (selection.current = ids)}
+				/>
+			),
+		});
+	};
+
+	// --- no map yet ---
 	if (!mapsLoading && maps.length === 0 && !mapId) {
+		// solo owner/manager può crearla; gli altri vedono solo un messaggio
+		if (!canEdit) {
+			return (
+				<IonContent>
+					<NoMap>{t("shelters.map.no_map")}</NoMap>
+				</IonContent>
+			);
+		}
 		return (
 			<IonContent>
 				<CreateMap
@@ -674,16 +775,18 @@ export const ShelterMapEditor: React.FC = () => {
 		<IonContent>
 			<Bar>
 				<Title>{fetchedMap?.name ?? t("shelters.tabs.map")}</Title>
-				<BarBtn
-					className={editMode ? "on" : ""}
-					onClick={() => {
-						setEditMode((v) => !v);
-						setSelectedKey(null);
-					}}
-				>
-					<Icon name={editMode ? "eyeOutline" : "createOutline"} color="light" size="18px" />
-					<span>{editMode ? t("shelters.map.view") : t("shelters.map.edit")}</span>
-				</BarBtn>
+				{canEdit && (
+					<BarBtn
+						className={editMode ? "on" : ""}
+						onClick={() => {
+							setEditMode((v) => !v);
+							setSelectedKey(null);
+						}}
+					>
+						<Icon name={editMode ? "eyeOutline" : "createOutline"} color="light" size="18px" />
+						<span>{editMode ? t("shelters.map.view") : t("shelters.map.edit")}</span>
+					</BarBtn>
+				)}
 			</Bar>
 
 			{dims.width > 0 && (
@@ -694,7 +797,11 @@ export const ShelterMapEditor: React.FC = () => {
 					selectedKey={selectedKey}
 					editMode={editMode}
 					onSelectShape={setSelectedKey}
-					onTapBox={(k) => setAssignBoxKey(k)}
+					onResizeModeChange={(k) => {
+						setResizeModeKey(k);
+						setPropsPeekOpen(false);
+					}}
+					onTapBox={(k) => canAssign && setAssignBoxKey(k)}
 					onDragShape={dragShape}
 					onMoveShape={moveShape}
 					onResizeShape={resizeShape}
@@ -772,12 +879,34 @@ export const ShelterMapEditor: React.FC = () => {
 			)}
 			{editMode && <DockSpacer />}
 
+			{/* props sheet: in resize (long-press) resta a linguetta finché non lo apro */}
+			{editMode &&
+				selectedKey &&
+				(selBox || selArea || selEl) &&
+				resizeModeKey === selectedKey &&
+				!propsPeekOpen && (
+					<PropsPeek onClick={() => setPropsPeekOpen(true)}>
+						<PeekGrip />
+					</PropsPeek>
+				)}
+
 			{/* edit props sheet */}
-			{editMode && selectedKey && (selBox || selArea || selEl) && (
+			{editMode &&
+				selectedKey &&
+				(selBox || selArea || selEl) &&
+				(resizeModeKey !== selectedKey || propsPeekOpen) && (
 				<Sheet>
 					<SheetHead>
 						<b>{t("shelters.map.properties")}</b>
-						<Icon name="close" color="medium" onClick={() => setSelectedKey(null)} />
+						{resizeModeKey === selectedKey ? (
+							<Icon
+								name="chevronDownOutline"
+								color="medium"
+								onClick={() => setPropsPeekOpen(false)}
+							/>
+						) : (
+							<Icon name="close" color="medium" onClick={() => setSelectedKey(null)} />
+						)}
 					</SheetHead>
 					{(selBox || selArea || selEl) && (
 						<Row2>
@@ -925,19 +1054,10 @@ export const ShelterMapEditor: React.FC = () => {
 					) : assignBox.occupants.length >= assignBox.capacity ? (
 						<Hint>{t("shelters.map.box_full")}</Hint>
 					) : (
-						<>
-							<SheetSub>{t("shelters.map.assign_pet")}</SheetSub>
-							<PetPick>
-								{shelterPets.map((sp) => (
-									<PetChip
-										key={sp.id}
-										onClick={() => doAssign(assignBox.id!, sp.id)}
-									>
-										{sp.pet?.name ?? "-"}
-									</PetChip>
-								))}
-							</PetPick>
-						</>
+						<AssignBtn onClick={() => openAssignModal(assignBox)}>
+							<Icon name="add" color="light" />
+							<span>{t("shelters.map.assign_pet")}</span>
+						</AssignBtn>
 					)}
 				</Sheet>
 			)}
@@ -1108,6 +1228,32 @@ const Sheet = styled.div`
 	max-height: 60vh;
 	overflow-y: auto;
 `;
+const PropsPeek = styled.button`
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 50;
+	max-width: var(--max-width);
+	margin: 0 auto;
+	width: 100%;
+	border: none;
+	background: ${$color("background")};
+	border-radius: 18px 18px 0 0;
+	box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+	padding: ${$uw(0.75)} 0 ${$uw(1)};
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+`;
+const PeekGrip = styled.span`
+	width: ${$uw(6)};
+	height: 5px;
+	border-radius: 999px;
+	background: ${$color("medium")};
+	opacity: 0.6;
+`;
 const SheetHead = styled.div`
 	display: flex;
 	align-items: center;
@@ -1194,27 +1340,42 @@ const SmallBtn = styled.button<{ $c: string }>`
 	font-weight: 700;
 	cursor: pointer;
 `;
-const PetPick = styled.div`
+const AssignBtn = styled.button`
 	display: flex;
-	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
 	gap: ${$uw(0.75)};
-`;
-const PetChip = styled.button`
-	min-height: 40px;
-	padding: 0 ${$uw(1.25)};
-	border: 1px solid ${$color("primary")};
+	width: 100%;
+	min-height: 44px;
+	border: none;
 	border-radius: 999px;
-	background: ${$color("background")};
-	color: ${$color("primary")};
-	font-size: 1.4rem;
+	background: ${$color("primary")};
+	color: ${$color("light")};
+	font-size: 1.5rem;
 	font-weight: 700;
 	cursor: pointer;
+	transition: transform 0.15s ease;
+	> .icon {
+		width: ${$uw(1.75)};
+		height: ${$uw(1.75)};
+	}
+	&:active {
+		transform: scale(0.98);
+	}
 `;
 const Hint = styled.p`
 	margin: 0;
 	font-size: 1.3rem;
 	color: ${$color("medium")};
 	text-align: center;
+`;
+const NoMap = styled.div`
+	width: 100%;
+	padding: ${$uw(6)} ${$uw(2)};
+	box-sizing: border-box;
+	text-align: center;
+	color: ${$color("medium")};
+	font-size: 1.7rem;
 `;
 const CreateWrap = styled.div`
 	display: flex;

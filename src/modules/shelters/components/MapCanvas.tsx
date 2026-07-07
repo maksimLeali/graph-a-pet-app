@@ -26,6 +26,8 @@ type Props = {
 	selectedKey?: string | null;
 	editMode: boolean;
 	onSelectShape: (key: string | null) => void;
+	// notifica ingresso/uscita dalla modalità resize (long-press)
+	onResizeModeChange?: (key: string | null) => void;
 	onTapBox: (key: string) => void;
 	onDragShape: (key: string, dxMap: number, dyMap: number) => void;
 	onMoveShape?: (key: string, xMap: number, yMap: number) => void;
@@ -39,7 +41,15 @@ type Props = {
 	onPaste?: () => void;
 };
 
-type View = { scale: number; tx: number; ty: number };
+type View = { scale: number; tx: number; ty: number; rot: number };
+
+// rotate vector (x,y) by deg (SVG/screen: clockwise positive)
+const rotVec = (x: number, y: number, deg: number) => {
+	const r = (deg * Math.PI) / 180;
+	const c = Math.cos(r);
+	const s = Math.sin(r);
+	return { x: x * c - y * s, y: x * s + y * c };
+};
 const TAP_THRESHOLD = 8;
 const MIN_SCALE = 0.15;
 const MAX_SCALE = 8;
@@ -165,6 +175,7 @@ export const MapCanvas: React.FC<Props> = ({
 	selectedKey,
 	editMode,
 	onSelectShape,
+	onResizeModeChange,
 	onTapBox,
 	onDragShape,
 	onMoveShape,
@@ -175,9 +186,15 @@ export const MapCanvas: React.FC<Props> = ({
 	onPaste,
 }) => {
 	const wrapRef = useRef<HTMLDivElement>(null);
-	const [view, setView] = useState<View>({ scale: 1, tx: 0, ty: 0 });
+	const [view, setView] = useState<View>({ scale: 1, tx: 0, ty: 0, rot: 0 });
 	const viewRef = useRef(view);
 	viewRef.current = view;
+	// container size (px) for rotation center
+	const [size, setSize] = useState({ w: 0, h: 0 });
+	const centerNow = () => {
+		const r = wrapRef.current?.getBoundingClientRect();
+		return { x: (r?.width ?? 0) / 2, y: (r?.height ?? 0) / 2 };
+	};
 
 	const fitScaleRef = useRef<number>(1);
 	const [zoomOpen, setZoomOpen] = useState(false);
@@ -185,6 +202,11 @@ export const MapCanvas: React.FC<Props> = ({
 	const [resizeKey, setResizeKey] = useState<string | null>(null);
 	const resizeKeyRef = useRef<string | null>(null);
 	resizeKeyRef.current = resizeKey;
+
+	// notifica il parent quando entro/esco dalla modalità resize
+	useEffect(() => {
+		onResizeModeChange?.(resizeKey);
+	}, [resizeKey]);
 
 	// exit resize mode if selection cleared or changed to another shape
 	useEffect(() => {
@@ -203,6 +225,8 @@ export const MapCanvas: React.FC<Props> = ({
 		dragKey?: string;
 		startDist?: number;
 		startScale?: number;
+		startAngle?: number; // rad, between 2 pointers at pinch start
+		startRot?: number; // view rotation at pinch start
 		moved: number;
 		lastMid?: { x: number; y: number };
 		longPressTimer?: number;
@@ -238,12 +262,13 @@ export const MapCanvas: React.FC<Props> = ({
 		const el = wrapRef.current;
 		if (!el || !mapWidth || !mapHeight) return;
 		const rect = el.getBoundingClientRect();
+		setSize({ w: rect.width, h: rect.height });
 		const fit = Math.min(rect.width / mapWidth, rect.height / mapHeight);
 		fitScaleRef.current = fit;
 		const scale = fit * (DEFAULT_ZOOM_PCT / 100);
 		const tx = (rect.width - mapWidth * scale) / 2;
 		const ty = (rect.height - mapHeight * scale) / 2;
-		setView({ scale, tx, ty });
+		setView({ scale, tx, ty, rot: 0 });
 	}, [mapWidth, mapHeight]);
 
 	const zoomPercent = Math.round(
@@ -263,6 +288,7 @@ export const MapCanvas: React.FC<Props> = ({
 			);
 			const k = target / v.scale;
 			return {
+				...v,
 				scale: target,
 				tx: cx - (cx - v.tx) * k,
 				ty: cy - (cy - v.ty) * k,
@@ -291,6 +317,7 @@ export const MapCanvas: React.FC<Props> = ({
 				);
 				const k = target / v.scale;
 				return {
+					...v,
 					scale: target,
 					tx: px - (px - v.tx) * k,
 					ty: py - (py - v.ty) * k,
@@ -308,7 +335,13 @@ export const MapCanvas: React.FC<Props> = ({
 
 	const toMap = (sx: number, sy: number) => {
 		const v = viewRef.current;
-		return { x: (sx - v.tx) / v.scale, y: (sy - v.ty) / v.scale };
+		const c = centerNow();
+		// invert: screen = C + Rot(rot)*(scale*p + t - C)  →  p = (Rot(-rot)*(screen-C) + C - t)/scale
+		const u = rotVec(sx - c.x, sy - c.y, -v.rot);
+		return {
+			x: (u.x + c.x - v.tx) / v.scale,
+			y: (u.y + c.y - v.ty) / v.scale,
+		};
 	};
 
 	const hitTest = useCallback(
@@ -365,6 +398,8 @@ export const MapCanvas: React.FC<Props> = ({
 			g.mode = "pinch";
 			g.startDist = Math.hypot(a.x - b.x, a.y - b.y);
 			g.startScale = viewRef.current.scale;
+			g.startAngle = Math.atan2(b.y - a.y, b.x - a.x);
+			g.startRot = viewRef.current.rot;
 			g.lastMid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 			return;
 		}
@@ -442,6 +477,10 @@ export const MapCanvas: React.FC<Props> = ({
 			const [a, b] = [...pointers.current.values()];
 			const dist = Math.hypot(a.x - b.x, a.y - b.y);
 			const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+			const ang = Math.atan2(b.y - a.y, b.x - a.x);
+			const rot =
+				(g.startRot ?? 0) +
+				((ang - (g.startAngle ?? ang)) * 180) / Math.PI;
 			setView((v) => {
 				const target = Math.min(
 					MAX_SCALE,
@@ -455,7 +494,7 @@ export const MapCanvas: React.FC<Props> = ({
 					ty += mid.y - g.lastMid.y;
 				}
 				g.lastMid = mid;
-				return { scale: target, tx, ty };
+				return { scale: target, tx, ty, rot };
 			});
 			return;
 		}
@@ -470,8 +509,9 @@ export const MapCanvas: React.FC<Props> = ({
 			const scale = viewRef.current.scale;
 			const totalDxS = p.x - g.resizeStartPointer.x;
 			const totalDyS = p.y - g.resizeStartPointer.y;
-			const rot = g.resizeStart.rotation;
-			const rad = (-rot * Math.PI) / 180;
+			const shapeRot = g.resizeStart.rotation;
+			// screen→shape-local uses shape rotation + current view rotation
+			const rad = (-(shapeRot + viewRef.current.rot) * Math.PI) / 180;
 			const cos = Math.cos(rad);
 			const sin = Math.sin(rad);
 			const mDx = (totalDxS * cos - totalDyS * sin) / scale;
@@ -484,8 +524,8 @@ export const MapCanvas: React.FC<Props> = ({
 			// center shift in local (unrotated) space, so anchor edge stays fixed
 			const dAnchorLX = dw !== 0 ? (dw * appliedDW) / 2 : 0;
 			const dAnchorLY = dh !== 0 ? (dh * appliedDH) / 2 : 0;
-			// rotate back to world
-			const rrad = (rot * Math.PI) / 180;
+			// local→map-world uses ONLY shape rotation (box coords live in map space)
+			const rrad = (shapeRot * Math.PI) / 180;
 			const rcos = Math.cos(rrad);
 			const rsin = Math.sin(rrad);
 			const dCwX = dAnchorLX * rcos - dAnchorLY * rsin;
@@ -505,11 +545,16 @@ export const MapCanvas: React.FC<Props> = ({
 
 		if (g.mode === "drag" && g.dragKey) {
 			const s = viewRef.current.scale;
+			const rot = viewRef.current.rot;
 			if (onMoveShape && g.dragStartBounds && g.dragStartPointer) {
-				const rawX =
-					g.dragStartBounds.x + (p.x - g.dragStartPointer.x) / s;
-				const rawY =
-					g.dragStartBounds.y + (p.y - g.dragStartPointer.y) / s;
+				// convert screen delta to map delta accounting for view rotation
+				const dm = rotVec(
+					p.x - g.dragStartPointer.x,
+					p.y - g.dragStartPointer.y,
+					-rot
+				);
+				const rawX = g.dragStartBounds.x + dm.x / s;
+				const rawY = g.dragStartBounds.y + dm.y / s;
 				const w = g.dragStartBounds.width;
 				const h = g.dragStartBounds.height;
 				const snap = computeSnap(
@@ -526,13 +571,16 @@ export const MapCanvas: React.FC<Props> = ({
 				onMoveShape(g.dragKey, rawX + snap.dx, rawY + snap.dy);
 				setSnapLines({ v: snap.vGuides, h: snap.hGuides });
 			} else {
-				onDragShape(g.dragKey, dx / s, dy / s);
+				const dm = rotVec(dx, dy, -rot);
+				onDragShape(g.dragKey, dm.x / s, dm.y / s);
 			}
 			return;
 		}
 
 		if (g.mode === "pan") {
-			setView((v) => ({ ...v, tx: v.tx + dx, ty: v.ty + dy }));
+			// move map with finger even when view is rotated
+			const dm = rotVec(dx, dy, -viewRef.current.rot);
+			setView((v) => ({ ...v, tx: v.tx + dm.x, ty: v.ty + dm.y }));
 		}
 	};
 
@@ -580,13 +628,19 @@ export const MapCanvas: React.FC<Props> = ({
 				onPointerCancel={onPointerUp}
 				style={{ touchAction: "none", display: "block" }}
 			>
-				<g transform={`translate(${view.tx} ${view.ty}) scale(${view.scale})`}>
+				<g
+					transform={
+						`translate(${size.w / 2} ${size.h / 2}) rotate(${view.rot}) ` +
+						`translate(${-size.w / 2} ${-size.h / 2}) ` +
+						`translate(${view.tx} ${view.ty}) scale(${view.scale})`
+					}
+				>
 					<rect
 						x={0}
 						y={0}
 						width={mapWidth}
 						height={mapHeight}
-						fill="rgba(0,0,0,0.06)"
+						fill="#dfe4ea"
 						stroke="rgba(0,0,0,0.35)"
 						strokeWidth={1.5 / view.scale}
 					/>
@@ -729,6 +783,19 @@ export const MapCanvas: React.FC<Props> = ({
 			>
 				<Icon name="search" color="primary" size="20px" />
 			</ZoomBtn>
+			{Math.round(view.rot) % 360 !== 0 && (
+				<RotBtn
+					type="button"
+					aria-label="Reset rotation"
+					onClick={(e) => {
+						e.stopPropagation();
+						setView((v) => ({ ...v, rot: 0 }));
+					}}
+					onPointerDown={(e) => e.stopPropagation()}
+				>
+					<Icon name="refreshOutline" color="primary" size="18px" />
+				</RotBtn>
+			)}
 			{editMode && (onCopy || onCut || onPaste) && (
 				<ActionStack>
 					{onCopy && (
@@ -845,6 +912,24 @@ const Wrap = styled.div`
 const ZoomBtn = styled.button`
 	position: absolute;
 	top: 8px;
+	right: 8px;
+	z-index: 20;
+	width: 40px;
+	height: 40px;
+	border-radius: 999px;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	background: #fff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+	padding: 0;
+`;
+
+const RotBtn = styled.button`
+	position: absolute;
+	bottom: 8px;
 	right: 8px;
 	z-index: 20;
 	width: 40px;

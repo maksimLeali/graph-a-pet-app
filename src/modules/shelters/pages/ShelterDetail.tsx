@@ -312,7 +312,9 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 								role="button"
 								tabIndex={0}
 								onClick={() =>
-									history.push(`/pets/detail/${sp.pet.id}`)
+									history.push(
+										`/shelters/detail/${shelter.id}/pet/${sp.id}`
+									)
 								}
 							>
 								<PetImage

@@ -1,0 +1,16 @@
+query getShelterPet($id: ID!) {
+	getShelterPet(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_pet {
+			id
+			pet {
+				id
+				name
+			}
+		}
+	}
+}

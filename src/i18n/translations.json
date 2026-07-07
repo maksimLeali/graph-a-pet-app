@@ -366,6 +366,14 @@
 				"release": "Release",
 				"save_first": "Save the layout first",
 				"box_full": "Box is full"
+			},
+			"placement": {
+				"title": "Placement",
+				"area": "Area",
+				"box": "Box",
+				"status": "Status",
+				"not_placed": "Not placed in any box",
+				"open_map": "Open map"
 			}
 		}
 	},
@@ -748,6 +756,14 @@
 				"release": "Release",
 				"save_first": "Save the layout first",
 				"box_full": "Box is full"
+			},
+			"placement": {
+				"title": "Placement",
+				"area": "Area",
+				"box": "Box",
+				"status": "Status",
+				"not_placed": "Not placed in any box",
+				"open_map": "Open map"
 			}
 		}
 	},
@@ -1118,6 +1134,14 @@
 				"release": "Release",
 				"save_first": "Save the layout first",
 				"box_full": "Box is full"
+			},
+			"placement": {
+				"title": "Placement",
+				"area": "Area",
+				"box": "Box",
+				"status": "Status",
+				"not_placed": "Not placed in any box",
+				"open_map": "Open map"
 			}
 		}
 	},
@@ -1488,6 +1512,14 @@
 				"release": "Release",
 				"save_first": "Save the layout first",
 				"box_full": "Box is full"
+			},
+			"placement": {
+				"title": "Placement",
+				"area": "Area",
+				"box": "Box",
+				"status": "Status",
+				"not_placed": "Not placed in any box",
+				"open_map": "Open map"
 			}
 		}
 	},
@@ -1923,6 +1955,14 @@
 				"release": "Rilascia",
 				"save_first": "Salva prima il layout",
 				"box_full": "Box pieno"
+			},
+			"placement": {
+				"title": "Collocazione",
+				"area": "Area",
+				"box": "Box",
+				"status": "Stato",
+				"not_placed": "Non collocato in nessun box",
+				"open_map": "Apri mappa"
 			}
 		}
 	},
@@ -2303,6 +2343,14 @@
 				"release": "Release",
 				"save_first": "Save the layout first",
 				"box_full": "Box is full"
+			},
+			"placement": {
+				"title": "Placement",
+				"area": "Area",
+				"box": "Box",
+				"status": "Status",
+				"not_placed": "Not placed in any box",
+				"open_map": "Open map"
 			}
 		}
 	}
