@@ -13,8 +13,8 @@ export type CanvasShape = {
     rotation?: number;
     fill: string;
     stroke: string;
-    strokeWidth: number;
     label?: string;
+    strokeWidth: number;
     sub?: string;
     textColor?: string;
 };
