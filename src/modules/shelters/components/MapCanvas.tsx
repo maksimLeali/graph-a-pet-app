@@ -61,6 +61,7 @@ const DEFAULT_ZOOM_PCT = 80;
 const ZOOM_MIN_PCT = 25;
 const ZOOM_MAX_PCT = 400;
 const SNAP_PX = 8;
+const ROT_THRESHOLD_DEG = 8; // degrees of finger twist required before rotation starts
 
 type HandleName = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
 const HANDLES: HandleName[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
@@ -478,9 +479,12 @@ export const MapCanvas: React.FC<Props> = ({
 			const dist = Math.hypot(a.x - b.x, a.y - b.y);
 			const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 			const ang = Math.atan2(b.y - a.y, b.x - a.x);
+			const angleDeltaDeg = ((ang - (g.startAngle ?? ang)) * 180) / Math.PI;
 			const rot =
 				(g.startRot ?? 0) +
-				((ang - (g.startAngle ?? ang)) * 180) / Math.PI;
+				(Math.abs(angleDeltaDeg) > ROT_THRESHOLD_DEG
+					? angleDeltaDeg - Math.sign(angleDeltaDeg) * ROT_THRESHOLD_DEG
+					: 0);
 			setView((v) => {
 				const target = Math.min(
 					MAX_SCALE,

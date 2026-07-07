@@ -264,8 +264,8 @@ export const ShelterMapEditor: React.FC = () => {
 				kind: "area",
 				x: a.x,
 				y: a.y,
-				width: a.width,
-				height: a.height,
+				width: Math.max(1, a.width),
+				height: Math.max(1, a.height),
 				fill: a.color || "rgba(120,120,120,0.15)",
 				stroke: "rgba(0,0,0,0.25)",
 				strokeWidth: 1,
@@ -278,8 +278,8 @@ export const ShelterMapEditor: React.FC = () => {
 				kind: "element",
 				x: e.x,
 				y: e.y,
-				width: e.width,
-				height: e.height,
+				width: Math.max(1, e.width),
+				height: Math.max(1, e.height),
 				rotation: e.rotation,
 				fill: e.color || "#8d8d8d",
 				stroke: "rgba(0,0,0,0.3)",
@@ -294,8 +294,8 @@ export const ShelterMapEditor: React.FC = () => {
 				kind: "box",
 				x: b.x,
 				y: b.y,
-				width: b.width,
-				height: b.height,
+				width: Math.max(1, b.width),
+				height: Math.max(1, b.height),
 				rotation: b.rotation,
 				fill: STATUS_FILL[status] || STATUS_FILL.FREE,
 				stroke: "rgba(0,0,0,0.35)",
@@ -362,9 +362,9 @@ export const ShelterMapEditor: React.FC = () => {
 		) =>
 			arr.map((s) => {
 				if (s.key !== selectedKey) return s;
-				const nw = Math.max(1, patch.width ?? s.width);
-				const nh = Math.max(1, patch.height ?? s.height);
-				return { ...s, ...clampToMap(s.x, s.y, nw, nh) };
+				const nw = Math.max(0, patch.width ?? s.width);
+				const nh = Math.max(0, patch.height ?? s.height);
+				return { ...s, ...clampToMap(s.x, s.y, nw, nh, 0) };
 			});
 		if (boxes.some((b) => b.key === selectedKey)) setBoxes(apply);
 		else if (areas.some((a) => a.key === selectedKey)) setAreas(apply);
@@ -375,10 +375,11 @@ export const ShelterMapEditor: React.FC = () => {
 		x: number,
 		y: number,
 		w: number,
-		h: number
+		h: number,
+		minSize = 1
 	): { x: number; y: number; width: number; height: number } => {
-		const nw = Math.max(1, Math.min(w, dims.width));
-		const nh = Math.max(1, Math.min(h, dims.height));
+		const nw = Math.max(minSize, Math.min(w, dims.width));
+		const nh = Math.max(minSize, Math.min(h, dims.height));
 		const nx = Math.max(0, Math.min(x, dims.width - nw));
 		const ny = Math.max(0, Math.min(y, dims.height - nh));
 		return { x: nx, y: ny, width: nw, height: nh };
@@ -847,11 +848,11 @@ export const ShelterMapEditor: React.FC = () => {
 						<Field>
 							<label>{t("shelters.map.width")} (m)</label>
 							<input
+								key={`mw-${dims.width}`}
 								type="number"
-								min={1}
 								step={0.5}
-								value={Number(dims.width.toFixed(2))}
-								onChange={(e) =>
+								defaultValue={Number(dims.width.toFixed(2))}
+								onBlur={(e) =>
 									setDims((d) => ({
 										...d,
 										width: Math.max(1, parseFloat(e.target.value) || 1),
@@ -862,11 +863,11 @@ export const ShelterMapEditor: React.FC = () => {
 						<Field>
 							<label>{t("shelters.map.height")} (m)</label>
 							<input
+								key={`mh-${dims.height}`}
 								type="number"
-								min={1}
 								step={0.5}
-								value={Number(dims.height.toFixed(2))}
-								onChange={(e) =>
+								defaultValue={Number(dims.height.toFixed(2))}
+								onBlur={(e) =>
 									setDims((d) => ({
 										...d,
 										height: Math.max(1, parseFloat(e.target.value) || 1),
@@ -913,15 +914,15 @@ export const ShelterMapEditor: React.FC = () => {
 							<Field>
 								<label>{t("shelters.map.width")} (m)</label>
 								<input
+									key={`sw-${selectedKey}`}
 									type="number"
-									min={1}
 									step={0.5}
-									value={Number(
+									defaultValue={Number(
 										((selBox || selArea || selEl)!.width).toFixed(2)
 									)}
-									onChange={(e) =>
+									onBlur={(e) =>
 										updateSelectedSize({
-											width: parseFloat(e.target.value) || 1,
+											width: Math.max(1, parseFloat(e.target.value) || 1),
 										})
 									}
 								/>
@@ -929,15 +930,15 @@ export const ShelterMapEditor: React.FC = () => {
 							<Field>
 								<label>{t("shelters.map.height")} (m)</label>
 								<input
+									key={`sh-${selectedKey}`}
 									type="number"
-									min={1}
 									step={0.5}
-									value={Number(
+									defaultValue={Number(
 										((selBox || selArea || selEl)!.height).toFixed(2)
 									)}
-									onChange={(e) =>
+									onBlur={(e) =>
 										updateSelectedSize({
-											height: parseFloat(e.target.value) || 1,
+											height: Math.max(1, parseFloat(e.target.value) || 1),
 										})
 									}
 								/>
