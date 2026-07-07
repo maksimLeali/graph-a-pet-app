@@ -4,6 +4,15 @@ fragment FullShelterMap on ShelterMap {
 	width
 	height
 	unit
+	zones {
+		id
+		name
+		x
+		y
+		width
+		height
+		color
+	}
 	areas {
 		id
 		name
@@ -13,6 +22,9 @@ fragment FullShelterMap on ShelterMap {
 		width
 		height
 		color
+		zone {
+			id
+		}
 	}
 	boxes {
 		id
@@ -26,6 +38,9 @@ fragment FullShelterMap on ShelterMap {
 		status
 		is_out_of_service
 		area {
+			id
+		}
+		zone {
 			id
 		}
 		current_occupants {

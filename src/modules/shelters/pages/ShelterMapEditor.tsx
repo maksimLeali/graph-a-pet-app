@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
@@ -22,9 +22,20 @@ import { useAssignPetToBoxMutation } from "../operations/__generated__/assignPet
 import { useReleasePetFromBoxMutation } from "../operations/__generated__/releasePetFromBox.generated";
 import { FullShelterMapFragment } from "../operations/__generated__/FullShelterMap.generated";
 
+type LZone = {
+    key: string;
+    id?: string;
+    name: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color?: string | null;
+};
 type LArea = {
     key: string;
     id?: string;
+    zone_id?: string | null;
     name: string;
     area_type: AreaType;
     x: number;
@@ -36,6 +47,7 @@ type LArea = {
 type LBox = {
     key: string;
     id?: string;
+    zone_id?: string | null;
     area_id?: string | null;
     label: string;
     x: number;
@@ -71,25 +83,58 @@ const STATUS_FILL: Record<string, string> = {
 let tmpCounter = 0;
 const tmpKey = (p: string) => `tmp_${p}_${Date.now()}_${tmpCounter++}`;
 const isTmp = (k: string) => k.startsWith("tmp_");
+// uuid client-side per zone nuove: usato sia come key sia come id, così box/area
+// possono referenziarne lo zone_id nello stesso batch saveShelterMapLayout
+const genId = (): string =>
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `zid_${Date.now()}_${tmpCounter++}_${Math.random().toString(36).slice(2)}`;
+
+// naming per copia/incolla: se il nome finisce con un numero -> incrementa
+// (saltando gli esistenti), altrimenti aggiunge " 1", " 2", ...
+const nextName = (name: string, existing: string[]): string => {
+    const set = new Set(existing);
+    const m = name.match(/^(.*?)\s*(\d+)$/);
+    const base = ((m ? m[1] : name).trim() || name.trim() || "1");
+    let n = m ? parseInt(m[2], 10) + 1 : 1;
+    let candidate = `${base} ${n}`;
+    while (set.has(candidate)) {
+        n++;
+        candidate = `${base} ${n}`;
+    }
+    return candidate;
+};
 
 export const ShelterMapEditor: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    const history = useHistory();
     const { t } = useTranslation();
     const { setPage, user } = useUserContext();
 
     const [mapId, setMapId] = useState<string | null>(null);
+    const [zones, setZones] = useState<LZone[]>([]);
     const [areas, setAreas] = useState<LArea[]>([]);
     const [boxes, setBoxes] = useState<LBox[]>([]);
     const [elements, setElements] = useState<LElement[]>([]);
     const [dims, setDims] = useState({ width: 20, height: 20 });
     const savedDims = useRef({ width: 20, height: 20 });
     const deleted = useRef({
+        zones: [] as string[],
         areas: [] as string[],
         boxes: [] as string[],
         elements: [] as string[],
     });
     const [editMode, setEditMode] = useState(false);
     const [selectedKey, setSelectedKey] = useState<string | null>(null);
+    // zona attiva: box/area nuovi ci finiscono dentro (vincolo zone_id NOT NULL)
+    const [activeZoneKey, setActiveZoneKey] = useState<string | null>(null);
+    // "seleziona tutto" (default ON): spostando zona/area muove anche i contenuti;
+    // OFF → muove solo la singola entità selezionata
+    const [selectAll, setSelectAll] = useState(true);
+    // stato draft (modifiche non salvate, solo lato UI)
+    const [dirty, setDirty] = useState(false);
+    const snapshotRef = useRef("");
+    const rebaselineRef = useRef(false);
     const [assignBoxKey, setAssignBoxKey] = useState<string | null>(null);
     const [sheetOpen, setSheetOpen] = useState(false);
     const lastTapRef = useRef<{ key: string; time: number } | null>(null);
@@ -99,6 +144,7 @@ export const ShelterMapEditor: React.FC = () => {
     const [clipboard, setClipboard] = useState<
         | { kind: "box"; data: LBox }
         | { kind: "area"; data: LArea }
+        | { kind: "zone"; data: LZone }
         | { kind: "element"; data: LElement }
         | null
     >(null);
@@ -184,6 +230,7 @@ export const ShelterMapEditor: React.FC = () => {
         };
         setBoxes((arr) => arr.map(clamp));
         setAreas((arr) => arr.map(clamp));
+        setZones((arr) => arr.map(clamp));
         setElements((arr) => arr.map(clamp));
     }, [dims.width, dims.height]);
 
@@ -203,10 +250,23 @@ export const ShelterMapEditor: React.FC = () => {
     const hydrate = (m: FullShelterMapFragment) => {
         setDims({ width: m.width, height: m.height });
         savedDims.current = { width: m.width, height: m.height };
+        setZones(
+            (m.zones ?? []).map((z) => ({
+                key: z.id,
+                id: z.id,
+                name: z.name,
+                x: z.x,
+                y: z.y,
+                width: z.width,
+                height: z.height,
+                color: z.color,
+            })),
+        );
         setAreas(
             (m.areas ?? []).map((a) => ({
                 key: a.id,
                 id: a.id,
+                zone_id: a.zone?.id ?? null,
                 name: a.name,
                 area_type: a.area_type,
                 x: a.x,
@@ -220,6 +280,7 @@ export const ShelterMapEditor: React.FC = () => {
             (m.boxes ?? []).map((b) => ({
                 key: b.id,
                 id: b.id,
+                zone_id: b.zone?.id ?? null,
                 area_id: b.area?.id ?? null,
                 label: b.label,
                 x: b.x,
@@ -253,8 +314,64 @@ export const ShelterMapEditor: React.FC = () => {
                 label: e.label,
             })),
         );
-        deleted.current = { areas: [], boxes: [], elements: [] };
+        deleted.current = { zones: [], areas: [], boxes: [], elements: [] };
+        // prossimo passaggio dell'effetto dirty ricalcola la baseline (stato pulito)
+        rebaselineRef.current = true;
     };
+
+    // firma serializzata del layout: confronto con la baseline per stato dirty.
+    // esclude campi volatili (status/occupanti); include tutto ciò che si salva.
+    const serialize = () =>
+        JSON.stringify({
+            dims,
+            del: deleted.current,
+            zones: zones.map((z) => [
+                z.id,
+                z.name,
+                z.x,
+                z.y,
+                z.width,
+                z.height,
+                z.color,
+            ]),
+            areas: areas.map((a) => [
+                a.key,
+                a.id,
+                a.zone_id,
+                a.name,
+                a.area_type,
+                a.x,
+                a.y,
+                a.width,
+                a.height,
+                a.color,
+            ]),
+            boxes: boxes.map((b) => [
+                b.key,
+                b.id,
+                b.zone_id,
+                b.area_id,
+                b.label,
+                b.x,
+                b.y,
+                b.width,
+                b.height,
+                b.rotation,
+                b.capacity,
+            ]),
+            elements: elements.map((e) => [
+                e.key,
+                e.id,
+                e.element_type,
+                e.x,
+                e.y,
+                e.width,
+                e.height,
+                e.rotation,
+                e.color,
+                e.label,
+            ]),
+        });
     useEffect(() => {
         if (fetchedMap && initializedFor.current !== fetchedMap.id) {
             initializedFor.current = fetchedMap.id;
@@ -262,8 +379,78 @@ export const ShelterMapEditor: React.FC = () => {
         }
     }, [fetchedMap]);
 
+    // stato dirty: confronto la firma corrente con la baseline (post load/save).
+    // il primo giro dopo hydrate ribasa senza segnare dirty (evita falsi positivi
+    // dell'effetto di clamp che rigenera gli array senza cambi reali).
+    useEffect(() => {
+        const cur = serialize();
+        if (rebaselineRef.current) {
+            rebaselineRef.current = false;
+            snapshotRef.current = cur;
+            setDirty(false);
+            return;
+        }
+        setDirty(cur !== snapshotRef.current);
+    }, [zones, areas, boxes, elements, dims]);
+
+    // blocco navigazione react-router mentre draft: modale di conferma custom.
+    // block che ritorna false = transizione annullata senza confirm nativo.
+    useEffect(() => {
+        if (!dirty) return;
+        const unblock = history.block((location) => {
+            openModal({
+                onClose: closeModal,
+                onCancel: closeModal,
+                onConfirm: () => {
+                    closeModal();
+                    unblock();
+                    history.push(
+                        `${location.pathname}${location.search}${location.hash}`,
+                    );
+                },
+                children: (
+                    <ConfirmLeave>
+                        <h3>{t("shelters.map.unsaved_title")}</h3>
+                        <p>{t("shelters.map.unsaved_msg")}</p>
+                    </ConfirmLeave>
+                ),
+            });
+            return false;
+        });
+        return () => unblock();
+    }, [dirty, history]);
+
+    // refresh/chiusura tab del browser mentre draft
+    useEffect(() => {
+        if (!dirty) return;
+        const handler = (e: BeforeUnloadEvent) => {
+            e.preventDefault();
+            e.returnValue = "";
+        };
+        window.addEventListener("beforeunload", handler);
+        return () => window.removeEventListener("beforeunload", handler);
+    }, [dirty]);
+
+
     const shapes = useMemo<CanvasShape[]>(() => {
         const out: CanvasShape[] = [];
+        for (const z of zones)
+            out.push({
+                key: z.key,
+                kind: "zone",
+                x: z.x,
+                y: z.y,
+                width: Math.max(1, z.width),
+                height: Math.max(1, z.height),
+                fill: z.color || "rgba(63,81,181,0.08)",
+                stroke:
+                    z.key === activeZoneKey
+                        ? "rgba(63,81,181,0.9)"
+                        : "rgba(63,81,181,0.5)",
+                strokeWidth: z.key === activeZoneKey ? 3 : 2,
+                label: z.name,
+                textColor: "rgba(40,53,147,0.75)",
+            });
         for (const a of areas)
             out.push({
                 key: a.key,
@@ -317,59 +504,89 @@ export const ShelterMapEditor: React.FC = () => {
             });
         }
         return out;
-    }, [areas, boxes, elements]);
+    }, [zones, areas, boxes, elements, activeZoneKey]);
+
+    type RectShape = {
+        key: string;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    const findShape = (key: string): RectShape | undefined =>
+        boxes.find((b) => b.key === key) ||
+        areas.find((a) => a.key === key) ||
+        zones.find((z) => z.key === key) ||
+        elements.find((e) => e.key === key);
+
+    // il centro di s cade dentro il rettangolo r
+    const centerIn = (s: RectShape, r: RectShape): boolean => {
+        const cx = s.x + s.width / 2;
+        const cy = s.y + s.height / 2;
+        return (
+            cx >= r.x && cx <= r.x + r.width && cy >= r.y && cy <= r.y + r.height
+        );
+    };
+
+    // insieme di key da spostare insieme al primary. Con "seleziona tutto" (default
+    // ON): zona → sé + aree/box contenuti; area → sé + box contenuti. OFF o
+    // box/element → solo il primary.
+    const keysToMove = (key: string): Set<string> => {
+        if (!selectAll) return new Set([key]);
+        const z = zones.find((s) => s.key === key);
+        if (z) {
+            const ks = new Set([key]);
+            areas.forEach((a) => centerIn(a, z) && ks.add(a.key));
+            boxes.forEach((b) => centerIn(b, z) && ks.add(b.key));
+            return ks;
+        }
+        const a = areas.find((s) => s.key === key);
+        if (a) {
+            const ks = new Set([key]);
+            boxes.forEach((b) => centerIn(b, a) && ks.add(b.key));
+            return ks;
+        }
+        return new Set([key]);
+    };
+
+    // trasla tutte le key dell'insieme dello stesso delta (delta già clampato sul
+    // primary, i figli seguono senza riclampare per non deformare il gruppo)
+    const translateKeys = (keys: Set<string>, dx: number, dy: number) => {
+        if (dx === 0 && dy === 0) return;
+        const mv = <T extends RectShape>(arr: T[]) =>
+            arr.map((s) =>
+                keys.has(s.key) ? { ...s, x: s.x + dx, y: s.y + dy } : s,
+            );
+        setBoxes(mv);
+        setAreas(mv);
+        setZones(mv);
+        setElements(mv);
+    };
 
     const dragShape = (key: string, dx: number, dy: number) => {
-        const upd = <
-            T extends {
-                key: string;
-                x: number;
-                y: number;
-                width: number;
-                height: number;
-            },
-        >(
-            arr: T[],
-        ) =>
-            arr.map((s) =>
-                s.key === key
-                    ? {
-                          ...s,
-                          ...clampToMap(s.x + dx, s.y + dy, s.width, s.height),
-                      }
-                    : s,
-            );
-        if (boxes.some((b) => b.key === key)) setBoxes(upd);
-        else if (areas.some((a) => a.key === key)) setAreas(upd);
-        else setElements(upd);
+        const primary = findShape(key);
+        if (!primary) return;
+        const np = clampToMap(
+            primary.x + dx,
+            primary.y + dy,
+            primary.width,
+            primary.height,
+        );
+        translateKeys(keysToMove(key), np.x - primary.x, np.y - primary.y);
     };
 
     const moveShape = (key: string, x: number, y: number) => {
-        const upd = <
-            T extends {
-                key: string;
-                x: number;
-                y: number;
-                width: number;
-                height: number;
-            },
-        >(
-            arr: T[],
-        ) =>
-            arr.map((s) =>
-                s.key === key
-                    ? { ...s, ...clampToMap(x, y, s.width, s.height) }
-                    : s,
-            );
-        if (boxes.some((b) => b.key === key)) setBoxes(upd);
-        else if (areas.some((a) => a.key === key)) setAreas(upd);
-        else setElements(upd);
+        const primary = findShape(key);
+        if (!primary) return;
+        const np = clampToMap(x, y, primary.width, primary.height);
+        translateKeys(keysToMove(key), np.x - primary.x, np.y - primary.y);
     };
 
     const resizeShape = (
         key: string,
         next: { x: number; y: number; width: number; height: number },
     ) => {
+        // libero fino al save: nessun vincolo zona↔box in edit (solo il canvas)
         const clamped = clampToMap(next.x, next.y, next.width, next.height);
         const upd = <
             T extends {
@@ -384,6 +601,7 @@ export const ShelterMapEditor: React.FC = () => {
         ) => arr.map((s) => (s.key === key ? { ...s, ...clamped } : s));
         if (boxes.some((b) => b.key === key)) setBoxes(upd);
         else if (areas.some((a) => a.key === key)) setAreas(upd);
+        else if (zones.some((z) => z.key === key)) setZones(upd);
         else setElements(upd);
     };
 
@@ -404,10 +622,12 @@ export const ShelterMapEditor: React.FC = () => {
                 if (s.key !== selectedKey) return s;
                 const nw = Math.max(0, patch.width ?? s.width);
                 const nh = Math.max(0, patch.height ?? s.height);
+                // libero fino al save: nessun vincolo zona↔box in edit
                 return { ...s, ...clampToMap(s.x, s.y, nw, nh, 0) };
             });
         if (boxes.some((b) => b.key === selectedKey)) setBoxes(apply);
         else if (areas.some((a) => a.key === selectedKey)) setAreas(apply);
+        else if (zones.some((z) => z.key === selectedKey)) setZones(apply);
         else setElements(apply);
     };
 
@@ -425,17 +645,80 @@ export const ShelterMapEditor: React.FC = () => {
         return { x: nx, y: ny, width: nw, height: nh };
     };
 
+    // zona che contiene il centro del rettangolo; la più piccola se annidate
+    const zoneAt = (
+        x: number,
+        y: number,
+        w: number,
+        h: number,
+    ): LZone | null => {
+        const cx = x + w / 2;
+        const cy = y + h / 2;
+        let best: LZone | null = null;
+        for (const z of zones) {
+            if (
+                cx >= z.x &&
+                cx <= z.x + z.width &&
+                cy >= z.y &&
+                cy <= z.y + z.height
+            ) {
+                if (!best || z.width * z.height < best.width * best.height)
+                    best = z;
+            }
+        }
+        return best;
+    };
+
+    // dimensioni minime mappa: deve contenere tutte le zone come predisposte
+    const minMapDims = (): { width: number; height: number } => ({
+        width: Math.max(1, ...zones.map((z) => z.x + z.width)),
+        height: Math.max(1, ...zones.map((z) => z.y + z.height)),
+    });
+
+    // zona in cui inserire un nuovo box/area: attiva se valida, altrimenti
+    // quella al centro mappa, altrimenti la prima. null se non ci sono zone.
+    const targetZone = (): LZone | null => {
+        const active = zones.find((z) => z.key === activeZoneKey);
+        if (active) return active;
+        return zoneAt(0, 0, dims.width, dims.height) ?? zones[0] ?? null;
+    };
+
+    const addZone = () => {
+        const zid = genId();
+        setZones((z) => [
+            ...z,
+            {
+                key: zid,
+                id: zid,
+                name: nextName("Zona", z.map((x) => x.name)),
+                x: dims.width / 2 - 8,
+                y: dims.height / 2 - 8,
+                width: 16,
+                height: 16,
+                color: "rgba(63,81,181,0.08)",
+            },
+        ]);
+        setSelectedKey(zid);
+        setActiveZoneKey(zid);
+    };
+
     const addBox = () => {
+        const z = targetZone();
+        if (!z) {
+            toast.error(t("shelters.map.need_zone"));
+            return;
+        }
+        setActiveZoneKey(z.key);
         const k = tmpKey("box");
+        const cx = z.x + z.width / 2 - 3;
+        const cy = z.y + z.height / 2 - 3;
         setBoxes((b) => [
             ...b,
             {
                 key: k,
-                label: `Box ${b.length + 1}`,
-                x: dims.width / 2 - 3,
-                y: dims.height / 2 - 3,
-                width: 6,
-                height: 6,
+                zone_id: z.id,
+                label: nextName("Box", b.map((x) => x.label)),
+                ...clampToMap(cx, cy, 6, 6),
                 rotation: 0,
                 capacity: 1,
                 status: "FREE",
@@ -446,17 +729,23 @@ export const ShelterMapEditor: React.FC = () => {
         setSelectedKey(k);
     };
     const addArea = () => {
+        const z = targetZone();
+        if (!z) {
+            toast.error(t("shelters.map.need_zone"));
+            return;
+        }
+        setActiveZoneKey(z.key);
         const k = tmpKey("area");
+        const cx = z.x + z.width / 2 - 6;
+        const cy = z.y + z.height / 2 - 6;
         setAreas((a) => [
             ...a,
             {
                 key: k,
-                name: "Area",
+                zone_id: z.id,
+                name: nextName("Area", a.map((x) => x.name)),
                 area_type: AreaType.Kennel,
-                x: dims.width / 2 - 6,
-                y: dims.height / 2 - 6,
-                width: 12,
-                height: 12,
+                ...clampToMap(cx, cy, 12, 12),
                 color: "#4CAF5033",
             },
         ]);
@@ -501,12 +790,43 @@ export const ShelterMapEditor: React.FC = () => {
             drop(e.id, deleted.current.elements);
             setElements((arr) => arr.filter((x) => x.key !== key));
         }
+        const z = zones.find((x) => x.key === key);
+        if (z) {
+            // cancellando la zona spariscono anche box/aree contenuti (CASCADE lato
+            // DB). Locale: rimuovo i figli per contenimento e ne accodo gli id reali.
+            const childOf = (s: {
+                x: number;
+                y: number;
+                width: number;
+                height: number;
+            }) => zoneAt(s.x, s.y, s.width, s.height)?.key === key;
+            setBoxes((arr) =>
+                arr.filter((b) => {
+                    if (!childOf(b)) return true;
+                    if (b.id && !isTmp(b.key))
+                        deleted.current.boxes.push(b.id);
+                    return false;
+                }),
+            );
+            setAreas((arr) =>
+                arr.filter((a) => {
+                    if (!childOf(a)) return true;
+                    if (a.id && !isTmp(a.key))
+                        deleted.current.areas.push(a.id);
+                    return false;
+                }),
+            );
+            if (z.id) deleted.current.zones.push(z.id);
+            setZones((arr) => arr.filter((x) => x.key !== key));
+            if (activeZoneKey === key) setActiveZoneKey(null);
+        }
         setSelectedKey(null);
     };
 
     const getSelected = ():
         | { kind: "box"; data: LBox }
         | { kind: "area"; data: LArea }
+        | { kind: "zone"; data: LZone }
         | { kind: "element"; data: LElement }
         | null => {
         if (!selectedKey) return null;
@@ -514,6 +834,8 @@ export const ShelterMapEditor: React.FC = () => {
         if (b) return { kind: "box", data: b };
         const a = areas.find((x) => x.key === selectedKey);
         if (a) return { kind: "area", data: a };
+        const z = zones.find((x) => x.key === selectedKey);
+        if (z) return { kind: "zone", data: z };
         const e = elements.find((x) => x.key === selectedKey);
         if (e) return { kind: "element", data: e };
         return null;
@@ -545,12 +867,19 @@ export const ShelterMapEditor: React.FC = () => {
                 src.height,
             );
             const k = tmpKey("box");
+            // zone_id: se la copia cade in una zona usa quella, altrimenti eredita
+            const zid = zoneIdForRect(pos, src.zone_id);
             setBoxes((arr) => [
                 ...arr,
                 {
                     ...src,
                     key: k,
                     id: undefined,
+                    zone_id: zid,
+                    label: nextName(
+                        src.label,
+                        arr.map((b) => b.label),
+                    ),
                     x: pos.x,
                     y: pos.y,
                     width: pos.width,
@@ -570,12 +899,18 @@ export const ShelterMapEditor: React.FC = () => {
                 src.height,
             );
             const k = tmpKey("area");
+            const zid = zoneIdForRect(pos, src.zone_id);
             setAreas((arr) => [
                 ...arr,
                 {
                     ...src,
                     key: k,
                     id: undefined,
+                    zone_id: zid,
+                    name: nextName(
+                        src.name,
+                        arr.map((a) => a.name),
+                    ),
                     x: pos.x,
                     y: pos.y,
                     width: pos.width,
@@ -583,6 +918,33 @@ export const ShelterMapEditor: React.FC = () => {
                 },
             ]);
             setSelectedKey(k);
+        } else if (clipboard.kind === "zone") {
+            const src = clipboard.data;
+            const pos = clampToMap(
+                src.x + OFFSET,
+                src.y + OFFSET,
+                src.width,
+                src.height,
+            );
+            const zid = genId();
+            setZones((arr) => [
+                ...arr,
+                {
+                    ...src,
+                    key: zid,
+                    id: zid,
+                    name: nextName(
+                        src.name,
+                        arr.map((z) => z.name),
+                    ),
+                    x: pos.x,
+                    y: pos.y,
+                    width: pos.width,
+                    height: pos.height,
+                },
+            ]);
+            setSelectedKey(zid);
+            setActiveZoneKey(zid);
         } else {
             const src = clipboard.data;
             const pos = clampToMap(
@@ -631,6 +993,16 @@ export const ShelterMapEditor: React.FC = () => {
         return best.id ?? null;
     };
 
+    // zone_id (NOT NULL) da geometria; fallback allo zone_id memorizzato
+    // (zone hanno sempre id reale/client-uuid, nessun caso tmp da gestire)
+    const zoneIdForRect = (
+        s: { x: number; y: number; width: number; height: number },
+        stored?: string | null,
+    ): string | null => {
+        const z = zoneAt(s.x, s.y, s.width, s.height);
+        return z?.id ?? stored ?? null;
+    };
+
     const handleSelectShape = (key: string | null) => {
         if (!key) {
             setSelectedKey(null);
@@ -638,6 +1010,8 @@ export const ShelterMapEditor: React.FC = () => {
             lastTapRef.current = null;
             return;
         }
+        // selezionando una zona diventa la zona attiva (nuovi box/aree ci finiscono)
+        if (zones.some((z) => z.key === key)) setActiveZoneKey(key);
         const now = Date.now();
         const last = lastTapRef.current;
         if (last && last.key === key && now - last.time < 350) {
@@ -655,15 +1029,67 @@ export const ShelterMapEditor: React.FC = () => {
 
     const onSave = async () => {
         if (!mapId) return;
+        // zone_id NOT NULL: ricalcolo da geometria, poi verifico che nessun
+        // box/area resti senza zona prima di inviare
+        const boxZone = boxes.map((b) => ({
+            b,
+            zid: zoneIdForRect(b, b.zone_id),
+        }));
+        const areaZone = areas.map((a) => ({
+            a,
+            zid: zoneIdForRect(a, a.zone_id),
+        }));
+        if (
+            boxZone.some((x) => !x.zid) ||
+            areaZone.some((x) => !x.zid)
+        ) {
+            toast.error(t("shelters.map.need_zone"));
+            return;
+        }
+        // normalizzazione al save (in edit tutto libero): ogni zona cresce per
+        // contenere i box che le competono; la mappa cresce per contenere tutto.
+        const grownZones = zones.map((z) => {
+            const kids = boxZone
+                .filter((x) => x.zid === z.id)
+                .map((x) => x.b);
+            if (kids.length === 0) return z;
+            const minX = Math.min(z.x, ...kids.map((b) => b.x));
+            const minY = Math.min(z.y, ...kids.map((b) => b.y));
+            const maxX = Math.max(
+                z.x + z.width,
+                ...kids.map((b) => b.x + b.width),
+            );
+            const maxY = Math.max(
+                z.y + z.height,
+                ...kids.map((b) => b.y + b.height),
+            );
+            return {
+                ...z,
+                x: minX,
+                y: minY,
+                width: maxX - minX,
+                height: maxY - minY,
+            };
+        });
+        const right = (s: RectShape) => s.x + s.width;
+        const bottom = (s: RectShape) => s.y + s.height;
+        const allShapes: RectShape[] = [
+            ...grownZones,
+            ...areas,
+            ...boxes,
+            ...elements,
+        ];
+        const finalW = Math.max(dims.width, 1, ...allShapes.map(right));
+        const finalH = Math.max(dims.height, 1, ...allShapes.map(bottom));
         // persist map dims first if changed
         if (
-            dims.width !== savedDims.current.width ||
-            dims.height !== savedDims.current.height
+            finalW !== savedDims.current.width ||
+            finalH !== savedDims.current.height
         ) {
             const upd = await updateMap({
                 variables: {
                     id: mapId,
-                    data: { width: dims.width, height: dims.height },
+                    data: { width: finalW, height: finalH },
                 },
             });
             if (!upd.data?.updateShelterMap?.success) {
@@ -678,8 +1104,19 @@ export const ShelterMapEditor: React.FC = () => {
             variables: {
                 map_id: mapId,
                 data: {
-                    areas: areas.map((a) => ({
+                    zones: grownZones.map((z) => ({
+                        // id sempre inviato: il backend fa upsert (insert se nuovo)
+                        id: z.id,
+                        name: z.name,
+                        x: z.x,
+                        y: z.y,
+                        width: z.width,
+                        height: z.height,
+                        color: z.color,
+                    })),
+                    areas: areaZone.map(({ a, zid }) => ({
                         id: isTmp(a.key) ? undefined : a.id,
+                        zone_id: zid!,
                         name: a.name,
                         area_type: a.area_type,
                         x: a.x,
@@ -688,8 +1125,9 @@ export const ShelterMapEditor: React.FC = () => {
                         height: a.height,
                         color: a.color,
                     })),
-                    boxes: boxes.map((b) => ({
+                    boxes: boxZone.map(({ b, zid }) => ({
                         id: isTmp(b.key) ? undefined : b.id,
+                        zone_id: zid!,
                         // ricalcolo l'area dalla posizione: sempre inviato (id o null)
                         // così spostando un box tra/fuori aree si aggiorna a DB
                         area_id: areaIdForBox(b),
@@ -712,6 +1150,7 @@ export const ShelterMapEditor: React.FC = () => {
                         color: e.color,
                         label: e.label,
                     })),
+                    deleted_zone_ids: deleted.current.zones,
                     deleted_area_ids: deleted.current.areas,
                     deleted_box_ids: deleted.current.boxes,
                     deleted_element_ids: deleted.current.elements,
@@ -836,13 +1275,16 @@ export const ShelterMapEditor: React.FC = () => {
 
     const selBox = boxes.find((b) => b.key === selectedKey);
     const selArea = areas.find((a) => a.key === selectedKey);
+    const selZone = zones.find((z) => z.key === selectedKey);
     const selEl = elements.find((e) => e.key === selectedKey);
+    const selAny = selBox || selArea || selZone || selEl;
     const assignBox = boxes.find((b) => b.key === assignBoxKey);
 
     return (
         <IonContent>
             <Bar>
                 <Title>{fetchedMap?.name ?? t("shelters.tabs.map")}</Title>
+                {dirty && <DraftChip>{t("shelters.map.draft")}</DraftChip>}
                 {canEdit && (
                     <BarBtn
                         className={editMode ? "on" : ""}
@@ -885,6 +1327,8 @@ export const ShelterMapEditor: React.FC = () => {
                     onCopy={onCopy}
                     onCut={onCut}
                     onPaste={onPaste}
+                    selectAll={selectAll}
+                    onToggleSelectAll={() => setSelectAll((v) => !v)}
                 />
             )}
 
@@ -898,6 +1342,10 @@ export const ShelterMapEditor: React.FC = () => {
             {editMode && (
                 <EditDock>
                     <Toolbar>
+                        <ToolBtn onClick={addZone}>
+                            <Icon name="grid" color="primary" size="22px" />
+                            <span>{t("shelters.map.add_zone")}</span>
+                        </ToolBtn>
                         <ToolBtn onClick={addBox}>
                             <Icon name="cube" color="primary" size="22px" />
                             <span>{t("shelters.map.add_box")}</span>
@@ -931,7 +1379,7 @@ export const ShelterMapEditor: React.FC = () => {
                                     setDims((d) => ({
                                         ...d,
                                         width: Math.max(
-                                            1,
+                                            minMapDims().width,
                                             parseFloat(e.target.value) || 1,
                                         ),
                                     }))
@@ -949,7 +1397,7 @@ export const ShelterMapEditor: React.FC = () => {
                                     setDims((d) => ({
                                         ...d,
                                         height: Math.max(
-                                            1,
+                                            minMapDims().height,
                                             parseFloat(e.target.value) || 1,
                                         ),
                                     }))
@@ -964,7 +1412,7 @@ export const ShelterMapEditor: React.FC = () => {
             {/* props sheet: in resize (long-press) resta a linguetta finché non lo apro */}
             {editMode &&
                 selectedKey &&
-                (selBox || selArea || selEl) &&
+                selAny &&
                 resizeModeKey === selectedKey &&
                 !propsPeekOpen && (
                     <PropsPeek onClick={() => setPropsPeekOpen(true)}>
@@ -975,7 +1423,7 @@ export const ShelterMapEditor: React.FC = () => {
             {/* edit props sheet */}
             {editMode &&
                 selectedKey &&
-                (selBox || selArea || selEl) &&
+                selAny &&
                 ((sheetOpen && resizeModeKey !== selectedKey) ||
                     propsPeekOpen) && (
                     <Sheet>
@@ -998,7 +1446,7 @@ export const ShelterMapEditor: React.FC = () => {
                                 />
                             )}
                         </SheetHead>
-                        {(selBox || selArea || selEl) && (
+                        {selAny && (
                             <Row2>
                                 <Field>
                                     <label>{t("shelters.map.width")} (m)</label>
@@ -1007,9 +1455,7 @@ export const ShelterMapEditor: React.FC = () => {
                                         type="number"
                                         step={0.5}
                                         defaultValue={Number(
-                                            (selBox ||
-                                                selArea ||
-                                                selEl)!.width.toFixed(2),
+                                            selAny.width.toFixed(2),
                                         )}
                                         onBlur={(e) =>
                                             updateSelectedSize({
@@ -1032,9 +1478,7 @@ export const ShelterMapEditor: React.FC = () => {
                                         type="number"
                                         step={0.5}
                                         defaultValue={Number(
-                                            (selBox ||
-                                                selArea ||
-                                                selEl)!.height.toFixed(2),
+                                            selAny.height.toFixed(2),
                                         )}
                                         onBlur={(e) =>
                                             updateSelectedSize({
@@ -1138,6 +1582,53 @@ export const ShelterMapEditor: React.FC = () => {
                                                               color: `${e.target.value}55`,
                                                           }
                                                         : a,
+                                                ),
+                                            )
+                                        }
+                                    />
+                                </Field>
+                            </>
+                        )}
+                        {selZone && (
+                            <>
+                                <Field>
+                                    <label>{t("shelters.map.zone_name")}</label>
+                                    <input
+                                        value={selZone.name}
+                                        onChange={(e) =>
+                                            setZones((arr) =>
+                                                arr.map((z) =>
+                                                    z.key === selZone.key
+                                                        ? {
+                                                              ...z,
+                                                              name: e.target
+                                                                  .value,
+                                                          }
+                                                        : z,
+                                                ),
+                                            )
+                                        }
+                                    />
+                                </Field>
+                                <Field>
+                                    <label>{t("shelters.map.color")}</label>
+                                    <input
+                                        type="color"
+                                        value={(() => {
+                                            const c = selZone.color || "#3f51b5";
+                                            return c.startsWith("#")
+                                                ? c.slice(0, 7)
+                                                : "#3f51b5";
+                                        })()}
+                                        onChange={(e) =>
+                                            setZones((arr) =>
+                                                arr.map((z) =>
+                                                    z.key === selZone.key
+                                                        ? {
+                                                              ...z,
+                                                              color: `${e.target.value}22`,
+                                                          }
+                                                        : z,
                                                 ),
                                             )
                                         }
@@ -1265,6 +1756,31 @@ const Title = styled.h2`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+`;
+const DraftChip = styled.span`
+    flex: 0 0 auto;
+    margin-right: auto;
+    padding: ${$uw(0.25)} ${$uw(0.9)};
+    border-radius: 999px;
+    background: ${$color("warning")};
+    color: ${$color("light")};
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+`;
+const ConfirmLeave = styled.div`
+    padding: 0 ${$uw(2)} ${$uw(1)};
+    > h3 {
+        margin: 0 0 ${$uw(1)};
+        color: ${$color("primary")};
+        font-size: 1.6rem;
+    }
+    > p {
+        margin: 0;
+        color: ${$color("medium")};
+        font-size: 1.4rem;
+    }
 `;
 const BarBtn = styled.button`
     flex: 0 0 auto;
@@ -1412,11 +1928,6 @@ const SheetHead = styled.div`
         width: ${$uw(2.5)};
         height: ${$uw(2.5)};
     }
-`;
-const SheetSub = styled.span`
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: ${$color("medium")};
 `;
 const Field = styled.div`
     display: flex;

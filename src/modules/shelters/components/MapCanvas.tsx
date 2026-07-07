@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 export type CanvasShape = {
     key: string;
-    kind: "area" | "box" | "element";
+    kind: "zone" | "area" | "box" | "element";
     x: number;
     y: number;
     width: number;
@@ -39,6 +39,8 @@ type Props = {
     onCopy?: () => void;
     onCut?: () => void;
     onPaste?: () => void;
+    selectAll?: boolean;
+    onToggleSelectAll?: () => void;
 };
 
 type View = { scale: number; tx: number; ty: number; rot: number };
@@ -185,6 +187,8 @@ export const MapCanvas: React.FC<Props> = ({
     onCopy,
     onCut,
     onPaste,
+    selectAll,
+    onToggleSelectAll,
 }) => {
     const wrapRef = useRef<HTMLDivElement>(null);
     const [view, setView] = useState<View>({ scale: 1, tx: 0, ty: 0, rot: 0 });
@@ -822,8 +826,30 @@ export const MapCanvas: React.FC<Props> = ({
                     <Icon name="refreshOutline" color="primary" size="18px" />
                 </RotBtn>
             )}
-            {editMode && (onCopy || onCut || onPaste) && (
+            {editMode && (onCopy || onCut || onPaste || onToggleSelectAll) && (
                 <ActionStack>
+                    {onToggleSelectAll && (
+                        <ActionBtn
+                            type="button"
+                            aria-label="Select all"
+                            className={selectAll ? "on" : ""}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onToggleSelectAll();
+                            }}
+                            onPointerDown={(e) => e.stopPropagation()}
+                        >
+                            <Icon
+                                name={
+                                    selectAll
+                                        ? "albums"
+                                        : "albumsOutline"
+                                }
+                                color={selectAll ? "primary" : "medium"}
+                                size="18px"
+                            />
+                        </ActionBtn>
+                    )}
                     {onCopy && (
                         <ActionBtn
                             type="button"
@@ -996,6 +1022,10 @@ const ActionBtn = styled.button`
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     padding: 0;
+    &.on {
+        border-color: var(--ion-color-primary);
+        background: rgba(var(--ion-color-primary-rgb), 0.12);
+    }
     &:disabled {
         opacity: 0.4;
         cursor: not-allowed;

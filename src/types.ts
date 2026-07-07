@@ -406,6 +406,7 @@ export type Mutation = {
   createShelterRole: ShelterRoleResult;
   createShelterTask: ShelterTaskResult;
   createShelterWalk: ShelterWalkResult;
+  createShelterZone: ShelterZoneResult;
   createTreatment: TreatmentResult;
   createUser: UserResult;
   createWalk: WalkResult;
@@ -423,6 +424,7 @@ export type Mutation = {
   deleteShelterRole: DeleteResult;
   deleteShelterTask: DeleteResult;
   deleteShelterWalk: DeleteResult;
+  deleteShelterZone: DeleteResult;
   deleteTreatment: DeleteResult;
   deleteUser: DeleteResult;
   deleteWalk: DeleteResult;
@@ -459,6 +461,7 @@ export type Mutation = {
   updateShelterRole: ShelterRoleResult;
   updateShelterTask: ShelterTaskResult;
   updateShelterWalk: ShelterWalkResult;
+  updateShelterZone: ShelterZoneResult;
   updateTreatment: TreatmentResult;
   updateUser: UserResult;
   updateWalk: WalkResult;
@@ -609,6 +612,11 @@ export type MutationCreateShelterWalkArgs = {
 };
 
 
+export type MutationCreateShelterZoneArgs = {
+  data: ShelterZoneCreate;
+};
+
+
 export type MutationCreateTreatmentArgs = {
   data: TreatmentCreate;
 };
@@ -690,6 +698,11 @@ export type MutationDeleteShelterTaskArgs = {
 
 
 export type MutationDeleteShelterWalkArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteShelterZoneArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -886,6 +899,12 @@ export type MutationUpdateShelterTaskArgs = {
 
 export type MutationUpdateShelterWalkArgs = {
   data: ShelterWalkUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateShelterZoneArgs = {
+  data: ShelterZoneUpdate;
   id: Scalars['ID']['input'];
 };
 
@@ -1111,6 +1130,14 @@ export type PaginatedShelterWalks = {
   success?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export type PaginatedShelterZones = {
+  __typename?: 'PaginatedShelterZones';
+  error?: Maybe<Error>;
+  items: Array<Maybe<ShelterZone>>;
+  pagination: Pagination;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type PaginatedShelters = {
   __typename?: 'PaginatedShelters';
   error?: Maybe<Error>;
@@ -1278,6 +1305,7 @@ export type Query = {
   getShelterRole: ShelterRoleResult;
   getShelterTask: ShelterTaskResult;
   getShelterWalk: ShelterWalkResult;
+  getShelterZone: ShelterZoneResult;
   getTreatment?: Maybe<TreatmentResult>;
   getUser: UserResult;
   getUserDashboard: UserDashboardResult;
@@ -1306,6 +1334,7 @@ export type Query = {
   listShelterRoles: PaginatedShelterRoles;
   listShelterTasks: PaginatedShelterTasks;
   listShelterWalks: PaginatedShelterWalks;
+  listShelterZones: PaginatedShelterZones;
   listShelters: PaginatedShelters;
   listTreatments: PaginatedTreatments;
   listUsers: PaginatedUsers;
@@ -1425,6 +1454,11 @@ export type QueryGetShelterTaskArgs = {
 
 
 export type QueryGetShelterWalkArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetShelterZoneArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1561,6 +1595,11 @@ export type QueryListShelterTasksArgs = {
 
 
 export type QueryListShelterWalksArgs = {
+  commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListShelterZonesArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
 
@@ -1730,6 +1769,8 @@ export type ShelterArea = {
   width: Scalars['Float']['output'];
   x: Scalars['Float']['output'];
   y: Scalars['Float']['output'];
+  zone?: Maybe<ShelterZone>;
+  zone_id: Scalars['ID']['output'];
 };
 
 export type ShelterAreaCreate = {
@@ -1741,6 +1782,7 @@ export type ShelterAreaCreate = {
   width: Scalars['Float']['input'];
   x: Scalars['Float']['input'];
   y: Scalars['Float']['input'];
+  zone_id: Scalars['ID']['input'];
 };
 
 export type ShelterAreaResult = {
@@ -1758,6 +1800,7 @@ export type ShelterAreaUpdate = {
   width?: InputMaybe<Scalars['Float']['input']>;
   x?: InputMaybe<Scalars['Float']['input']>;
   y?: InputMaybe<Scalars['Float']['input']>;
+  zone_id?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type ShelterAreaUpsert = {
@@ -1769,6 +1812,7 @@ export type ShelterAreaUpsert = {
   width: Scalars['Float']['input'];
   x: Scalars['Float']['input'];
   y: Scalars['Float']['input'];
+  zone_id: Scalars['ID']['input'];
 };
 
 export type ShelterBox = {
@@ -1790,6 +1834,8 @@ export type ShelterBox = {
   width: Scalars['Float']['output'];
   x: Scalars['Float']['output'];
   y: Scalars['Float']['output'];
+  zone?: Maybe<ShelterZone>;
+  zone_id: Scalars['ID']['output'];
 };
 
 
@@ -1808,6 +1854,7 @@ export type ShelterBoxCreate = {
   width: Scalars['Float']['input'];
   x: Scalars['Float']['input'];
   y: Scalars['Float']['input'];
+  zone_id: Scalars['ID']['input'];
 };
 
 export type ShelterBoxOccupancy = {
@@ -1847,6 +1894,7 @@ export type ShelterBoxUpdate = {
   width?: InputMaybe<Scalars['Float']['input']>;
   x?: InputMaybe<Scalars['Float']['input']>;
   y?: InputMaybe<Scalars['Float']['input']>;
+  zone_id?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type ShelterBoxUpsert = {
@@ -1859,6 +1907,7 @@ export type ShelterBoxUpsert = {
   width: Scalars['Float']['input'];
   x: Scalars['Float']['input'];
   y: Scalars['Float']['input'];
+  zone_id: Scalars['ID']['input'];
 };
 
 export type ShelterContact = {
@@ -1967,6 +2016,7 @@ export type ShelterMap = {
   shelter: Shelter;
   unit: MapUnit;
   width: Scalars['Float']['output'];
+  zones: Array<ShelterZone>;
 };
 
 export type ShelterMapCreate = {
@@ -2041,7 +2091,9 @@ export type ShelterMapLayoutInput = {
   deleted_area_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
   deleted_box_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
   deleted_element_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  deleted_zone_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
   elements?: InputMaybe<Array<ShelterMapElementUpsert>>;
+  zones?: InputMaybe<Array<ShelterZoneUpsert>>;
 };
 
 export type ShelterMapResult = {
@@ -2256,6 +2308,57 @@ export enum ShelterWalkStatus {
 export type ShelterWalkUpdate = {
   notes?: InputMaybe<Scalars['String']['input']>;
   scheduled_at?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ShelterZone = {
+  __typename?: 'ShelterZone';
+  areas: Array<ShelterArea>;
+  boxes: Array<ShelterBox>;
+  color?: Maybe<Scalars['String']['output']>;
+  created_at: Scalars['String']['output'];
+  height: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  map_id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  width: Scalars['Float']['output'];
+  x: Scalars['Float']['output'];
+  y: Scalars['Float']['output'];
+};
+
+export type ShelterZoneCreate = {
+  color?: InputMaybe<Scalars['String']['input']>;
+  height: Scalars['Float']['input'];
+  map_id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+  width: Scalars['Float']['input'];
+  x: Scalars['Float']['input'];
+  y: Scalars['Float']['input'];
+};
+
+export type ShelterZoneResult = {
+  __typename?: 'ShelterZoneResult';
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
+  zone?: Maybe<ShelterZone>;
+};
+
+export type ShelterZoneUpdate = {
+  color?: InputMaybe<Scalars['String']['input']>;
+  height?: InputMaybe<Scalars['Float']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  width?: InputMaybe<Scalars['Float']['input']>;
+  x?: InputMaybe<Scalars['Float']['input']>;
+  y?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type ShelterZoneUpsert = {
+  color?: InputMaybe<Scalars['String']['input']>;
+  height: Scalars['Float']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
+  name: Scalars['String']['input'];
+  width: Scalars['Float']['input'];
+  x: Scalars['Float']['input'];
+  y: Scalars['Float']['input'];
 };
 
 export type Statistic = {
@@ -2766,7 +2869,7 @@ export type ListPetWalkRatingsQuery = { __typename?: 'Query', listWalkRatings: {
 
 export type FullShelterFragment = { __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, district?: string | null, street: string, street_number: string, postal_code: string, province_code: string, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null, roles?: { __typename?: 'PaginatedShelterRoles', items: Array<{ __typename?: 'ShelterRole', id: string, role: RoleLevel, user: { __typename?: 'User', id: string, role: UserRole, first_name: string, last_name: string, email: string, profile_picture?: { __typename?: 'Media', id: string } | null } } | null> } | null, pets?: { __typename?: 'PaginatedShelterPets', items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null };
 
-export type FullShelterMapFragment = { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> };
+export type FullShelterMapFragment = { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> };
 
 export type MinInventoryItemFragment = { __typename?: 'ShelterInventoryItem', id: string, name: string, category: InventoryCategory, unit: string, minimum_threshold?: number | null, current_quantity: number, is_below_threshold: boolean, notes?: string | null };
 
@@ -2835,7 +2938,7 @@ export type CreateShelterMapMutationVariables = Exact<{
 }>;
 
 
-export type CreateShelterMapMutation = { __typename?: 'Mutation', createShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
+export type CreateShelterMapMutation = { __typename?: 'Mutation', createShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
 
 export type CreateShelterPetMutationVariables = Exact<{
   data: ShelterPetCreate;
@@ -2909,7 +3012,7 @@ export type SaveShelterMapLayoutMutationVariables = Exact<{
 }>;
 
 
-export type SaveShelterMapLayoutMutation = { __typename?: 'Mutation', saveShelterMapLayout: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
+export type SaveShelterMapLayoutMutation = { __typename?: 'Mutation', saveShelterMapLayout: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
 
 export type SkipShelterTaskMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -2932,7 +3035,7 @@ export type UpdateShelterMapMutationVariables = Exact<{
 }>;
 
 
-export type UpdateShelterMapMutation = { __typename?: 'Mutation', updateShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
+export type UpdateShelterMapMutation = { __typename?: 'Mutation', updateShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
 
 export type GetCurrentBoxForPetQueryVariables = Exact<{
   shelter_pet_id: Scalars['ID']['input'];
@@ -2953,7 +3056,7 @@ export type GetShelterMapQueryVariables = Exact<{
 }>;
 
 
-export type GetShelterMapQuery = { __typename?: 'Query', getShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
+export type GetShelterMapQuery = { __typename?: 'Query', getShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
 
 export type GetShelterOperationalDashboardQueryVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
@@ -3304,6 +3407,15 @@ export const FullShelterMapFragmentDoc = gql`
   width
   height
   unit
+  zones {
+    id
+    name
+    x
+    y
+    width
+    height
+    color
+  }
   areas {
     id
     name
@@ -3313,6 +3425,9 @@ export const FullShelterMapFragmentDoc = gql`
     width
     height
     color
+    zone {
+      id
+    }
   }
   boxes {
     id
@@ -3326,6 +3441,9 @@ export const FullShelterMapFragmentDoc = gql`
     status
     is_out_of_service
     area {
+      id
+    }
+    zone {
       id
     }
     current_occupants {
