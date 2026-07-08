@@ -6,6 +6,14 @@ fragment MinShelterTask on ShelterTask {
 	scheduled_at
 	completed_at
 	is_recurring
+	recurrence {
+		freq
+		interval
+		weekdays
+		week_ordinal
+		time_of_day
+		start_at
+	}
 	notes
 	assigned_to {
 		id

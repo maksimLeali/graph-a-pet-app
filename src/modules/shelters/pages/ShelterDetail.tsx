@@ -94,6 +94,14 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 		(p): p is ShelterPet => !!p
 	);
 
+	// aggregazione persone per ruolo (solo ruolo + quanti lo ricoprono)
+	const roleCounts = Object.entries(
+		roles.reduce<Record<string, number>>((acc, r) => {
+			acc[r.role] = (acc[r.role] ?? 0) + 1;
+			return acc;
+		}, {})
+	).map(([role, count]) => ({ role: role as Role["role"], count }));
+
 	const address = [
 		[shelter.street, shelter.street_number].filter(Boolean).join(" "),
 		shelter.postal_code,
@@ -206,31 +214,71 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 
 			{dash && (
 				<Dashboard>
-					<Tile $accent="danger">
-						<b>{dash.tasks_overdue}</b>
-						<span>{t("shelters.dash.tasks_overdue")}</span>
-					</Tile>
-					<Tile>
-						<b>{dash.tasks_pending}</b>
-						<span>{t("shelters.dash.tasks_pending")}</span>
-					</Tile>
-					<Tile>
-						<b>{dash.walks_completed_today}</b>
-						<span>{t("shelters.dash.walks_today")}</span>
-					</Tile>
-					<Tile>
-						<b>{dash.pets_needing_walk}</b>
-						<span>{t("shelters.dash.pets_needing_walk")}</span>
-					</Tile>
-					<Tile>
-						<b>{dash.boxes_free}</b>
-						<span>{t("shelters.dash.boxes_free")}</span>
-					</Tile>
 					<Tile $accent={dash.low_stock_count > 0 ? "warning" : undefined}>
 						<b>{dash.low_stock_count}</b>
 						<span>{t("shelters.dash.low_stock")}</span>
 					</Tile>
+					<Tile $accent={dash.pets_needing_walk > 0 ? "warning" : undefined}>
+						<b>{dash.pets_needing_walk}</b>
+						<span>{t("shelters.dash.pets_needing_walk")}</span>
+					</Tile>
+					<Tile $accent={dash.tasks_overdue > 0 ? "danger" : undefined}>
+						<b>{dash.tasks_overdue}</b>
+						<span>{t("shelters.dash.tasks_overdue")}</span>
+					</Tile>
 				</Dashboard>
+			)}
+
+			{dash && (
+				<Section>
+					<SectionTitle>{t("shelters.structure")}</SectionTitle>
+					<Dashboard>
+						<Tile>
+							<b>{dash.boxes_free}</b>
+							<span>{t("shelters.dash.boxes_free")}</span>
+						</Tile>
+						<Tile
+							$accent={
+								dash.boxes_out_of_service > 0 ? "danger" : undefined
+							}
+						>
+							<b>{dash.boxes_out_of_service}</b>
+							<span>{t("shelters.dash.boxes_oos")}</span>
+						</Tile>
+						<Tile
+							$accent={dash.low_stock_count > 0 ? "warning" : undefined}
+						>
+							<b>{dash.low_stock_count}</b>
+							<span>{t("shelters.dash.low_stock")}</span>
+						</Tile>
+					</Dashboard>
+				</Section>
+			)}
+
+			{dash && (
+				<Section>
+					<SectionTitle>{t("shelters.organization")}</SectionTitle>
+					<Dashboard>
+						<Tile>
+							<b>{dash.tasks_total}</b>
+							<span>{t("shelters.dash.tasks_total")}</span>
+						</Tile>
+						<Tile>
+							<b>{dash.tasks_recurring}</b>
+							<span>{t("shelters.dash.tasks_recurring")}</span>
+						</Tile>
+						<Tile>
+							<b>{dash.tasks_due_this_week}</b>
+							<span>{t("shelters.dash.tasks_due_this_week")}</span>
+						</Tile>
+						<Tile
+							$accent={dash.tasks_overdue > 0 ? "danger" : undefined}
+						>
+							<b>{dash.tasks_overdue}</b>
+							<span>{t("shelters.dash.tasks_overdue")}</span>
+						</Tile>
+					</Dashboard>
+				</Section>
 			)}
 
 			<Section>
@@ -241,55 +289,25 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 				{roles.length === 0 ? (
 					<Empty>{t("shelters.no_people")}</Empty>
 				) : (
-					<People>
-						{roles.map((role) => (
-							<PersonRow key={role.id}>
-								<Avatar>
-									{role.user.profile_picture ? (
-										<Image2x
-											lazy
-											rounded
-											id={role.user.profile_picture.id}
-											alt={role.user.first_name}
-										/>
-									) : (
-										<AvatarFallback>
-											{(
-												role.user.first_name?.[0] ?? "?"
-											).toUpperCase()}
-										</AvatarFallback>
-									)}
-								</Avatar>
-								<PersonInfo>
-									<PersonName>
-										{role.user.first_name}{" "}
-										{role.user.last_name}
-									</PersonName>
-									<PersonEmail>{role.user.email}</PersonEmail>
-								</PersonInfo>
+					<RoleSummary>
+						{roleCounts.map(({ role, count }) => (
+							<RoleStat key={role}>
 								<Chip
-									color={roleColors[role.role]}
+									color={roleColors[role]}
 									label={t(
-										`shelters.roles.${role.role.toLowerCase()}` as I18NKey
+										`shelters.roles.${role.toLowerCase()}` as I18NKey
 									)}
 								/>
-								<RemoveButton
-									type="button"
-									aria-label={t("shelters.remove_member") ?? ""}
-									onClick={() => confirmRemove(role)}
-								>
-									<Icon name="closeCircle" color="danger" />
-								</RemoveButton>
-							</PersonRow>
+								<b>{count}</b>
+							</RoleStat>
 						))}
-					</People>
+					</RoleSummary>
 				)}
 			</Section>
 
 			<Section>
 				<SectionTitle>
 					{t("shelters.pets")}
-					<Count>{pets.length}</Count>
 					{canManage && (
 						<AddPetButton
 							type="button"
@@ -302,41 +320,28 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 						</AddPetButton>
 					)}
 				</SectionTitle>
-				{pets.length === 0 ? (
-					<Empty>{t("shelters.no_pets")}</Empty>
-				) : (
-					<PetsGrid>
-						{pets.map((sp) => (
-							<PetCard
-								key={sp.id}
-								role="button"
-								tabIndex={0}
-								onClick={() =>
-									history.push(
-										`/shelters/detail/${shelter.id}/pet/${sp.id}`
-									)
-								}
-							>
-								<PetImage
-									$border={
-										sp.pet.main_picture?.main_color?.color
-									}
-								>
-									{sp.pet.main_picture ? (
-										<Image2x
-											lazy
-											id={sp.pet.main_picture.id}
-											alt={sp.pet.name}
-										/>
-									) : (
-										<PetFill />
-									)}
-								</PetImage>
-								<PetName>{sp.pet.name}</PetName>
-							</PetCard>
-						))}
-					</PetsGrid>
-				)}
+				<Dashboard>
+					<Tile>
+						<b>{dash?.pets_total ?? pets.length}</b>
+						<span>{t("shelters.dash.pets_total")}</span>
+					</Tile>
+					<Tile
+						$accent={
+							(dash?.pets_needing_walk ?? 0) > 0 ? "warning" : undefined
+						}
+					>
+						<b>{dash?.pets_needing_walk ?? 0}</b>
+						<span>{t("shelters.dash.pets_needing_walk")}</span>
+					</Tile>
+					<Tile
+						$accent={
+							(dash?.pets_without_box ?? 0) > 0 ? "warning" : undefined
+						}
+					>
+						<b>{dash?.pets_without_box ?? 0}</b>
+						<span>{t("shelters.dash.pets_without_box")}</span>
+					</Tile>
+				</Dashboard>
 			</Section>
 		</>
 	);
@@ -440,6 +445,26 @@ const People = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: ${$uw(1)};
+`;
+
+const RoleSummary = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${$uw(1)};
+`;
+
+const RoleStat = styled.div`
+	display: flex;
+	align-items: center;
+	gap: ${$uw(0.75)};
+	padding: ${$uw(0.75)} ${$uw(1.25)};
+	border-radius: 14px;
+	background: ${$color("background")};
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
+	> b {
+		font-size: 1.8rem;
+		color: ${$color("primary")};
+	}
 `;
 
 const PersonRow = styled.div`

@@ -1,7 +1,8 @@
 import { Icon } from "@components";
+import { config } from "@config";
 import { $uw } from "@theme";
 import { useEffect, useRef, useState, useCallback } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 export type CanvasShape = {
     key: string;
@@ -41,6 +42,12 @@ type Props = {
     onPaste?: () => void;
     selectAll?: boolean;
     onToggleSelectAll?: () => void;
+    // view mode: apre la modale ricerca/localizzazione pet
+    onFindPet?: () => void;
+    // box da far lampeggiare per un attimo (localizzazione pet)
+    pulseKey?: string | null;
+    // immagine del pet localizzato per il pin (null => pin verde)
+    pulsePictureId?: string | null;
 };
 
 type View = { scale: number; tx: number; ty: number; rot: number };
@@ -189,6 +196,9 @@ export const MapCanvas: React.FC<Props> = ({
     onPaste,
     selectAll,
     onToggleSelectAll,
+    onFindPet,
+    pulseKey,
+    pulsePictureId,
 }) => {
     const wrapRef = useRef<HTMLDivElement>(null);
     const [view, setView] = useState<View>({ scale: 1, tx: 0, ty: 0, rot: 0 });
@@ -643,6 +653,14 @@ export const MapCanvas: React.FC<Props> = ({
         ? shapes.find((s) => s.key === resizeKey)
         : null;
 
+    const pulseShapeObj = pulseKey
+        ? shapes.find((s) => s.key === pulseKey)
+        : null;
+    // url immagine pet per il pin (null => pin verde)
+    const pinPicUrl = pulsePictureId
+        ? `${config.baseUrl?.replace("graphql", "media")}/${pulsePictureId}/80x80/fit`
+        : null;
+
     return (
         <Wrap className="mapEditor" ref={wrapRef}>
             <svg
@@ -733,6 +751,63 @@ export const MapCanvas: React.FC<Props> = ({
                             </g>
                         );
                     })}
+                    {pulseShapeObj && (
+                        <PulseRect
+                            key={`pulse-${pulseShapeObj.key}`}
+                            x={pulseShapeObj.x}
+                            y={pulseShapeObj.y}
+                            width={pulseShapeObj.width}
+                            height={pulseShapeObj.height}
+                            rx={2}
+                            transform={
+                                pulseShapeObj.rotation
+                                    ? `rotate(${pulseShapeObj.rotation} ${
+                                          pulseShapeObj.x +
+                                          pulseShapeObj.width / 2
+                                      } ${pulseShapeObj.y + pulseShapeObj.height / 2})`
+                                    : undefined
+                            }
+                            fill="#ffd60a"
+                            stroke="#ff9f0a"
+                            strokeWidth={3 / view.scale}
+                            pointerEvents="none"
+                        />
+                    )}
+                    {pulseShapeObj && (
+                        <g
+                            transform={
+                                `translate(${pulseShapeObj.x + pulseShapeObj.width / 2} ` +
+                                `${pulseShapeObj.y + pulseShapeObj.height / 2}) ` +
+                                `scale(${1 / view.scale}) rotate(${-view.rot})`
+                            }
+                            pointerEvents="none"
+                        >
+                            <path
+                                d="M0 0 L-14 -30 A16 16 0 1 1 14 -30 Z"
+                                fill="#2ecc71"
+                                stroke="#fff"
+                                strokeWidth={2}
+                            />
+                            {pinPicUrl ? (
+                                <>
+                                    <clipPath id="mapPinClip">
+                                        <circle cx={0} cy={-42} r={13} />
+                                    </clipPath>
+                                    <image
+                                        href={pinPicUrl}
+                                        x={-13}
+                                        y={-55}
+                                        width={26}
+                                        height={26}
+                                        clipPath="url(#mapPinClip)"
+                                        preserveAspectRatio="xMidYMid slice"
+                                    />
+                                </>
+                            ) : (
+                                <circle cx={0} cy={-42} r={7} fill="#fff" />
+                            )}
+                        </g>
+                    )}
                     {resizeShapeObj && (
                         <g
                             transform={
@@ -811,8 +886,21 @@ export const MapCanvas: React.FC<Props> = ({
                 }}
                 onPointerDown={(e) => e.stopPropagation()}
             >
-                <Icon name="search" color="primary" size="20px" />
+                <Icon name="scan" color="primary" size="20px" />
             </ZoomBtn>
+            {!editMode && onFindPet && (
+                <FindBtn
+                    type="button"
+                    aria-label="Find pet"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onFindPet();
+                    }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                >
+                    <Icon name="search" color="primary" size="20px" />
+                </FindBtn>
+            )}
             {Math.round(view.rot) % 360 !== 0 && (
                 <RotBtn
                     type="button"
@@ -980,6 +1068,34 @@ const ZoomBtn = styled.button`
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     padding: 0;
+`;
+
+const FindBtn = styled.button`
+    position: absolute;
+    top: 56px;
+    right: 8px;
+    z-index: 20;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    padding: 0;
+`;
+
+const blink = keyframes`
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.55; }
+`;
+
+const PulseRect = styled.rect`
+    animation: ${blink} 0.45s ease-in-out 3;
+    pointer-events: none;
 `;
 
 const RotBtn = styled.button`

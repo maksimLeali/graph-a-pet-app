@@ -1328,6 +1328,7 @@ export type Query = {
   listShelterBoxes: PaginatedShelterBoxes;
   listShelterInventoryItems: PaginatedInventoryItems;
   listShelterInventoryMovements: PaginatedInventoryMovements;
+  listShelterKpiHistory: ShelterKpiHistoryResult;
   listShelterMapElements: PaginatedMapElements;
   listShelterMaps: PaginatedShelterMaps;
   listShelterPets: PaginatedShelterPets;
@@ -1569,6 +1570,12 @@ export type QueryListShelterInventoryMovementsArgs = {
 };
 
 
+export type QueryListShelterKpiHistoryArgs = {
+  days?: InputMaybe<Scalars['Int']['input']>;
+  shelter_id: Scalars['ID']['input'];
+};
+
+
 export type QueryListShelterMapElementsArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
@@ -1643,6 +1650,31 @@ export type RealTimeStatisticResult = {
   error?: Maybe<Error>;
   statistics?: Maybe<DailyStats>;
   success: Scalars['Boolean']['output'];
+};
+
+export type Recurrence = {
+  __typename?: 'Recurrence';
+  freq: RecurrenceFreq;
+  interval: Scalars['Int']['output'];
+  start_at?: Maybe<Scalars['String']['output']>;
+  time_of_day?: Maybe<Scalars['String']['output']>;
+  week_ordinal?: Maybe<Scalars['Int']['output']>;
+  weekdays?: Maybe<Array<Weekday>>;
+};
+
+export enum RecurrenceFreq {
+  Daily = 'DAILY',
+  Monthly = 'MONTHLY',
+  Weekly = 'WEEKLY'
+}
+
+export type RecurrenceInput = {
+  freq: RecurrenceFreq;
+  interval?: InputMaybe<Scalars['Int']['input']>;
+  start_at?: InputMaybe<Scalars['String']['input']>;
+  time_of_day?: InputMaybe<Scalars['String']['input']>;
+  week_ordinal?: InputMaybe<Scalars['Int']['input']>;
+  weekdays?: InputMaybe<Array<Weekday>>;
 };
 
 export type Report = {
@@ -2003,6 +2035,37 @@ export type ShelterInventoryMovementResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type ShelterKpiHistoryResult = {
+  __typename?: 'ShelterKpiHistoryResult';
+  error?: Maybe<Error>;
+  items: Array<Maybe<ShelterKpiSnapshot>>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type ShelterKpiSnapshot = {
+  __typename?: 'ShelterKpiSnapshot';
+  boxes_free: Scalars['Int']['output'];
+  boxes_full: Scalars['Int']['output'];
+  boxes_occupied: Scalars['Int']['output'];
+  boxes_out_of_service: Scalars['Int']['output'];
+  boxes_total: Scalars['Int']['output'];
+  date: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  low_stock_count: Scalars['Int']['output'];
+  pets_needing_walk: Scalars['Int']['output'];
+  pets_total: Scalars['Int']['output'];
+  pets_without_box: Scalars['Int']['output'];
+  shelter_id: Scalars['ID']['output'];
+  tasks_completed_today: Scalars['Int']['output'];
+  tasks_due_this_week: Scalars['Int']['output'];
+  tasks_overdue: Scalars['Int']['output'];
+  tasks_pending: Scalars['Int']['output'];
+  tasks_recurring: Scalars['Int']['output'];
+  tasks_total: Scalars['Int']['output'];
+  walks_completed_today: Scalars['Int']['output'];
+  walks_planned_today: Scalars['Int']['output'];
+};
+
 export type ShelterMap = {
   __typename?: 'ShelterMap';
   areas: Array<ShelterArea>;
@@ -2121,10 +2184,14 @@ export type ShelterOperationalDashboard = {
   low_stock_count: Scalars['Int']['output'];
   pets_needing_walk: Scalars['Int']['output'];
   pets_total: Scalars['Int']['output'];
+  pets_without_box: Scalars['Int']['output'];
   shelter_id: Scalars['ID']['output'];
   tasks_completed_today: Scalars['Int']['output'];
+  tasks_due_this_week: Scalars['Int']['output'];
   tasks_overdue: Scalars['Int']['output'];
   tasks_pending: Scalars['Int']['output'];
+  tasks_recurring: Scalars['Int']['output'];
+  tasks_total: Scalars['Int']['output'];
   walks_completed_today: Scalars['Int']['output'];
   walks_planned_today: Scalars['Int']['output'];
 };
@@ -2211,7 +2278,7 @@ export type ShelterTask = {
   id: Scalars['ID']['output'];
   is_recurring: Scalars['Boolean']['output'];
   notes?: Maybe<Scalars['String']['output']>;
-  recurrence_rule?: Maybe<Scalars['String']['output']>;
+  recurrence?: Maybe<Recurrence>;
   scheduled_at?: Maybe<Scalars['String']['output']>;
   shelter: Shelter;
   shelter_pet?: Maybe<ShelterPet>;
@@ -2224,7 +2291,7 @@ export type ShelterTaskCreate = {
   assigned_to_id?: InputMaybe<Scalars['ID']['input']>;
   is_recurring?: InputMaybe<Scalars['Boolean']['input']>;
   notes?: InputMaybe<Scalars['String']['input']>;
-  recurrence_rule?: InputMaybe<Scalars['String']['input']>;
+  recurrence?: InputMaybe<RecurrenceInput>;
   scheduled_at?: InputMaybe<Scalars['String']['input']>;
   shelter_box_id?: InputMaybe<Scalars['ID']['input']>;
   shelter_id: Scalars['ID']['input'];
@@ -2253,7 +2320,7 @@ export type ShelterTaskUpdate = {
   assigned_to_id?: InputMaybe<Scalars['ID']['input']>;
   is_recurring?: InputMaybe<Scalars['Boolean']['input']>;
   notes?: InputMaybe<Scalars['String']['input']>;
-  recurrence_rule?: InputMaybe<Scalars['String']['input']>;
+  recurrence?: InputMaybe<RecurrenceInput>;
   scheduled_at?: InputMaybe<Scalars['String']['input']>;
   task_type?: InputMaybe<ShelterTaskType>;
 };
@@ -2616,6 +2683,16 @@ export type WalkUpdate = {
   notes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export enum Weekday {
+  Fri = 'FRI',
+  Mon = 'MON',
+  Sat = 'SAT',
+  Sun = 'SUN',
+  Thu = 'THU',
+  Tue = 'TUE',
+  Wed = 'WED'
+}
+
 export enum TreatmentDuration {
   HalfHour = 'HALF_HOUR',
   Hour = 'HOUR',
@@ -2875,7 +2952,7 @@ export type MinInventoryItemFragment = { __typename?: 'ShelterInventoryItem', id
 
 export type MinShelterFragment = { __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, street: string, street_number: string, postal_code: string, province_code: string, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null };
 
-export type MinShelterTaskFragment = { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null };
+export type MinShelterTaskFragment = { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null };
 
 export type MinShelterWalkFragment = { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker: { __typename?: 'User', id: string, first_name: string, last_name: string }, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } };
 
@@ -2902,7 +2979,7 @@ export type CompleteShelterTaskMutationVariables = Exact<{
 }>;
 
 
-export type CompleteShelterTaskMutation = { __typename?: 'Mutation', completeShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
+export type CompleteShelterTaskMutation = { __typename?: 'Mutation', completeShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
 
 export type CompleteShelterWalkMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -2952,7 +3029,7 @@ export type CreateShelterTaskMutationVariables = Exact<{
 }>;
 
 
-export type CreateShelterTaskMutation = { __typename?: 'Mutation', createShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
+export type CreateShelterTaskMutation = { __typename?: 'Mutation', createShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
 
 export type CreateShelterWalkMutationVariables = Exact<{
   data: ShelterWalkCreate;
@@ -3020,7 +3097,7 @@ export type SkipShelterTaskMutationVariables = Exact<{
 }>;
 
 
-export type SkipShelterTaskMutation = { __typename?: 'Mutation', skipShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
+export type SkipShelterTaskMutation = { __typename?: 'Mutation', skipShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
 
 export type StartShelterWalkMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3063,7 +3140,7 @@ export type GetShelterOperationalDashboardQueryVariables = Exact<{
 }>;
 
 
-export type GetShelterOperationalDashboardQuery = { __typename?: 'Query', getShelterOperationalDashboard: { __typename?: 'ShelterOperationalDashboardResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, dashboard?: { __typename?: 'ShelterOperationalDashboard', shelter_id: string, walks_completed_today: number, walks_planned_today: number, pets_needing_walk: number, tasks_pending: number, tasks_overdue: number, tasks_completed_today: number, boxes_total: number, boxes_free: number, boxes_occupied: number, boxes_full: number, boxes_out_of_service: number, pets_total: number, low_stock_count: number } | null } };
+export type GetShelterOperationalDashboardQuery = { __typename?: 'Query', getShelterOperationalDashboard: { __typename?: 'ShelterOperationalDashboardResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, dashboard?: { __typename?: 'ShelterOperationalDashboard', shelter_id: string, walks_completed_today: number, walks_planned_today: number, pets_needing_walk: number, tasks_pending: number, tasks_overdue: number, tasks_completed_today: number, tasks_total: number, tasks_recurring: number, tasks_due_this_week: number, boxes_total: number, boxes_free: number, boxes_occupied: number, boxes_full: number, boxes_out_of_service: number, pets_total: number, pets_without_box: number, low_stock_count: number } | null } };
 
 export type GetShelterPetQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3113,7 +3190,7 @@ export type ListShelterTasksQueryVariables = Exact<{
 }>;
 
 
-export type ListShelterTasksQuery = { __typename?: 'Query', listShelterTasks: { __typename?: 'PaginatedShelterTasks', success?: boolean | null, items: Array<{ __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+export type ListShelterTasksQuery = { __typename?: 'Query', listShelterTasks: { __typename?: 'PaginatedShelterTasks', success?: boolean | null, items: Array<{ __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
 
 export type ListShelterWalksQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
@@ -3517,6 +3594,14 @@ export const MinShelterTaskFragmentDoc = gql`
   scheduled_at
   completed_at
   is_recurring
+  recurrence {
+    freq
+    interval
+    weekdays
+    week_ordinal
+    time_of_day
+    start_at
+  }
   notes
   assigned_to {
     id
@@ -5948,12 +6033,16 @@ export const GetShelterOperationalDashboardDocument = gql`
       tasks_pending
       tasks_overdue
       tasks_completed_today
+      tasks_total
+      tasks_recurring
+      tasks_due_this_week
       boxes_total
       boxes_free
       boxes_occupied
       boxes_full
       boxes_out_of_service
       pets_total
+      pets_without_box
       low_stock_count
     }
   }

@@ -13,12 +13,16 @@ query getShelterOperationalDashboard($shelter_id: ID!) {
 			tasks_pending
 			tasks_overdue
 			tasks_completed_today
+			tasks_total
+			tasks_recurring
+			tasks_due_this_week
 			boxes_total
 			boxes_free
 			boxes_occupied
 			boxes_full
 			boxes_out_of_service
 			pets_total
+			pets_without_box
 			low_stock_count
 		}
 	}

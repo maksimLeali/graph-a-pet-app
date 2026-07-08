@@ -151,15 +151,16 @@ const ImgWrap = styled.div<{ $border?: string }>`
 	position: relative;
 	width: 100%;
 	aspect-ratio: 1/1;
-	padding: 3px;
 	box-sizing: border-box;
 	border-radius: 999px;
 	overflow: visible;
 	background: ${({ $border }) =>
 		$border ? $color($border) : $color("primary")};
-	> .img2x {
-		width: 100%;
-		height: 100%;
+	/* img fuori dal flusso: altezza del wrap solo da aspect-ratio, no feedback loop */
+	> .img2x,
+	> span {
+		position: absolute;
+		inset: 3px;
 		border-radius: 999px;
 		overflow: hidden;
 		display: block;
@@ -170,8 +171,6 @@ const ImgWrap = styled.div<{ $border?: string }>`
 `;
 
 const Fill = styled.span`
-	width: 100%;
-	height: 100%;
 	display: block;
 	border-radius: 999px;
 	background: ${$color("primary")};

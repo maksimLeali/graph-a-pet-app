@@ -15,7 +15,7 @@ import {
 	Toggle,
 	Option,
 } from "@components";
-import { ShelterTaskType } from "@types";
+import { ShelterTaskType, RecurrenceFreq, Weekday } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { useCreateShelterTaskMutation } from "../operations/__generated__/createShelterTask.generated";
 
@@ -23,7 +23,10 @@ type FormValues = {
 	task_type: ShelterTaskType;
 	area?: string;
 	scheduled_at?: string;
-	recurrence_rule?: string;
+	rec_freq?: RecurrenceFreq;
+	rec_interval?: string;
+	rec_weekday?: Weekday;
+	rec_ordinal?: string;
 	notes?: string;
 };
 
@@ -49,7 +52,40 @@ export const AddShelterTask: React.FC = () => {
 		label: t(`shelters.task_types.${key.toLowerCase()}`),
 	}));
 
+	const freqOptions: Option[] = Object.values(RecurrenceFreq).map((f) => ({
+		value: f,
+		label: t(`shelters.tasks.rec.${f.toLowerCase()}`),
+	}));
+	const weekdayOptions: Option[] = Object.values(Weekday).map((w) => ({
+		value: w,
+		label: t(`shelters.tasks.rec.weekdays.${w}`),
+	}));
+	const ordinalOptions: Option[] = ["1", "2", "3", "4", "5", "-1"].map((o) => ({
+		value: o,
+		label: t(`shelters.tasks.rec.ordinals.${o}`),
+	}));
+
+	const freq = methods.watch("rec_freq");
+
 	const onSubmit = methods.handleSubmit(async (data) => {
+		const recurrence =
+			isRecurring && data.rec_freq
+				? {
+						freq: data.rec_freq,
+						interval: data.rec_interval
+							? parseInt(data.rec_interval, 10)
+							: 1,
+						weekdays:
+							data.rec_freq !== RecurrenceFreq.Daily && data.rec_weekday
+								? [data.rec_weekday]
+								: undefined,
+						week_ordinal:
+							data.rec_freq === RecurrenceFreq.Monthly && data.rec_ordinal
+								? parseInt(data.rec_ordinal, 10)
+								: undefined,
+						start_at: data.scheduled_at,
+				  }
+				: undefined;
 		const res = await createTask({
 			variables: {
 				data: {
@@ -58,7 +94,7 @@ export const AddShelterTask: React.FC = () => {
 					area: data.area,
 					scheduled_at: data.scheduled_at,
 					is_recurring: isRecurring,
-					recurrence_rule: isRecurring ? data.recurrence_rule : undefined,
+					recurrence,
 					notes: data.notes,
 				},
 			},
@@ -107,13 +143,50 @@ export const AddShelterTask: React.FC = () => {
 					</Inline>
 
 					{isRecurring && (
-						<Field>
-							<span>{t("shelters.tasks.recurrence_rule")}</span>
-							<TextInput
-								name="recurrence_rule"
-								textLabel="shelters.tasks.recurrence_hint"
-							/>
-						</Field>
+						<>
+							<Field>
+								<span>{t("shelters.tasks.rec.freq")}</span>
+								<SelectInput
+									name="rec_freq"
+									options={freqOptions}
+									required
+									textLabel="shelters.tasks.rec.freq"
+								/>
+							</Field>
+
+							<Field>
+								<span>{t("shelters.tasks.rec.interval")}</span>
+								<TextInput
+									name="rec_interval"
+									textLabel="shelters.tasks.rec.interval"
+								/>
+							</Field>
+
+							{(freq === RecurrenceFreq.Weekly ||
+								freq === RecurrenceFreq.Monthly) && (
+								<Field>
+									<span>{t("shelters.tasks.rec.weekday")}</span>
+									<SelectInput
+										name="rec_weekday"
+										options={weekdayOptions}
+										required
+										textLabel="shelters.tasks.rec.weekday"
+									/>
+								</Field>
+							)}
+
+							{freq === RecurrenceFreq.Monthly && (
+								<Field>
+									<span>{t("shelters.tasks.rec.week_ordinal")}</span>
+									<SelectInput
+										name="rec_ordinal"
+										options={ordinalOptions}
+										required
+										textLabel="shelters.tasks.rec.week_ordinal"
+									/>
+								</Field>
+							)}
+						</>
 					)}
 
 					<Field>

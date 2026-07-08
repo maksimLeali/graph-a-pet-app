@@ -9,10 +9,11 @@ import { IonHeader, IonToolbar, IonTitle } from "@ionic/react";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import { useCookies } from "react-cookie";
+import { useHistory } from "react-router";
 
 import { CustodyLevel, UserRole } from "@types";
 
-import { Image2x } from "@components";
+import { Image2x, Icon } from "@components";
 import { MainMenu } from "@layouts/components";
 import { MinUserFragment } from "@graphql_generated/minUser.generated";
 import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated";
@@ -92,6 +93,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
     const dateTo = dayjs(dateFrom).add(14, "days").toISOString();
     const [user, setUser] = useState<MinUserFragment | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const history = useHistory();
 
     const refetchDashboard = () => {
         // getUserDashboardQuery();
@@ -228,6 +230,14 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
                 className="MainHeader"
             >
                 <IonToolbar>
+                    <BackBtn
+                        slot="start"
+                        type="button"
+                        aria-label="Back"
+                        onClick={() => history.goBack()}
+                    >
+                        <Icon name="arrowBack" color="dark" size="22px" />
+                    </BackBtn>
                     <IonTitle>{pageName}</IonTitle>
                 </IonToolbar>
                 <MainImage
@@ -283,6 +293,18 @@ const CustomIonHeader = styled(IonHeader)<{ visible: boolean; fade: boolean, noS
             height: 100%;
         }
     }
+`;
+
+const BackBtn = styled.button`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-left: ${$uw(1)};
+    cursor: pointer;
+    z-index: 10;
 `;
 
 const MainImage = styled.div`

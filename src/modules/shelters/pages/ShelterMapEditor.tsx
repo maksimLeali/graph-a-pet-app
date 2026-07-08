@@ -11,6 +11,7 @@ import { $color, $uw } from "@theme";
 import { AreaType, MapElementType, RoleLevel, UserRole } from "@types";
 import { MapCanvas, CanvasShape } from "../components/MapCanvas";
 import { AssignPetsModal, PickablePet } from "../components/AssignPetsModal";
+import { FindPetModal, LocatablePet } from "../components/FindPetModal";
 import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
 import { useGetShelterMapLazyQuery } from "../operations/__generated__/getShelterMap.generated";
@@ -136,6 +137,9 @@ export const ShelterMapEditor: React.FC = () => {
     const snapshotRef = useRef("");
     const rebaselineRef = useRef(false);
     const [assignBoxKey, setAssignBoxKey] = useState<string | null>(null);
+    // box da far lampeggiare quando localizzo un pet dalla ricerca
+    const [pulseKey, setPulseKey] = useState<string | null>(null);
+    const [pulsePicId, setPulsePicId] = useState<string | null>(null);
     const [sheetOpen, setSheetOpen] = useState(false);
     const lastTapRef = useRef<{ key: string; time: number } | null>(null);
     // resize mode (long-press): il props sheet resta a linguetta finché non lo apro
@@ -1168,7 +1172,14 @@ export const ShelterMapEditor: React.FC = () => {
         toast.success(t("shelters.map.saved_ok"));
     };
 
-    const refreshMap = () => mapId && loadMap({ variables: { id: mapId } });
+    // refetch + re-hydrate: l'effect di hydrate è guardato per id (non riscatta
+    // sullo stesso map), quindi qui idrato a mano coi dati freschi (occupanti).
+    const refreshMap = async () => {
+        if (!mapId) return;
+        const res = await loadMap({ variables: { id: mapId } });
+        const m = res.data?.getShelterMap?.map;
+        if (m) hydrate(m);
+    };
 
     const doRelease = async (occId: string) => {
         const res = await releasePet({ variables: { occupancy_id: occId } });
@@ -1203,9 +1214,12 @@ export const ShelterMapEditor: React.FC = () => {
     // apre la modale di scelta pet per un box (view mode)
     const openAssignModal = (box: LBox) => {
         const remaining = box.capacity - box.occupants.length;
-        const occupantIds = new Set(box.occupants.map((o) => o.shelterPetId));
+        // pet già assegnati a QUALSIASI box: non devono comparire nella scelta
+        const assignedIds = new Set(
+            boxes.flatMap((b) => b.occupants.map((o) => o.shelterPetId)),
+        );
         const pickable: PickablePet[] = shelterPets
-            .filter((sp) => !occupantIds.has(sp.id))
+            .filter((sp) => !assignedIds.has(sp.id))
             .map((sp) => ({
                 id: sp.id,
                 name: sp.pet?.name ?? "-",
@@ -1229,6 +1243,56 @@ export const ShelterMapEditor: React.FC = () => {
                     pets={pickable}
                     max={remaining}
                     onChange={(ids) => (selection.current = ids)}
+                />
+            ),
+        });
+    };
+
+    // apre la modale ricerca/localizzazione pet (view mode)
+    const openFindModal = () => {
+        // pet -> box in cui è tenuto (se assegnato)
+        const petBox = new Map<string, { key: string; label: string }>();
+        boxes.forEach((b) =>
+            b.occupants.forEach((o) =>
+                petBox.set(o.shelterPetId, {
+                    key: b.key,
+                    label: b.label ?? "",
+                }),
+            ),
+        );
+        const locatable: LocatablePet[] = shelterPets.map((sp) => {
+            const bx = petBox.get(sp.id);
+            return {
+                id: sp.id,
+                name: sp.pet?.name ?? "-",
+                pictureId: sp.pet?.main_picture?.id,
+                borderColor: sp.pet?.main_picture?.main_color?.color,
+                boxKey: bx?.key ?? null,
+                boxLabel: bx?.label ?? null,
+            };
+        });
+        openModal({
+            onClose: closeModal,
+            onCancel: closeModal,
+            children: (
+                <FindPetModal
+                    pets={locatable}
+                    hideAlreadyInBox={false}
+                    onPick={(p) => {
+                        closeModal();
+                        if (p.boxKey) {
+                            setPulseKey(p.boxKey);
+                            setPulsePicId(p.pictureId ?? null);
+                            setTimeout(() => {
+                                setPulseKey(null);
+                                setPulsePicId(null);
+                            }, 1600);
+                        } else {
+                            toast(t("shelters.map.pet_not_assigned"), {
+                                icon: "⚠️",
+                            });
+                        }
+                    }}
                 />
             ),
         });
@@ -1329,6 +1393,9 @@ export const ShelterMapEditor: React.FC = () => {
                     onPaste={onPaste}
                     selectAll={selectAll}
                     onToggleSelectAll={() => setSelectAll((v) => !v)}
+                    onFindPet={openFindModal}
+                    pulseKey={pulseKey}
+                    pulsePictureId={pulsePicId}
                 />
             )}
 
