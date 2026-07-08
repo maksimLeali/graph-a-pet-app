@@ -10,6 +10,9 @@ import { config } from "@config";
 import { $color, $uw } from "@theme";
 
 import { useListShelterMediasQuery } from "../operations/__generated__/listShelterMedias.generated";
+import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
+
+const PET_IMAGE_SCOPES = ["pet_main_picture", "pet_picture"];
 
 export const ShelterPhotos: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -18,46 +21,63 @@ export const ShelterPhotos: React.FC = () => {
 	const { openModal, closeModal } = useModal();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [pictures, setPictures] = useState<Picture[]>([]);
+	const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+	const toggle = (petId: string) =>
+		setExpanded((prev) => {
+			const next = new Set(prev);
+			next.has(petId) ? next.delete(petId) : next.add(petId);
+			return next;
+		});
 
 	useEffect(() => {
 		setPage({ name: t("shelters.photos.title") });
 	}, []);
 
-	const { data, refetch } = useListShelterMediasQuery({
+	const { data: petsData } = useListShelterPetsMinQuery({
 		skip: !id,
 		fetchPolicy: "cache-and-network",
 		variables: {
 			commonSearch: {
 				page: 0,
 				page_size: 200,
+				filters: { fixed: [{ key: "shelter_id", value: id }] },
+			},
+		},
+	});
+
+	const pets = (petsData?.listShelterPets?.items ?? [])
+		.filter((p): p is NonNullable<typeof p> => !!p)
+		.map((sp) => sp.pet);
+	const petIds = pets.map((p) => p.id);
+
+	// 1 sola chiamata: immagini shelter + immagini pet.
+	// scope IN [shelter_images, ...pet] AND ref_id IN [shelterId, ...petIds];
+	// i ref_id sono univoci per entità, niente combinazioni spurie.
+	const { data, refetch } = useListShelterMediasQuery({
+		skip: !id,
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				page: 0,
+				page_size: 500,
 				order_by: "created_at",
 				order_direction: "desc",
 				filters: {
-					fixed: [
-						{ key: "scope", value: "shelter_images" },
-						{ key: "ref_id", value: id },
+					lists: [
+						{ key: "scope", value: ["shelter_images", ...PET_IMAGE_SCOPES] },
+						{ key: "ref_id", value: [id, ...petIds] },
 					],
 				},
 			},
 		},
 	});
 
-	const medias = (data?.listMedias?.items ?? []).filter(
+	const allItems = (data?.listMedias?.items ?? []).filter(
 		(m): m is NonNullable<typeof m> => !!m
 	);
-
-	const openGallery = (startIndex: number) => {
-		if (!medias.length) return;
-		openModal({
-			onClose: closeModal,
-			children: (
-				<GalleryPreview
-					medias={medias.map((m) => ({ id: m.id }))}
-					startIndex={startIndex}
-				/>
-			),
-		});
-	};
+	const shelterMedias = allItems.filter((m) => m.scope === "shelter_images");
+	const medias = allItems.filter((m) => m.scope !== "shelter_images");
 
 	const onPickFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files;
@@ -69,6 +89,36 @@ export const ShelterPhotos: React.FC = () => {
 			}))
 		);
 		e.target.value = "";
+	};
+
+	// raggruppa per cane, mantiene l'ordine dei pet dello shelter
+	const byPet = new Map<string, typeof medias>();
+	medias.forEach((m) => {
+		const arr = byPet.get(m.ref_id) ?? [];
+		arr.push(m);
+		byPet.set(m.ref_id, arr);
+	});
+	const groups = pets
+		.map((pet) => ({ pet, medias: byPet.get(pet.id) ?? [] }))
+		.filter((g) => g.medias.length > 0);
+
+	// carosello unico: foto shelter + foto pet (con tag del pet)
+	const carousel: GallerySlide[] = [
+		...shelterMedias.map((m) => ({ id: m.id })),
+		...groups.flatMap((g) =>
+			g.medias.map((m) => ({ id: m.id, petName: g.pet.name }))
+		),
+	];
+
+	const openGallery = (mediaId: string) => {
+		const startIndex = carousel.findIndex((s) => s.id === mediaId);
+		if (startIndex < 0) return;
+		openModal({
+			onClose: closeModal,
+			children: (
+				<GalleryPreview medias={carousel} startIndex={startIndex} />
+			),
+		});
 	};
 
 	return (
@@ -84,21 +134,60 @@ export const ShelterPhotos: React.FC = () => {
 				</AddButton>
 			</Header>
 
-			<Grid>
-				{medias.map((m, i) => (
-					<Cell
-						key={m.id}
-						role="button"
-						tabIndex={0}
-						onClick={() => openGallery(i)}
-					>
-						<Image2x id={m.id} />
-					</Cell>
-				))}
-				{medias.length === 0 && (
-					<Empty>{t("shelters.photos.empty")}</Empty>
-				)}
-			</Grid>
+			{shelterMedias.length > 0 && (
+				<PetSection>
+					<Grid>
+						{shelterMedias.map((m) => (
+							<Cell
+								key={m.id}
+								role="button"
+								tabIndex={0}
+								onClick={() => openGallery(m.id)}
+							>
+								<Image2x id={m.id} />
+							</Cell>
+						))}
+					</Grid>
+				</PetSection>
+			)}
+
+			{groups.length === 0 && shelterMedias.length === 0 && (
+				<Empty>{t("shelters.photos.empty")}</Empty>
+			)}
+
+			{groups.map(({ pet, medias: petMedias }) => {
+				const isOpen = expanded.has(pet.id);
+				return (
+					<PetSection key={pet.id}>
+						<PetTitle
+							type="button"
+							onClick={() => toggle(pet.id)}
+						>
+							<Chevron
+								name="chevronForwardOutline"
+								color="primary"
+								className={isOpen ? "open" : ""}
+							/>
+							<span>{pet.name}</span>
+							<Count>{petMedias.length}</Count>
+						</PetTitle>
+						{isOpen && (
+							<Grid>
+								{petMedias.map((m) => (
+									<Cell
+										key={m.id}
+										role="button"
+										tabIndex={0}
+										onClick={() => openGallery(m.id)}
+									>
+										<Image2x id={m.id} />
+									</Cell>
+								))}
+							</Grid>
+						)}
+					</PetSection>
+				);
+			})}
 
 			<input
 				ref={fileInputRef}
@@ -123,11 +212,59 @@ export const ShelterPhotos: React.FC = () => {
 	);
 };
 
+const PetSection = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	padding: ${$uw(0.5)} 12px 0;
+`;
+
+const PetTitle = styled.button`
+	width: 100%;
+	margin: 0 0 ${$uw(0.5)};
+	padding: 0;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 1.5rem;
+	color: ${$color("primary")};
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	display: flex;
+	align-items: center;
+	gap: ${$uw(0.75)};
+	> span {
+		font-weight: 700;
+	}
+`;
+
+const Chevron = styled(Icon)`
+	width: ${$uw(1.5)};
+	height: ${$uw(1.5)};
+	transition: transform 0.15s ease;
+	&.open {
+		transform: rotate(90deg);
+	}
+`;
+
+const Count = styled.span`
+	min-width: ${$uw(2.5)};
+	height: ${$uw(2.5)};
+	padding: 0 ${$uw(0.75)};
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	background: rgba(var(--ion-color-primary-rgb), 0.15);
+	color: ${$color("primary")};
+	font-size: 1.3rem;
+	font-weight: 700;
+`;
+
 const Grid = styled.div`
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 3px;
-	padding-bottom: ${$uw(10)};
+	padding-bottom: ${$uw(1)};
 `;
 
 const Cell = styled.div`
@@ -141,8 +278,10 @@ const Cell = styled.div`
 	}
 `;
 
+type GallerySlide = { id: string; petName?: string };
+
 type GalleryPreviewProps = {
-	medias: { id?: string | null }[];
+	medias: GallerySlide[];
 	startIndex: number;
 };
 
@@ -170,6 +309,9 @@ const GalleryPreview: React.FC<GalleryPreviewProps> = ({
 		<GalleryModalContent>
 			<GalleryModalImage>
 				{mediaSrc && <img src={mediaSrc} alt={currentMedia?.id ?? ""} />}
+				{currentMedia?.petName && (
+					<PetTag>{currentMedia.petName}</PetTag>
+				)}
 			</GalleryModalImage>
 			<GalleryModalCounter>
 				{activeIndex + 1}/{total}
@@ -208,6 +350,7 @@ const GalleryModalContent = styled.div`
 `;
 
 const GalleryModalImage = styled.div`
+	position: relative;
 	width: 100%;
 	height: min(60dvh, ${$uw(50)});
 	display: flex;
@@ -218,6 +361,22 @@ const GalleryModalImage = styled.div`
 		max-height: 100%;
 		object-fit: contain;
 	}
+`;
+
+const PetTag = styled.span`
+	position: absolute;
+	top: ${$uw(0.75)};
+	right: ${$uw(0.75)};
+	max-width: 60%;
+	padding: ${$uw(0.4)} ${$uw(0.9)};
+	border-radius: 999px;
+	background: ${$color("primary")};
+	color: ${$color("light")};
+	font-size: 1.3rem;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 `;
 
 const GalleryModalArrow = styled.button`
@@ -250,7 +409,6 @@ const GalleryModalCounter = styled.span`
 `;
 
 const Empty = styled.p`
-	grid-column: span 3;
 	text-align: center;
 	color: ${$color("medium")};
 	padding: ${$uw(4)} 0;

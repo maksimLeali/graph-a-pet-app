@@ -5,6 +5,7 @@ query listShelterMedias($commonSearch: CommonSearch) {
 			url
 			type
 			scope
+			ref_id
 		}
 		success
 		error {

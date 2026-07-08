@@ -16,6 +16,9 @@ import { useGetShelterOperationalDashboardQuery } from "../operations/__generate
 import { useDeleteShelterRoleMutation } from "../operations/__generated__/deleteShelterRole.generated";
 import { FullShelterFragment } from "../operations/__generated__/FullShelter.generated";
 import { useListShelterMediasQuery } from "../operations/__generated__/listShelterMedias.generated";
+import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
+
+const PET_IMAGE_SCOPES = ["pet_main_picture", "pet_picture"];
 
 type Role = NonNullable<
 	NonNullable<FullShelterFragment["roles"]>["items"][number]
@@ -379,6 +382,22 @@ type galleryPreviewProps = {
 };
 
 const GalleryPreview: React.FC<galleryPreviewProps> = ({ shelterId }) => {
+	const { data: petsData } = useListShelterPetsMinQuery({
+		skip: !shelterId,
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				page: 0,
+				page_size: 200,
+				filters: { fixed: [{ key: "shelter_id", value: shelterId }] },
+			},
+		},
+	});
+	const petIds = (petsData?.listShelterPets?.items ?? [])
+		.filter((p): p is NonNullable<typeof p> => !!p)
+		.map((sp) => sp.pet.id);
+
+	// 1 sola chiamata: immagini shelter + immagini pet (ultime 5).
 	const { data } = useListShelterMediasQuery({
 		skip: !shelterId,
 		fetchPolicy: "cache-and-network",
@@ -389,9 +408,9 @@ const GalleryPreview: React.FC<galleryPreviewProps> = ({ shelterId }) => {
 				order_by: "created_at",
 				order_direction: "desc",
 				filters: {
-					fixed: [
-						{ key: "scope", value: "shelter_images" },
-						{ key: "ref_id", value: shelterId },
+					lists: [
+						{ key: "scope", value: ["shelter_images", ...PET_IMAGE_SCOPES] },
+						{ key: "ref_id", value: [shelterId, ...petIds] },
 					],
 				},
 			},

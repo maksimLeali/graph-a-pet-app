@@ -65,7 +65,7 @@ export const Modal: React.FC<ModalProps> = ({
                         onClick={()=>onClose()}
                     />
                 </CloseContainer>
-                {children}
+                <Content>{children}</Content>
                 <Actions>
                     {onCancel !== null && onCancel !== undefined && (
                         <IonButton color="danger" fill="outline" onClick={onCancel}>
@@ -126,10 +126,21 @@ const ModalBox = styled.div<{ bgColor: string; txtColor: string }>`
     color: ${({ txtColor }) => $color(txtColor)};
     background-color: ${({ bgColor }) => $color(bgColor)}!important;
     padding: ${$cssTRBL(2, 0)};
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+`;
+
+const Content = styled.div`
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
 `;
 
 const CloseContainer = styled.div`
     width: 100%;
+    flex-shrink: 0;
     height: fit-content;
     height: ${$uw(2)};
     margin-bottom: ${$uw(2)};
@@ -148,6 +159,7 @@ const CustomIonButton = styled(IonButton)<{ txtColor?: string }>`
 `;
 
 const Actions = styled.div`
+    flex-shrink: 0;
     display: flex;
     justify-content: space-between;
     padding: ${$cssTRBL(0,2)};
