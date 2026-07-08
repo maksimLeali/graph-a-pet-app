@@ -1,0 +1,21 @@
+query listShelterMedias($commonSearch: CommonSearch) {
+	listMedias(commonSearch: $commonSearch) {
+		items {
+			id
+			url
+			type
+			scope
+		}
+		success
+		error {
+			code
+			message
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

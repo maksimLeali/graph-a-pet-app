@@ -7,4 +7,8 @@ export { ShelterWalksList } from "./ShelterWalksList";
 export { ShelterInventory } from "./ShelterInventory";
 export { AddInventoryItem } from "./AddInventoryItem";
 export { ShelterMapEditor } from "./ShelterMapEditor";
+export { ShelterBoxes } from "./ShelterBoxes";
+export { ShelterAnimals } from "./ShelterAnimals";
+export { ShelterBoxDetail } from "./ShelterBoxDetail";
 export { ShelterPetDetail } from "./ShelterPetDetail";
+export { ShelterPhotos } from "./ShelterPhotos";

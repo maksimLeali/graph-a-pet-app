@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
@@ -26,6 +26,13 @@ type Props = {
 export const AssignPetsModal: React.FC<Props> = ({ pets, max, onChange }) => {
 	const { t } = useTranslation();
 	const [selected, setSelected] = useState<string[]>([]);
+	const [q, setQ] = useState("");
+
+	const shown = useMemo(() => {
+		const needle = q.trim().toLowerCase();
+		if (!needle) return pets;
+		return pets.filter((p) => p.name.toLowerCase().includes(needle));
+	}, [pets, q]);
 
 	const commit = (next: string[]) => {
 		setSelected(next);
@@ -50,11 +57,20 @@ export const AssignPetsModal: React.FC<Props> = ({ pets, max, onChange }) => {
 				</Counter>
 			</Head>
 
-			{pets.length === 0 ? (
+			<Search>
+				<Icon name="search" color="medium" size="18px" />
+				<input
+					value={q}
+					onChange={(e) => setQ(e.target.value)}
+					placeholder={t("shelters.map.search_pet") ?? ""}
+				/>
+			</Search>
+
+			{shown.length === 0 ? (
 				<Empty>{t("shelters.no_pets")}</Empty>
 			) : (
 				<Grid>
-					{pets.map((p) => {
+					{shown.map((p) => {
 						const isSel = selected.includes(p.id);
 						const disabled = !isSel && selected.length >= max;
 						return (
@@ -121,6 +137,25 @@ const Counter = styled.span<{ $full: boolean }>`
 	font-size: 1.5rem;
 	font-weight: 700;
 	color: ${({ $full }) => ($full ? $color("danger") : $color("medium"))};
+`;
+
+const Search = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	gap: ${$uw(1)};
+	padding: ${$uw(1)} ${$uw(1.5)};
+	border-radius: ${$uw(1)};
+	background: ${$color("background")};
+	> input {
+		flex: 1;
+		border: none;
+		outline: none;
+		background: transparent;
+		font-size: 1.5rem;
+		color: ${$color("dark")};
+	}
 `;
 
 const Grid = styled.div`

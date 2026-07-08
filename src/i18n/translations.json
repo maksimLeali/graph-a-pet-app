@@ -330,7 +330,9 @@
             "5": "Fünfte",
             "-1": "Letzte"
           }
-        }
+        },
+        "pet": "Tier",
+        "box": "Box"
       },
       "walk_status": {
         "planned": "Planned",
@@ -417,7 +419,26 @@
         "open_map": "Open map"
       },
       "structure": "Struktur",
-      "organization": "Organisation"
+      "organization": "Organisation",
+      "boxes": {
+        "title": "Boxen verwalten",
+        "empty": "Keine Boxen",
+        "no_box": "Keine Boxen",
+        "no_area": "Ohne Bereich",
+        "no_zone": "Ohne Zone",
+        "open_map_q": "Karte öffnen?",
+        "search": "Box oder Hund suchen"
+      },
+      "animals": {
+        "title": "Tiere verwalten",
+        "to_fix": "Zu erledigen"
+      },
+      "photos": {
+        "title": "Fotos",
+        "manage": "Fotos verwalten",
+        "empty": "Keine Fotos vorhanden",
+        "add": "Fotos hinzufügen"
+      }
     }
   },
   "en": {
@@ -763,7 +784,9 @@
             "5": "Fifth",
             "-1": "Last"
           }
-        }
+        },
+        "pet": "Animal",
+        "box": "Box"
       },
       "walk_status": {
         "planned": "Planned",
@@ -850,7 +873,26 @@
         "open_map": "Open map"
       },
       "structure": "Structure",
-      "organization": "Organization"
+      "organization": "Organization",
+      "boxes": {
+        "title": "Manage boxes",
+        "empty": "No boxes",
+        "no_box": "No boxes",
+        "no_area": "No area",
+        "no_zone": "No zone",
+        "open_map_q": "Open the map?",
+        "search": "Search box or dog"
+      },
+      "animals": {
+        "title": "Manage animals",
+        "to_fix": "To sort out"
+      },
+      "photos": {
+        "title": "Photos",
+        "manage": "Manage photos",
+        "empty": "No photos yet",
+        "add": "Add photos"
+      }
     }
   },
   "es": {
@@ -1184,7 +1226,9 @@
             "5": "Quinto",
             "-1": "Último"
           }
-        }
+        },
+        "pet": "Animal",
+        "box": "Box"
       },
       "walk_status": {
         "planned": "Planned",
@@ -1271,7 +1315,26 @@
         "open_map": "Open map"
       },
       "structure": "Estructura",
-      "organization": "Organización"
+      "organization": "Organización",
+      "boxes": {
+        "title": "Gestión de boxes",
+        "empty": "Sin boxes",
+        "no_box": "Sin boxes",
+        "no_area": "Sin área",
+        "no_zone": "Sin zona",
+        "open_map_q": "¿Abrir el mapa?",
+        "search": "Buscar box o perro"
+      },
+      "animals": {
+        "title": "Gestión de animales",
+        "to_fix": "Por ubicar"
+      },
+      "photos": {
+        "title": "Fotos",
+        "manage": "Gestionar fotos",
+        "empty": "Sin fotos todavía",
+        "add": "Añadir fotos"
+      }
     }
   },
   "fr": {
@@ -1605,7 +1668,9 @@
             "5": "Cinquième",
             "-1": "Dernier"
           }
-        }
+        },
+        "pet": "Animal",
+        "box": "Box"
       },
       "walk_status": {
         "planned": "Planned",
@@ -1692,7 +1757,26 @@
         "open_map": "Open map"
       },
       "structure": "Structure",
-      "organization": "Organisation"
+      "organization": "Organisation",
+      "boxes": {
+        "title": "Gestion des box",
+        "empty": "Aucun box",
+        "no_box": "Aucun box",
+        "no_area": "Sans zone",
+        "no_zone": "Sans zone",
+        "open_map_q": "Ouvrir la carte ?",
+        "search": "Chercher box ou chien"
+      },
+      "animals": {
+        "title": "Gestion des animaux",
+        "to_fix": "À placer"
+      },
+      "photos": {
+        "title": "Photos",
+        "manage": "Gérer les photos",
+        "empty": "Aucune photo pour l'instant",
+        "add": "Ajouter des photos"
+      }
     }
   },
   "it": {
@@ -2091,7 +2175,9 @@
             "5": "Quinto",
             "-1": "Ultimo"
           }
-        }
+        },
+        "pet": "Animale",
+        "box": "Box"
       },
       "walk_status": {
         "planned": "Pianificata",
@@ -2178,7 +2264,26 @@
         "open_map": "Apri mappa"
       },
       "structure": "Struttura",
-      "organization": "Organizzazione"
+      "organization": "Organizzazione",
+      "boxes": {
+        "title": "Gestione box",
+        "empty": "Nessun box",
+        "no_box": "Nessun box",
+        "no_area": "Senza area",
+        "no_zone": "Senza zona",
+        "open_map_q": "Vuoi aprire la mappa?",
+        "search": "Cerca box o cane"
+      },
+      "animals": {
+        "title": "Gestione animali",
+        "to_fix": "Da sistemare"
+      },
+      "photos": {
+        "title": "Foto",
+        "manage": "Gestione foto",
+        "empty": "Nessuna foto ancora",
+        "add": "Aggiungi foto"
+      }
     }
   },
   "ru": {
@@ -2522,7 +2627,9 @@
             "5": "Пятый",
             "-1": "Последний"
           }
-        }
+        },
+        "pet": "Животное",
+        "box": "Бокс"
       },
       "walk_status": {
         "planned": "Planned",
@@ -2609,7 +2716,26 @@
         "open_map": "Open map"
       },
       "structure": "Структура",
-      "organization": "Организация"
+      "organization": "Организация",
+      "boxes": {
+        "title": "Управление боксами",
+        "empty": "Нет боксов",
+        "no_box": "Нет боксов",
+        "no_area": "Без области",
+        "no_zone": "Без зоны",
+        "open_map_q": "Открыть карту?",
+        "search": "Поиск бокса или собаки"
+      },
+      "animals": {
+        "title": "Управление животными",
+        "to_fix": "Разместить"
+      },
+      "photos": {
+        "title": "Фото",
+        "manage": "Управление фото",
+        "empty": "Фото отсутствуют",
+        "add": "Добавить фото"
+      }
     }
   }
 }

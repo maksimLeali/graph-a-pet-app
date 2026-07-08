@@ -15,6 +15,7 @@ import { useGetShelterLazyQuery } from "../operations/__generated__/getShelter.g
 import { useGetShelterOperationalDashboardQuery } from "../operations/__generated__/getShelterOperationalDashboard.generated";
 import { useDeleteShelterRoleMutation } from "../operations/__generated__/deleteShelterRole.generated";
 import { FullShelterFragment } from "../operations/__generated__/FullShelter.generated";
+import { useListShelterMediasQuery } from "../operations/__generated__/listShelterMedias.generated";
 
 type Role = NonNullable<
 	NonNullable<FullShelterFragment["roles"]>["items"][number]
@@ -231,7 +232,18 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 
 			{dash && (
 				<Section>
-					<SectionTitle>{t("shelters.structure")}</SectionTitle>
+					<SectionTitle>
+						{t("shelters.structure")}
+						<AddPetButton
+							type="button"
+							onClick={() =>
+								history.push(`/shelters/detail/${shelter.id}/boxes`)
+							}
+						>
+							<Icon name="albumsOutline" color="light" size="16px" />
+							<span>{t("shelters.boxes.title")}</span>
+						</AddPetButton>
+					</SectionTitle>
 					<Dashboard>
 						<Tile>
 							<b>{dash.boxes_free}</b>
@@ -308,17 +320,15 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 			<Section>
 				<SectionTitle>
 					{t("shelters.pets")}
-					{canManage && (
-						<AddPetButton
-							type="button"
-							onClick={() =>
-								history.push(`/shelters/add-pet/${shelter.id}`)
-							}
-						>
-							<Icon name="add" color="light" size="16px" />
-							<span>{t("shelters.add_pet")}</span>
-						</AddPetButton>
-					)}
+					<AddPetButton
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${shelter.id}/animals`)
+						}
+					>
+						<Icon name="albumsOutline" color="light" size="16px" />
+						<span>{t("shelters.animals.title")}</span>
+					</AddPetButton>
 				</SectionTitle>
 				<Dashboard>
 					<Tile>
@@ -343,7 +353,65 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 					</Tile>
 				</Dashboard>
 			</Section>
+				<Section>
+				<SectionTitle>
+					{t("shelters.photos.title")}
+					<AddPetButton
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${shelter.id}/photos`)
+						}
+					>
+						<Icon name="imagesOutline" color="light" size="16px" />
+						<span>{t("shelters.photos.manage")}</span>
+					</AddPetButton>
+				</SectionTitle>
+				<GalleryPreview shelterId={shelter.id} onManage={() => history.push(`/shelters/detail/${shelter.id}/photos`)} />
+			</Section>
+
 		</>
+	);
+};
+
+type galleryPreviewProps = {
+	shelterId: string;
+	onManage: () => void;
+};
+
+const GalleryPreview: React.FC<galleryPreviewProps> = ({ shelterId }) => {
+	const { data } = useListShelterMediasQuery({
+		skip: !shelterId,
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				page: 0,
+				page_size: 5,
+				order_by: "created_at",
+				order_direction: "desc",
+				filters: {
+					fixed: [
+						{ key: "scope", value: "shelter_images" },
+						{ key: "ref_id", value: shelterId },
+					],
+				},
+			},
+		},
+	});
+
+	const medias = (data?.listMedias?.items ?? []).filter(
+		(m): m is NonNullable<typeof m> => !!m
+	);
+
+	if (medias.length === 0) return null;
+
+	return (
+		<PhotoStrip>
+			{medias.map((m) => (
+				<PhotoThumb key={m.id}>
+					<Image2x id={m.id} />
+				</PhotoThumb>
+			))}
+		</PhotoStrip>
 	);
 };
 
@@ -353,8 +421,8 @@ const Header = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: ${$uw(1)};
-	padding: ${$uw(3)} 12px;
+	gap: ${$uw(0.5)};
+	padding: ${$uw(1.5)} 12px;
 	border-bottom: 2px solid ${$color("primary")};
 	> h2 {
 		margin: 0;
@@ -397,7 +465,7 @@ const Contacts = styled.div`
 const Section = styled.div`
 	width: 100%;
 	box-sizing: border-box;
-	padding: ${$uw(3)} 12px 0;
+	padding: ${$uw(1.5)} 12px 0;
 `;
 
 const SectionTitle = styled.h3`
@@ -615,7 +683,7 @@ const ConfirmText = styled.p`
 const TabNav = styled.div`
 	display: flex;
 	gap: ${$uw(1)};
-	padding: ${$uw(1.5)} 12px 0;
+	padding: ${$uw(0.75)} 12px 0;
 	overflow-x: auto;
 `;
 
@@ -648,7 +716,7 @@ const Dashboard = styled.div`
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: ${$uw(1)};
-	padding: ${$uw(1.5)} 12px 0;
+	padding: ${$uw(0.75)} 12px 0;
 `;
 
 const Tile = styled.div<{ $accent?: string }>`
@@ -656,7 +724,7 @@ const Tile = styled.div<{ $accent?: string }>`
 	flex-direction: column;
 	align-items: center;
 	gap: ${$uw(0.25)};
-	padding: ${$uw(1.25)} ${$uw(0.5)};
+	padding: ${$uw(0.625)} ${$uw(0.5)};
 	border-radius: 12px;
 	background: ${$color("background")};
 	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.15);
@@ -693,6 +761,27 @@ const AddPetButton = styled.button`
 	}
 	&:active {
 		opacity: 0.7;
+	}
+`;
+
+const PhotoStrip = styled.div`
+	display: flex;
+	gap: ${$uw(0.75)};
+	overflow-x: auto;
+	padding-bottom: ${$uw(0.5)};
+`;
+
+const PhotoThumb = styled.div`
+	flex: 0 0 auto;
+	width: ${$uw(8)};
+	height: ${$uw(8)};
+	border-radius: 10px;
+	overflow: hidden;
+	background: rgba(var(--ion-color-primary-rgb), 0.08);
+	> .img2x {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 `;
 

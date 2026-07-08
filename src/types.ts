@@ -3171,6 +3171,13 @@ export type ListShelterMapsQueryVariables = Exact<{
 
 export type ListShelterMapsQuery = { __typename?: 'Query', listShelterMaps: { __typename?: 'PaginatedShelterMaps', success?: boolean | null, items: Array<{ __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
+export type ListShelterMediasQueryVariables = Exact<{
+  commonSearch?: InputMaybe<CommonSearch>;
+}>;
+
+
+export type ListShelterMediasQuery = { __typename?: 'Query', listMedias: { __typename?: 'PaginatedMedias', success?: boolean | null, items: Array<{ __typename?: 'Media', id: string, url: string, type: string, scope: string } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+
 export type ListShelterPetsMinQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
 }>;
@@ -6288,6 +6295,62 @@ export type ListShelterMapsQueryHookResult = ReturnType<typeof useListShelterMap
 export type ListShelterMapsLazyQueryHookResult = ReturnType<typeof useListShelterMapsLazyQuery>;
 export type ListShelterMapsSuspenseQueryHookResult = ReturnType<typeof useListShelterMapsSuspenseQuery>;
 export type ListShelterMapsQueryResult = Apollo.QueryResult<ListShelterMapsQuery, ListShelterMapsQueryVariables>;
+export const ListShelterMediasDocument = gql`
+    query listShelterMedias($commonSearch: CommonSearch) {
+  listMedias(commonSearch: $commonSearch) {
+    items {
+      id
+      url
+      type
+      scope
+    }
+    success
+    error {
+      code
+      message
+    }
+    pagination {
+      current_page
+      page_size
+      total_items
+      total_pages
+    }
+  }
+}
+    `;
+
+/**
+ * __useListShelterMediasQuery__
+ *
+ * To run a query within a React component, call `useListShelterMediasQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListShelterMediasQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListShelterMediasQuery({
+ *   variables: {
+ *      commonSearch: // value for 'commonSearch'
+ *   },
+ * });
+ */
+export function useListShelterMediasQuery(baseOptions?: Apollo.QueryHookOptions<ListShelterMediasQuery, ListShelterMediasQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListShelterMediasQuery, ListShelterMediasQueryVariables>(ListShelterMediasDocument, options);
+      }
+export function useListShelterMediasLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListShelterMediasQuery, ListShelterMediasQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListShelterMediasQuery, ListShelterMediasQueryVariables>(ListShelterMediasDocument, options);
+        }
+export function useListShelterMediasSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListShelterMediasQuery, ListShelterMediasQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListShelterMediasQuery, ListShelterMediasQueryVariables>(ListShelterMediasDocument, options);
+        }
+export type ListShelterMediasQueryHookResult = ReturnType<typeof useListShelterMediasQuery>;
+export type ListShelterMediasLazyQueryHookResult = ReturnType<typeof useListShelterMediasLazyQuery>;
+export type ListShelterMediasSuspenseQueryHookResult = ReturnType<typeof useListShelterMediasSuspenseQuery>;
+export type ListShelterMediasQueryResult = Apollo.QueryResult<ListShelterMediasQuery, ListShelterMediasQueryVariables>;
 export const ListShelterPetsMinDocument = gql`
     query listShelterPetsMin($commonSearch: CommonSearch) {
   listShelterPets(commonSearch: $commonSearch) {
