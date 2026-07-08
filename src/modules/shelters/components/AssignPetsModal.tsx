@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import { Image2x, Icon } from "@components";
+import { useUserContext } from "@contexts";
 import { I18NKey } from "@i18n";
 import { $color, $uw } from "@theme";
 
@@ -25,6 +26,7 @@ type Props = {
 // Selezione multipla fino a `max` (capacità residua del box).
 export const AssignPetsModal: React.FC<Props> = ({ pets, max, onChange }) => {
 	const { t } = useTranslation();
+	const { useCustomColors } = useUserContext();
 	const [selected, setSelected] = useState<string[]>([]);
 	const [q, setQ] = useState("");
 
@@ -82,7 +84,11 @@ export const AssignPetsModal: React.FC<Props> = ({ pets, max, onChange }) => {
 								onClick={() => toggle(p.id)}
 							>
 								<ImgWrap
-									$border={p.borderColor ?? undefined}
+									$border={
+										useCustomColors
+											? p.borderColor ?? undefined
+											: undefined
+									}
 									className={isSel ? "sel" : ""}
 								>
 									{p.pictureId ? (
@@ -186,16 +192,16 @@ const ImgWrap = styled.div<{ $border?: string }>`
 	position: relative;
 	width: 100%;
 	aspect-ratio: 1/1;
+	padding: 3px;
 	box-sizing: border-box;
 	border-radius: 999px;
 	overflow: visible;
 	background: ${({ $border }) =>
 		$border ? $color($border) : $color("primary")};
-	/* img fuori dal flusso: altezza del wrap solo da aspect-ratio, no feedback loop */
 	> .img2x,
 	> span {
-		position: absolute;
-		inset: 3px;
+		width: 100%;
+		height: 100%;
 		border-radius: 999px;
 		overflow: hidden;
 		display: block;

@@ -12,6 +12,7 @@ type Props = {
 	task: MinShelterTaskFragment;
 	onComplete: (id: string) => void;
 	onSkip: (id: string) => void;
+	onEdit: (id: string) => void;
 	onDelete: (id: string) => void;
 };
 
@@ -27,11 +28,13 @@ const TYPE_ICON: Record<ShelterTaskType, IconName> = {
 const STATUS_COLOR: Record<TaskStatus, string> = {
 	[TaskStatus.Pending]: "medium",
 	[TaskStatus.InProgress]: "warning",
+	[TaskStatus.Overdue]: "warning",
 	[TaskStatus.Completed]: "success",
 	[TaskStatus.Skipped]: "danger",
+	[TaskStatus.Cancelled]: "danger",
 };
 
-export const TaskCard: React.FC<Props> = ({ task, onComplete, onSkip, onDelete }) => {
+export const TaskCard: React.FC<Props> = ({ task, onComplete, onSkip, onEdit, onDelete }) => {
 	const { t } = useTranslation();
 	const open =
 		task.status === TaskStatus.Pending || task.status === TaskStatus.InProgress;
@@ -75,6 +78,13 @@ export const TaskCard: React.FC<Props> = ({ task, onComplete, onSkip, onDelete }
 							onClick={() => onSkip(task.id)}
 						>
 							<Icon name="playSkipForward" color="light" size="16px" />
+						</Round>
+						<Round
+							$c="primary"
+							aria-label={t("actions.edit") ?? ""}
+							onClick={() => onEdit(task.id)}
+						>
+							<Icon name="pencil" color="light" size="14px" />
 						</Round>
 					</Actions>
 				)}

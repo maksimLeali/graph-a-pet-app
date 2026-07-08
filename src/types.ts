@@ -32,8 +32,9 @@ export enum AreaType {
 }
 
 export enum BoxStatus {
-  Free = 'FREE',
+  Available = 'AVAILABLE',
   Full = 'FULL',
+  NeedsCleaning = 'NEEDS_CLEANING',
   Occupied = 'OCCUPIED',
   OutOfService = 'OUT_OF_SERVICE'
 }
@@ -213,6 +214,7 @@ export type DeleteResult = {
 export type Error = {
   __typename?: 'Error';
   code: Scalars['String']['output'];
+  errorCode?: Maybe<Scalars['String']['output']>;
   extra?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
 };
@@ -382,6 +384,7 @@ export type Mutation = {
   addPet: PetResult;
   addPetToMe: PetAddedResult;
   addPetToUser: PetAddedResult;
+  archiveShelterInventoryItem: ShelterInventoryItemResult;
   assignPetToBox: ShelterBoxOccupancyResult;
   cancelShelterWalk: ShelterWalkResult;
   changeShelter: ShelterPetResult;
@@ -403,6 +406,7 @@ export type Mutation = {
   createShelterMapElement: ShelterMapElementResult;
   createShelterPet: ShelterPetResult;
   createShelterPets: ShelterPetsResult;
+  createShelterPetsWithData: ShelterPetsResult;
   createShelterRole: ShelterRoleResult;
   createShelterTask: ShelterTaskResult;
   createShelterWalk: ShelterWalkResult;
@@ -484,6 +488,11 @@ export type MutationAddPetToMeArgs = {
 export type MutationAddPetToUserArgs = {
   pet: PetCreate;
   userId: Scalars['String']['input'];
+};
+
+
+export type MutationArchiveShelterInventoryItemArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -594,6 +603,11 @@ export type MutationCreateShelterPetArgs = {
 
 export type MutationCreateShelterPetsArgs = {
   data: ShelterPetsCreate;
+};
+
+
+export type MutationCreateShelterPetsWithDataArgs = {
+  data: ShelterPetsWithDataCreate;
 };
 
 
@@ -1967,10 +1981,13 @@ export type ShelterCreate = {
 
 export type ShelterInventoryItem = {
   __typename?: 'ShelterInventoryItem';
+  archived_at?: Maybe<Scalars['String']['output']>;
+  archived_by?: Maybe<User>;
   category: InventoryCategory;
   created_at: Scalars['String']['output'];
   current_quantity: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
+  is_active: Scalars['Boolean']['output'];
   is_below_threshold: Scalars['Boolean']['output'];
   minimum_threshold?: Maybe<Scalars['Float']['output']>;
   movements?: Maybe<PaginatedInventoryMovements>;
@@ -2022,6 +2039,7 @@ export type ShelterInventoryMovement = {
 };
 
 export type ShelterInventoryMovementCreate = {
+  allow_negative?: InputMaybe<Scalars['Boolean']['input']>;
   item_id: Scalars['ID']['input'];
   movement_type: MovementType;
   notes?: InputMaybe<Scalars['String']['input']>;
@@ -2176,12 +2194,16 @@ export type ShelterMapUpdate = {
 
 export type ShelterOperationalDashboard = {
   __typename?: 'ShelterOperationalDashboard';
+  boxes_available: Scalars['Int']['output'];
   boxes_free: Scalars['Int']['output'];
   boxes_full: Scalars['Int']['output'];
+  boxes_needing_cleaning: Scalars['Int']['output'];
   boxes_occupied: Scalars['Int']['output'];
   boxes_out_of_service: Scalars['Int']['output'];
   boxes_total: Scalars['Int']['output'];
   low_stock_count: Scalars['Int']['output'];
+  low_stock_items: Array<ShelterInventoryItem>;
+  occupancy_rate: Scalars['Float']['output'];
   pets_needing_walk: Scalars['Int']['output'];
   pets_total: Scalars['Int']['output'];
   pets_without_box: Scalars['Int']['output'];
@@ -2191,8 +2213,10 @@ export type ShelterOperationalDashboard = {
   tasks_overdue: Scalars['Int']['output'];
   tasks_pending: Scalars['Int']['output'];
   tasks_recurring: Scalars['Int']['output'];
+  tasks_skipped_today: Scalars['Int']['output'];
   tasks_total: Scalars['Int']['output'];
   walks_completed_today: Scalars['Int']['output'];
+  walks_in_progress: Scalars['Int']['output'];
   walks_planned_today: Scalars['Int']['output'];
 };
 
@@ -2207,6 +2231,8 @@ export type ShelterPet = {
   __typename?: 'ShelterPet';
   created_at: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  is_active: Scalars['Boolean']['output'];
+  left_at?: Maybe<Scalars['String']['output']>;
   pet: Pet;
   shelter: Shelter;
 };
@@ -2214,6 +2240,18 @@ export type ShelterPet = {
 export type ShelterPetCreate = {
   pet_id: Scalars['ID']['input'];
   shelter_id: Scalars['ID']['input'];
+};
+
+export type ShelterPetData = {
+  birthday: Scalars['String']['input'];
+  breed?: InputMaybe<Scalars['String']['input']>;
+  chip_code?: InputMaybe<Scalars['String']['input']>;
+  coat_length?: InputMaybe<CoatLength>;
+  gender?: InputMaybe<Gender>;
+  name: Scalars['String']['input'];
+  neutered?: InputMaybe<Scalars['Boolean']['input']>;
+  temperament?: InputMaybe<Scalars['String']['input']>;
+  weight_kg?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type ShelterPetResult = {
@@ -2233,6 +2271,11 @@ export type ShelterPetsResult = {
   error?: Maybe<Error>;
   shelter_pets?: Maybe<Array<Maybe<ShelterPet>>>;
   success: Scalars['Boolean']['output'];
+};
+
+export type ShelterPetsWithDataCreate = {
+  pets: Array<ShelterPetData>;
+  shelter_id: Scalars['ID']['input'];
 };
 
 export type ShelterResult = {
@@ -2280,8 +2323,11 @@ export type ShelterTask = {
   notes?: Maybe<Scalars['String']['output']>;
   recurrence?: Maybe<Recurrence>;
   scheduled_at?: Maybe<Scalars['String']['output']>;
+  scheduled_date?: Maybe<Scalars['String']['output']>;
   shelter: Shelter;
   shelter_pet?: Maybe<ShelterPet>;
+  skipped_at?: Maybe<Scalars['String']['output']>;
+  skipped_by?: Maybe<User>;
   status: TaskStatus;
   task_type: ShelterTaskType;
 };
@@ -2468,8 +2514,10 @@ export type Tag = {
 };
 
 export enum TaskStatus {
+  Cancelled = 'CANCELLED',
   Completed = 'COMPLETED',
   InProgress = 'IN_PROGRESS',
+  Overdue = 'OVERDUE',
   Pending = 'PENDING',
   Skipped = 'SKIPPED'
 }
@@ -3106,6 +3154,14 @@ export type StartShelterWalkMutationVariables = Exact<{
 
 export type StartShelterWalkMutation = { __typename?: 'Mutation', startShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker: { __typename?: 'User', id: string, first_name: string, last_name: string }, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null } };
 
+export type UpdateShelterInventoryItemMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  data: ShelterInventoryItemUpdate;
+}>;
+
+
+export type UpdateShelterInventoryItemMutation = { __typename?: 'Mutation', updateShelterInventoryItem: { __typename?: 'ShelterInventoryItemResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, item?: { __typename?: 'ShelterInventoryItem', id: string, name: string, category: InventoryCategory, unit: string, minimum_threshold?: number | null, current_quantity: number, is_below_threshold: boolean, notes?: string | null } | null } };
+
 export type UpdateShelterMapMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   data: ShelterMapUpdate;
@@ -3113,6 +3169,14 @@ export type UpdateShelterMapMutationVariables = Exact<{
 
 
 export type UpdateShelterMapMutation = { __typename?: 'Mutation', updateShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
+
+export type UpdateShelterTaskMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  data: ShelterTaskUpdate;
+}>;
+
+
+export type UpdateShelterTaskMutation = { __typename?: 'Mutation', updateShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assigned_to?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
 
 export type GetCurrentBoxForPetQueryVariables = Exact<{
   shelter_pet_id: Scalars['ID']['input'];
@@ -5832,6 +5896,47 @@ export function useStartShelterWalkMutation(baseOptions?: Apollo.MutationHookOpt
 export type StartShelterWalkMutationHookResult = ReturnType<typeof useStartShelterWalkMutation>;
 export type StartShelterWalkMutationResult = Apollo.MutationResult<StartShelterWalkMutation>;
 export type StartShelterWalkMutationOptions = Apollo.BaseMutationOptions<StartShelterWalkMutation, StartShelterWalkMutationVariables>;
+export const UpdateShelterInventoryItemDocument = gql`
+    mutation updateShelterInventoryItem($id: ID!, $data: ShelterInventoryItemUpdate!) {
+  updateShelterInventoryItem(id: $id, data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    item {
+      ...MinInventoryItem
+    }
+  }
+}
+    ${MinInventoryItemFragmentDoc}`;
+export type UpdateShelterInventoryItemMutationFn = Apollo.MutationFunction<UpdateShelterInventoryItemMutation, UpdateShelterInventoryItemMutationVariables>;
+
+/**
+ * __useUpdateShelterInventoryItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateShelterInventoryItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShelterInventoryItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShelterInventoryItemMutation, { data, loading, error }] = useUpdateShelterInventoryItemMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateShelterInventoryItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShelterInventoryItemMutation, UpdateShelterInventoryItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateShelterInventoryItemMutation, UpdateShelterInventoryItemMutationVariables>(UpdateShelterInventoryItemDocument, options);
+      }
+export type UpdateShelterInventoryItemMutationHookResult = ReturnType<typeof useUpdateShelterInventoryItemMutation>;
+export type UpdateShelterInventoryItemMutationResult = Apollo.MutationResult<UpdateShelterInventoryItemMutation>;
+export type UpdateShelterInventoryItemMutationOptions = Apollo.BaseMutationOptions<UpdateShelterInventoryItemMutation, UpdateShelterInventoryItemMutationVariables>;
 export const UpdateShelterMapDocument = gql`
     mutation updateShelterMap($id: ID!, $data: ShelterMapUpdate!) {
   updateShelterMap(id: $id, data: $data) {
@@ -5873,6 +5978,47 @@ export function useUpdateShelterMapMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateShelterMapMutationHookResult = ReturnType<typeof useUpdateShelterMapMutation>;
 export type UpdateShelterMapMutationResult = Apollo.MutationResult<UpdateShelterMapMutation>;
 export type UpdateShelterMapMutationOptions = Apollo.BaseMutationOptions<UpdateShelterMapMutation, UpdateShelterMapMutationVariables>;
+export const UpdateShelterTaskDocument = gql`
+    mutation updateShelterTask($id: ID!, $data: ShelterTaskUpdate!) {
+  updateShelterTask(id: $id, data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    shelter_task {
+      ...MinShelterTask
+    }
+  }
+}
+    ${MinShelterTaskFragmentDoc}`;
+export type UpdateShelterTaskMutationFn = Apollo.MutationFunction<UpdateShelterTaskMutation, UpdateShelterTaskMutationVariables>;
+
+/**
+ * __useUpdateShelterTaskMutation__
+ *
+ * To run a mutation, you first call `useUpdateShelterTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShelterTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShelterTaskMutation, { data, loading, error }] = useUpdateShelterTaskMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateShelterTaskMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShelterTaskMutation, UpdateShelterTaskMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateShelterTaskMutation, UpdateShelterTaskMutationVariables>(UpdateShelterTaskDocument, options);
+      }
+export type UpdateShelterTaskMutationHookResult = ReturnType<typeof useUpdateShelterTaskMutation>;
+export type UpdateShelterTaskMutationResult = Apollo.MutationResult<UpdateShelterTaskMutation>;
+export type UpdateShelterTaskMutationOptions = Apollo.BaseMutationOptions<UpdateShelterTaskMutation, UpdateShelterTaskMutationVariables>;
 export const GetCurrentBoxForPetDocument = gql`
     query getCurrentBoxForPet($shelter_pet_id: ID!) {
   getCurrentBoxForPet(shelter_pet_id: $shelter_pet_id) {

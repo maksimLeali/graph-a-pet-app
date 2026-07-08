@@ -10,7 +10,9 @@ import { useUserContext } from "@contexts";
 import { TextInput, SelectInput, NumberInput, SubmitInput, Option } from "@components";
 import { InventoryCategory } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
+import { useShelterInventory } from "../hooks/useShelterInventory";
 import { useCreateShelterInventoryItemMutation } from "../operations/__generated__/createShelterInventoryItem.generated";
+import { useUpdateShelterInventoryItemMutation } from "../operations/__generated__/updateShelterInventoryItem.generated";
 
 type FormValues = {
 	name: string;
@@ -25,20 +27,43 @@ const num = (v?: string) =>
 	v !== undefined && v !== "" && !isNaN(parseFloat(v)) ? parseFloat(v) : undefined;
 
 export const AddInventoryItem: React.FC = () => {
-	const { id } = useParams<{ id: string }>();
+	const { id, itemId } = useParams<{ id: string; itemId?: string }>();
+	const editing = !!itemId;
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
 	const history = useHistory();
 
-	const [createItem, { loading }] = useCreateShelterInventoryItemMutation({
-		onError: () => toast.error(t("messages.errors.fetch")),
-	});
+	const onError = () => toast.error(t("messages.errors.fetch"));
+	const [createItem, { loading: creating }] =
+		useCreateShelterInventoryItemMutation({ onError });
+	const [updateItem, { loading: updating }] =
+		useUpdateShelterInventoryItemMutation({ onError });
+	const loading = creating || updating;
+
+	const { items } = useShelterInventory(editing ? id : "");
+	const current = editing ? items.find((i) => i.id === itemId) : undefined;
 
 	const methods = useForm<FormValues>({ mode: "onSubmit" });
 
 	useEffect(() => {
-		setPage({ name: t("shelters.inventory.add") });
-	}, []);
+		setPage({
+			name: t(editing ? "shelters.inventory.edit" : "shelters.inventory.add"),
+		});
+	}, [editing]);
+
+	useEffect(() => {
+		if (!current) return;
+		methods.reset({
+			name: current.name,
+			category: current.category,
+			unit: current.unit,
+			minimum_threshold:
+				current.minimum_threshold != null
+					? String(current.minimum_threshold)
+					: "",
+			notes: current.notes ?? "",
+		});
+	}, [current?.id]);
 
 	const categoryOptions: Option[] = Object.values(InventoryCategory).map((key) => ({
 		value: key,
@@ -46,6 +71,27 @@ export const AddInventoryItem: React.FC = () => {
 	}));
 
 	const onSubmit = methods.handleSubmit(async (data) => {
+		if (editing) {
+			const res = await updateItem({
+				variables: {
+					id: itemId as string,
+					data: {
+						name: data.name.trim(),
+						category: data.category,
+						unit: data.unit.trim(),
+						minimum_threshold: num(data.minimum_threshold),
+						notes: data.notes,
+					},
+				},
+			});
+			if (!res.data?.updateShelterInventoryItem?.success) {
+				toast.error(t("messages.errors.fetch"));
+				return;
+			}
+			toast.success(t("shelters.inventory.updated_ok"));
+			history.replace(`/shelters/detail/${id}/inventory`);
+			return;
+		}
 		const res = await createItem({
 			variables: {
 				data: {
@@ -71,15 +117,19 @@ export const AddInventoryItem: React.FC = () => {
 		<IonContent>
 			<FormProvider {...methods}>
 				<Form onSubmit={onSubmit}>
-					<h3>{t("shelters.inventory.add")}</h3>
+					<h3>
+						{t(
+							editing
+								? "shelters.inventory.edit"
+								: "shelters.inventory.add"
+						)}
+					</h3>
 
 					<Field>
-						<span>{t("shelters.inventory.name")}</span>
 						<TextInput name="name" required textLabel="shelters.inventory.name" />
 					</Field>
 
 					<Field>
-						<span>{t("shelters.inventory.category")}</span>
 						<SelectInput
 							name="category"
 							options={categoryOptions}
@@ -89,27 +139,29 @@ export const AddInventoryItem: React.FC = () => {
 					</Field>
 
 					<Field>
-						<span>{t("shelters.inventory.unit")}</span>
 						<TextInput name="unit" required textLabel="shelters.inventory.unit_hint" />
 					</Field>
 
 					<Field>
-						<span>{t("shelters.inventory.min")}</span>
 						<NumberInput name="minimum_threshold" textLabel="shelters.inventory.min" />
 					</Field>
 
-					<Field>
-						<span>{t("shelters.inventory.initial")}</span>
-						<NumberInput name="initial_quantity" textLabel="shelters.inventory.initial" />
-					</Field>
+					{!editing && (
+						<Field>
+							<NumberInput name="initial_quantity" textLabel="shelters.inventory.initial" />
+						</Field>
+					)}
 
 					<Field>
-						<span>{t("shelters.inventory.notes")}</span>
 						<TextInput name="notes" textLabel="shelters.inventory.notes" />
 					</Field>
 
 					<SubmitInput color="primary" disabled={loading}>
-						{t("shelters.inventory.add")}
+						{t(
+							editing
+								? "shelters.inventory.save"
+								: "shelters.inventory.add"
+						)}
 					</SubmitInput>
 				</Form>
 			</FormProvider>

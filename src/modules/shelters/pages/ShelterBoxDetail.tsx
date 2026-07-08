@@ -17,15 +17,17 @@ import { useAssignPetToBoxMutation } from "../operations/__generated__/assignPet
 import { useReleasePetFromBoxMutation } from "../operations/__generated__/releasePetFromBox.generated";
 
 const STATUS_COLOR: Record<string, string> = {
-	FREE: "#ffb74d",
+	AVAILABLE: "#ffb74d",
 	OCCUPIED: "#81c784",
 	FULL: "#2e7d32",
+	NEEDS_CLEANING: "#ffd54f",
 	OOS: "#9e9e9e",
 };
 const statusLabelKey: Record<string, I18NKey> = {
-	FREE: "shelters.map.free",
+	AVAILABLE: "shelters.map.available",
 	OCCUPIED: "shelters.map.occupied",
 	FULL: "shelters.map.full",
+	NEEDS_CLEANING: "shelters.map.needs_cleaning",
 	OOS: "shelters.map.oos",
 };
 
@@ -118,14 +120,14 @@ export const ShelterBoxDetail: React.FC = () => {
 
 	const capacity = current?.capacity ?? 0;
 	const status = !current
-		? "FREE"
+		? "AVAILABLE"
 		: current.is_out_of_service
 		? "OOS"
 		: occupants.length >= capacity
 		? "FULL"
 		: occupants.length > 0
 		? "OCCUPIED"
-		: "FREE";
+		: "AVAILABLE";
 
 	useEffect(() => {
 		setPage({ name: current?.label || t("shelters.boxes.title") });

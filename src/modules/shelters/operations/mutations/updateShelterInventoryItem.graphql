@@ -1,0 +1,12 @@
+mutation updateShelterInventoryItem($id: ID!, $data: ShelterInventoryItemUpdate!) {
+	updateShelterInventoryItem(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		item {
+			...MinInventoryItem
+		}
+	}
+}

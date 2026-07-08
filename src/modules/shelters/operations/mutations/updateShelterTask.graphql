@@ -1,0 +1,12 @@
+mutation updateShelterTask($id: ID!, $data: ShelterTaskUpdate!) {
+	updateShelterTask(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_task {
+			...MinShelterTask
+		}
+	}
+}

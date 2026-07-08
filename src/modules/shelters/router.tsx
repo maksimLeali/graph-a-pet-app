@@ -27,6 +27,9 @@ export const SheltersRouter = () => {
 			<Route exact path={`${path}/detail/:id/tasks/new`}>
 				<AddShelterTask />
 			</Route>
+			<Route exact path={`${path}/detail/:id/tasks/:taskId/edit`}>
+				<AddShelterTask />
+			</Route>
 			<Route exact path={`${path}/detail/:id/tasks`}>
 				<ShelterTasksList />
 			</Route>
@@ -34,6 +37,9 @@ export const SheltersRouter = () => {
 				<ShelterWalksList />
 			</Route>
 			<Route exact path={`${path}/detail/:id/inventory/new`}>
+				<AddInventoryItem />
+			</Route>
+			<Route exact path={`${path}/detail/:id/inventory/:itemId/edit`}>
 				<AddInventoryItem />
 			</Route>
 			<Route exact path={`${path}/detail/:id/inventory`}>

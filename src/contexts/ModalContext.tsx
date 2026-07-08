@@ -29,8 +29,11 @@ export const ModalContextProvider: React.FC<
 > = ({ children }) => {
     const [modal, setModal] = useState<ModalProps>();
     const [open,setOpen] = useState(false)
+    // key incrementale: forza remount del contenuto ad ogni open → stato interno pulito
+    const [modalKey, setModalKey] = useState(0)
 
     const openModal = (props :ModalProps)=> {
+        setModalKey((k) => k + 1);
         setOpen(true);
         setModal(props)
     }
@@ -40,8 +43,8 @@ export const ModalContextProvider: React.FC<
 
     const value = useMemo(()=>( {...defaultValue, openModal, closeModal }), [])
     return (
-        <ModalContext.Provider value={value}> 
-        { modal && <Modal open={open} {...modal}/>} 
+        <ModalContext.Provider value={value}>
+        { modal && <Modal key={modalKey} open={open} {...modal}/>}
         {children}
         </ModalContext.Provider>
     );

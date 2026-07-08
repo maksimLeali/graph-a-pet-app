@@ -66,6 +66,11 @@ export const ShelterTasksList: React.FC = () => {
 								"shelters.tasks.skipped_ok"
 							)
 						}
+						onEdit={(tid) =>
+							history.push(
+								`/shelters/detail/${id}/tasks/${tid}/edit`
+							)
+						}
 						onDelete={(tid) =>
 							run(
 								remove({ variables: { id: tid } }),

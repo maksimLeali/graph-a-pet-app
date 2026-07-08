@@ -19,7 +19,9 @@ import {
 import { ShelterTaskType, RecurrenceFreq, Weekday } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { AssignPetsModal, PickablePet } from "../components/AssignPetsModal";
+import { useShelterTasks } from "../hooks/useShelterTasks";
 import { useCreateShelterTaskMutation } from "../operations/__generated__/createShelterTask.generated";
+import { useUpdateShelterTaskMutation } from "../operations/__generated__/updateShelterTask.generated";
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
 import { useGetShelterMapQuery } from "../operations/__generated__/getShelterMap.generated";
 import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
@@ -49,7 +51,8 @@ const BOX_TYPES = [
 ];
 
 export const AddShelterTask: React.FC = () => {
-	const { id } = useParams<{ id: string }>();
+	const { id, taskId } = useParams<{ id: string; taskId?: string }>();
+	const editing = !!taskId;
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
 	const { openModal, closeModal } = useModal();
@@ -59,9 +62,16 @@ export const AddShelterTask: React.FC = () => {
 		null
 	);
 
-	const [createTask, { loading }] = useCreateShelterTaskMutation({
+	const [createTask, { loading: creating }] = useCreateShelterTaskMutation({
 		onError: () => toast.error(t("messages.errors.fetch")),
 	});
+	const [updateTask, { loading: updating }] = useUpdateShelterTaskMutation({
+		onError: () => toast.error(t("messages.errors.fetch")),
+	});
+	const loading = creating || updating;
+
+	const { tasks } = useShelterTasks(editing ? id : "");
+	const current = editing ? tasks.find((tk) => tk.id === taskId) : undefined;
 
 	const methods = useForm<FormValues>({ mode: "onSubmit" });
 
@@ -106,8 +116,36 @@ export const AddShelterTask: React.FC = () => {
 	);
 
 	useEffect(() => {
-		setPage({ name: t("shelters.tasks.add") });
-	}, []);
+		setPage({
+			name: t(editing ? "shelters.tasks.edit" : "shelters.tasks.add"),
+		});
+	}, [editing]);
+
+	useEffect(() => {
+		if (!current) return;
+		setIsRecurring(current.is_recurring);
+		if (current.shelter_pet?.pet)
+			setPickedPet({
+				id: current.shelter_pet.id,
+				name: current.shelter_pet.pet.name,
+			});
+		methods.reset({
+			task_type: current.task_type,
+			area: current.area ?? undefined,
+			scheduled_at: current.scheduled_at ?? undefined,
+			notes: current.notes ?? undefined,
+			rec_freq: current.recurrence?.freq ?? undefined,
+			rec_interval:
+				current.recurrence?.interval != null
+					? String(current.recurrence.interval)
+					: undefined,
+			rec_weekday: current.recurrence?.weekdays?.[0] ?? undefined,
+			rec_ordinal:
+				current.recurrence?.week_ordinal != null
+					? String(current.recurrence.week_ordinal)
+					: undefined,
+		});
+	}, [current?.id]);
 
 	const typeOptions: Option[] = Object.values(ShelterTaskType).map((key) => ({
 		value: key,
@@ -188,6 +226,30 @@ export const AddShelterTask: React.FC = () => {
 						start_at: data.scheduled_at,
 				  }
 				: undefined;
+
+		if (editing) {
+			const res = await updateTask({
+				variables: {
+					id: taskId as string,
+					data: {
+						task_type: data.task_type,
+						area: data.area,
+						scheduled_at: data.scheduled_at,
+						is_recurring: isRecurring,
+						recurrence,
+						notes: data.notes,
+					},
+				},
+			});
+			if (!res.data?.updateShelterTask?.success) {
+				toast.error(t("messages.errors.fetch"));
+				return;
+			}
+			toast.success(t("shelters.tasks.updated_ok"));
+			history.replace(`/shelters/detail/${id}/tasks`);
+			return;
+		}
+
 		const res = await createTask({
 			variables: {
 				data: {
@@ -215,10 +277,11 @@ export const AddShelterTask: React.FC = () => {
 		<IonContent>
 			<FormProvider {...methods}>
 				<Form onSubmit={onSubmit}>
-					<h3>{t("shelters.tasks.add")}</h3>
+					<h3>
+						{t(editing ? "shelters.tasks.edit" : "shelters.tasks.add")}
+					</h3>
 
 					<Field>
-						<span>{t("shelters.tasks.type")}</span>
 						<SelectInput
 							name="task_type"
 							options={typeOptions}
@@ -228,7 +291,6 @@ export const AddShelterTask: React.FC = () => {
 					</Field>
 
 					<Field>
-						<span>{t("shelters.tasks.area")}</span>
 						<SelectInput
 							name="area"
 							options={areaOptions}
@@ -236,7 +298,7 @@ export const AddShelterTask: React.FC = () => {
 						/>
 					</Field>
 
-					{needsPet && (
+					{!editing && needsPet && (
 						<Field>
 							<span>{t("shelters.tasks.pet")}</span>
 							<PickBtn type="button" onClick={openPetPicker}>
@@ -254,9 +316,8 @@ export const AddShelterTask: React.FC = () => {
 						</Field>
 					)}
 
-					{needsBox && (
+					{!editing && needsBox && (
 						<Field>
-							<span>{t("shelters.tasks.box")}</span>
 							<SelectInput
 								name="shelter_box_id"
 								options={boxOptions}
@@ -266,7 +327,6 @@ export const AddShelterTask: React.FC = () => {
 					)}
 
 					<Field>
-						<span>{t("shelters.tasks.scheduled_at")}</span>
 						<DateTimePicker
 							name="scheduled_at"
 							type="dateTime"
@@ -282,7 +342,6 @@ export const AddShelterTask: React.FC = () => {
 					{isRecurring && (
 						<>
 							<Field>
-								<span>{t("shelters.tasks.rec.freq")}</span>
 								<SelectInput
 									name="rec_freq"
 									options={freqOptions}
@@ -292,7 +351,6 @@ export const AddShelterTask: React.FC = () => {
 							</Field>
 
 							<Field>
-								<span>{t("shelters.tasks.rec.interval")}</span>
 								<TextInput
 									name="rec_interval"
 									textLabel="shelters.tasks.rec.interval"
@@ -302,7 +360,6 @@ export const AddShelterTask: React.FC = () => {
 							{(freq === RecurrenceFreq.Weekly ||
 								freq === RecurrenceFreq.Monthly) && (
 								<Field>
-									<span>{t("shelters.tasks.rec.weekday")}</span>
 									<SelectInput
 										name="rec_weekday"
 										options={weekdayOptions}
@@ -314,7 +371,6 @@ export const AddShelterTask: React.FC = () => {
 
 							{freq === RecurrenceFreq.Monthly && (
 								<Field>
-									<span>{t("shelters.tasks.rec.week_ordinal")}</span>
 									<SelectInput
 										name="rec_ordinal"
 										options={ordinalOptions}
@@ -327,12 +383,11 @@ export const AddShelterTask: React.FC = () => {
 					)}
 
 					<Field>
-						<span>{t("shelters.tasks.notes")}</span>
 						<TextInput name="notes" textLabel="shelters.tasks.notes" />
 					</Field>
 
 					<SubmitInput color="primary" disabled={loading}>
-						{t("shelters.tasks.add")}
+						{t(editing ? "shelters.tasks.save" : "shelters.tasks.add")}
 					</SubmitInput>
 				</Form>
 			</FormProvider>

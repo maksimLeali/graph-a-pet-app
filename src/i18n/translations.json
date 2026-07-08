@@ -8,7 +8,8 @@
       "refuse": "Ablehnen",
       "delete": "Löschen",
       "complete": "Complete",
-      "skip": "Skip"
+      "skip": "Skip",
+      "edit": "Bearbeiten"
     },
     "auth": {
       "already_registered": "Bereits registriert?",
@@ -332,7 +333,10 @@
           }
         },
         "pet": "Tier",
-        "box": "Box"
+        "box": "Box",
+        "edit": "Bearbeiten",
+        "save": "Speichern",
+        "updated_ok": "Aufgabe aktualisiert"
       },
       "walk_status": {
         "planned": "Planned",
@@ -371,12 +375,17 @@
         "notes": "Notes",
         "empty": "No items",
         "created_ok": "Item created",
-        "deleted_ok": "Item deleted"
+        "deleted_ok": "Item deleted",
+        "edit": "Bearbeiten",
+        "save": "Speichern",
+        "updated_ok": "Artikel aktualisiert"
       },
       "map": {
         "view": "View",
         "edit": "Edit",
         "free": "Free",
+        "available": "Available",
+        "needs_cleaning": "Needs cleaning",
         "occupied": "Occupied",
         "full": "Full",
         "oos": "Out of service",
@@ -451,7 +460,8 @@
       "save": "Save",
       "delete": "Delete",
       "complete": "Complete",
-      "skip": "Skip"
+      "skip": "Skip",
+      "edit": "Edit"
     },
     "auth": {
       "already_registered": "Already a user?",
@@ -786,7 +796,10 @@
           }
         },
         "pet": "Animal",
-        "box": "Box"
+        "box": "Box",
+        "edit": "Edit",
+        "save": "Save",
+        "updated_ok": "Task updated"
       },
       "walk_status": {
         "planned": "Planned",
@@ -825,12 +838,17 @@
         "notes": "Notes",
         "empty": "No items",
         "created_ok": "Item created",
-        "deleted_ok": "Item deleted"
+        "deleted_ok": "Item deleted",
+        "edit": "Edit",
+        "save": "Save",
+        "updated_ok": "Item updated"
       },
       "map": {
         "view": "View",
         "edit": "Edit",
         "free": "Free",
+        "available": "Available",
+        "needs_cleaning": "Needs cleaning",
         "occupied": "Occupied",
         "full": "Full",
         "oos": "Out of service",
@@ -904,7 +922,8 @@
       "refuse": "Rechazar",
       "delete": "Eliminar",
       "complete": "Complete",
-      "skip": "Skip"
+      "skip": "Skip",
+      "edit": "Editar"
     },
     "auth": {
       "already_registered": "¿Ya estás registrado?",
@@ -1228,7 +1247,10 @@
           }
         },
         "pet": "Animal",
-        "box": "Box"
+        "box": "Box",
+        "edit": "Editar",
+        "save": "Guardar",
+        "updated_ok": "Tarea actualizada"
       },
       "walk_status": {
         "planned": "Planned",
@@ -1267,12 +1289,17 @@
         "notes": "Notes",
         "empty": "No items",
         "created_ok": "Item created",
-        "deleted_ok": "Item deleted"
+        "deleted_ok": "Item deleted",
+        "edit": "Editar",
+        "save": "Guardar",
+        "updated_ok": "Artículo actualizado"
       },
       "map": {
         "view": "View",
         "edit": "Edit",
         "free": "Free",
+        "available": "Available",
+        "needs_cleaning": "Needs cleaning",
         "occupied": "Occupied",
         "full": "Full",
         "oos": "Out of service",
@@ -1346,7 +1373,8 @@
       "refuse": "Refuser",
       "delete": "Supprimer",
       "complete": "Complete",
-      "skip": "Skip"
+      "skip": "Skip",
+      "edit": "Modifier"
     },
     "auth": {
       "already_registered": "Déjà utilisateur?",
@@ -1670,7 +1698,10 @@
           }
         },
         "pet": "Animal",
-        "box": "Box"
+        "box": "Box",
+        "edit": "Modifier",
+        "save": "Enregistrer",
+        "updated_ok": "Tâche mise à jour"
       },
       "walk_status": {
         "planned": "Planned",
@@ -1709,12 +1740,17 @@
         "notes": "Notes",
         "empty": "No items",
         "created_ok": "Item created",
-        "deleted_ok": "Item deleted"
+        "deleted_ok": "Item deleted",
+        "edit": "Modifier",
+        "save": "Enregistrer",
+        "updated_ok": "Article mis à jour"
       },
       "map": {
         "view": "View",
         "edit": "Edit",
         "free": "Free",
+        "available": "Available",
+        "needs_cleaning": "Needs cleaning",
         "occupied": "Occupied",
         "full": "Full",
         "oos": "Out of service",
@@ -1789,7 +1825,8 @@
       "save": "Salva",
       "delete": "Elimina",
       "complete": "Completa",
-      "skip": "Salta"
+      "skip": "Salta",
+      "edit": "Modifica"
     },
     "auth": {
       "already_registered": "Sei già un utente ?",
@@ -2177,7 +2214,10 @@
           }
         },
         "pet": "Animale",
-        "box": "Box"
+        "box": "Box",
+        "edit": "Modifica",
+        "save": "Salva",
+        "updated_ok": "Attività aggiornata"
       },
       "walk_status": {
         "planned": "Pianificata",
@@ -2216,7 +2256,10 @@
         "notes": "Note",
         "empty": "Nessun articolo",
         "created_ok": "Articolo creato",
-        "deleted_ok": "Articolo eliminato"
+        "deleted_ok": "Articolo eliminato",
+        "edit": "Modifica",
+        "save": "Salva",
+        "updated_ok": "Elemento aggiornato"
       },
       "map": {
         "view": "Vista",
@@ -2296,7 +2339,8 @@
       "save": "Сохранить",
       "delete": "Удалить",
       "complete": "Complete",
-      "skip": "Skip"
+      "skip": "Skip",
+      "edit": "Редактировать"
     },
     "auth": {
       "already_registered": "Вы уже зарегистрированы?",
@@ -2629,7 +2673,10 @@
           }
         },
         "pet": "Животное",
-        "box": "Бокс"
+        "box": "Бокс",
+        "edit": "Редактировать",
+        "save": "Сохранить",
+        "updated_ok": "Задача обновлена"
       },
       "walk_status": {
         "planned": "Planned",
@@ -2668,12 +2715,17 @@
         "notes": "Notes",
         "empty": "No items",
         "created_ok": "Item created",
-        "deleted_ok": "Item deleted"
+        "deleted_ok": "Item deleted",
+        "edit": "Редактировать",
+        "save": "Сохранить",
+        "updated_ok": "Товар обновлён"
       },
       "map": {
         "view": "View",
         "edit": "Edit",
         "free": "Free",
+        "available": "Available",
+        "needs_cleaning": "Needs cleaning",
         "occupied": "Occupied",
         "full": "Full",
         "oos": "Out of service",

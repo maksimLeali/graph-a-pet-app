@@ -12,9 +12,10 @@ import { useListShelterMapsQuery } from "../operations/__generated__/listShelter
 import { useGetShelterMapQuery } from "../operations/__generated__/getShelterMap.generated";
 
 const STATUS_COLOR: Record<string, string> = {
-	FREE: "#ffb74d",
+	AVAILABLE: "#ffb74d",
 	OCCUPIED: "#81c784",
 	FULL: "#2e7d32",
+	NEEDS_CLEANING: "#ffd54f",
 	OOS: "#9e9e9e",
 };
 
@@ -26,15 +27,16 @@ const statusOf = (box: {
 	if (box.is_out_of_service) return "OOS";
 	const occ = box.current_occupants?.length ?? 0;
 	const cap = box.capacity ?? 1;
-	if (occ <= 0) return "FREE";
+	if (occ <= 0) return "AVAILABLE";
 	if (occ >= cap) return "FULL";
 	return "OCCUPIED";
 };
 
 const statusLabelKey: Record<string, I18NKey> = {
-	FREE: "shelters.map.free",
+	AVAILABLE: "shelters.map.available",
 	OCCUPIED: "shelters.map.occupied",
 	FULL: "shelters.map.full",
+	NEEDS_CLEANING: "shelters.map.needs_cleaning",
 	OOS: "shelters.map.oos",
 };
 

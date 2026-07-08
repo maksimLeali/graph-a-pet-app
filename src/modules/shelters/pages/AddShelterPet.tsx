@@ -96,7 +96,6 @@ export const AddShelterPet: React.FC = () => {
 					</Intro>
 
 					<Field>
-						<span>{t("pets.add_pet_page.step_1.name")}</span>
 						<TextInput
 							name="name"
 							required
@@ -105,7 +104,6 @@ export const AddShelterPet: React.FC = () => {
 					</Field>
 
 					<Field>
-						<span>{t("pets.add_pet_page.step_3.gender")}</span>
 						<SelectInput
 							name="gender"
 							options={genderOptions}
@@ -115,7 +113,6 @@ export const AddShelterPet: React.FC = () => {
 					</Field>
 
 					<Field>
-						<span>{t("pets.add_pet_page.step_1.birthday")}</span>
 						<DateTimePicker
 							name="birthday"
 							type="date"

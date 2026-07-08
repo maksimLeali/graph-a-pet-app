@@ -28,14 +28,16 @@ type CurrentBox = NonNullable<
 >;
 
 const STATUS_FILL: Record<string, string> = {
-	FREE: "#2dd36f",
+	AVAILABLE: "#2dd36f",
+	NEEDS_CLEANING: "#4c8dff",
 	OCCUPIED: "#ffc409",
 	FULL: "#ff8a34",
 	OUT_OF_SERVICE: "#92949c",
 };
 
 const STATUS_KEY: Record<BoxStatus, string> = {
-	[BoxStatus.Free]: "shelters.map.free",
+	[BoxStatus.Available]: "shelters.map.available",
+	[BoxStatus.NeedsCleaning]: "shelters.map.needs_cleaning",
 	[BoxStatus.Occupied]: "shelters.map.occupied",
 	[BoxStatus.Full]: "shelters.map.full",
 	[BoxStatus.OutOfService]: "shelters.map.oos",

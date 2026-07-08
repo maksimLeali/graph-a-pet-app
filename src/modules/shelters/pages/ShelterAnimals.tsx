@@ -14,7 +14,7 @@ import { useListShelterPetsMinQuery } from "../operations/__generated__/listShel
 export const ShelterAnimals: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
-	const { setPage } = useUserContext();
+	const { setPage, useCustomColors } = useUserContext();
 	const history = useHistory();
 
 	useEffect(() => {
@@ -92,7 +92,9 @@ export const ShelterAnimals: React.FC = () => {
 			tabIndex={0}
 			onClick={() => openPet(shelterPetId)}
 		>
-			<Avatar $border={borderColor ?? undefined}>
+			<Avatar
+				$border={useCustomColors ? borderColor ?? undefined : undefined}
+			>
 				{pictureId ? (
 					<Image2x lazy rounded id={pictureId} alt={name} />
 				) : (
@@ -300,15 +302,16 @@ const Avatar = styled.div<{ $border?: string }>`
 	position: relative;
 	width: 100%;
 	aspect-ratio: 1/1;
+	padding: 3px;
 	box-sizing: border-box;
 	border-radius: 999px;
+	overflow: hidden;
 	background: ${({ $border }) =>
 		$border ? $color($border) : $color("primary")};
-	/* img fuori dal flusso: altezza solo da aspect-ratio, no feedback loop */
 	> .img2x,
 	> span {
-		position: absolute;
-		inset: 3px;
+		width: 100%;
+		height: 100%;
 		border-radius: 999px;
 		overflow: hidden;
 		display: block;

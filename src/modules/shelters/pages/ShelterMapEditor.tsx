@@ -75,9 +75,10 @@ type LElement = {
 };
 
 const STATUS_FILL: Record<string, string> = {
-    FREE: "#ffb74d", // arancio chiaro — libero
+    AVAILABLE: "#ffb74d", // arancio chiaro — disponibile
     OCCUPIED: "#81c784", // verde chiaro — occupato
     FULL: "#2e7d32", // verde scuro — pieno
+    NEEDS_CLEANING: "#ffd54f", // giallo — da pulire
     OUT_OF_SERVICE: "#e53935", // rosso — fuori servizio
 };
 
@@ -487,7 +488,7 @@ export const ShelterMapEditor: React.FC = () => {
         for (const b of boxes) {
             const status = b.is_out_of_service
                 ? "OUT_OF_SERVICE"
-                : b.status || "FREE";
+                : b.status || "AVAILABLE";
             out.push({
                 key: b.key,
                 kind: "box",

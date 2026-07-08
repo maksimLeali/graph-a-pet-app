@@ -61,6 +61,11 @@ export const ShelterInventory: React.FC = () => {
 						key={item.id}
 						item={item}
 						onMovement={onMovement}
+						onEdit={(itemId) =>
+							history.push(
+								`/shelters/detail/${id}/inventory/${itemId}/edit`
+							)
+						}
 						onDelete={onDelete}
 					/>
 				))}

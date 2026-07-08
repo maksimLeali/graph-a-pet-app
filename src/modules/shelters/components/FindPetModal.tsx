@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import { Image2x, Icon } from "@components";
+import { useUserContext } from "@contexts";
 import { $color, $uw } from "@theme";
 
 export type LocatablePet = {
@@ -30,6 +31,7 @@ export const FindPetModal: React.FC<Props> = ({
 	onPick,
 }) => {
 	const { t } = useTranslation();
+	const { useCustomColors } = useUserContext();
 	const [q, setQ] = useState("");
 
 	const list = useMemo(() => {
@@ -65,7 +67,13 @@ export const FindPetModal: React.FC<Props> = ({
 							tabIndex={0}
 							onClick={() => onPick(p)}
 						>
-							<ImgWrap $border={p.borderColor ?? undefined}>
+							<ImgWrap
+								$border={
+									useCustomColors
+										? p.borderColor ?? undefined
+										: undefined
+								}
+							>
 								{p.pictureId ? (
 									<Image2x id={p.pictureId} />
 								) : (
@@ -147,15 +155,16 @@ const ImgWrap = styled.div<{ $border?: string }>`
 	position: relative;
 	width: 100%;
 	aspect-ratio: 1/1;
+	padding: 3px;
 	box-sizing: border-box;
 	border-radius: 999px;
-	overflow: visible;
+	overflow: hidden;
 	background: ${({ $border }) =>
 		$border ? $color($border) : $color("primary")};
 	> .img2x,
 	> span {
-		position: absolute;
-		inset: 3px;
+		width: 100%;
+		height: 100%;
 		border-radius: 999px;
 		overflow: hidden;
 		display: block;

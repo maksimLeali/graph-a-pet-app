@@ -10,6 +10,7 @@ import { MinInventoryItemFragment } from "../operations/__generated__/MinInvento
 type Props = {
 	item: MinInventoryItemFragment;
 	onMovement: (itemId: string, type: MovementType) => void;
+	onEdit: (itemId: string) => void;
 	onDelete: (itemId: string) => void;
 };
 
@@ -22,7 +23,7 @@ const CATEGORY_ICON: Record<InventoryCategory, IconName> = {
 	[InventoryCategory.Other]: "cubeOutline",
 };
 
-export const InventoryItemRow: React.FC<Props> = ({ item, onMovement, onDelete }) => {
+export const InventoryItemRow: React.FC<Props> = ({ item, onMovement, onEdit, onDelete }) => {
 	const { t } = useTranslation();
 	return (
 		<Row $low={item.is_below_threshold}>
@@ -52,6 +53,9 @@ export const InventoryItemRow: React.FC<Props> = ({ item, onMovement, onDelete }
 				</Round>
 				<Round $c="success" onClick={() => onMovement(item.id, MovementType.Restock)}>
 					<Icon name="add" color="light" size="18px" />
+				</Round>
+				<Round $c="primary" onClick={() => onEdit(item.id)}>
+					<Icon name="pencil" color="light" size="14px" />
 				</Round>
 				<Round $c="medium" onClick={() => onDelete(item.id)}>
 					<Icon name="trashOutline" color="light" size="14px" />
