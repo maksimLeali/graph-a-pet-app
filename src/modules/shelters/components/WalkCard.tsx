@@ -31,9 +31,13 @@ export const WalkCard: React.FC<Props> = ({
 }) => {
 	const { t } = useTranslation();
 	const petName = walk.shelter_pet?.pet?.name ?? "-";
-	const walker = [walk.walker?.first_name, walk.walker?.last_name]
-		.filter(Boolean)
-		.join(" ");
+	const walker = walk.walker
+		? [walk.walker.first_name, walk.walker.last_name].filter(Boolean).join(" ")
+		: walk.walker_shelter_person
+		? [walk.walker_shelter_person.first_name, walk.walker_shelter_person.last_name]
+				.filter(Boolean)
+				.join(" ")
+		: "";
 	const planned = walk.status === ShelterWalkStatus.Planned;
 	const inProgress = walk.status === ShelterWalkStatus.InProgress;
 	const closed =

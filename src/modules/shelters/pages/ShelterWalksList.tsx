@@ -5,23 +5,41 @@ import { useParams } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
-import { useUserContext } from "@contexts";
+import { useUserContext, useModal } from "@contexts";
 import { Icon } from "@components";
+import { RoleLevel, ShelterPersonStatus } from "@types";
 import { $color, $uw } from "@theme";
 import { WalkCard } from "../components/WalkCard";
+import {
+	SelectWalkerModal,
+	type PickableMember,
+	type WalkerSelection,
+} from "../components/SelectWalkerModal";
 import { useShelterWalks } from "../hooks/useShelterWalks";
+import { useMyShelterRole } from "../hooks/useMyShelterRole";
 import { useListPetsNeedingWalkQuery } from "../operations/__generated__/listPetsNeedingWalk.generated";
+import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
+import { useListShelterPeopleQuery } from "../operations/__generated__/listShelterPeople.generated";
 import { useCreateShelterWalkMutation } from "../operations/__generated__/createShelterWalk.generated";
 import { useStartShelterWalkMutation } from "../operations/__generated__/startShelterWalk.generated";
 import { useCompleteShelterWalkMutation } from "../operations/__generated__/completeShelterWalk.generated";
 import { useCancelShelterWalkMutation } from "../operations/__generated__/cancelShelterWalk.generated";
 import { useDeleteShelterWalkMutation } from "../operations/__generated__/deleteShelterWalk.generated";
 
+const CAN_ASSIGN_ROLES: RoleLevel[] = [
+	RoleLevel.Owner,
+	RoleLevel.Manager,
+	RoleLevel.Staff,
+];
+
 export const ShelterWalksList: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
-	const { setPage } = useUserContext();
+	const { setPage, user } = useUserContext();
+	const { openModal, closeModal } = useModal();
 	const { walks, loading, error, refetch } = useShelterWalks(id);
+	const { role } = useMyShelterRole(id);
+	const canAssign = !!role && CAN_ASSIGN_ROLES.includes(role);
 
 	const { data: needData, refetch: refetchNeed } = useListPetsNeedingWalkQuery({
 		skip: !id,
@@ -31,6 +49,46 @@ export const ShelterWalksList: React.FC = () => {
 	const needing = (needData?.listPetsNeedingWalk?.items ?? []).filter(
 		(p): p is NonNullable<typeof p> => !!p
 	);
+
+	// membri del canile assegnabili come walker
+	const { data: rolesData } = useListShelterRolesMinQuery({
+		skip: !id || !canAssign,
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				page: 0,
+				page_size: 200,
+				filters: { fixed: [{ key: "shelter_id", value: id }] },
+			},
+		},
+	});
+	const teamMembers: PickableMember[] = (rolesData?.listShelterRoles?.items ?? [])
+		.filter((r): r is NonNullable<typeof r> => !!r?.user)
+		.map((r) => ({
+			id: r.user.id,
+			name: [r.user.first_name, r.user.last_name].filter(Boolean).join(" ") || r.user.id,
+			kind: "user" as const,
+		}))
+		.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
+
+	// shelter people segnati come volontari, assegnabili anche loro alle walks
+	const { data: peopleData } = useListShelterPeopleQuery({
+		skip: !id || !canAssign,
+		fetchPolicy: "cache-and-network",
+		variables: { shelter_id: id, search: { page: 0, page_size: 200 } },
+	});
+	const volunteers: PickableMember[] = (peopleData?.listShelterPeople?.items ?? [])
+		.filter(
+			(p): p is NonNullable<typeof p> =>
+				!!p && p.status === ShelterPersonStatus.Volunteer
+		)
+		.map((p) => ({
+			id: p.id,
+			name: [p.first_name, p.last_name].filter(Boolean).join(" ") || p.id,
+			kind: "person" as const,
+		}));
+
+	const members: PickableMember[] = [...teamMembers, ...volunteers];
 
 	useEffect(() => {
 		setPage({ name: t("shelters.tabs.walks") });
@@ -54,6 +112,45 @@ export const ShelterWalksList: React.FC = () => {
 		reloadAll();
 	};
 
+	const doPlan = (shelterPetId: string, selection?: WalkerSelection) =>
+		run(
+			createWalk({
+				variables: {
+					data: {
+						shelter_pet_id: shelterPetId,
+						walker_id: selection?.kind === "user" ? selection.id : undefined,
+						shelter_person_id:
+							selection?.kind === "person" ? selection.id : undefined,
+					},
+				},
+			}),
+			"shelters.walks.planned_ok"
+		);
+
+	const plan = (shelterPetId: string) => {
+		if (!canAssign) {
+			doPlan(shelterPetId);
+			return;
+		}
+		const defaultSelection: WalkerSelection = { id: user.id, kind: "user" };
+		const sel = { current: defaultSelection };
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: () => {
+				doPlan(shelterPetId, sel.current);
+				closeModal();
+			},
+			children: (
+				<SelectWalkerModal
+					members={members}
+					defaultSelection={defaultSelection}
+					onChange={(selection) => (sel.current = selection)}
+				/>
+			),
+		});
+	};
+
 	return (
 		<IonContent>
 			<Header>
@@ -69,16 +166,7 @@ export const ShelterWalksList: React.FC = () => {
 								<span>{sp.pet?.name ?? "-"}</span>
 								<PlanButton
 									type="button"
-									onClick={() =>
-										run(
-											createWalk({
-												variables: {
-													data: { shelter_pet_id: sp.id },
-												},
-											}),
-											"shelters.walks.planned_ok"
-										)
-									}
+									onClick={() => plan(sp.id)}
 								>
 									<Icon name="add" color="light" size="16px" />
 									<span>{t("shelters.walks.plan")}</span>

@@ -1,0 +1,25 @@
+mutation requestShelterClaim($shelter_id: ID!, $data: ShelterClaimInput!) {
+	requestShelterClaim(shelter_id: $shelter_id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_claim_request {
+			...MinShelterClaimRequest
+		}
+	}
+}
+
+mutation cancelShelterClaim($id: ID!) {
+	cancelShelterClaim(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_claim_request {
+			...MinShelterClaimRequest
+		}
+	}
+}

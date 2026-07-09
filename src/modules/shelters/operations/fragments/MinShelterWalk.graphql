@@ -11,6 +11,11 @@ fragment MinShelterWalk on ShelterWalk {
 		first_name
 		last_name
 	}
+	walker_shelter_person {
+		id
+		first_name
+		last_name
+	}
 	shelter_pet {
 		id
 		pet {

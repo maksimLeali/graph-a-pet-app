@@ -1,0 +1,12 @@
+mutation dismissNotification($id: ID!) {
+	dismissNotification(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		notification {
+			...MinNotification
+		}
+	}
+}

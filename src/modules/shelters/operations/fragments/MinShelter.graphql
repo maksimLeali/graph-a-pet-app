@@ -7,6 +7,9 @@ fragment MinShelter on Shelter {
 	street_number
 	postal_code
 	province_code
+	type
+	verification_status
+	visibility
 	contacts {
 		type
 		value

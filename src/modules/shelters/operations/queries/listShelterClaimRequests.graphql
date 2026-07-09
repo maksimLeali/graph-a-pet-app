@@ -1,0 +1,18 @@
+query listShelterClaimRequests($shelter_id: ID!, $search: CommonSearch) {
+	listShelterClaimRequests(shelter_id: $shelter_id, search: $search) {
+		success
+		error {
+			code
+			message
+		}
+		items {
+			...MinShelterClaimRequest
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

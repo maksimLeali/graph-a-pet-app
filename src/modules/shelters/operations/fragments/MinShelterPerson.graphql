@@ -1,0 +1,17 @@
+fragment MinShelterPerson on ShelterPerson {
+	id
+	first_name
+	last_name
+	email
+	phone
+	status
+	source
+	notes
+	created_at
+	archived_at
+	user {
+		id
+		first_name
+		last_name
+	}
+}

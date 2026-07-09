@@ -1,0 +1,19 @@
+mutation acceptShelterOwnershipTransfer($id: ID!) {
+	acceptShelterOwnershipTransfer(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+	}
+}
+
+mutation rejectShelterOwnershipTransfer($id: ID!) {
+	rejectShelterOwnershipTransfer(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+	}
+}

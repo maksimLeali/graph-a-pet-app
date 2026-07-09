@@ -1,0 +1,20 @@
+query getShelterPublicProfile($id: ID!) {
+	getShelter(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter {
+			id
+			name
+			public_description
+			public_contact_email
+			public_contact_phone
+			accepts_volunteers
+			public_location_label
+			public_lat
+			public_lng
+		}
+	}
+}

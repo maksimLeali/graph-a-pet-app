@@ -1,0 +1,19 @@
+mutation acceptShelterInvite($id: ID!) {
+	acceptShelterInvite(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+	}
+}
+
+mutation rejectShelterInvite($id: ID!) {
+	rejectShelterInvite(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+	}
+}

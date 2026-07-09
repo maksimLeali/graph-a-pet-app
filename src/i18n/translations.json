@@ -237,15 +237,146 @@
         "no_sub_owners": "Keine weiteren Besitzer"
       }
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications",
+      "mark_read": "Mark as read",
+      "mark_all_read": "Mark all as read",
+      "dismiss": "Dismiss",
+      "accept": "Accept",
+      "reject": "Reject",
+      "view_pet": "View pet",
+      "view_shelter": "View shelter",
+      "accepted_ok": "Invitation accepted",
+      "rejected_ok": "Invitation rejected",
+      "all_read_ok": "All notifications marked as read",
+      "priority": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "types": {
+        "treatment_reminder": "Treatment reminder",
+        "pet_invite": "Pet invite",
+        "shelter_invite": "Shelter invite",
+        "shelter_task": "Shelter task",
+        "volunteer_request": "Volunteer request",
+        "pet_birthday": "Pet birthday",
+        "ownership_transfer": "Ownership transfer"
+      }
+    },
     "shelters": {
       "empty": "Keine Tierheime gefunden",
+      "empty_state": {
+        "search_shelter": "Tierheim suchen",
+        "insert_invite_code": "Einladungscode eingeben",
+        "create_personal_workspace": "Persönlichen Arbeitsbereich erstellen",
+        "workspace_name": "Name",
+        "save": "Speichern",
+        "name_required": "Name erforderlich",
+        "created_ok": "Arbeitsbereich erstellt",
+        "coming_soon": "Demnächst verfügbar"
+      },
+      "badges": {
+        "personal_workspace": "Persönlicher Bereich",
+        "unverified": "Nicht verifiziert",
+        "verified": "Verifiziert",
+        "private": "Privat"
+      },
+      "ownership": {
+        "title": "Eigentümerschaft",
+        "transfer": "Eigentümerschaft übertragen",
+        "choose_user": "Zielbenutzer wählen",
+        "role_removed": "Entfernen (keine Rolle)",
+        "send_request": "Anfrage senden",
+        "target_required": "Zielbenutzer erforderlich",
+        "requested_ok": "Übertragung angefragt",
+        "cancelled_ok": "Übertragung abgebrochen",
+        "pending_to": "Übertragung an {{name}} ausstehend",
+        "cancel": "Abbrechen"
+      },
+      "claim": {
+        "title": "Offizielle Verifizierung",
+        "request_verification": "Offizielle Verifizierung anfordern",
+        "pending": "Verifizierungsanfrage wird geprüft",
+        "cancel": "Abbrechen",
+        "send_request": "Anfrage senden",
+        "message_placeholder": "Beschreiben Sie, warum dieses Tierheim verifiziert werden sollte",
+        "proof_placeholder": "Nachweis (Dokumente, Links, Registrierungsnummer...)",
+        "requested_ok": "Verifizierung angefragt",
+        "cancelled_ok": "Anfrage abgebrochen"
+      },
+      "discover": {
+        "title": "Discover shelters",
+        "search_placeholder": "Search by name",
+        "city_placeholder": "Search by city or province",
+        "accepts_volunteers_filter": "Accepts volunteers",
+        "accepts_volunteers_badge": "Accepts volunteers",
+        "apply_volunteer": "Apply as a volunteer",
+        "volunteer_no_contact": "No contact info available yet",
+        "empty": "No public shelters found",
+        "not_found": "Shelter not found",
+        "private": "This shelter is private",
+        "open": "Open"
+      },
+      "invites": {
+        "title": "Invite",
+        "hint": "Enter the id of the user to invite and pick a role.",
+        "user_id_placeholder": "User id",
+        "user_required": "User id required",
+        "send": "Send invite",
+        "sent_ok": "Invite sent",
+        "no_permission": "You don't have permission to invite people here"
+      },
+      "public_profile": {
+        "title": "Public profile",
+        "hint": "Shown on the public discovery page when this shelter is verified and public.",
+        "description": "Description",
+        "contact_email": "Public contact email",
+        "contact_phone": "Public contact phone",
+        "location_label": "Location label",
+        "location_label_ph": "e.g. Downtown area",
+        "accepts_volunteers": "Accepts volunteer applications",
+        "save": "Save",
+        "saved_ok": "Public profile saved"
+      },
       "people": "Personen",
       "members": "Mitglieder",
       "pets": "Tiere",
       "no_people": "Keine Personen",
       "no_pets": "Keine Tiere",
       "address": "Adresse",
-      "contacts": "Kontakte",
+      "contacts": {
+        "members": "Members",
+        "active_users": "Active users",
+        "pending": "Pending invites",
+        "visitors": "Visitors / contacts",
+        "status": "Status",
+        "visitor": "Visitor",
+        "volunteer": "Volunteer",
+        "volunteers": "Volunteers",
+        "archived": "Archived",
+        "add": "Add",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "phone": "Phone",
+        "email": "Email",
+        "notes": "Notes",
+        "save": "Save",
+        "edit_notes": "Edit notes",
+        "link": "Link to user",
+        "archive": "Archive",
+        "empty": "No people yet",
+        "identifier_required": "Provide a name, phone or email",
+        "link_prompt": "User id to link",
+        "added_ok": "Person added",
+        "updated_ok": "Person updated",
+        "archived_ok": "Person archived",
+        "linked_ok": "Person linked to user",
+        "edit": "Edit contact",
+        "cancel": "Cancel"
+      },
       "remove_member": "Entfernen",
       "remove_member_title": "Mitglied entfernen?",
       "remove_member_confirm": "Du entfernst \"{{name}}\" aus diesem Tierheim. Die Person wird nicht gelöscht.",
@@ -262,7 +393,11 @@
         "tasks": "Tasks",
         "walks": "Walks",
         "inventory": "Inventory",
-        "map": "Map"
+        "map": "Map",
+        "people": "People",
+        "ownership": "Ownership",
+        "verification": "Verification",
+        "public_profile": "Public profile"
       },
       "task_types": {
         "cleaning": "Cleaning",
@@ -294,6 +429,8 @@
       },
       "tasks": {
         "add": "Add task",
+        "assignees": "Assignees",
+        "no_members": "No shelter members",
         "type": "Type",
         "area": "Area",
         "scheduled_at": "Scheduled",
@@ -354,7 +491,8 @@
         "completed_ok": "Walk completed",
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
-        "empty": "No walks"
+        "empty": "No walks",
+        "assign_to": "Zuweisen an"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -700,15 +838,146 @@
         "no_sub_owners": "No sub-owners"
       }
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications",
+      "mark_read": "Mark as read",
+      "mark_all_read": "Mark all as read",
+      "dismiss": "Dismiss",
+      "accept": "Accept",
+      "reject": "Reject",
+      "view_pet": "View pet",
+      "view_shelter": "View shelter",
+      "accepted_ok": "Invitation accepted",
+      "rejected_ok": "Invitation rejected",
+      "all_read_ok": "All notifications marked as read",
+      "priority": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "types": {
+        "treatment_reminder": "Treatment reminder",
+        "pet_invite": "Pet invite",
+        "shelter_invite": "Shelter invite",
+        "shelter_task": "Shelter task",
+        "volunteer_request": "Volunteer request",
+        "pet_birthday": "Pet birthday",
+        "ownership_transfer": "Ownership transfer"
+      }
+    },
     "shelters": {
       "empty": "No shelters found",
+      "empty_state": {
+        "search_shelter": "Search shelter",
+        "insert_invite_code": "Insert invite code",
+        "create_personal_workspace": "Create personal workspace",
+        "workspace_name": "Name",
+        "save": "Save",
+        "name_required": "Name required",
+        "created_ok": "Workspace created",
+        "coming_soon": "Coming soon"
+      },
+      "badges": {
+        "personal_workspace": "Personal workspace",
+        "unverified": "Unverified",
+        "verified": "Verified",
+        "private": "Private"
+      },
+      "ownership": {
+        "title": "Ownership",
+        "transfer": "Transfer ownership",
+        "choose_user": "Choose target user",
+        "role_removed": "Remove (no role)",
+        "send_request": "Send request",
+        "target_required": "Target user required",
+        "requested_ok": "Transfer requested",
+        "cancelled_ok": "Transfer cancelled",
+        "pending_to": "Transfer pending to {{name}}",
+        "cancel": "Cancel"
+      },
+      "claim": {
+        "title": "Official verification",
+        "request_verification": "Request official verification",
+        "pending": "Verification request pending review",
+        "cancel": "Cancel",
+        "send_request": "Send request",
+        "message_placeholder": "Describe why this shelter should be verified",
+        "proof_placeholder": "Proof (documents, links, registration number...)",
+        "requested_ok": "Verification requested",
+        "cancelled_ok": "Request cancelled"
+      },
+      "discover": {
+        "title": "Discover shelters",
+        "search_placeholder": "Search by name",
+        "city_placeholder": "Search by city or province",
+        "accepts_volunteers_filter": "Accepts volunteers",
+        "accepts_volunteers_badge": "Accepts volunteers",
+        "apply_volunteer": "Apply as a volunteer",
+        "volunteer_no_contact": "No contact info available yet",
+        "empty": "No public shelters found",
+        "not_found": "Shelter not found",
+        "private": "This shelter is private",
+        "open": "Open"
+      },
+      "invites": {
+        "title": "Invite",
+        "hint": "Enter the id of the user to invite and pick a role.",
+        "user_id_placeholder": "User id",
+        "user_required": "User id required",
+        "send": "Send invite",
+        "sent_ok": "Invite sent",
+        "no_permission": "You don't have permission to invite people here"
+      },
+      "public_profile": {
+        "title": "Public profile",
+        "hint": "Shown on the public discovery page when this shelter is verified and public.",
+        "description": "Description",
+        "contact_email": "Public contact email",
+        "contact_phone": "Public contact phone",
+        "location_label": "Location label",
+        "location_label_ph": "e.g. Downtown area",
+        "accepts_volunteers": "Accepts volunteer applications",
+        "save": "Save",
+        "saved_ok": "Public profile saved"
+      },
       "people": "People",
       "members": "Members",
       "pets": "Pets",
       "no_people": "No people yet",
       "no_pets": "No pets yet",
       "address": "Address",
-      "contacts": "Contacts",
+      "contacts": {
+        "members": "Members",
+        "active_users": "Active users",
+        "pending": "Pending invites",
+        "visitors": "Visitors / contacts",
+        "status": "Status",
+        "visitor": "Visitor",
+        "volunteer": "Volunteer",
+        "volunteers": "Volunteers",
+        "archived": "Archived",
+        "add": "Add",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "phone": "Phone",
+        "email": "Email",
+        "notes": "Notes",
+        "save": "Save",
+        "edit_notes": "Edit notes",
+        "link": "Link to user",
+        "archive": "Archive",
+        "empty": "No people yet",
+        "identifier_required": "Provide a name, phone or email",
+        "link_prompt": "User id to link",
+        "added_ok": "Person added",
+        "updated_ok": "Person updated",
+        "archived_ok": "Person archived",
+        "linked_ok": "Person linked to user",
+        "edit": "Edit contact",
+        "cancel": "Cancel"
+      },
       "remove_member": "Remove",
       "remove_member_title": "Remove member?",
       "remove_member_confirm": "You are about to remove \"{{name}}\" from this shelter. The person will not be deleted.",
@@ -725,7 +994,11 @@
         "tasks": "Tasks",
         "walks": "Walks",
         "inventory": "Inventory",
-        "map": "Map"
+        "map": "Map",
+        "people": "People",
+        "ownership": "Ownership",
+        "verification": "Verification",
+        "public_profile": "Public profile"
       },
       "task_types": {
         "cleaning": "Cleaning",
@@ -757,6 +1030,8 @@
       },
       "tasks": {
         "add": "Add task",
+        "assignees": "Assignees",
+        "no_members": "No shelter members",
         "type": "Type",
         "area": "Area",
         "scheduled_at": "Scheduled",
@@ -817,7 +1092,8 @@
         "completed_ok": "Walk completed",
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
-        "empty": "No walks"
+        "empty": "No walks",
+        "assign_to": "Assign to"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -1151,15 +1427,146 @@
         "no_sub_owners": "No hay sub-propietarios"
       }
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications",
+      "mark_read": "Mark as read",
+      "mark_all_read": "Mark all as read",
+      "dismiss": "Dismiss",
+      "accept": "Accept",
+      "reject": "Reject",
+      "view_pet": "View pet",
+      "view_shelter": "View shelter",
+      "accepted_ok": "Invitation accepted",
+      "rejected_ok": "Invitation rejected",
+      "all_read_ok": "All notifications marked as read",
+      "priority": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "types": {
+        "treatment_reminder": "Treatment reminder",
+        "pet_invite": "Pet invite",
+        "shelter_invite": "Shelter invite",
+        "shelter_task": "Shelter task",
+        "volunteer_request": "Volunteer request",
+        "pet_birthday": "Pet birthday",
+        "ownership_transfer": "Ownership transfer"
+      }
+    },
     "shelters": {
       "empty": "No se encontraron refugios",
+      "empty_state": {
+        "search_shelter": "Buscar refugio",
+        "insert_invite_code": "Introducir código de invitación",
+        "create_personal_workspace": "Crear espacio personal",
+        "workspace_name": "Nombre",
+        "save": "Guardar",
+        "name_required": "Nombre requerido",
+        "created_ok": "Espacio creado",
+        "coming_soon": "Próximamente"
+      },
+      "badges": {
+        "personal_workspace": "Espacio personal",
+        "unverified": "No verificado",
+        "verified": "Verificado",
+        "private": "Privado"
+      },
+      "ownership": {
+        "title": "Propiedad",
+        "transfer": "Transferir propiedad",
+        "choose_user": "Elegir usuario destino",
+        "role_removed": "Eliminar (sin rol)",
+        "send_request": "Enviar solicitud",
+        "target_required": "Usuario destino requerido",
+        "requested_ok": "Transferencia solicitada",
+        "cancelled_ok": "Transferencia cancelada",
+        "pending_to": "Transferencia pendiente a {{name}}",
+        "cancel": "Cancelar"
+      },
+      "claim": {
+        "title": "Verificación oficial",
+        "request_verification": "Solicitar verificación oficial",
+        "pending": "Solicitud de verificación pendiente de revisión",
+        "cancel": "Cancelar",
+        "send_request": "Enviar solicitud",
+        "message_placeholder": "Describe por qué este refugio debería ser verificado",
+        "proof_placeholder": "Prueba (documentos, enlaces, número de registro...)",
+        "requested_ok": "Verificación solicitada",
+        "cancelled_ok": "Solicitud cancelada"
+      },
+      "discover": {
+        "title": "Discover shelters",
+        "search_placeholder": "Search by name",
+        "city_placeholder": "Search by city or province",
+        "accepts_volunteers_filter": "Accepts volunteers",
+        "accepts_volunteers_badge": "Accepts volunteers",
+        "apply_volunteer": "Apply as a volunteer",
+        "volunteer_no_contact": "No contact info available yet",
+        "empty": "No public shelters found",
+        "not_found": "Shelter not found",
+        "private": "This shelter is private",
+        "open": "Open"
+      },
+      "invites": {
+        "title": "Invite",
+        "hint": "Enter the id of the user to invite and pick a role.",
+        "user_id_placeholder": "User id",
+        "user_required": "User id required",
+        "send": "Send invite",
+        "sent_ok": "Invite sent",
+        "no_permission": "You don't have permission to invite people here"
+      },
+      "public_profile": {
+        "title": "Public profile",
+        "hint": "Shown on the public discovery page when this shelter is verified and public.",
+        "description": "Description",
+        "contact_email": "Public contact email",
+        "contact_phone": "Public contact phone",
+        "location_label": "Location label",
+        "location_label_ph": "e.g. Downtown area",
+        "accepts_volunteers": "Accepts volunteer applications",
+        "save": "Save",
+        "saved_ok": "Public profile saved"
+      },
       "people": "Personas",
       "members": "Miembros",
       "pets": "Mascotas",
       "no_people": "Sin personas",
       "no_pets": "Sin mascotas",
       "address": "Dirección",
-      "contacts": "Contactos",
+      "contacts": {
+        "members": "Members",
+        "active_users": "Active users",
+        "pending": "Pending invites",
+        "visitors": "Visitors / contacts",
+        "status": "Status",
+        "visitor": "Visitor",
+        "volunteer": "Volunteer",
+        "volunteers": "Volunteers",
+        "archived": "Archived",
+        "add": "Add",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "phone": "Phone",
+        "email": "Email",
+        "notes": "Notes",
+        "save": "Save",
+        "edit_notes": "Edit notes",
+        "link": "Link to user",
+        "archive": "Archive",
+        "empty": "No people yet",
+        "identifier_required": "Provide a name, phone or email",
+        "link_prompt": "User id to link",
+        "added_ok": "Person added",
+        "updated_ok": "Person updated",
+        "archived_ok": "Person archived",
+        "linked_ok": "Person linked to user",
+        "edit": "Edit contact",
+        "cancel": "Cancel"
+      },
       "remove_member": "Quitar",
       "remove_member_title": "¿Quitar miembro?",
       "remove_member_confirm": "Vas a quitar a \"{{name}}\" de este refugio. La persona no se eliminará.",
@@ -1176,7 +1583,11 @@
         "tasks": "Tasks",
         "walks": "Walks",
         "inventory": "Inventory",
-        "map": "Map"
+        "map": "Map",
+        "people": "People",
+        "ownership": "Ownership",
+        "verification": "Verification",
+        "public_profile": "Public profile"
       },
       "task_types": {
         "cleaning": "Cleaning",
@@ -1208,6 +1619,8 @@
       },
       "tasks": {
         "add": "Add task",
+        "assignees": "Assignees",
+        "no_members": "No shelter members",
         "type": "Type",
         "area": "Area",
         "scheduled_at": "Scheduled",
@@ -1268,7 +1681,8 @@
         "completed_ok": "Walk completed",
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
-        "empty": "No walks"
+        "empty": "No walks",
+        "assign_to": "Asignar a"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -1602,15 +2016,146 @@
         "no_sub_owners": "Aucun sous-propriétaire"
       }
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications",
+      "mark_read": "Mark as read",
+      "mark_all_read": "Mark all as read",
+      "dismiss": "Dismiss",
+      "accept": "Accept",
+      "reject": "Reject",
+      "view_pet": "View pet",
+      "view_shelter": "View shelter",
+      "accepted_ok": "Invitation accepted",
+      "rejected_ok": "Invitation rejected",
+      "all_read_ok": "All notifications marked as read",
+      "priority": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "types": {
+        "treatment_reminder": "Treatment reminder",
+        "pet_invite": "Pet invite",
+        "shelter_invite": "Shelter invite",
+        "shelter_task": "Shelter task",
+        "volunteer_request": "Volunteer request",
+        "pet_birthday": "Pet birthday",
+        "ownership_transfer": "Ownership transfer"
+      }
+    },
     "shelters": {
       "empty": "Aucun refuge trouvé",
+      "empty_state": {
+        "search_shelter": "Rechercher un refuge",
+        "insert_invite_code": "Saisir un code d'invitation",
+        "create_personal_workspace": "Créer un espace personnel",
+        "workspace_name": "Nom",
+        "save": "Enregistrer",
+        "name_required": "Nom requis",
+        "created_ok": "Espace créé",
+        "coming_soon": "Bientôt disponible"
+      },
+      "badges": {
+        "personal_workspace": "Espace personnel",
+        "unverified": "Non vérifié",
+        "verified": "Vérifié",
+        "private": "Privé"
+      },
+      "ownership": {
+        "title": "Propriété",
+        "transfer": "Transférer la propriété",
+        "choose_user": "Choisir l'utilisateur cible",
+        "role_removed": "Retirer (aucun rôle)",
+        "send_request": "Envoyer la demande",
+        "target_required": "Utilisateur cible requis",
+        "requested_ok": "Transfert demandé",
+        "cancelled_ok": "Transfert annulé",
+        "pending_to": "Transfert en attente vers {{name}}",
+        "cancel": "Annuler"
+      },
+      "claim": {
+        "title": "Vérification officielle",
+        "request_verification": "Demander la vérification officielle",
+        "pending": "Demande de vérification en attente d'examen",
+        "cancel": "Annuler",
+        "send_request": "Envoyer la demande",
+        "message_placeholder": "Décrivez pourquoi ce refuge devrait être vérifié",
+        "proof_placeholder": "Preuve (documents, liens, numéro d'enregistrement...)",
+        "requested_ok": "Vérification demandée",
+        "cancelled_ok": "Demande annulée"
+      },
+      "discover": {
+        "title": "Discover shelters",
+        "search_placeholder": "Search by name",
+        "city_placeholder": "Search by city or province",
+        "accepts_volunteers_filter": "Accepts volunteers",
+        "accepts_volunteers_badge": "Accepts volunteers",
+        "apply_volunteer": "Apply as a volunteer",
+        "volunteer_no_contact": "No contact info available yet",
+        "empty": "No public shelters found",
+        "not_found": "Shelter not found",
+        "private": "This shelter is private",
+        "open": "Open"
+      },
+      "invites": {
+        "title": "Invite",
+        "hint": "Enter the id of the user to invite and pick a role.",
+        "user_id_placeholder": "User id",
+        "user_required": "User id required",
+        "send": "Send invite",
+        "sent_ok": "Invite sent",
+        "no_permission": "You don't have permission to invite people here"
+      },
+      "public_profile": {
+        "title": "Public profile",
+        "hint": "Shown on the public discovery page when this shelter is verified and public.",
+        "description": "Description",
+        "contact_email": "Public contact email",
+        "contact_phone": "Public contact phone",
+        "location_label": "Location label",
+        "location_label_ph": "e.g. Downtown area",
+        "accepts_volunteers": "Accepts volunteer applications",
+        "save": "Save",
+        "saved_ok": "Public profile saved"
+      },
       "people": "Personnes",
       "members": "Membres",
       "pets": "Animaux",
       "no_people": "Aucune personne",
       "no_pets": "Aucun animal",
       "address": "Adresse",
-      "contacts": "Contacts",
+      "contacts": {
+        "members": "Members",
+        "active_users": "Active users",
+        "pending": "Pending invites",
+        "visitors": "Visitors / contacts",
+        "status": "Status",
+        "visitor": "Visitor",
+        "volunteer": "Volunteer",
+        "volunteers": "Volunteers",
+        "archived": "Archived",
+        "add": "Add",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "phone": "Phone",
+        "email": "Email",
+        "notes": "Notes",
+        "save": "Save",
+        "edit_notes": "Edit notes",
+        "link": "Link to user",
+        "archive": "Archive",
+        "empty": "No people yet",
+        "identifier_required": "Provide a name, phone or email",
+        "link_prompt": "User id to link",
+        "added_ok": "Person added",
+        "updated_ok": "Person updated",
+        "archived_ok": "Person archived",
+        "linked_ok": "Person linked to user",
+        "edit": "Edit contact",
+        "cancel": "Cancel"
+      },
       "remove_member": "Retirer",
       "remove_member_title": "Retirer le membre ?",
       "remove_member_confirm": "Vous allez retirer « {{name}} » de ce refuge. La personne ne sera pas supprimée.",
@@ -1627,7 +2172,11 @@
         "tasks": "Tasks",
         "walks": "Walks",
         "inventory": "Inventory",
-        "map": "Map"
+        "map": "Map",
+        "people": "People",
+        "ownership": "Ownership",
+        "verification": "Verification",
+        "public_profile": "Public profile"
       },
       "task_types": {
         "cleaning": "Cleaning",
@@ -1659,6 +2208,8 @@
       },
       "tasks": {
         "add": "Add task",
+        "assignees": "Assignees",
+        "no_members": "No shelter members",
         "type": "Type",
         "area": "Area",
         "scheduled_at": "Scheduled",
@@ -1719,7 +2270,8 @@
         "completed_ok": "Walk completed",
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
-        "empty": "No walks"
+        "empty": "No walks",
+        "assign_to": "Assigner à"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -2118,8 +2670,110 @@
         "no_sub_owners": "Nessun affidatario"
       }
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications",
+      "mark_read": "Mark as read",
+      "mark_all_read": "Mark all as read",
+      "dismiss": "Dismiss",
+      "accept": "Accept",
+      "reject": "Reject",
+      "view_pet": "View pet",
+      "view_shelter": "View shelter",
+      "accepted_ok": "Invitation accepted",
+      "rejected_ok": "Invitation rejected",
+      "all_read_ok": "All notifications marked as read",
+      "priority": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "types": {
+        "treatment_reminder": "Treatment reminder",
+        "pet_invite": "Pet invite",
+        "shelter_invite": "Shelter invite",
+        "shelter_task": "Shelter task",
+        "volunteer_request": "Volunteer request",
+        "pet_birthday": "Pet birthday",
+        "ownership_transfer": "Ownership transfer"
+      }
+    },
     "shelters": {
       "empty": "Nessun rifugio trovato",
+      "empty_state": {
+        "search_shelter": "Cerca rifugio",
+        "insert_invite_code": "Inserisci codice invito",
+        "create_personal_workspace": "Crea spazio personale",
+        "workspace_name": "Nome",
+        "save": "Salva",
+        "name_required": "Nome richiesto",
+        "created_ok": "Spazio creato",
+        "coming_soon": "Presto disponibile"
+      },
+      "badges": {
+        "personal_workspace": "Spazio personale",
+        "unverified": "Non verificato",
+        "verified": "Verificato",
+        "private": "Privato"
+      },
+      "ownership": {
+        "title": "Proprietà",
+        "transfer": "Trasferisci proprietà",
+        "choose_user": "Scegli utente destinatario",
+        "role_removed": "Rimuovi (nessun ruolo)",
+        "send_request": "Invia richiesta",
+        "target_required": "Utente destinatario richiesto",
+        "requested_ok": "Trasferimento richiesto",
+        "cancelled_ok": "Trasferimento annullato",
+        "pending_to": "Trasferimento in sospeso verso {{name}}",
+        "cancel": "Annulla"
+      },
+      "claim": {
+        "title": "Verifica ufficiale",
+        "request_verification": "Richiedi verifica ufficiale",
+        "pending": "Richiesta di verifica in attesa di revisione",
+        "cancel": "Annulla",
+        "send_request": "Invia richiesta",
+        "message_placeholder": "Descrivi perché questo rifugio dovrebbe essere verificato",
+        "proof_placeholder": "Prova (documenti, link, numero di registrazione...)",
+        "requested_ok": "Verifica richiesta",
+        "cancelled_ok": "Richiesta annullata"
+      },
+      "discover": {
+        "title": "Scopri rifugi",
+        "search_placeholder": "Cerca per nome",
+        "city_placeholder": "Cerca per città o provincia",
+        "accepts_volunteers_filter": "Accetta volontari",
+        "accepts_volunteers_badge": "Accetta volontari",
+        "apply_volunteer": "Candidati come volontario",
+        "volunteer_no_contact": "Nessun contatto disponibile al momento",
+        "empty": "Nessun rifugio pubblico trovato",
+        "not_found": "Rifugio non trovato",
+        "private": "Questo rifugio è privato",
+        "open": "Apri"
+      },
+      "invites": {
+        "title": "Invita",
+        "hint": "Inserisci l'id dell'utente da invitare e scegli un ruolo.",
+        "user_id_placeholder": "Id utente",
+        "user_required": "Id utente richiesto",
+        "send": "Invia invito",
+        "sent_ok": "Invito inviato",
+        "no_permission": "Non hai i permessi per invitare persone qui"
+      },
+      "public_profile": {
+        "title": "Profilo pubblico",
+        "hint": "Mostrato nella pagina di scoperta pubblica quando questo rifugio è verificato e pubblico.",
+        "description": "Descrizione",
+        "contact_email": "Email di contatto pubblica",
+        "contact_phone": "Telefono di contatto pubblico",
+        "location_label": "Etichetta posizione",
+        "location_label_ph": "es. Zona centro",
+        "accepts_volunteers": "Accetta candidature di volontari",
+        "save": "Salva",
+        "saved_ok": "Profilo pubblico salvato"
+      },
       "people": "Persone",
       "members": "Membri",
       "pets": "Animali",
@@ -2143,7 +2797,11 @@
         "tasks": "Attività",
         "walks": "Passeggiate",
         "inventory": "Inventario",
-        "map": "Mappa"
+        "map": "Mappa",
+        "people": "Persone",
+        "ownership": "Proprietà",
+        "verification": "Verifica",
+        "public_profile": "Profilo pubblico"
       },
       "task_types": {
         "cleaning": "Pulizia",
@@ -2235,7 +2893,8 @@
         "completed_ok": "Passeggiata completata",
         "cancelled_ok": "Passeggiata annullata",
         "deleted_ok": "Passeggiata eliminata",
-        "empty": "Nessuna passeggiata"
+        "empty": "Nessuna passeggiata",
+        "assign_to": "Assegna a"
       },
       "categories": {
         "food_dry": "Cibo secco",
@@ -2577,15 +3236,146 @@
         "no_sub_owners": "Нет опекуна"
       }
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications",
+      "mark_read": "Mark as read",
+      "mark_all_read": "Mark all as read",
+      "dismiss": "Dismiss",
+      "accept": "Accept",
+      "reject": "Reject",
+      "view_pet": "View pet",
+      "view_shelter": "View shelter",
+      "accepted_ok": "Invitation accepted",
+      "rejected_ok": "Invitation rejected",
+      "all_read_ok": "All notifications marked as read",
+      "priority": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High",
+        "urgent": "Urgent"
+      },
+      "types": {
+        "treatment_reminder": "Treatment reminder",
+        "pet_invite": "Pet invite",
+        "shelter_invite": "Shelter invite",
+        "shelter_task": "Shelter task",
+        "volunteer_request": "Volunteer request",
+        "pet_birthday": "Pet birthday",
+        "ownership_transfer": "Ownership transfer"
+      }
+    },
     "shelters": {
       "empty": "Приюты не найдены",
+      "empty_state": {
+        "search_shelter": "Найти приют",
+        "insert_invite_code": "Ввести код приглашения",
+        "create_personal_workspace": "Создать личное пространство",
+        "workspace_name": "Название",
+        "save": "Сохранить",
+        "name_required": "Требуется название",
+        "created_ok": "Пространство создано",
+        "coming_soon": "Скоро будет доступно"
+      },
+      "badges": {
+        "personal_workspace": "Личное пространство",
+        "unverified": "Не подтверждено",
+        "verified": "Подтверждено",
+        "private": "Приватное"
+      },
+      "ownership": {
+        "title": "Владение",
+        "transfer": "Передать владение",
+        "choose_user": "Выбрать пользователя",
+        "role_removed": "Удалить (без роли)",
+        "send_request": "Отправить запрос",
+        "target_required": "Требуется пользователь-получатель",
+        "requested_ok": "Передача запрошена",
+        "cancelled_ok": "Передача отменена",
+        "pending_to": "Ожидает передачи для {{name}}",
+        "cancel": "Отменить"
+      },
+      "claim": {
+        "title": "Официальная верификация",
+        "request_verification": "Запросить официальную верификацию",
+        "pending": "Запрос на верификацию ожидает рассмотрения",
+        "cancel": "Отменить",
+        "send_request": "Отправить запрос",
+        "message_placeholder": "Опишите, почему этот приют должен быть верифицирован",
+        "proof_placeholder": "Доказательство (документы, ссылки, регистрационный номер...)",
+        "requested_ok": "Верификация запрошена",
+        "cancelled_ok": "Запрос отменён"
+      },
+      "discover": {
+        "title": "Discover shelters",
+        "search_placeholder": "Search by name",
+        "city_placeholder": "Search by city or province",
+        "accepts_volunteers_filter": "Accepts volunteers",
+        "accepts_volunteers_badge": "Accepts volunteers",
+        "apply_volunteer": "Apply as a volunteer",
+        "volunteer_no_contact": "No contact info available yet",
+        "empty": "No public shelters found",
+        "not_found": "Shelter not found",
+        "private": "This shelter is private",
+        "open": "Open"
+      },
+      "invites": {
+        "title": "Invite",
+        "hint": "Enter the id of the user to invite and pick a role.",
+        "user_id_placeholder": "User id",
+        "user_required": "User id required",
+        "send": "Send invite",
+        "sent_ok": "Invite sent",
+        "no_permission": "You don't have permission to invite people here"
+      },
+      "public_profile": {
+        "title": "Public profile",
+        "hint": "Shown on the public discovery page when this shelter is verified and public.",
+        "description": "Description",
+        "contact_email": "Public contact email",
+        "contact_phone": "Public contact phone",
+        "location_label": "Location label",
+        "location_label_ph": "e.g. Downtown area",
+        "accepts_volunteers": "Accepts volunteer applications",
+        "save": "Save",
+        "saved_ok": "Public profile saved"
+      },
       "people": "Люди",
       "members": "Участники",
       "pets": "Питомцы",
       "no_people": "Пока никого",
       "no_pets": "Пока нет питомцев",
       "address": "Адрес",
-      "contacts": "Контакты",
+      "contacts": {
+        "members": "Members",
+        "active_users": "Active users",
+        "pending": "Pending invites",
+        "visitors": "Visitors / contacts",
+        "status": "Status",
+        "visitor": "Visitor",
+        "volunteer": "Volunteer",
+        "volunteers": "Volunteers",
+        "archived": "Archived",
+        "add": "Add",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "phone": "Phone",
+        "email": "Email",
+        "notes": "Notes",
+        "save": "Save",
+        "edit_notes": "Edit notes",
+        "link": "Link to user",
+        "archive": "Archive",
+        "empty": "No people yet",
+        "identifier_required": "Provide a name, phone or email",
+        "link_prompt": "User id to link",
+        "added_ok": "Person added",
+        "updated_ok": "Person updated",
+        "archived_ok": "Person archived",
+        "linked_ok": "Person linked to user",
+        "edit": "Edit contact",
+        "cancel": "Cancel"
+      },
       "remove_member": "Убрать",
       "remove_member_title": "Убрать участника?",
       "remove_member_confirm": "Вы убираете «{{name}}» из этого приюта. Человек не будет удалён.",
@@ -2602,7 +3392,11 @@
         "tasks": "Tasks",
         "walks": "Walks",
         "inventory": "Inventory",
-        "map": "Map"
+        "map": "Map",
+        "people": "People",
+        "ownership": "Ownership",
+        "verification": "Verification",
+        "public_profile": "Public profile"
       },
       "task_types": {
         "cleaning": "Cleaning",
@@ -2634,6 +3428,8 @@
       },
       "tasks": {
         "add": "Add task",
+        "assignees": "Assignees",
+        "no_members": "No shelter members",
         "type": "Type",
         "area": "Area",
         "scheduled_at": "Scheduled",
@@ -2694,7 +3490,8 @@
         "completed_ok": "Walk completed",
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
-        "empty": "No walks"
+        "empty": "No walks",
+        "assign_to": "Назначить"
       },
       "categories": {
         "food_dry": "Dry food",

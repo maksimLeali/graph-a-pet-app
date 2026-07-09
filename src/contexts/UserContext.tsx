@@ -10,6 +10,7 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 
 import { CustodyLevel, UserRole } from "@types";
 
@@ -20,6 +21,7 @@ import { DashboardPetFragment } from "@graphql_generated/dashboardPet.generated"
 import { $color, $cssTRBL, $uw } from "@theme";
 import { UserPlaceholder } from "@components";
 import { useGetUserDashboardLazyQuery } from "../modules/home/operations/__generated__/getDashboard.generated";
+import { useGetUnreadNotificationCountQuery } from "../modules/notifications/operations/__generated__/getUnreadNotificationCount.generated";
 import { MinReportFragment } from "@graphql_generated/MinReport.generated";
 
 export type IUserContext = {
@@ -94,6 +96,13 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
     const [user, setUser] = useState<MinUserFragment | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const history = useHistory();
+
+    // unread badge; poll so the count stays fresh while navigating
+    const { data: unreadData } = useGetUnreadNotificationCountQuery({
+        fetchPolicy: "cache-and-network",
+        pollInterval: 60000,
+    });
+    const unread = unreadData?.getUnreadNotificationCount ?? 0;
 
     const refetchDashboard = () => {
         // getUserDashboardQuery();
@@ -240,6 +249,10 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
                     </BackBtn>
                     <IonTitle>{pageName}</IonTitle>
                 </IonToolbar>
+                <NotifBtn to="/notifications" aria-label="Notifications">
+                    <Icon name="notifications" color="dark" size="22px" />
+                    {unread > 0 && <NotifBadge>{unread > 99 ? "99+" : unread}</NotifBadge>}
+                </NotifBtn>
                 <MainImage
                     className="skeleton"
                     onClick={() => setMenuOpen(true)}
@@ -305,6 +318,35 @@ const BackBtn = styled.button`
     margin-left: ${$uw(1)};
     cursor: pointer;
     z-index: 10;
+`;
+
+const NotifBtn = styled(Link)`
+    position: relative;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: ${$uw(3.5)};
+    height: ${$uw(3.5)};
+    margin-right: ${$uw(1)};
+    z-index: 10;
+`;
+
+const NotifBadge = styled.span`
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: ${$color("danger")};
+    color: ${$color("light")};
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
 `;
 
 const MainImage = styled.div`

@@ -1,0 +1,19 @@
+mutation updateShelterPublicProfile($id: ID!, $data: ShelterUpdate!) {
+	updateShelter(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter {
+			id
+			public_description
+			public_contact_email
+			public_contact_phone
+			accepts_volunteers
+			public_location_label
+			public_lat
+			public_lng
+		}
+	}
+}

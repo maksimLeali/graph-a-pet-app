@@ -1,0 +1,18 @@
+query listMyOwnershipTransfers($search: CommonSearch) {
+	listMyOwnershipTransfers(search: $search) {
+		success
+		error {
+			code
+			message
+		}
+		items {
+			...MinShelterOwnershipTransfer
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

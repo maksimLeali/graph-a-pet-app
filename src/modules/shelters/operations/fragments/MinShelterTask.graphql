@@ -15,7 +15,7 @@ fragment MinShelterTask on ShelterTask {
 		start_at
 	}
 	notes
-	assigned_to {
+	assignees {
 		id
 		first_name
 		last_name

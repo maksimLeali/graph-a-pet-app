@@ -1,0 +1,5 @@
+query getPublicShelter($id: ID!) {
+	getPublicShelter(id: $id) {
+		...PublicShelter
+	}
+}

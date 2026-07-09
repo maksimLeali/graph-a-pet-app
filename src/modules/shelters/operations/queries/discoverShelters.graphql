@@ -1,0 +1,18 @@
+query discoverShelters($search: PublicShelterSearchInput) {
+	discoverShelters(search: $search) {
+		success
+		error {
+			code
+			message
+		}
+		items {
+			...PublicShelter
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

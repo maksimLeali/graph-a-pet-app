@@ -8,7 +8,7 @@ import { useUserContext } from "../../contexts/UserContext";
 export const BottomMenu= () => {
 
 	const {fade} = useUserContext()
-    const menuItems: { to: string; icon: IconName }[] = [
+    const menuItems: { to: string; icon: IconName; badge?: number }[] = [
 		{ to: "/home", icon: "heartHalf" },
 		{ to: "/pets", icon: "paw" },
 		{ to: "/board", icon: "warning" },
@@ -26,18 +26,45 @@ export const BottomMenu= () => {
 						to={item.to}
 						aria-label={item.to.split("/")[1]}
 					>
-						<Icon
-							dropShadow={selected}
-							name={item.icon}
-							size="24px"
-							color={selected ? "primary" : "medium"}
-						/>
+						<IconSlot>
+							<Icon
+								dropShadow={selected}
+								name={item.icon}
+								size="24px"
+								color={selected ? "primary" : "medium"}
+							/>
+							{!!item.badge && item.badge > 0 && (
+								<Badge>{item.badge > 99 ? "99+" : item.badge}</Badge>
+							)}
+						</IconSlot>
 					</Link>
 				);
 			})}
 		</Container>
 	);
 };
+
+const IconSlot = styled.span`
+	position: relative;
+	display: inline-flex;
+`;
+
+const Badge = styled.span`
+	position: absolute;
+	top: -6px;
+	right: -8px;
+	min-width: 16px;
+	height: 16px;
+	padding: 0 4px;
+	box-sizing: border-box;
+	border-radius: 8px;
+	background-color: ${$color("danger")};
+	color: ${$color("light")};
+	font-size: 1rem;
+	font-weight: 700;
+	line-height: 16px;
+	text-align: center;
+`;
 
 const Container = styled.div<{fade: boolean}>`
     position: fixed;

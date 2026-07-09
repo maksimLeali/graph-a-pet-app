@@ -1,7 +1,9 @@
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
-import { Icon } from "@components";
+import { Icon, Chip } from "@components";
 import { $color, $uw } from "@theme";
+import { ShelterType, ShelterVerificationStatus, ShelterVisibility } from "@types";
 import { Shelter } from "../types";
 
 type Props = {
@@ -10,14 +12,31 @@ type Props = {
 };
 
 export const ShelterCard: React.FC<Props> = ({ shelter, onClick }) => {
+	const { t } = useTranslation();
 	const address = [shelter.city, shelter.region]
 		.filter(Boolean)
 		.join(", ");
+	const isPersonal = shelter.type === ShelterType.PersonalWorkspace;
 	return (
 		<Card role="button" tabIndex={0} onClick={onClick}>
 			<Info>
 				<Name>{shelter.name}</Name>
 				{address && <Address>{address}</Address>}
+				{(isPersonal ||
+					shelter.verification_status !== ShelterVerificationStatus.Verified ||
+					shelter.visibility === ShelterVisibility.Private) && (
+					<Badges>
+						{isPersonal && (
+							<Chip label={t("shelters.badges.personal_workspace")} color="medium" />
+						)}
+						{shelter.verification_status !== ShelterVerificationStatus.Verified && (
+							<Chip label={t("shelters.badges.unverified")} color="warning" />
+						)}
+						{shelter.visibility === ShelterVisibility.Private && (
+							<Chip label={t("shelters.badges.private")} color="dark" />
+						)}
+					</Badges>
+				)}
 			</Info>
 			<House>
 				<Paw name="paw" color="light" />
@@ -67,6 +86,19 @@ const Address = styled.span`
 	font-size: 1.4rem;
 	color: ${$color("medium")};
 	word-break: break-word;
+`;
+
+const Badges = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${$uw(0.5)};
+	margin-top: ${$uw(0.25)};
+	> div {
+		padding: 2px 12px;
+	}
+	> div span {
+		font-size: 1.1rem;
+	}
 `;
 
 const House = styled.div`

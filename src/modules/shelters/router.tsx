@@ -1,10 +1,12 @@
 import { Route } from "@router-components";
 import { useRouteMatch } from "react-router-dom";
+import { RequireShelterMember } from "./components";
 import {
 	Shelters,
 	ShelterDetail,
 	AddShelterPet,
 	ShelterTasksList,
+	ShelterPeople,
 	AddShelterTask,
 	ShelterWalksList,
 	ShelterInventory,
@@ -15,56 +17,123 @@ import {
 	ShelterBoxDetail,
 	ShelterPetDetail,
 	ShelterPhotos,
+	ShelterOwnership,
+	ShelterVerification,
+	ShelterInvites,
+	ShelterDiscover,
+	ShelterPublic,
+	ShelterPublicProfile,
 } from ".";
 
 export const SheltersRouter = () => {
 	const { path } = useRouteMatch();
 	return (
 		<>
+			<Route exact path={`${path}/discover`}>
+				<ShelterDiscover />
+			</Route>
+			<Route exact path={`${path}/public/:id`}>
+				<ShelterPublic />
+			</Route>
 			<Route exact path={`${path}/add-pet/:id`}>
-				<AddShelterPet />
+				<RequireShelterMember>
+					<AddShelterPet />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/tasks/new`}>
-				<AddShelterTask />
+				<RequireShelterMember>
+					<AddShelterTask />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/tasks/:taskId/edit`}>
-				<AddShelterTask />
+				<RequireShelterMember>
+					<AddShelterTask />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/tasks`}>
-				<ShelterTasksList />
+				<RequireShelterMember>
+					<ShelterTasksList />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/people`}>
+				<RequireShelterMember>
+					<ShelterPeople />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/invites`}>
+				<RequireShelterMember>
+					<ShelterInvites />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/ownership`}>
+				<RequireShelterMember>
+					<ShelterOwnership />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/verification`}>
+				<RequireShelterMember>
+					<ShelterVerification />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/public-profile`}>
+				<RequireShelterMember>
+					<ShelterPublicProfile />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/walks`}>
-				<ShelterWalksList />
+				<RequireShelterMember>
+					<ShelterWalksList />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/inventory/new`}>
-				<AddInventoryItem />
+				<RequireShelterMember>
+					<AddInventoryItem />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/inventory/:itemId/edit`}>
-				<AddInventoryItem />
+				<RequireShelterMember>
+					<AddInventoryItem />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/inventory`}>
-				<ShelterInventory />
+				<RequireShelterMember>
+					<ShelterInventory />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/map`}>
-				<ShelterMapEditor />
+				<RequireShelterMember>
+					<ShelterMapEditor />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/boxes`}>
-				<ShelterBoxes />
+				<RequireShelterMember>
+					<ShelterBoxes />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/animals`}>
-				<ShelterAnimals />
+				<RequireShelterMember>
+					<ShelterAnimals />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/photos`}>
-				<ShelterPhotos />
+				<RequireShelterMember>
+					<ShelterPhotos />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/box/:boxId`}>
-				<ShelterBoxDetail />
+				<RequireShelterMember>
+					<ShelterBoxDetail />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/pet/:petId`}>
-				<ShelterPetDetail />
+				<RequireShelterMember>
+					<ShelterPetDetail />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id`}>
-				<ShelterDetail />
+				<RequireShelterMember>
+					<ShelterDetail />
+				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}`}>
 				<Shelters />

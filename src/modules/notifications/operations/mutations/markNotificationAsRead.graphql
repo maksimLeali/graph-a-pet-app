@@ -1,0 +1,12 @@
+mutation markNotificationAsRead($id: ID!) {
+	markNotificationAsRead(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		notification {
+			...MinNotification
+		}
+	}
+}

@@ -1,0 +1,12 @@
+mutation createPersonalWorkspace($data: CreatePersonalWorkspaceInput!) {
+	createPersonalWorkspace(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter {
+			...MinShelter
+		}
+	}
+}

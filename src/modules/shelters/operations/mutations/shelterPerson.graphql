@@ -1,0 +1,51 @@
+mutation createShelterPerson($data: CreateShelterPersonInput!) {
+	createShelterPerson(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_person {
+			...MinShelterPerson
+		}
+	}
+}
+
+mutation updateShelterPerson($id: ID!, $data: UpdateShelterPersonInput!) {
+	updateShelterPerson(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_person {
+			...MinShelterPerson
+		}
+	}
+}
+
+mutation archiveShelterPerson($id: ID!) {
+	archiveShelterPerson(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_person {
+			...MinShelterPerson
+		}
+	}
+}
+
+mutation linkShelterPersonToUser($person_id: ID!, $user_id: ID!) {
+	linkShelterPersonToUser(person_id: $person_id, user_id: $user_id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_person {
+			...MinShelterPerson
+		}
+	}
+}

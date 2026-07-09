@@ -1,0 +1,29 @@
+mutation requestShelterOwnershipTransfer($shelter_id: ID!, $to_user_id: ID!, $new_role_for_previous_owner: RoleLevel) {
+	requestShelterOwnershipTransfer(
+		shelter_id: $shelter_id
+		to_user_id: $to_user_id
+		new_role_for_previous_owner: $new_role_for_previous_owner
+	) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_ownership_transfer {
+			...MinShelterOwnershipTransfer
+		}
+	}
+}
+
+mutation cancelShelterOwnershipTransfer($id: ID!) {
+	cancelShelterOwnershipTransfer(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_ownership_transfer {
+			...MinShelterOwnershipTransfer
+		}
+	}
+}

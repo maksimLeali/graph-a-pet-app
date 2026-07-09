@@ -1,0 +1,14 @@
+mutation createShelterInvite($data: ShelterInviteCreate!) {
+	createShelterInvite(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_invite {
+			id
+			status
+			role
+		}
+	}
+}

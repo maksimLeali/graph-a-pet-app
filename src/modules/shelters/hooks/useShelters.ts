@@ -8,10 +8,11 @@ export const useShelters = (): {
 	shelters: MinShelterFragment[];
 	loading: boolean;
 	error?: string;
+	refetch: () => void;
 } => {
 	const { user } = useUserContext();
 
-	const { data, loading } = useListSheltersQuery({
+	const { data, loading, refetch } = useListSheltersQuery({
 		skip: !user.id,
 		variables: {
 			commonSearch: {
@@ -44,5 +45,6 @@ export const useShelters = (): {
 		shelters,
 		loading,
 		error: data?.listShelters?.error?.message ?? undefined,
+		refetch: () => refetch(),
 	};
 };

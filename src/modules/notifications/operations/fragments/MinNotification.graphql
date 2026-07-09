@@ -1,0 +1,17 @@
+fragment MinNotification on Notification {
+	id
+	type
+	status
+	priority
+	title
+	message
+	entity_type
+	entity_id
+	action_url
+	actor_user_id
+	shelter_id
+	pet_id
+	payload
+	created_at
+	read_at
+}

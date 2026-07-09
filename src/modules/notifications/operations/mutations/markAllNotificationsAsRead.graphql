@@ -1,0 +1,9 @@
+mutation markAllNotificationsAsRead {
+	markAllNotificationsAsRead {
+		success
+		error {
+			code
+			message
+		}
+	}
+}

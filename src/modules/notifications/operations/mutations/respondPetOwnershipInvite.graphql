@@ -1,0 +1,19 @@
+mutation acceptPetOwnershipInvite($id: ID!) {
+	acceptPetOwnershipInvite(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+	}
+}
+
+mutation rejectPetOwnershipInvite($id: ID!) {
+	rejectPetOwnershipInvite(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+	}
+}

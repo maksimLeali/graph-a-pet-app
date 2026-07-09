@@ -8,6 +8,8 @@ fragment FullShelter on Shelter {
 	street_number
 	postal_code
 	province_code
+	type
+	verification_status
 	contacts {
 		type
 		value

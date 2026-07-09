@@ -1,0 +1,14 @@
+fragment PublicShelter on PublicShelter {
+	id
+	name
+	city
+	region
+	public_description
+	public_contact_email
+	public_contact_phone
+	logo_media_id
+	accepts_volunteers
+	public_location_label
+	public_lat
+	public_lng
+}

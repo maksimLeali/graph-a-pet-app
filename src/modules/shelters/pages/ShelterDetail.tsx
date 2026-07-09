@@ -5,15 +5,14 @@ import { useParams, useHistory, useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
-import { useUserContext, useModal } from "@contexts";
+import { useUserContext } from "@contexts";
 import { Image2x, Chip, Icon } from "@components";
 import { I18NKey } from "@i18n";
-import { RoleLevel, UserRole } from "@types";
+import { RoleLevel, UserRole, ShelterType, ShelterVerificationStatus } from "@types";
 import { $color, $uw } from "@theme";
 
 import { useGetShelterLazyQuery } from "../operations/__generated__/getShelter.generated";
 import { useGetShelterOperationalDashboardQuery } from "../operations/__generated__/getShelterOperationalDashboard.generated";
-import { useDeleteShelterRoleMutation } from "../operations/__generated__/deleteShelterRole.generated";
 import { FullShelterFragment } from "../operations/__generated__/FullShelter.generated";
 import { useListShelterMediasQuery } from "../operations/__generated__/listShelterMedias.generated";
 import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
@@ -60,7 +59,7 @@ export const ShelterDetail: React.FC = () => {
 	return (
 		<IonContent>
 			{shelter ? (
-				<Detail shelter={shelter} reload={() => getShelter({ variables: { id } })} />
+				<Detail shelter={shelter} />
 			) : (
 				<Header>
 					<h2 className={loading ? "skeleton" : ""} />
@@ -72,13 +71,11 @@ export const ShelterDetail: React.FC = () => {
 
 type detailProps = {
 	shelter: FullShelterFragment;
-	reload: () => void;
 };
 
-const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
+const Detail: React.FC<detailProps> = ({ shelter }) => {
 	const { t } = useTranslation();
 	const history = useHistory();
-	const { openModal, closeModal } = useModal();
 	const { user } = useUserContext();
 
 	const { data: dashData } = useGetShelterOperationalDashboardQuery({
@@ -86,10 +83,6 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 		fetchPolicy: "cache-and-network",
 	});
 	const dash = dashData?.getShelterOperationalDashboard?.dashboard;
-
-	const [deleteShelterRole] = useDeleteShelterRoleMutation({
-		onError: () => toast.error(t("messages.errors.fetch")),
-	});
 
 	const roles = (shelter.roles?.items ?? []).filter(
 		(r): r is Role => !!r
@@ -124,37 +117,10 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 		user.role === UserRole.Admin ||
 		myRole === RoleLevel.Owner ||
 		myRole === RoleLevel.Manager;
-
-	const confirmRemove = (role: Role) => {
-		const name = `${role.user.first_name} ${role.user.last_name}`.trim();
-		openModal({
-			onClose: closeModal,
-			onCancel: closeModal,
-			onConfirm: async () => {
-				const res = await deleteShelterRole({
-					variables: { id: role.id },
-				});
-				const del = res.data?.deleteShelterRole;
-				if (!del?.success || del.error) {
-					toast.error(t("messages.errors.fetch"));
-					return;
-				}
-				toast.success(t("messages.success.member_removed"));
-				closeModal();
-				reload();
-			},
-			children: (
-				<ConfirmBox>
-					<ConfirmTitle>
-						{t("shelters.remove_member_title")}
-					</ConfirmTitle>
-					<ConfirmText>
-						{t("shelters.remove_member_confirm", { name })}
-					</ConfirmText>
-				</ConfirmBox>
-			),
-		});
-	};
+	const isOwner = user.role === UserRole.Admin || myRole === RoleLevel.Owner;
+	const isClaimable =
+		shelter.type === ShelterType.PersonalWorkspace ||
+		shelter.verification_status !== ShelterVerificationStatus.Verified;
 
 	return (
 		<>
@@ -164,6 +130,17 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 				</House>
 				<h2>{shelter.name}</h2>
 				{address && <SubText>{address}</SubText>}
+				{(shelter.type === ShelterType.PersonalWorkspace ||
+					shelter.verification_status !== ShelterVerificationStatus.Verified) && (
+					<Contacts>
+						{shelter.type === ShelterType.PersonalWorkspace && (
+							<Chip label={t("shelters.badges.personal_workspace")} color="medium" />
+						)}
+						{shelter.verification_status !== ShelterVerificationStatus.Verified && (
+							<Chip label={t("shelters.badges.unverified")} color="warning" />
+						)}
+					</Contacts>
+				)}
 				{contacts.length > 0 && (
 					<Contacts>
 						{contacts.map((c, i) => (
@@ -214,6 +191,48 @@ const Detail: React.FC<detailProps> = ({ shelter, reload }) => {
 					<Icon name="mapOutline" color="primary" size="20px" />
 					<span>{t("shelters.tabs.map")}</span>
 				</Tab>
+				<Tab
+					type="button"
+					onClick={() =>
+						history.push(`/shelters/detail/${shelter.id}/people`)
+					}
+				>
+					<Icon name="peopleOutline" color="primary" size="20px" />
+					<span>{t("shelters.tabs.people")}</span>
+				</Tab>
+				{isOwner && (
+					<Tab
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${shelter.id}/ownership`)
+						}
+					>
+						<Icon name="swapHorizontal" color="primary" size="20px" />
+						<span>{t("shelters.tabs.ownership")}</span>
+					</Tab>
+				)}
+				{canManage && isClaimable && (
+					<Tab
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${shelter.id}/verification`)
+						}
+					>
+						<Icon name="ribbonOutline" color="primary" size="20px" />
+						<span>{t("shelters.tabs.verification")}</span>
+					</Tab>
+				)}
+				{canManage && (
+					<Tab
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${shelter.id}/public-profile`)
+						}
+					>
+						<Icon name="globeOutline" color="primary" size="20px" />
+						<span>{t("shelters.tabs.public_profile")}</span>
+					</Tab>
+				)}
 			</TabNav>
 
 			{dash && (
@@ -528,12 +547,6 @@ const Empty = styled.p`
 	font-size: 1.5rem;
 `;
 
-const People = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: ${$uw(1)};
-`;
-
 const RoleSummary = styled.div`
 	display: flex;
 	flex-wrap: wrap;
@@ -552,151 +565,6 @@ const RoleStat = styled.div`
 		font-size: 1.8rem;
 		color: ${$color("primary")};
 	}
-`;
-
-const PersonRow = styled.div`
-	display: flex;
-	align-items: center;
-	gap: ${$uw(1.25)};
-	padding: ${$uw(1)} ${$uw(1.25)};
-	border-radius: 14px;
-	background: ${$color("background")};
-	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
-`;
-
-const Avatar = styled.div`
-	flex: 0 0 auto;
-	width: ${$uw(4)};
-	height: ${$uw(4)};
-	border-radius: 999px;
-	overflow: hidden;
-	background: rgba(var(--ion-color-primary-rgb), 0.12);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	> .img2x {
-		width: 100%;
-		height: 100%;
-	}
-`;
-
-const AvatarFallback = styled.span`
-	font-size: 1.8rem;
-	font-weight: 700;
-	color: ${$color("primary")};
-`;
-
-const PersonInfo = styled.div`
-	flex: 1 1 auto;
-	min-width: 0;
-	display: flex;
-	flex-direction: column;
-`;
-
-const PersonName = styled.span`
-	font-size: 1.6rem;
-	font-weight: 700;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-`;
-
-const PersonEmail = styled.span`
-	font-size: 1.3rem;
-	color: ${$color("medium")};
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-`;
-
-const RemoveButton = styled.button`
-	flex: 0 0 auto;
-	background: none;
-	border: none;
-	padding: 0;
-	margin: 0;
-	cursor: pointer;
-	line-height: 0;
-	> .icon {
-		width: ${$uw(2.25)};
-		height: ${$uw(2.25)};
-	}
-	&:active {
-		opacity: 0.6;
-	}
-`;
-
-const PetsGrid = styled.div`
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: ${$uw(1.5)};
-	padding-bottom: ${$uw(4)};
-`;
-
-const PetCard = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: ${$uw(0.5)};
-	cursor: pointer;
-	transition: transform 0.15s ease;
-	&:active {
-		transform: scale(0.96);
-	}
-`;
-
-const PetImage = styled.div<{ $border?: string }>`
-	width: 100%;
-	aspect-ratio: 1/1;
-	padding: 3px;
-	box-sizing: border-box;
-	border-radius: 999px;
-	overflow: hidden;
-	background: ${({ $border }) =>
-		$border ? $color($border) : $color("primary")};
-	> .img2x {
-		width: 100%;
-		height: 100%;
-		border-radius: 999px;
-		overflow: hidden;
-		display: block;
-	}
-`;
-
-const PetFill = styled.span`
-	width: 100%;
-	height: 100%;
-	display: block;
-	border-radius: 999px;
-	background: ${$color("primary")};
-`;
-
-const PetName = styled.span`
-	font-size: 1.4rem;
-	font-weight: 600;
-	text-align: center;
-	word-break: break-word;
-`;
-
-const ConfirmBox = styled.div`
-	width: 100%;
-	padding: ${$uw(2)} ${$uw(2)} ${$uw(1)};
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	gap: ${$uw(1)};
-`;
-
-const ConfirmTitle = styled.h2`
-	margin: 0;
-	font-size: 2rem;
-	color: ${$color("danger")};
-`;
-
-const ConfirmText = styled.p`
-	margin: 0;
-	font-size: 1.6rem;
-	line-height: 1.4;
 `;
 
 const TabNav = styled.div`

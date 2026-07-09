@@ -25,6 +25,7 @@ import { useUpdateShelterTaskMutation } from "../operations/__generated__/update
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
 import { useGetShelterMapQuery } from "../operations/__generated__/getShelterMap.generated";
 import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
+import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
 
 type FormValues = {
 	task_type: ShelterTaskType;
@@ -61,6 +62,7 @@ export const AddShelterTask: React.FC = () => {
 	const [pickedPet, setPickedPet] = useState<{ id: string; name: string } | null>(
 		null
 	);
+	const [assigneeIds, setAssigneeIds] = useState<string[]>([]);
 
 	const [createTask, { loading: creating }] = useCreateShelterTaskMutation({
 		onError: () => toast.error(t("messages.errors.fetch")),
@@ -115,6 +117,32 @@ export const AddShelterTask: React.FC = () => {
 		(p): p is NonNullable<typeof p> => !!p
 	);
 
+	// membri del canile assegnabili
+	const { data: rolesData } = useListShelterRolesMinQuery({
+		skip: !id,
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				page: 0,
+				page_size: 200,
+				filters: { fixed: [{ key: "shelter_id", value: id }] },
+			},
+		},
+	});
+	const members = (rolesData?.listShelterRoles?.items ?? [])
+		.filter((r): r is NonNullable<typeof r> => !!r?.user)
+		.map((r) => ({
+			id: r.user.id,
+			name: [r.user.first_name, r.user.last_name].filter(Boolean).join(" ") || r.user.id,
+		}))
+		// un utente puo avere piu ruoli: dedup per user id
+		.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
+
+	const toggleAssignee = (uid: string) =>
+		setAssigneeIds((prev) =>
+			prev.includes(uid) ? prev.filter((x) => x !== uid) : [...prev, uid]
+		);
+
 	useEffect(() => {
 		setPage({
 			name: t(editing ? "shelters.tasks.edit" : "shelters.tasks.add"),
@@ -129,6 +157,7 @@ export const AddShelterTask: React.FC = () => {
 				id: current.shelter_pet.id,
 				name: current.shelter_pet.pet.name,
 			});
+		setAssigneeIds((current.assignees ?? []).map((u) => u.id));
 		methods.reset({
 			task_type: current.task_type,
 			area: current.area ?? undefined,
@@ -234,6 +263,7 @@ export const AddShelterTask: React.FC = () => {
 					data: {
 						task_type: data.task_type,
 						area: data.area,
+						assignee_ids: assigneeIds,
 						scheduled_at: data.scheduled_at,
 						is_recurring: isRecurring,
 						recurrence,
@@ -256,6 +286,7 @@ export const AddShelterTask: React.FC = () => {
 					shelter_id: id,
 					task_type: data.task_type,
 					area: data.area,
+					assignee_ids: assigneeIds,
 					shelter_pet_id: needsPet ? pickedPet?.id : undefined,
 					shelter_box_id: needsBox ? data.shelter_box_id : undefined,
 					scheduled_at: data.scheduled_at,
@@ -332,6 +363,36 @@ export const AddShelterTask: React.FC = () => {
 							type="dateTime"
 							textLabel="shelters.tasks.scheduled_at"
 						/>
+					</Field>
+
+					<Field>
+						<span>{t("shelters.tasks.assignees")}</span>
+						{members.length === 0 ? (
+							<Muted>{t("shelters.tasks.no_members")}</Muted>
+						) : (
+							<Members>
+								{members.map((m) => {
+									const on = assigneeIds.includes(m.id);
+									return (
+										<MemberChip
+											key={m.id}
+											type="button"
+											$on={on}
+											onClick={() => toggleAssignee(m.id)}
+										>
+											{on && (
+												<Icon
+													name="checkmark"
+													color="light"
+													size="14px"
+												/>
+											)}
+											<span>{m.name}</span>
+										</MemberChip>
+									);
+								})}
+							</Members>
+						)}
 					</Field>
 
 					<Inline>
@@ -439,4 +500,31 @@ const Inline = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	gap: ${$uw(1)};
+`;
+
+const Members = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${$uw(1)};
+`;
+
+const MemberChip = styled.button<{ $on: boolean }>`
+	display: inline-flex;
+	align-items: center;
+	gap: ${$uw(0.75)};
+	border: 1px solid ${$color("primary")};
+	border-radius: ${$uw(1)};
+	padding: ${$uw(1)} ${$uw(1.5)};
+	cursor: pointer;
+	background: ${({ $on }) => ($on ? $color("primary") : $color("background"))};
+	> span {
+		font-size: 1.4rem;
+		font-weight: 600;
+		color: ${({ $on }) => ($on ? $color("light") : $color("dark"))};
+	}
+`;
+
+const Muted = styled.span`
+	font-size: 1.4rem;
+	color: ${$color("medium")};
 `;

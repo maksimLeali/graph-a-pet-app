@@ -1,0 +1,18 @@
+query listMyNotifications($search: CommonSearch) {
+	listMyNotifications(search: $search) {
+		success
+		error {
+			code
+			message
+		}
+		items {
+			...MinNotification
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

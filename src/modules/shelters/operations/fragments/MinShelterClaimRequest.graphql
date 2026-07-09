@@ -1,0 +1,23 @@
+fragment MinShelterClaimRequest on ShelterClaimRequest {
+	id
+	status
+	message
+	proof_data
+	decision_note
+	created_at
+	reviewed_at
+	shelter {
+		id
+		name
+	}
+	requester {
+		id
+		first_name
+		last_name
+	}
+	reviewed_by {
+		id
+		first_name
+		last_name
+	}
+}
