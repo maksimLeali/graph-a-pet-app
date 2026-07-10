@@ -1,0 +1,12 @@
+query getShelterTask($id: ID!) {
+	getShelterTask(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_task {
+			...MinShelterTask
+		}
+	}
+}

@@ -16,16 +16,17 @@ import {
 	Icon,
 	Option,
 } from "@components";
-import { ShelterTaskType, RecurrenceFreq, Weekday } from "@types";
+import { ShelterTaskType, RecurrenceFreq, Weekday, ShelterPersonStatus } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { AssignPetsModal, PickablePet } from "../components/AssignPetsModal";
-import { useShelterTasks } from "../hooks/useShelterTasks";
+import { useGetShelterTaskQuery } from "../operations/__generated__/getShelterTask.generated";
 import { useCreateShelterTaskMutation } from "../operations/__generated__/createShelterTask.generated";
 import { useUpdateShelterTaskMutation } from "../operations/__generated__/updateShelterTask.generated";
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
 import { useGetShelterMapQuery } from "../operations/__generated__/getShelterMap.generated";
 import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
 import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
+import { useListShelterPeopleQuery } from "../operations/__generated__/listShelterPeople.generated";
 
 type FormValues = {
 	task_type: ShelterTaskType;
@@ -63,6 +64,7 @@ export const AddShelterTask: React.FC = () => {
 		null
 	);
 	const [assigneeIds, setAssigneeIds] = useState<string[]>([]);
+	const [assigneeShelterPersonIds, setAssigneeShelterPersonIds] = useState<string[]>([]);
 
 	const [createTask, { loading: creating }] = useCreateShelterTaskMutation({
 		onError: () => toast.error(t("messages.errors.fetch")),
@@ -72,8 +74,11 @@ export const AddShelterTask: React.FC = () => {
 	});
 	const loading = creating || updating;
 
-	const { tasks } = useShelterTasks(editing ? id : "");
-	const current = editing ? tasks.find((tk) => tk.id === taskId) : undefined;
+	const { data: taskData } = useGetShelterTaskQuery({
+		skip: !editing,
+		variables: { id: taskId as string },
+	});
+	const current = editing ? taskData?.getShelterTask?.shelter_task ?? undefined : undefined;
 
 	const methods = useForm<FormValues>({ mode: "onSubmit" });
 
@@ -129,19 +134,46 @@ export const AddShelterTask: React.FC = () => {
 			},
 		},
 	});
-	const members = (rolesData?.listShelterRoles?.items ?? [])
+	const teamMembers = (rolesData?.listShelterRoles?.items ?? [])
 		.filter((r): r is NonNullable<typeof r> => !!r?.user)
 		.map((r) => ({
 			id: r.user.id,
 			name: [r.user.first_name, r.user.last_name].filter(Boolean).join(" ") || r.user.id,
+			kind: "user" as const,
 		}))
 		// un utente puo avere piu ruoli: dedup per user id
 		.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
 
-	const toggleAssignee = (uid: string) =>
-		setAssigneeIds((prev) =>
-			prev.includes(uid) ? prev.filter((x) => x !== uid) : [...prev, uid]
-		);
+	// shelter people segnati come volontari, assegnabili anche loro alle task
+	const { data: peopleData } = useListShelterPeopleQuery({
+		skip: !id,
+		fetchPolicy: "cache-and-network",
+		variables: { shelter_id: id, search: { page: 0, page_size: 200 } },
+	});
+	const volunteers = (peopleData?.listShelterPeople?.items ?? [])
+		.filter(
+			(p): p is NonNullable<typeof p> =>
+				!!p && p.status === ShelterPersonStatus.Volunteer
+		)
+		.map((p) => ({
+			id: p.id,
+			name: [p.first_name, p.last_name].filter(Boolean).join(" ") || p.id,
+			kind: "person" as const,
+		}));
+
+	const members = [...teamMembers, ...volunteers];
+
+	const toggleAssignee = (m: { id: string; kind: "user" | "person" }) => {
+		if (m.kind === "user") {
+			setAssigneeIds((prev) =>
+				prev.includes(m.id) ? prev.filter((x) => x !== m.id) : [...prev, m.id]
+			);
+		} else {
+			setAssigneeShelterPersonIds((prev) =>
+				prev.includes(m.id) ? prev.filter((x) => x !== m.id) : [...prev, m.id]
+			);
+		}
+	};
 
 	useEffect(() => {
 		setPage({
@@ -158,6 +190,9 @@ export const AddShelterTask: React.FC = () => {
 				name: current.shelter_pet.pet.name,
 			});
 		setAssigneeIds((current.assignees ?? []).map((u) => u.id));
+		setAssigneeShelterPersonIds(
+			(current.assignee_shelter_people ?? []).map((p) => p.id)
+		);
 		methods.reset({
 			task_type: current.task_type,
 			area: current.area ?? undefined,
@@ -264,6 +299,7 @@ export const AddShelterTask: React.FC = () => {
 						task_type: data.task_type,
 						area: data.area,
 						assignee_ids: assigneeIds,
+						assignee_shelter_person_ids: assigneeShelterPersonIds,
 						scheduled_at: data.scheduled_at,
 						is_recurring: isRecurring,
 						recurrence,
@@ -287,6 +323,7 @@ export const AddShelterTask: React.FC = () => {
 					task_type: data.task_type,
 					area: data.area,
 					assignee_ids: assigneeIds,
+					assignee_shelter_person_ids: assigneeShelterPersonIds,
 					shelter_pet_id: needsPet ? pickedPet?.id : undefined,
 					shelter_box_id: needsBox ? data.shelter_box_id : undefined,
 					scheduled_at: data.scheduled_at,
@@ -372,13 +409,16 @@ export const AddShelterTask: React.FC = () => {
 						) : (
 							<Members>
 								{members.map((m) => {
-									const on = assigneeIds.includes(m.id);
+									const on =
+										m.kind === "user"
+											? assigneeIds.includes(m.id)
+											: assigneeShelterPersonIds.includes(m.id);
 									return (
 										<MemberChip
-											key={m.id}
+											key={`${m.kind}-${m.id}`}
 											type="button"
 											$on={on}
-											onClick={() => toggleAssignee(m.id)}
+											onClick={() => toggleAssignee(m)}
 										>
 											{on && (
 												<Icon

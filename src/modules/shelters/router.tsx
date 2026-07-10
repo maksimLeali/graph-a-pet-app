@@ -1,14 +1,17 @@
-import { Route } from "@router-components";
+import { Route, Switch } from "@router-components";
 import { useRouteMatch } from "react-router-dom";
 import { RequireShelterMember } from "./components";
 import {
 	Shelters,
+	MyShelterDashboard,
 	ShelterDetail,
 	AddShelterPet,
 	ShelterTasksList,
+	ShelterTaskDetail,
 	ShelterPeople,
 	AddShelterTask,
 	ShelterWalksList,
+	ShelterWalkDetail,
 	ShelterInventory,
 	AddInventoryItem,
 	ShelterMapEditor,
@@ -28,7 +31,10 @@ import {
 export const SheltersRouter = () => {
 	const { path } = useRouteMatch();
 	return (
-		<>
+		<Switch>
+			<Route exact path={`${path}/dashboard`}>
+				<MyShelterDashboard />
+			</Route>
 			<Route exact path={`${path}/discover`}>
 				<ShelterDiscover />
 			</Route>
@@ -48,6 +54,11 @@ export const SheltersRouter = () => {
 			<Route exact path={`${path}/detail/:id/tasks/:taskId/edit`}>
 				<RequireShelterMember>
 					<AddShelterTask />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/tasks/:taskId`}>
+				<RequireShelterMember>
+					<ShelterTaskDetail />
 				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/tasks`}>
@@ -83,6 +94,11 @@ export const SheltersRouter = () => {
 			<Route exact path={`${path}/detail/:id/walks`}>
 				<RequireShelterMember>
 					<ShelterWalksList />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/walks/:walkId`}>
+				<RequireShelterMember>
+					<ShelterWalkDetail />
 				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/inventory/new`}>
@@ -138,6 +154,6 @@ export const SheltersRouter = () => {
 			<Route exact path={`${path}`}>
 				<Shelters />
 			</Route>
-		</>
+		</Switch>
 	);
 };

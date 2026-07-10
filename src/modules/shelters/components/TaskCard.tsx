@@ -2,14 +2,17 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 
-import { Icon, Chip } from "@components";
+import { Icon } from "@components";
 import { IconName } from "../../../components/icons/iconName";
 import { $color, $uw } from "@theme";
 import { ShelterTaskType, TaskStatus } from "@types";
 import { MinShelterTaskFragment } from "../operations/__generated__/MinShelterTask.generated";
+import { StatusPill, taskStatusTone } from "./StatusPill";
+import { ActionMenu, ActionMenuItem } from "./ActionMenu";
 
 type Props = {
 	task: MinShelterTaskFragment;
+	onOpen: (id: string) => void;
 	onComplete: (id: string) => void;
 	onSkip: (id: string) => void;
 	onEdit: (id: string) => void;
@@ -25,108 +28,79 @@ const TYPE_ICON: Record<ShelterTaskType, IconName> = {
 	[ShelterTaskType.Other]: "ellipsisHorizontal",
 };
 
-const STATUS_COLOR: Record<TaskStatus, string> = {
-	[TaskStatus.Pending]: "medium",
-	[TaskStatus.InProgress]: "warning",
-	[TaskStatus.Overdue]: "warning",
-	[TaskStatus.Completed]: "success",
-	[TaskStatus.Skipped]: "danger",
-	[TaskStatus.Cancelled]: "danger",
-};
-
-export const TaskCard: React.FC<Props> = ({ task, onComplete, onSkip, onEdit, onDelete }) => {
+export const TaskCard: React.FC<Props> = ({
+	task,
+	onOpen,
+	onComplete,
+	onSkip,
+	onEdit,
+	onDelete,
+}) => {
 	const { t } = useTranslation();
 	const open =
 		task.status === TaskStatus.Pending || task.status === TaskStatus.InProgress;
 	const petName = task.shelter_pet?.pet?.name;
 
+	const meta = [
+		task.area,
+		petName,
+		task.scheduled_at ? dayjs(task.scheduled_at).format("DD/MM HH:mm") : null,
+	].filter(Boolean);
+
+	const menuItems: ActionMenuItem[] = open
+		? [
+				{ icon: "checkmark", label: t("actions.complete"), onClick: () => onComplete(task.id) },
+				{ icon: "playSkipForward", label: t("actions.skip"), onClick: () => onSkip(task.id) },
+				{ icon: "pencil", label: t("actions.edit"), onClick: () => onEdit(task.id) },
+		  ]
+		: [
+				{ icon: "trashOutline", label: t("actions.delete"), tone: "danger", onClick: () => onDelete(task.id) },
+		  ];
+
 	return (
-		<Card>
+		<Card role="button" tabIndex={0} onClick={() => onOpen(task.id)}>
 			<IconBox>
-				<Icon name={TYPE_ICON[task.task_type]} color="light" />
+				<Icon name={TYPE_ICON[task.task_type]} color="light" size="16px" />
 			</IconBox>
 			<Info>
 				<Name>
 					{t(`shelters.task_types.${task.task_type.toLowerCase()}`)}
-					{task.is_recurring && (
-						<Icon name="repeat" color="medium" size="14px" />
-					)}
+					{task.is_recurring && <Icon name="repeat" color="medium" size="13px" />}
 				</Name>
-				<Sub>
-					{[task.area, petName].filter(Boolean).join(" · ")}
-					{task.scheduled_at &&
-						` · ${dayjs(task.scheduled_at).format("DD/MM HH:mm")}`}
-				</Sub>
+				<Sub>{meta.join(" · ")}</Sub>
 			</Info>
-			<Right>
-				<Chip
-					label={t(`shelters.task_status.${task.status.toLowerCase()}`)}
-					color={STATUS_COLOR[task.status]}
-				/>
-				{open && (
-					<Actions>
-						<Round
-							$c="success"
-							aria-label={t("actions.complete") ?? ""}
-							onClick={() => onComplete(task.id)}
-						>
-							<Icon name="checkmark" color="light" size="18px" />
-						</Round>
-						<Round
-							$c="medium"
-							aria-label={t("actions.skip") ?? ""}
-							onClick={() => onSkip(task.id)}
-						>
-							<Icon name="playSkipForward" color="light" size="16px" />
-						</Round>
-						<Round
-							$c="primary"
-							aria-label={t("actions.edit") ?? ""}
-							onClick={() => onEdit(task.id)}
-						>
-							<Icon name="pencil" color="light" size="14px" />
-						</Round>
-					</Actions>
-				)}
-				{!open && (
-					<Round
-						$c="danger"
-						aria-label={t("actions.delete") ?? ""}
-						onClick={() => onDelete(task.id)}
-					>
-						<Icon name="trashOutline" color="light" size="16px" />
-					</Round>
-				)}
-			</Right>
+			<StatusPill
+				label={t(`shelters.task_status.${task.status.toLowerCase()}`)}
+				tone={taskStatusTone(task.status)}
+			/>
+			<ActionMenu items={menuItems} />
 		</Card>
 	);
 };
 
 const Card = styled.div`
 	width: 100%;
+	min-height: 56px;
 	box-sizing: border-box;
+	cursor: pointer;
 	display: flex;
 	align-items: center;
-	gap: ${$uw(1.25)};
-	padding: ${$uw(1)} ${$uw(1.25)};
+	gap: ${$uw(1)};
+	padding: ${$uw(0.75)} ${$uw(1)};
 	border-radius: 14px;
 	background: ${$color("background")};
-	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.15);
 `;
 
 const IconBox = styled.div`
 	flex: 0 0 auto;
-	width: ${$uw(3.5)};
-	height: ${$uw(3.5)};
+	width: 34px;
+	height: 34px;
 	border-radius: 10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background: ${$color("primary")};
-	> .icon-wrapper {
-		width: ${$uw(1.8)};
-		height: ${$uw(1.8)};
-	}
 `;
 
 const Info = styled.div`
@@ -134,47 +108,23 @@ const Info = styled.div`
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	gap: ${$uw(0.25)};
+	gap: 2px;
 `;
 
 const Name = styled.span`
-	font-size: 1.6rem;
+	font-size: 1.5rem;
 	font-weight: 700;
+	line-height: 1.2;
 	display: flex;
 	align-items: center;
 	gap: ${$uw(0.5)};
 `;
 
 const Sub = styled.span`
-	font-size: 1.3rem;
+	font-size: 1.2rem;
 	color: ${$color("medium")};
-	word-break: break-word;
-`;
-
-const Right = styled.div`
-	flex: 0 0 auto;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-	gap: ${$uw(0.5)};
-`;
-
-const Actions = styled.div`
-	display: flex;
-	gap: ${$uw(0.5)};
-`;
-
-const Round = styled.button<{ $c: string }>`
-	width: ${$uw(3)};
-	height: ${$uw(3)};
-	border: none;
-	border-radius: 999px;
-	background: ${({ $c }) => $color($c)};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	&:active {
-		opacity: 0.7;
-	}
+	line-height: 1.2;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 `;

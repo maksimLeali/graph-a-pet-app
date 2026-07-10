@@ -1,0 +1,12 @@
+query getShelterWalk($id: ID!) {
+	getShelterWalk(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_walk {
+			...MinShelterWalk
+		}
+	}
+}

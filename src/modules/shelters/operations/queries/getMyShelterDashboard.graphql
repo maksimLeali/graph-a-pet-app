@@ -1,0 +1,47 @@
+query getMyShelterDashboard($date_from: String!, $date_to: String!) {
+	getMyShelterDashboard(date_from: $date_from, date_to: $date_to) {
+		success
+		error {
+			code
+			message
+		}
+		dashboard {
+			task_count
+			overdue_task_count
+			walk_count
+			in_progress_walk_count
+			low_stock_count
+			out_of_stock_count
+			tasks {
+				id
+				shelter_id
+				shelter_name
+				task_type
+				area
+				status
+				is_overdue
+				scheduled_at
+				action_url
+			}
+			walks {
+				id
+				shelter_id
+				shelter_name
+				pet_name
+				status
+				scheduled_at
+				action_url
+			}
+			inventory_alerts {
+				id
+				shelter_id
+				shelter_name
+				name
+				current_quantity
+				minimum_threshold
+				status
+				action_url
+			}
+		}
+	}
+}

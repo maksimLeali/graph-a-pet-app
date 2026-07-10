@@ -1,10 +1,13 @@
 export { Shelters } from "./shelters";
+export { MyShelterDashboard } from "./MyShelterDashboard";
 export { ShelterDetail } from "./ShelterDetail";
 export { AddShelterPet } from "./AddShelterPet";
 export { ShelterTasksList } from "./ShelterTasksList";
+export { ShelterTaskDetail } from "./ShelterTaskDetail";
 export { ShelterPeople } from "./ShelterPeople";
 export { AddShelterTask } from "./AddShelterTask";
 export { ShelterWalksList } from "./ShelterWalksList";
+export { ShelterWalkDetail } from "./ShelterWalkDetail";
 export { ShelterInventory } from "./ShelterInventory";
 export { AddInventoryItem } from "./AddInventoryItem";
 export { ShelterMapEditor } from "./ShelterMapEditor";

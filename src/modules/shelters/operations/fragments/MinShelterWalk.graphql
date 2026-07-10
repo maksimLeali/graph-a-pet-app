@@ -21,6 +21,9 @@ fragment MinShelterWalk on ShelterWalk {
 		pet {
 			id
 			name
+			main_picture {
+				id
+			}
 		}
 	}
 }

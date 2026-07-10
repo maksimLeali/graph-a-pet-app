@@ -5,6 +5,9 @@ query listPetsNeedingWalk($shelter_id: ID!, $hours: Int) {
 			pet {
 				id
 				name
+				main_picture {
+					id
+				}
 			}
 		}
 		success

@@ -1112,6 +1112,62 @@ export type MutationVerifyUserArgs = {
   email: Scalars['String']['input'];
 };
 
+export type MyShelterDashboard = {
+  __typename?: 'MyShelterDashboard';
+  in_progress_walk_count: Scalars['Int']['output'];
+  inventory_alerts: Array<MyShelterDashboardInventoryAlert>;
+  low_stock_count: Scalars['Int']['output'];
+  out_of_stock_count: Scalars['Int']['output'];
+  overdue_task_count: Scalars['Int']['output'];
+  task_count: Scalars['Int']['output'];
+  tasks: Array<MyShelterDashboardTask>;
+  walk_count: Scalars['Int']['output'];
+  walks: Array<MyShelterDashboardWalk>;
+};
+
+export type MyShelterDashboardInventoryAlert = {
+  __typename?: 'MyShelterDashboardInventoryAlert';
+  action_url: Scalars['String']['output'];
+  current_quantity: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  minimum_threshold?: Maybe<Scalars['Float']['output']>;
+  name: Scalars['String']['output'];
+  shelter_id: Scalars['ID']['output'];
+  shelter_name: Scalars['String']['output'];
+  status: ShelterInventoryAlertStatus;
+};
+
+export type MyShelterDashboardResult = {
+  __typename?: 'MyShelterDashboardResult';
+  dashboard?: Maybe<MyShelterDashboard>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type MyShelterDashboardTask = {
+  __typename?: 'MyShelterDashboardTask';
+  action_url: Scalars['String']['output'];
+  area?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  is_overdue: Scalars['Boolean']['output'];
+  scheduled_at?: Maybe<Scalars['String']['output']>;
+  shelter_id: Scalars['ID']['output'];
+  shelter_name: Scalars['String']['output'];
+  status: TaskStatus;
+  task_type: ShelterTaskType;
+};
+
+export type MyShelterDashboardWalk = {
+  __typename?: 'MyShelterDashboardWalk';
+  action_url: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  pet_name: Scalars['String']['output'];
+  scheduled_at?: Maybe<Scalars['String']['output']>;
+  shelter_id: Scalars['ID']['output'];
+  shelter_name: Scalars['String']['output'];
+  status: ShelterWalkStatus;
+};
+
 export type NewOwnership = {
   __typename?: 'NewOwnership';
   ownership: Ownership;
@@ -1603,6 +1659,7 @@ export type Query = {
   getGroupedStatistics: StatisticsResult;
   getHealthCard?: Maybe<HealthCardResult>;
   getMedia: MediaResult;
+  getMyShelterDashboard: MyShelterDashboardResult;
   getOrCreateCode?: Maybe<CodeResult>;
   getOwnership: OwnershipResult;
   getPet: PetResult;
@@ -1640,6 +1697,8 @@ export type Query = {
   listMyPets: PaginatedPets;
   listMyShelterClaimRequests: PaginatedShelterClaimRequests;
   listMyTreatments: PaginatedTreatments;
+  listOperationalShelterTasks: PaginatedShelterTasks;
+  listOperationalShelterWalks: PaginatedShelterWalks;
   listOwnerships: PaginatedOwnerships;
   listPets: PaginatedPets;
   listPetsNeedingWalk: PaginatedShelterPets;
@@ -1708,6 +1767,12 @@ export type QueryGetHealthCardArgs = {
 
 export type QueryGetMediaArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetMyShelterDashboardArgs = {
+  date_from: Scalars['String']['input'];
+  date_to: Scalars['String']['input'];
 };
 
 
@@ -1880,6 +1945,16 @@ export type QueryListMyShelterClaimRequestsArgs = {
 
 export type QueryListMyTreatmentsArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
+};
+
+
+export type QueryListOperationalShelterTasksArgs = {
+  shelter_id: Scalars['ID']['input'];
+};
+
+
+export type QueryListOperationalShelterWalksArgs = {
+  shelter_id: Scalars['ID']['input'];
 };
 
 
@@ -2386,6 +2461,11 @@ export type ShelterCreate = {
   street_number: Scalars['String']['input'];
 };
 
+export enum ShelterInventoryAlertStatus {
+  LowStock = 'LOW_STOCK',
+  OutOfStock = 'OUT_OF_STOCK'
+}
+
 export type ShelterInventoryItem = {
   __typename?: 'ShelterInventoryItem';
   archived_at?: Maybe<Scalars['String']['output']>;
@@ -2824,6 +2904,7 @@ export type ShelterRoleUpdate = {
 export type ShelterTask = {
   __typename?: 'ShelterTask';
   area?: Maybe<Scalars['String']['output']>;
+  assignee_shelter_people: Array<ShelterPerson>;
   assignees: Array<User>;
   completed_at?: Maybe<Scalars['String']['output']>;
   completed_by?: Maybe<User>;
@@ -2845,6 +2926,7 @@ export type ShelterTask = {
 export type ShelterTaskCreate = {
   area?: InputMaybe<Scalars['String']['input']>;
   assignee_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  assignee_shelter_person_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
   is_recurring?: InputMaybe<Scalars['Boolean']['input']>;
   notes?: InputMaybe<Scalars['String']['input']>;
   recurrence?: InputMaybe<RecurrenceInput>;
@@ -2874,6 +2956,7 @@ export enum ShelterTaskType {
 export type ShelterTaskUpdate = {
   area?: InputMaybe<Scalars['String']['input']>;
   assignee_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  assignee_shelter_person_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
   is_recurring?: InputMaybe<Scalars['Boolean']['input']>;
   notes?: InputMaybe<Scalars['String']['input']>;
   recurrence?: InputMaybe<RecurrenceInput>;
@@ -2920,6 +3003,7 @@ export enum ShelterVisibility {
 
 export type ShelterWalk = {
   __typename?: 'ShelterWalk';
+  cancelled_at?: Maybe<Scalars['String']['output']>;
   created_at: Scalars['String']['output'];
   duration_minutes?: Maybe<Scalars['Int']['output']>;
   ended_at?: Maybe<Scalars['String']['output']>;
@@ -3628,9 +3712,9 @@ export type MinShelterOwnershipTransferFragment = { __typename?: 'ShelterOwnersh
 
 export type MinShelterPersonFragment = { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null, email?: string | null, phone?: string | null, status: ShelterPersonStatus, source: ShelterPersonSource, notes?: string | null, created_at: string, archived_at?: string | null, user?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null };
 
-export type MinShelterTaskFragment = { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null };
+export type MinShelterTaskFragment = { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null };
 
-export type MinShelterWalkFragment = { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } };
+export type MinShelterWalkFragment = { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } };
 
 export type PublicShelterFragment = { __typename?: 'PublicShelter', id: string, name: string, city?: string | null, region?: string | null, public_description?: string | null, public_contact_email?: string | null, public_contact_phone?: string | null, logo_media_id?: string | null, accepts_volunteers: boolean, public_location_label?: string | null, public_lat?: number | null, public_lng?: number | null };
 
@@ -3649,7 +3733,7 @@ export type CancelShelterWalkMutationVariables = Exact<{
 }>;
 
 
-export type CancelShelterWalkMutation = { __typename?: 'Mutation', cancelShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null } };
+export type CancelShelterWalkMutation = { __typename?: 'Mutation', cancelShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type CompleteShelterTaskMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3657,7 +3741,7 @@ export type CompleteShelterTaskMutationVariables = Exact<{
 }>;
 
 
-export type CompleteShelterTaskMutation = { __typename?: 'Mutation', completeShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
+export type CompleteShelterTaskMutation = { __typename?: 'Mutation', completeShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null } | null } };
 
 export type CompleteShelterWalkMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3665,7 +3749,7 @@ export type CompleteShelterWalkMutationVariables = Exact<{
 }>;
 
 
-export type CompleteShelterWalkMutation = { __typename?: 'Mutation', completeShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null } };
+export type CompleteShelterWalkMutation = { __typename?: 'Mutation', completeShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type CreatePersonalWorkspaceMutationVariables = Exact<{
   data: CreatePersonalWorkspaceInput;
@@ -3721,14 +3805,14 @@ export type CreateShelterTaskMutationVariables = Exact<{
 }>;
 
 
-export type CreateShelterTaskMutation = { __typename?: 'Mutation', createShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
+export type CreateShelterTaskMutation = { __typename?: 'Mutation', createShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null } | null } };
 
 export type CreateShelterWalkMutationVariables = Exact<{
   data: ShelterWalkCreate;
 }>;
 
 
-export type CreateShelterWalkMutation = { __typename?: 'Mutation', createShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null } };
+export type CreateShelterWalkMutation = { __typename?: 'Mutation', createShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type DeleteShelterInventoryItemMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3850,14 +3934,14 @@ export type SkipShelterTaskMutationVariables = Exact<{
 }>;
 
 
-export type SkipShelterTaskMutation = { __typename?: 'Mutation', skipShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
+export type SkipShelterTaskMutation = { __typename?: 'Mutation', skipShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null } | null } };
 
 export type StartShelterWalkMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type StartShelterWalkMutation = { __typename?: 'Mutation', startShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null } };
+export type StartShelterWalkMutation = { __typename?: 'Mutation', startShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type UpdateShelterInventoryItemMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3889,7 +3973,7 @@ export type UpdateShelterTaskMutationVariables = Exact<{
 }>;
 
 
-export type UpdateShelterTaskMutation = { __typename?: 'Mutation', updateShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null } };
+export type UpdateShelterTaskMutation = { __typename?: 'Mutation', updateShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null } | null } };
 
 export type DiscoverSheltersQueryVariables = Exact<{
   search?: InputMaybe<PublicShelterSearchInput>;
@@ -3904,6 +3988,14 @@ export type GetCurrentBoxForPetQueryVariables = Exact<{
 
 
 export type GetCurrentBoxForPetQuery = { __typename?: 'Query', getCurrentBoxForPet: { __typename?: 'ShelterBoxResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, box?: { __typename?: 'ShelterBox', id: string, label: string, capacity: number, status: BoxStatus, map_id: string, area?: { __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, color?: string | null } | null } | null } };
+
+export type GetMyShelterDashboardQueryVariables = Exact<{
+  date_from: Scalars['String']['input'];
+  date_to: Scalars['String']['input'];
+}>;
+
+
+export type GetMyShelterDashboardQuery = { __typename?: 'Query', getMyShelterDashboard: { __typename?: 'MyShelterDashboardResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, dashboard?: { __typename?: 'MyShelterDashboard', task_count: number, overdue_task_count: number, walk_count: number, in_progress_walk_count: number, low_stock_count: number, out_of_stock_count: number, tasks: Array<{ __typename?: 'MyShelterDashboardTask', id: string, shelter_id: string, shelter_name: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, is_overdue: boolean, scheduled_at?: string | null, action_url: string }>, walks: Array<{ __typename?: 'MyShelterDashboardWalk', id: string, shelter_id: string, shelter_name: string, pet_name: string, status: ShelterWalkStatus, scheduled_at?: string | null, action_url: string }>, inventory_alerts: Array<{ __typename?: 'MyShelterDashboardInventoryAlert', id: string, shelter_id: string, shelter_name: string, name: string, current_quantity: number, minimum_threshold?: number | null, status: ShelterInventoryAlertStatus, action_url: string }> } | null } };
 
 export type GetPublicShelterQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3947,6 +4039,20 @@ export type GetShelterPublicProfileQueryVariables = Exact<{
 
 export type GetShelterPublicProfileQuery = { __typename?: 'Query', getShelter: { __typename?: 'ShelterResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter?: { __typename?: 'Shelter', id: string, name: string, public_description?: string | null, public_contact_email?: string | null, public_contact_phone?: string | null, accepts_volunteers: boolean, public_location_label?: string | null, public_lat?: number | null, public_lng?: number | null } | null } };
 
+export type GetShelterTaskQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetShelterTaskQuery = { __typename?: 'Query', getShelterTask: { __typename?: 'ShelterTaskResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_task?: { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null } | null } };
+
+export type GetShelterWalkQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetShelterWalkQuery = { __typename?: 'Query', getShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
+
 export type ListMyOwnershipTransfersQueryVariables = Exact<{
   search?: InputMaybe<CommonSearch>;
 }>;
@@ -3954,13 +4060,27 @@ export type ListMyOwnershipTransfersQueryVariables = Exact<{
 
 export type ListMyOwnershipTransfersQuery = { __typename?: 'Query', listMyOwnershipTransfers: { __typename?: 'PaginatedShelterOwnershipTransfers', success?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, items: Array<{ __typename?: 'ShelterOwnershipTransfer', id: string, status: ShelterOwnershipTransferStatus, new_role_for_previous_owner?: RoleLevel | null, created_at: string, accepted_at?: string | null, rejected_at?: string | null, cancelled_at?: string | null, expires_at?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, from_user: { __typename?: 'User', id: string, first_name: string, last_name: string }, to_user: { __typename?: 'User', id: string, first_name: string, last_name: string } } | null>, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
 
+export type ListOperationalShelterTasksQueryVariables = Exact<{
+  shelter_id: Scalars['ID']['input'];
+}>;
+
+
+export type ListOperationalShelterTasksQuery = { __typename?: 'Query', listOperationalShelterTasks: { __typename?: 'PaginatedShelterTasks', success?: boolean | null, items: Array<{ __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+
+export type ListOperationalShelterWalksQueryVariables = Exact<{
+  shelter_id: Scalars['ID']['input'];
+}>;
+
+
+export type ListOperationalShelterWalksQuery = { __typename?: 'Query', listOperationalShelterWalks: { __typename?: 'PaginatedShelterWalks', success?: boolean | null, items: Array<{ __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+
 export type ListPetsNeedingWalkQueryVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
   hours?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ListPetsNeedingWalkQuery = { __typename?: 'Query', listPetsNeedingWalk: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type ListPetsNeedingWalkQuery = { __typename?: 'Query', listPetsNeedingWalk: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export type ListShelterClaimRequestsQueryVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
@@ -4026,14 +4146,14 @@ export type ListShelterTasksQueryVariables = Exact<{
 }>;
 
 
-export type ListShelterTasksQuery = { __typename?: 'Query', listShelterTasks: { __typename?: 'PaginatedShelterTasks', success?: boolean | null, items: Array<{ __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+export type ListShelterTasksQuery = { __typename?: 'Query', listShelterTasks: { __typename?: 'PaginatedShelterTasks', success?: boolean | null, items: Array<{ __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
 
 export type ListShelterWalksQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
 }>;
 
 
-export type ListShelterWalksQuery = { __typename?: 'Query', listShelterWalks: { __typename?: 'PaginatedShelterWalks', success?: boolean | null, items: Array<{ __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+export type ListShelterWalksQuery = { __typename?: 'Query', listShelterWalks: { __typename?: 'PaginatedShelterWalks', success?: boolean | null, items: Array<{ __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
 
 export type ListSheltersQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
@@ -4538,11 +4658,19 @@ export const MinShelterTaskFragmentDoc = gql`
     first_name
     last_name
   }
+  assignee_shelter_people {
+    id
+    first_name
+    last_name
+  }
   shelter_pet {
     id
     pet {
       id
       name
+      main_picture {
+        id
+      }
     }
   }
 }
@@ -4571,6 +4699,9 @@ export const MinShelterWalkFragmentDoc = gql`
     pet {
       id
       name
+      main_picture {
+        id
+      }
     }
   }
 }
@@ -7896,6 +8027,89 @@ export type GetCurrentBoxForPetQueryHookResult = ReturnType<typeof useGetCurrent
 export type GetCurrentBoxForPetLazyQueryHookResult = ReturnType<typeof useGetCurrentBoxForPetLazyQuery>;
 export type GetCurrentBoxForPetSuspenseQueryHookResult = ReturnType<typeof useGetCurrentBoxForPetSuspenseQuery>;
 export type GetCurrentBoxForPetQueryResult = Apollo.QueryResult<GetCurrentBoxForPetQuery, GetCurrentBoxForPetQueryVariables>;
+export const GetMyShelterDashboardDocument = gql`
+    query getMyShelterDashboard($date_from: String!, $date_to: String!) {
+  getMyShelterDashboard(date_from: $date_from, date_to: $date_to) {
+    success
+    error {
+      code
+      message
+    }
+    dashboard {
+      task_count
+      overdue_task_count
+      walk_count
+      in_progress_walk_count
+      low_stock_count
+      out_of_stock_count
+      tasks {
+        id
+        shelter_id
+        shelter_name
+        task_type
+        area
+        status
+        is_overdue
+        scheduled_at
+        action_url
+      }
+      walks {
+        id
+        shelter_id
+        shelter_name
+        pet_name
+        status
+        scheduled_at
+        action_url
+      }
+      inventory_alerts {
+        id
+        shelter_id
+        shelter_name
+        name
+        current_quantity
+        minimum_threshold
+        status
+        action_url
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMyShelterDashboardQuery__
+ *
+ * To run a query within a React component, call `useGetMyShelterDashboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyShelterDashboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyShelterDashboardQuery({
+ *   variables: {
+ *      date_from: // value for 'date_from'
+ *      date_to: // value for 'date_to'
+ *   },
+ * });
+ */
+export function useGetMyShelterDashboardQuery(baseOptions: Apollo.QueryHookOptions<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables> & ({ variables: GetMyShelterDashboardQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables>(GetMyShelterDashboardDocument, options);
+      }
+export function useGetMyShelterDashboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables>(GetMyShelterDashboardDocument, options);
+        }
+export function useGetMyShelterDashboardSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables>(GetMyShelterDashboardDocument, options);
+        }
+export type GetMyShelterDashboardQueryHookResult = ReturnType<typeof useGetMyShelterDashboardQuery>;
+export type GetMyShelterDashboardLazyQueryHookResult = ReturnType<typeof useGetMyShelterDashboardLazyQuery>;
+export type GetMyShelterDashboardSuspenseQueryHookResult = ReturnType<typeof useGetMyShelterDashboardSuspenseQuery>;
+export type GetMyShelterDashboardQueryResult = Apollo.QueryResult<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables>;
 export const GetPublicShelterDocument = gql`
     query getPublicShelter($id: ID!) {
   getPublicShelter(id: $id) {
@@ -8200,6 +8414,100 @@ export type GetShelterPublicProfileQueryHookResult = ReturnType<typeof useGetShe
 export type GetShelterPublicProfileLazyQueryHookResult = ReturnType<typeof useGetShelterPublicProfileLazyQuery>;
 export type GetShelterPublicProfileSuspenseQueryHookResult = ReturnType<typeof useGetShelterPublicProfileSuspenseQuery>;
 export type GetShelterPublicProfileQueryResult = Apollo.QueryResult<GetShelterPublicProfileQuery, GetShelterPublicProfileQueryVariables>;
+export const GetShelterTaskDocument = gql`
+    query getShelterTask($id: ID!) {
+  getShelterTask(id: $id) {
+    success
+    error {
+      code
+      message
+    }
+    shelter_task {
+      ...MinShelterTask
+    }
+  }
+}
+    ${MinShelterTaskFragmentDoc}`;
+
+/**
+ * __useGetShelterTaskQuery__
+ *
+ * To run a query within a React component, call `useGetShelterTaskQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShelterTaskQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShelterTaskQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShelterTaskQuery(baseOptions: Apollo.QueryHookOptions<GetShelterTaskQuery, GetShelterTaskQueryVariables> & ({ variables: GetShelterTaskQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShelterTaskQuery, GetShelterTaskQueryVariables>(GetShelterTaskDocument, options);
+      }
+export function useGetShelterTaskLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShelterTaskQuery, GetShelterTaskQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShelterTaskQuery, GetShelterTaskQueryVariables>(GetShelterTaskDocument, options);
+        }
+export function useGetShelterTaskSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetShelterTaskQuery, GetShelterTaskQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShelterTaskQuery, GetShelterTaskQueryVariables>(GetShelterTaskDocument, options);
+        }
+export type GetShelterTaskQueryHookResult = ReturnType<typeof useGetShelterTaskQuery>;
+export type GetShelterTaskLazyQueryHookResult = ReturnType<typeof useGetShelterTaskLazyQuery>;
+export type GetShelterTaskSuspenseQueryHookResult = ReturnType<typeof useGetShelterTaskSuspenseQuery>;
+export type GetShelterTaskQueryResult = Apollo.QueryResult<GetShelterTaskQuery, GetShelterTaskQueryVariables>;
+export const GetShelterWalkDocument = gql`
+    query getShelterWalk($id: ID!) {
+  getShelterWalk(id: $id) {
+    success
+    error {
+      code
+      message
+    }
+    shelter_walk {
+      ...MinShelterWalk
+    }
+  }
+}
+    ${MinShelterWalkFragmentDoc}`;
+
+/**
+ * __useGetShelterWalkQuery__
+ *
+ * To run a query within a React component, call `useGetShelterWalkQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShelterWalkQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShelterWalkQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShelterWalkQuery(baseOptions: Apollo.QueryHookOptions<GetShelterWalkQuery, GetShelterWalkQueryVariables> & ({ variables: GetShelterWalkQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShelterWalkQuery, GetShelterWalkQueryVariables>(GetShelterWalkDocument, options);
+      }
+export function useGetShelterWalkLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShelterWalkQuery, GetShelterWalkQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShelterWalkQuery, GetShelterWalkQueryVariables>(GetShelterWalkDocument, options);
+        }
+export function useGetShelterWalkSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetShelterWalkQuery, GetShelterWalkQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShelterWalkQuery, GetShelterWalkQueryVariables>(GetShelterWalkDocument, options);
+        }
+export type GetShelterWalkQueryHookResult = ReturnType<typeof useGetShelterWalkQuery>;
+export type GetShelterWalkLazyQueryHookResult = ReturnType<typeof useGetShelterWalkLazyQuery>;
+export type GetShelterWalkSuspenseQueryHookResult = ReturnType<typeof useGetShelterWalkSuspenseQuery>;
+export type GetShelterWalkQueryResult = Apollo.QueryResult<GetShelterWalkQuery, GetShelterWalkQueryVariables>;
 export const ListMyOwnershipTransfersDocument = gql`
     query listMyOwnershipTransfers($search: CommonSearch) {
   listMyOwnershipTransfers(search: $search) {
@@ -8253,6 +8561,112 @@ export type ListMyOwnershipTransfersQueryHookResult = ReturnType<typeof useListM
 export type ListMyOwnershipTransfersLazyQueryHookResult = ReturnType<typeof useListMyOwnershipTransfersLazyQuery>;
 export type ListMyOwnershipTransfersSuspenseQueryHookResult = ReturnType<typeof useListMyOwnershipTransfersSuspenseQuery>;
 export type ListMyOwnershipTransfersQueryResult = Apollo.QueryResult<ListMyOwnershipTransfersQuery, ListMyOwnershipTransfersQueryVariables>;
+export const ListOperationalShelterTasksDocument = gql`
+    query listOperationalShelterTasks($shelter_id: ID!) {
+  listOperationalShelterTasks(shelter_id: $shelter_id) {
+    items {
+      ...MinShelterTask
+    }
+    success
+    error {
+      code
+      message
+    }
+    pagination {
+      current_page
+      page_size
+      total_items
+      total_pages
+    }
+  }
+}
+    ${MinShelterTaskFragmentDoc}`;
+
+/**
+ * __useListOperationalShelterTasksQuery__
+ *
+ * To run a query within a React component, call `useListOperationalShelterTasksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListOperationalShelterTasksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListOperationalShelterTasksQuery({
+ *   variables: {
+ *      shelter_id: // value for 'shelter_id'
+ *   },
+ * });
+ */
+export function useListOperationalShelterTasksQuery(baseOptions: Apollo.QueryHookOptions<ListOperationalShelterTasksQuery, ListOperationalShelterTasksQueryVariables> & ({ variables: ListOperationalShelterTasksQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListOperationalShelterTasksQuery, ListOperationalShelterTasksQueryVariables>(ListOperationalShelterTasksDocument, options);
+      }
+export function useListOperationalShelterTasksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListOperationalShelterTasksQuery, ListOperationalShelterTasksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListOperationalShelterTasksQuery, ListOperationalShelterTasksQueryVariables>(ListOperationalShelterTasksDocument, options);
+        }
+export function useListOperationalShelterTasksSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListOperationalShelterTasksQuery, ListOperationalShelterTasksQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListOperationalShelterTasksQuery, ListOperationalShelterTasksQueryVariables>(ListOperationalShelterTasksDocument, options);
+        }
+export type ListOperationalShelterTasksQueryHookResult = ReturnType<typeof useListOperationalShelterTasksQuery>;
+export type ListOperationalShelterTasksLazyQueryHookResult = ReturnType<typeof useListOperationalShelterTasksLazyQuery>;
+export type ListOperationalShelterTasksSuspenseQueryHookResult = ReturnType<typeof useListOperationalShelterTasksSuspenseQuery>;
+export type ListOperationalShelterTasksQueryResult = Apollo.QueryResult<ListOperationalShelterTasksQuery, ListOperationalShelterTasksQueryVariables>;
+export const ListOperationalShelterWalksDocument = gql`
+    query listOperationalShelterWalks($shelter_id: ID!) {
+  listOperationalShelterWalks(shelter_id: $shelter_id) {
+    items {
+      ...MinShelterWalk
+    }
+    success
+    error {
+      code
+      message
+    }
+    pagination {
+      current_page
+      page_size
+      total_items
+      total_pages
+    }
+  }
+}
+    ${MinShelterWalkFragmentDoc}`;
+
+/**
+ * __useListOperationalShelterWalksQuery__
+ *
+ * To run a query within a React component, call `useListOperationalShelterWalksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListOperationalShelterWalksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListOperationalShelterWalksQuery({
+ *   variables: {
+ *      shelter_id: // value for 'shelter_id'
+ *   },
+ * });
+ */
+export function useListOperationalShelterWalksQuery(baseOptions: Apollo.QueryHookOptions<ListOperationalShelterWalksQuery, ListOperationalShelterWalksQueryVariables> & ({ variables: ListOperationalShelterWalksQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListOperationalShelterWalksQuery, ListOperationalShelterWalksQueryVariables>(ListOperationalShelterWalksDocument, options);
+      }
+export function useListOperationalShelterWalksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListOperationalShelterWalksQuery, ListOperationalShelterWalksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListOperationalShelterWalksQuery, ListOperationalShelterWalksQueryVariables>(ListOperationalShelterWalksDocument, options);
+        }
+export function useListOperationalShelterWalksSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListOperationalShelterWalksQuery, ListOperationalShelterWalksQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListOperationalShelterWalksQuery, ListOperationalShelterWalksQueryVariables>(ListOperationalShelterWalksDocument, options);
+        }
+export type ListOperationalShelterWalksQueryHookResult = ReturnType<typeof useListOperationalShelterWalksQuery>;
+export type ListOperationalShelterWalksLazyQueryHookResult = ReturnType<typeof useListOperationalShelterWalksLazyQuery>;
+export type ListOperationalShelterWalksSuspenseQueryHookResult = ReturnType<typeof useListOperationalShelterWalksSuspenseQuery>;
+export type ListOperationalShelterWalksQueryResult = Apollo.QueryResult<ListOperationalShelterWalksQuery, ListOperationalShelterWalksQueryVariables>;
 export const ListPetsNeedingWalkDocument = gql`
     query listPetsNeedingWalk($shelter_id: ID!, $hours: Int) {
   listPetsNeedingWalk(shelter_id: $shelter_id, hours: $hours) {
@@ -8261,6 +8675,9 @@ export const ListPetsNeedingWalkDocument = gql`
       pet {
         id
         name
+        main_picture {
+          id
+        }
       }
     }
     success

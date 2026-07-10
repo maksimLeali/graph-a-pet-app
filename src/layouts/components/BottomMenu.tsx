@@ -1,24 +1,90 @@
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router";
 import { Link } from "@router-components";
 
 import { $color, $cssTRBL, $uw } from "@theme";
 import { Icon, IconName } from "@components";
 import { useUserContext } from "../../contexts/UserContext";
 
-export const BottomMenu= () => {
+const PERSONAL_MENU_ITEMS: { to: string; icon: IconName; badge?: number }[] = [
+	{ to: "/home", icon: "heartHalf" },
+	{ to: "/pets", icon: "paw" },
+	{ to: "/board", icon: "warning" },
+	{ to: "/events", icon: "calendar" },
+];
 
-	const {fade} = useUserContext()
-    const menuItems: { to: string; icon: IconName; badge?: number }[] = [
-		{ to: "/home", icon: "heartHalf" },
-		{ to: "/pets", icon: "paw" },
-		{ to: "/board", icon: "warning" },
-		{ to: "/events", icon: "calendar" },
-		{ to: "/shelters", icon: "home" },
-	];
+const SHELTER_MENU_ITEMS: {
+	to: string;
+	icon: IconName;
+	selected: (pathname: string, search: string) => boolean;
+}[] = [
+	{
+		to: "/shelters/dashboard",
+		icon: "home",
+		selected: (pathname) => pathname.startsWith("/shelters/dashboard"),
+	},
+	{
+		to: "/shelters",
+		icon: "search",
+		selected: (pathname, search) =>
+			pathname === "/shelters" && new URLSearchParams(search).get("type") !== "personal",
+	},
+	{
+		to: "/shelters/discover",
+		icon: "compass",
+		selected: (pathname) => pathname.startsWith("/shelters/discover"),
+	},
+	{
+		to: "/shelters?type=personal",
+		icon: "people",
+		selected: (pathname, search) =>
+			pathname === "/shelters" && new URLSearchParams(search).get("type") === "personal",
+	},
+];
+
+export const BottomMenu = () => {
+	const { t } = useTranslation();
+	const { fade } = useUserContext();
+	const location = useLocation();
+	const inShelterSection = location.pathname.startsWith("/shelters");
+
+	if (inShelterSection) {
+		return (
+			<Container fade={fade}>
+				{SHELTER_MENU_ITEMS.map((item, i) => {
+					const selected = item.selected(location.pathname, location.search);
+					return (
+						<Link
+							className={`${selected ? "selected" : ""}`}
+							key={i}
+							to={item.to}
+							aria-label={item.to.split("/")[1]}
+						>
+							<IconSlot>
+								<Icon
+									dropShadow={selected}
+									name={item.icon}
+									size="24px"
+									color={selected ? "primary" : "medium"}
+								/>
+							</IconSlot>
+						</Link>
+					);
+				})}
+			</Container>
+		);
+	}
+
+	const menuItems = PERSONAL_MENU_ITEMS.map((item) => ({
+		...item,
+		selected: (pathname: string) => pathname.startsWith(item.to),
+	}));
+
 	return (
 		<Container fade={fade}>
 			{menuItems.map((item, i) => {
-				const selected = window.location.pathname.startsWith(item.to);
+				const selected = item.selected(location.pathname);
 				return (
 					<Link
 						className={`${selected ? "selected" : ""}`}
@@ -64,6 +130,29 @@ const Badge = styled.span`
 	font-weight: 700;
 	line-height: 16px;
 	text-align: center;
+`;
+
+const TextSlot = styled.span<{ $selected: boolean }>`
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	> span {
+		font-size: 1.1rem;
+		font-weight: ${({ $selected }) => ($selected ? 700 : 600)};
+		color: ${({ $selected }) => ($selected ? $color("primary") : $color("medium"))};
+	}
+`;
+
+const Dot = styled.span`
+	position: absolute;
+	top: -6px;
+	width: 4px;
+	height: 4px;
+	border-radius: 999px;
+	background: ${$color("primary")};
 `;
 
 const Container = styled.div<{fade: boolean}>`

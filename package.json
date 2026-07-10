@@ -19,7 +19,7 @@
     "fetch:translations": "node fetchTranslation.js --url=https://graph-a-pet.makso.me",
     "fetch:graphql": "rover graph introspect https://graph-a-pet.makso.me/graphql > graphql-schema.graphql",
     "fetch:graphql:dev": "rover graph introspect https://graph-a-pet.makso.me/graphql > graphql-schema.graphql",
-    "fetch:graphql:local": "rover graph introspect http://localhost:5000/graphql > graphql-schema.graphql",
+    "fetch:graphql:local": "rover graph introspect http://localhost:5001/graphql > graphql-schema.graphql",
     "generate": "graphql-codegen --config codegen.yml"
   },
   "resolutions": {

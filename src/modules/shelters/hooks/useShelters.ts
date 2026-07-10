@@ -1,10 +1,12 @@
-import { MinShelterFragment } from "@types";
+import { MinShelterFragment, ShelterType } from "@types";
 import { useUserContext } from "@contexts";
 import { useListSheltersQuery } from "../operations/__generated__/listShelters.generated";
 
 const PAGE_SIZE = 30;
 
-export const useShelters = (): {
+export const useShelters = (
+	type?: ShelterType
+): {
 	shelters: MinShelterFragment[];
 	loading: boolean;
 	error?: string;
@@ -22,6 +24,7 @@ export const useShelters = (): {
 				page_size: PAGE_SIZE,
 				// solo shelter dove l'utente ha un ruolo (qualsiasi grado)
 				filters: {
+					fixed: type ? [{ key: "type", value: type }] : undefined,
 					join: [
 						{
 							key: "shelter_roles",

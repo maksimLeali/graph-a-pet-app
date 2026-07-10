@@ -6,6 +6,7 @@ import { IconName } from "../../../components/icons/iconName";
 import { $color, $uw } from "@theme";
 import { InventoryCategory, MovementType } from "@types";
 import { MinInventoryItemFragment } from "../operations/__generated__/MinInventoryItem.generated";
+import { ActionMenu, ActionMenuItem } from "./ActionMenu";
 
 type Props = {
 	item: MinInventoryItemFragment;
@@ -25,18 +26,34 @@ const CATEGORY_ICON: Record<InventoryCategory, IconName> = {
 
 export const InventoryItemRow: React.FC<Props> = ({ item, onMovement, onEdit, onDelete }) => {
 	const { t } = useTranslation();
+
+	const menuItems: ActionMenuItem[] = [
+		{
+			icon: "remove",
+			label: t("shelters.inventory.consume"),
+			onClick: () => onMovement(item.id, MovementType.Consumption),
+		},
+		{
+			icon: "add",
+			label: t("shelters.inventory.restock"),
+			onClick: () => onMovement(item.id, MovementType.Restock),
+		},
+		{ icon: "pencil", label: t("actions.edit"), onClick: () => onEdit(item.id) },
+		{
+			icon: "trashOutline",
+			label: t("actions.delete"),
+			tone: "danger",
+			onClick: () => onDelete(item.id),
+		},
+	];
+
 	return (
 		<Row $low={item.is_below_threshold}>
 			<IconBox>
-				<Icon name={CATEGORY_ICON[item.category]} color="light" />
+				<Icon name={CATEGORY_ICON[item.category]} color="light" size="16px" />
 			</IconBox>
 			<Info>
-				<Name>
-					{item.name}
-					{item.is_below_threshold && (
-						<Icon name="warning" color="warning" size="14px" />
-					)}
-				</Name>
+				<Name>{item.name}</Name>
 				<Sub>
 					{t(`shelters.categories.${item.category.toLowerCase()}`)}
 					{item.minimum_threshold != null &&
@@ -47,54 +64,33 @@ export const InventoryItemRow: React.FC<Props> = ({ item, onMovement, onEdit, on
 				<b>{item.current_quantity}</b>
 				<span>{item.unit}</span>
 			</Qty>
-			<Actions>
-				<Round $c="danger" onClick={() => onMovement(item.id, MovementType.Consumption)}>
-					<Icon name="remove" color="light" size="18px" />
-				</Round>
-				<Round $c="success" onClick={() => onMovement(item.id, MovementType.Restock)}>
-					<Icon name="add" color="light" size="18px" />
-				</Round>
-				<Round $c="primary" onClick={() => onEdit(item.id)}>
-					<Icon name="pencil" color="light" size="14px" />
-				</Round>
-				<Round $c="medium" onClick={() => onDelete(item.id)}>
-					<Icon name="trashOutline" color="light" size="14px" />
-				</Round>
-			</Actions>
+			<ActionMenu items={menuItems} />
 		</Row>
 	);
 };
 
 const Row = styled.div<{ $low: boolean }>`
 	width: 100%;
+	min-height: 56px;
 	box-sizing: border-box;
 	display: flex;
 	align-items: center;
 	gap: ${$uw(1)};
-	padding: ${$uw(1)} ${$uw(1.25)};
+	padding: ${$uw(0.75)} ${$uw(1)};
 	border-radius: 14px;
-	background: ${({ $low }) =>
-		$low ? "rgba(var(--ion-color-warning-rgb), 0.12)" : $color("background")};
-	border: 1px solid
-		${({ $low }) =>
-			$low
-				? "rgba(var(--ion-color-warning-rgb), 0.4)"
-				: "rgba(var(--ion-color-primary-rgb), 0.2)"};
+	background: ${({ $low }) => ($low ? "rgba(245, 196, 24, 0.1)" : $color("background"))};
+	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.12);
 `;
 
 const IconBox = styled.div`
 	flex: 0 0 auto;
-	width: ${$uw(3.5)};
-	height: ${$uw(3.5)};
+	width: 34px;
+	height: 34px;
 	border-radius: 10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background: ${$color("primary")};
-	> .icon-wrapper {
-		width: ${$uw(1.8)};
-		height: ${$uw(1.8)};
-	}
 `;
 
 const Info = styled.div`
@@ -102,56 +98,33 @@ const Info = styled.div`
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	gap: ${$uw(0.25)};
+	gap: 2px;
 `;
 
 const Name = styled.span`
-	font-size: 1.6rem;
+	font-size: 1.5rem;
 	font-weight: 700;
-	display: flex;
-	align-items: center;
-	gap: ${$uw(0.5)};
+	line-height: 1.2;
 `;
 
 const Sub = styled.span`
 	font-size: 1.2rem;
 	color: ${$color("medium")};
+	line-height: 1.2;
 `;
 
 const Qty = styled.div<{ $low: boolean }>`
 	flex: 0 0 auto;
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	min-width: ${$uw(4)};
+	align-items: baseline;
+	gap: 3px;
 	> b {
-		font-size: 1.8rem;
+		font-size: 2rem;
 		font-weight: 800;
-		color: ${({ $low }) => $color($low ? "warning" : "primary")};
+		color: ${({ $low }) => ($low ? "#f5c518" : "#34d399")};
 	}
 	> span {
 		font-size: 1.1rem;
 		color: ${$color("medium")};
-	}
-`;
-
-const Actions = styled.div`
-	flex: 0 0 auto;
-	display: flex;
-	gap: ${$uw(0.4)};
-`;
-
-const Round = styled.button<{ $c: string }>`
-	width: ${$uw(2.8)};
-	height: ${$uw(2.8)};
-	border: none;
-	border-radius: 999px;
-	background: ${({ $c }) => $color($c)};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	&:active {
-		opacity: 0.7;
 	}
 `;

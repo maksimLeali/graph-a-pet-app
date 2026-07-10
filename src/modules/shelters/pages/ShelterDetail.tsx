@@ -161,7 +161,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 						history.push(`/shelters/detail/${shelter.id}/tasks`)
 					}
 				>
-					<Icon name="checkboxOutline" color="primary" size="20px" />
+					<Icon name="checkboxOutline" color="primary" size="15px" />
 					<span>{t("shelters.tabs.tasks")}</span>
 				</Tab>
 				<Tab
@@ -170,7 +170,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 						history.push(`/shelters/detail/${shelter.id}/walks`)
 					}
 				>
-					<Icon name="walkOutline" color="primary" size="20px" />
+					<Icon name="walkOutline" color="primary" size="15px" />
 					<span>{t("shelters.tabs.walks")}</span>
 				</Tab>
 				<Tab
@@ -179,7 +179,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 						history.push(`/shelters/detail/${shelter.id}/inventory`)
 					}
 				>
-					<Icon name="cubeOutline" color="primary" size="20px" />
+					<Icon name="cubeOutline" color="primary" size="15px" />
 					<span>{t("shelters.tabs.inventory")}</span>
 				</Tab>
 				<Tab
@@ -188,7 +188,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 						history.push(`/shelters/detail/${shelter.id}/map`)
 					}
 				>
-					<Icon name="mapOutline" color="primary" size="20px" />
+					<Icon name="mapOutline" color="primary" size="15px" />
 					<span>{t("shelters.tabs.map")}</span>
 				</Tab>
 				<Tab
@@ -197,7 +197,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 						history.push(`/shelters/detail/${shelter.id}/people`)
 					}
 				>
-					<Icon name="peopleOutline" color="primary" size="20px" />
+					<Icon name="peopleOutline" color="primary" size="15px" />
 					<span>{t("shelters.tabs.people")}</span>
 				</Tab>
 				{isOwner && (
@@ -207,7 +207,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 							history.push(`/shelters/detail/${shelter.id}/ownership`)
 						}
 					>
-						<Icon name="swapHorizontal" color="primary" size="20px" />
+						<Icon name="swapHorizontal" color="primary" size="15px" />
 						<span>{t("shelters.tabs.ownership")}</span>
 					</Tab>
 				)}
@@ -218,7 +218,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 							history.push(`/shelters/detail/${shelter.id}/verification`)
 						}
 					>
-						<Icon name="ribbonOutline" color="primary" size="20px" />
+						<Icon name="ribbonOutline" color="primary" size="15px" />
 						<span>{t("shelters.tabs.verification")}</span>
 					</Tab>
 				)}
@@ -229,7 +229,7 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 							history.push(`/shelters/detail/${shelter.id}/public-profile`)
 						}
 					>
-						<Icon name="globeOutline" color="primary" size="20px" />
+						<Icon name="globeOutline" color="primary" size="15px" />
 						<span>{t("shelters.tabs.public_profile")}</span>
 					</Tab>
 				)}
@@ -569,33 +569,27 @@ const RoleStat = styled.div`
 
 const TabNav = styled.div`
 	display: flex;
-	gap: ${$uw(1)};
-	padding: ${$uw(0.75)} 12px 0;
+	gap: ${$uw(0.75)};
+	padding: ${$uw(1)} 12px 0;
 	overflow-x: auto;
 `;
 
 const Tab = styled.button`
-	flex: 1 0 auto;
-	display: flex;
-	flex-direction: column;
+	flex: 0 0 auto;
+	display: inline-flex;
 	align-items: center;
 	gap: ${$uw(0.5)};
-	padding: ${$uw(1)} ${$uw(1.5)};
-	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.25);
-	border-radius: 12px;
-	background: ${$color("background")};
+	padding: ${$uw(0.6)} ${$uw(1.25)};
+	border: none;
+	border-radius: 999px;
+	background: rgba(var(--ion-color-primary-rgb), 0.1);
 	color: ${$color("primary")};
 	font-size: 1.3rem;
 	font-weight: 700;
+	white-space: nowrap;
 	cursor: pointer;
 	&:active {
 		opacity: 0.7;
-	}
-	&.disabled {
-		color: ${$color("medium")};
-		border-color: rgba(var(--ion-color-medium-rgb), 0.25);
-		cursor: default;
-		opacity: 0.6;
 	}
 `;
 
@@ -660,9 +654,9 @@ const PhotoStrip = styled.div`
 
 const PhotoThumb = styled.div`
 	flex: 0 0 auto;
-	width: ${$uw(8)};
-	height: ${$uw(8)};
-	border-radius: 10px;
+	width: 64px;
+	height: 64px;
+	border-radius: 14px;
 	overflow: hidden;
 	background: rgba(var(--ion-color-primary-rgb), 0.08);
 	> .img2x {

@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
-import { useUserContext } from "@contexts";
+import { useUserContext, useModal } from "@contexts";
 import { Icon, TextInput } from "@components";
+import { ShelterType } from "@types";
 import { $color, $uw } from "@theme";
 import { ShelterCard } from "../components";
 import { useShelters } from "../hooks/useShelters";
@@ -15,20 +16,28 @@ import { useCreatePersonalWorkspaceMutation } from "../operations/__generated__/
 export const Shelters: React.FC = () => {
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
+	const { openModal, closeModal } = useModal();
 	const history = useHistory();
-	const { shelters, loading, error, refetch } = useShelters();
-	const [showCreate, setShowCreate] = useState(false);
-	const [name, setName] = useState("");
+	const location = useLocation();
+	const personalOnly = useMemo(
+		() => new URLSearchParams(location.search).get("type") === "personal",
+		[location.search]
+	);
+	const { shelters, loading, error, refetch } = useShelters(
+		personalOnly ? ShelterType.PersonalWorkspace : undefined
+	);
 
 	useEffect(() => {
-		setPage({ name: t("pages.shelters") });
-	}, []);
+		setPage({
+			name: t(personalOnly ? "shelters.dashboard.my_workspaces" : "pages.shelters"),
+		});
+	}, [personalOnly]);
 
 	const [createWorkspace, { loading: creating }] = useCreatePersonalWorkspaceMutation({
 		onError: () => toast.error(t("messages.errors.fetch")),
 	});
 
-	const onCreate = async () => {
+	const onCreate = async (name: string) => {
 		if (!name.trim()) {
 			toast.error(t("shelters.empty_state.name_required"));
 			return;
@@ -39,21 +48,37 @@ export const Shelters: React.FC = () => {
 			return;
 		}
 		toast.success(t("shelters.empty_state.created_ok"));
-		setName("");
-		setShowCreate(false);
+		closeModal();
 		refetch();
 		const id = res.data.createPersonalWorkspace.shelter?.id;
 		if (id) history.push(`/shelters/detail/${id}`);
 	};
 
+	const openCreateModal = () => {
+		const draft = { current: "" };
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: () => onCreate(draft.current),
+			children: (
+				<CreateWorkspaceModal
+					disabled={creating}
+					onChange={(v) => (draft.current = v)}
+				/>
+			),
+		});
+	};
+
 	return (
 		<IonContent>
-			<TopBar>
-				<ActionBtn type="button" onClick={() => history.push("/shelters/discover")}>
-					<Icon name="compassOutline" color="primary" size="18px" />
-					<span>{t("shelters.discover.title")}</span>
-				</ActionBtn>
-			</TopBar>
+			{personalOnly && shelters.length > 0 && (
+				<TopBar>
+					<AddBtn type="button" onClick={openCreateModal}>
+						<Icon name="add" color="light" size="18px" />
+						<span>{t("shelters.empty_state.create_personal_workspace")}</span>
+					</AddBtn>
+				</TopBar>
+			)}
 			<List>
 				{loading &&
 					[0, 1, 2, 3, 4, 5].map((i) => (
@@ -76,40 +101,16 @@ export const Shelters: React.FC = () => {
 					<Actions>
 						<ActionBtn
 							type="button"
-							onClick={() => history.push("/shelters/discover")}
-						>
-							<Icon name="search" color="primary" size="20px" />
-							<span>{t("shelters.empty_state.search_shelter")}</span>
-						</ActionBtn>
-						<ActionBtn
-							type="button"
 							onClick={() => toast(t("shelters.empty_state.coming_soon") ?? "")}
 						>
 							<Icon name="keypadOutline" color="primary" size="20px" />
 							<span>{t("shelters.empty_state.insert_invite_code")}</span>
 						</ActionBtn>
-						<ActionBtn
-							type="button"
-							$primary
-							onClick={() => setShowCreate((v) => !v)}
-						>
+						<ActionBtn type="button" $primary onClick={openCreateModal}>
 							<Icon name="add" color="light" size="20px" />
 							<span>{t("shelters.empty_state.create_personal_workspace")}</span>
 						</ActionBtn>
 					</Actions>
-
-					{showCreate && (
-						<CreateForm>
-							<TextInput
-								ntTextLabel={t("shelters.empty_state.workspace_name") ?? ""}
-								value={name}
-								onChange={setName}
-							/>
-							<SaveBtn type="button" disabled={creating} onClick={onCreate}>
-								{t("shelters.empty_state.save")}
-							</SaveBtn>
-						</CreateForm>
-					)}
 				</EmptyState>
 			)}
 			{!loading && error && <Message>{error}</Message>}
@@ -117,10 +118,39 @@ export const Shelters: React.FC = () => {
 	);
 };
 
-const TopBar = styled.div`
+type CreateWorkspaceModalProps = {
+	disabled?: boolean;
+	onChange: (name: string) => void;
+};
+
+const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({ disabled, onChange }) => {
+	const { t } = useTranslation();
+	const [value, setValue] = useState("");
+	return (
+		<ModalContent>
+			<h3>{t("shelters.empty_state.create_personal_workspace")}</h3>
+			<TextInput
+				ntTextLabel={t("shelters.empty_state.workspace_name") ?? ""}
+				value={value}
+				disabled={disabled}
+				onChange={(v) => {
+					setValue(v);
+					onChange(v);
+				}}
+			/>
+		</ModalContent>
+	);
+};
+
+const ModalContent = styled.div`
 	width: 100%;
-	box-sizing: border-box;
-	padding: ${$uw(1.5)} 12px 0;
+	display: flex;
+	flex-direction: column;
+	gap: ${$uw(1.5)};
+	> h3 {
+		margin: 0;
+		color: ${$color("primary")};
+	}
 `;
 
 const List = styled.div`
@@ -178,20 +208,28 @@ const ActionBtn = styled.button<{ $primary?: boolean }>`
 	}
 `;
 
-const CreateForm = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: ${$uw(1)};
+const TopBar = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	padding: ${$uw(1.5)} 12px 0;
 `;
 
-const SaveBtn = styled.button`
-	align-self: flex-start;
+const AddBtn = styled.button`
+	display: inline-flex;
+	align-items: center;
+	gap: ${$uw(0.5)};
+	padding: ${$uw(0.75)} ${$uw(1.25)};
 	border: none;
 	border-radius: 999px;
-	padding: ${$uw(1)} ${$uw(2)};
 	background: ${$color("primary")};
 	color: ${$color("light")};
-	font-weight: 700;
-	font-size: 1.4rem;
 	cursor: pointer;
+	> span {
+		font-size: 1.4rem;
+		font-weight: 700;
+		color: ${$color("light")};
+	}
+	&:active {
+		opacity: 0.7;
+	}
 `;

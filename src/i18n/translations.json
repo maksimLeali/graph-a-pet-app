@@ -9,7 +9,8 @@
       "delete": "Löschen",
       "complete": "Complete",
       "skip": "Skip",
-      "edit": "Bearbeiten"
+      "edit": "Bearbeiten",
+      "start": "Starten"
     },
     "auth": {
       "already_registered": "Bereits registriert?",
@@ -116,7 +117,8 @@
     "pages": {
       "home": "Startseite",
       "pet_sharing": "Willst du mich?",
-      "shelters": "Tierheime"
+      "shelters": "Tierheime",
+      "shelters_dashboard": "Mein Dashboard"
     },
     "pets": {
       "accept_as": "Akzeptieren als:",
@@ -516,7 +518,9 @@
         "deleted_ok": "Item deleted",
         "edit": "Bearbeiten",
         "save": "Speichern",
-        "updated_ok": "Artikel aktualisiert"
+        "updated_ok": "Artikel aktualisiert",
+        "consume": "Verbrauchen",
+        "restock": "Auffüllen"
       },
       "map": {
         "view": "View",
@@ -585,6 +589,31 @@
         "manage": "Fotos verwalten",
         "empty": "Keine Fotos vorhanden",
         "add": "Fotos hinzufügen"
+      },
+      "dashboard": {
+        "title": "Mein Dashboard",
+        "empty_tasks": "Diese Woche keine Aufgaben zugewiesen",
+        "empty_walks": "Diese Woche keine Spaziergänge zugewiesen",
+        "empty_inventory": "Keine Bestandswarnungen",
+        "overdue": "Überfällig",
+        "out_of_stock": "Nicht vorrätig",
+        "low_stock": "Niedriger Bestand",
+        "kpi": {
+          "task_count": "Aufgaben",
+          "overdue_count": "Überfällig",
+          "walk_count": "Spaziergänge",
+          "in_progress_count": "Laufend",
+          "low_stock_count": "Niedriger Bestand",
+          "out_of_stock_count": "Nicht vorrätig"
+        },
+        "my_workspaces": "Meine persönlichen Arbeitsbereiche",
+        "shelters_scope": "In {{count}} Einrichtungen"
+      },
+      "bottom_nav": {
+        "home": "Home",
+        "search": "Suchen",
+        "discover": "Entdecken",
+        "team": "Team"
       }
     }
   },
@@ -599,7 +628,8 @@
       "delete": "Delete",
       "complete": "Complete",
       "skip": "Skip",
-      "edit": "Edit"
+      "edit": "Edit",
+      "start": "Start"
     },
     "auth": {
       "already_registered": "Already a user?",
@@ -709,7 +739,8 @@
     "pages": {
       "home": "Home",
       "pet_sharing": "Do you want me?",
-      "shelters": "Shelters"
+      "shelters": "Shelters",
+      "shelters_dashboard": "My dashboard"
     },
     "pets": {
       "accept_as": "Accept as:",
@@ -1117,7 +1148,9 @@
         "deleted_ok": "Item deleted",
         "edit": "Edit",
         "save": "Save",
-        "updated_ok": "Item updated"
+        "updated_ok": "Item updated",
+        "consume": "Consume",
+        "restock": "Restock"
       },
       "map": {
         "view": "View",
@@ -1186,6 +1219,31 @@
         "manage": "Manage photos",
         "empty": "No photos yet",
         "add": "Add photos"
+      },
+      "dashboard": {
+        "title": "My dashboard",
+        "empty_tasks": "No tasks assigned to you this week",
+        "empty_walks": "No walks assigned to you this week",
+        "empty_inventory": "No inventory alerts",
+        "overdue": "Overdue",
+        "out_of_stock": "Out of stock",
+        "low_stock": "Low stock",
+        "kpi": {
+          "task_count": "Tasks",
+          "overdue_count": "Overdue",
+          "walk_count": "Walks",
+          "in_progress_count": "In progress",
+          "low_stock_count": "Low stock",
+          "out_of_stock_count": "Out of stock"
+        },
+        "my_workspaces": "My personal workspaces",
+        "shelters_scope": "Across {{count}} shelters"
+      },
+      "bottom_nav": {
+        "home": "Home",
+        "search": "Search",
+        "discover": "Explore",
+        "team": "Team"
       }
     }
   },
@@ -1199,7 +1257,8 @@
       "delete": "Eliminar",
       "complete": "Complete",
       "skip": "Skip",
-      "edit": "Editar"
+      "edit": "Editar",
+      "start": "Iniciar"
     },
     "auth": {
       "already_registered": "¿Ya estás registrado?",
@@ -1306,7 +1365,8 @@
     "pages": {
       "home": "Inicio",
       "pet_sharing": "¿Me quieres?",
-      "shelters": "Refugios"
+      "shelters": "Refugios",
+      "shelters_dashboard": "Mi panel"
     },
     "pets": {
       "accept_as": "Aceptar como:",
@@ -1706,7 +1766,9 @@
         "deleted_ok": "Item deleted",
         "edit": "Editar",
         "save": "Guardar",
-        "updated_ok": "Artículo actualizado"
+        "updated_ok": "Artículo actualizado",
+        "consume": "Consumir",
+        "restock": "Reponer"
       },
       "map": {
         "view": "View",
@@ -1775,6 +1837,31 @@
         "manage": "Gestionar fotos",
         "empty": "Sin fotos todavía",
         "add": "Añadir fotos"
+      },
+      "dashboard": {
+        "title": "Mi panel",
+        "empty_tasks": "No hay tareas asignadas esta semana",
+        "empty_walks": "No hay paseos asignados esta semana",
+        "empty_inventory": "No hay alertas de inventario",
+        "overdue": "Atrasada",
+        "out_of_stock": "Agotado",
+        "low_stock": "Stock bajo",
+        "kpi": {
+          "task_count": "Tareas",
+          "overdue_count": "Atrasadas",
+          "walk_count": "Paseos",
+          "in_progress_count": "En curso",
+          "low_stock_count": "Stock bajo",
+          "out_of_stock_count": "Agotado"
+        },
+        "my_workspaces": "Mis espacios personales",
+        "shelters_scope": "En {{count}} refugios"
+      },
+      "bottom_nav": {
+        "home": "Inicio",
+        "search": "Buscar",
+        "discover": "Explorar",
+        "team": "Equipo"
       }
     }
   },
@@ -1788,7 +1875,8 @@
       "delete": "Supprimer",
       "complete": "Complete",
       "skip": "Skip",
-      "edit": "Modifier"
+      "edit": "Modifier",
+      "start": "Démarrer"
     },
     "auth": {
       "already_registered": "Déjà utilisateur?",
@@ -1895,7 +1983,8 @@
     "pages": {
       "home": "Accueil",
       "pet_sharing": "Voulez-vous de moi?",
-      "shelters": "Refuges"
+      "shelters": "Refuges",
+      "shelters_dashboard": "Mon tableau de bord"
     },
     "pets": {
       "accept_as": "Accepter en tant que:",
@@ -2295,7 +2384,9 @@
         "deleted_ok": "Item deleted",
         "edit": "Modifier",
         "save": "Enregistrer",
-        "updated_ok": "Article mis à jour"
+        "updated_ok": "Article mis à jour",
+        "consume": "Consommer",
+        "restock": "Réapprovisionner"
       },
       "map": {
         "view": "View",
@@ -2364,6 +2455,31 @@
         "manage": "Gérer les photos",
         "empty": "Aucune photo pour l'instant",
         "add": "Ajouter des photos"
+      },
+      "dashboard": {
+        "title": "Mon tableau de bord",
+        "empty_tasks": "Aucune tâche assignée cette semaine",
+        "empty_walks": "Aucune promenade assignée cette semaine",
+        "empty_inventory": "Aucune alerte d'inventaire",
+        "overdue": "En retard",
+        "out_of_stock": "Rupture de stock",
+        "low_stock": "Stock faible",
+        "kpi": {
+          "task_count": "Tâches",
+          "overdue_count": "En retard",
+          "walk_count": "Promenades",
+          "in_progress_count": "En cours",
+          "low_stock_count": "Stock faible",
+          "out_of_stock_count": "Rupture de stock"
+        },
+        "my_workspaces": "Mes espaces personnels",
+        "shelters_scope": "Dans {{count}} refuges"
+      },
+      "bottom_nav": {
+        "home": "Accueil",
+        "search": "Rechercher",
+        "discover": "Explorer",
+        "team": "Équipe"
       }
     }
   },
@@ -2378,7 +2494,8 @@
       "delete": "Elimina",
       "complete": "Completa",
       "skip": "Salta",
-      "edit": "Modifica"
+      "edit": "Modifica",
+      "start": "Avvia"
     },
     "auth": {
       "already_registered": "Sei già un utente ?",
@@ -2527,7 +2644,8 @@
     "pages": {
       "home": "Home",
       "pet_sharing": "Mi vuoi ?",
-      "shelters": "Rifugi"
+      "shelters": "Rifugi",
+      "shelters_dashboard": "La mia dashboard"
     },
     "pets": {
       "accept_as": "Accetta come:",
@@ -2918,7 +3036,9 @@
         "deleted_ok": "Articolo eliminato",
         "edit": "Modifica",
         "save": "Salva",
-        "updated_ok": "Elemento aggiornato"
+        "updated_ok": "Elemento aggiornato",
+        "consume": "Consuma",
+        "restock": "Rifornisci"
       },
       "map": {
         "view": "Vista",
@@ -2985,6 +3105,31 @@
         "manage": "Gestione foto",
         "empty": "Nessuna foto ancora",
         "add": "Aggiungi foto"
+      },
+      "dashboard": {
+        "title": "La mia dashboard",
+        "empty_tasks": "Nessun task assegnato questa settimana",
+        "empty_walks": "Nessuna passeggiata assegnata questa settimana",
+        "empty_inventory": "Nessun avviso di inventario",
+        "overdue": "In ritardo",
+        "out_of_stock": "Esaurito",
+        "low_stock": "Scorta bassa",
+        "kpi": {
+          "task_count": "Task",
+          "overdue_count": "In ritardo",
+          "walk_count": "Passeggiate",
+          "in_progress_count": "In corso",
+          "low_stock_count": "Scorta bassa",
+          "out_of_stock_count": "Esauriti"
+        },
+        "my_workspaces": "I miei workspace personali",
+        "shelters_scope": "In {{count}} rifugi"
+      },
+      "bottom_nav": {
+        "home": "Home",
+        "search": "Cerca",
+        "discover": "Esplora",
+        "team": "Team"
       }
     }
   },
@@ -2999,7 +3144,8 @@
       "delete": "Удалить",
       "complete": "Complete",
       "skip": "Skip",
-      "edit": "Редактировать"
+      "edit": "Редактировать",
+      "start": "Начать"
     },
     "auth": {
       "already_registered": "Вы уже зарегистрированы?",
@@ -3107,7 +3253,8 @@
     "pages": {
       "home": "Главная",
       "pet_sharing": "Хочешь меня?",
-      "shelters": "Приюты"
+      "shelters": "Приюты",
+      "shelters_dashboard": "Моя панель"
     },
     "pets": {
       "accept_as": "Принять как:",
@@ -3515,7 +3662,9 @@
         "deleted_ok": "Item deleted",
         "edit": "Редактировать",
         "save": "Сохранить",
-        "updated_ok": "Товар обновлён"
+        "updated_ok": "Товар обновлён",
+        "consume": "Использовать",
+        "restock": "Пополнить"
       },
       "map": {
         "view": "View",
@@ -3584,6 +3733,31 @@
         "manage": "Управление фото",
         "empty": "Фото отсутствуют",
         "add": "Добавить фото"
+      },
+      "dashboard": {
+        "title": "Моя панель",
+        "empty_tasks": "На этой неделе задач не назначено",
+        "empty_walks": "На этой неделе прогулок не назначено",
+        "empty_inventory": "Нет предупреждений по складу",
+        "overdue": "Просрочено",
+        "out_of_stock": "Нет в наличии",
+        "low_stock": "Мало на складе",
+        "kpi": {
+          "task_count": "Задачи",
+          "overdue_count": "Просрочено",
+          "walk_count": "Прогулки",
+          "in_progress_count": "В процессе",
+          "low_stock_count": "Мало на складе",
+          "out_of_stock_count": "Нет в наличии"
+        },
+        "my_workspaces": "Мои личные рабочие пространства",
+        "shelters_scope": "В {{count}} приютах"
+      },
+      "bottom_nav": {
+        "home": "Главная",
+        "search": "Поиск",
+        "discover": "Обзор",
+        "team": "Команда"
       }
     }
   }

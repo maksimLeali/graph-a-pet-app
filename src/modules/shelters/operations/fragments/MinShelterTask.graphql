@@ -20,11 +20,19 @@ fragment MinShelterTask on ShelterTask {
 		first_name
 		last_name
 	}
+	assignee_shelter_people {
+		id
+		first_name
+		last_name
+	}
 	shelter_pet {
 		id
 		pet {
 			id
 			name
+			main_picture {
+				id
+			}
 		}
 	}
 }

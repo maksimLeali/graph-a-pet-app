@@ -9,7 +9,7 @@ import { IonHeader, IonToolbar, IonTitle } from "@ionic/react";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import { useCookies } from "react-cookie";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { Link } from "react-router-dom";
 
 import { CustodyLevel, UserRole } from "@types";
@@ -96,6 +96,8 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
     const [user, setUser] = useState<MinUserFragment | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const history = useHistory();
+    const location = useLocation();
+    const inShelterSection = location.pathname.startsWith("/shelters");
 
     // unread badge; poll so the count stays fresh while navigating
     const { data: unreadData } = useGetUnreadNotificationCountQuery({
@@ -249,6 +251,12 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
                     </BackBtn>
                     <IonTitle>{pageName}</IonTitle>
                 </IonToolbar>
+                <NotifBtn
+                    to={inShelterSection ? "/home" : "/shelters/dashboard"}
+                    aria-label={inShelterSection ? "Personal" : "Shelters"}
+                >
+                    <Icon name={inShelterSection ? "paw" : "home"} color="dark" size="22px" />
+                </NotifBtn>
                 <NotifBtn to="/notifications" aria-label="Notifications">
                     <Icon name="notifications" color="dark" size="22px" />
                     {unread > 0 && <NotifBadge>{unread > 99 ? "99+" : unread}</NotifBadge>}

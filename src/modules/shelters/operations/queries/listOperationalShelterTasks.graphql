@@ -1,0 +1,18 @@
+query listOperationalShelterTasks($shelter_id: ID!) {
+	listOperationalShelterTasks(shelter_id: $shelter_id) {
+		items {
+			...MinShelterTask
+		}
+		success
+		error {
+			code
+			message
+		}
+		pagination {
+			current_page
+			page_size
+			total_items
+			total_pages
+		}
+	}
+}

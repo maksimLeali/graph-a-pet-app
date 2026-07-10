@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
@@ -10,6 +10,7 @@ import { Icon } from "@components";
 import { RoleLevel, ShelterPersonStatus } from "@types";
 import { $color, $uw } from "@theme";
 import { WalkCard } from "../components/WalkCard";
+import { Avatar } from "../components/Avatar";
 import {
 	SelectWalkerModal,
 	type PickableMember,
@@ -35,6 +36,7 @@ const CAN_ASSIGN_ROLES: RoleLevel[] = [
 export const ShelterWalksList: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
+	const history = useHistory();
 	const { setPage, user } = useUserContext();
 	const { openModal, closeModal } = useModal();
 	const { walks, loading, error, refetch } = useShelterWalks(id);
@@ -163,12 +165,20 @@ export const ShelterWalksList: React.FC = () => {
 					<NeedList>
 						{needing.map((sp) => (
 							<NeedRow key={sp.id}>
-								<span>{sp.pet?.name ?? "-"}</span>
+								<NeedInfo>
+									<Avatar
+										size={32}
+										imageId={sp.pet?.main_picture?.id}
+										icon="paw"
+										color="medium"
+									/>
+									<span>{sp.pet?.name ?? "-"}</span>
+								</NeedInfo>
 								<PlanButton
 									type="button"
 									onClick={() => plan(sp.id)}
 								>
-									<Icon name="add" color="light" size="16px" />
+									<Icon name="add" color="light" size="15px" />
 									<span>{t("shelters.walks.plan")}</span>
 								</PlanButton>
 							</NeedRow>
@@ -183,6 +193,9 @@ export const ShelterWalksList: React.FC = () => {
 					<WalkCard
 						key={walk.id}
 						walk={walk}
+						onOpen={(wid) =>
+							history.push(`/shelters/detail/${id}/walks/${wid}`)
+						}
 						onStart={(wid) =>
 							run(
 								startWalk({ variables: { id: wid } }),
@@ -244,16 +257,29 @@ const NeedList = styled.div`
 `;
 
 const NeedRow = styled.div`
+	min-height: 56px;
+	box-sizing: border-box;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: ${$uw(1)};
-	padding: ${$uw(0.75)} ${$uw(1.25)};
-	border-radius: 12px;
-	background: rgba(var(--ion-color-warning-rgb), 0.12);
+	padding: ${$uw(0.75)} ${$uw(1)};
+	border-radius: 14px;
+	background: rgba(245, 196, 24, 0.1);
+`;
+
+const NeedInfo = styled.div`
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+	gap: ${$uw(1)};
 	> span {
 		font-size: 1.5rem;
 		font-weight: 600;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 `;
 

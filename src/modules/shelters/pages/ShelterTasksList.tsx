@@ -54,6 +54,9 @@ export const ShelterTasksList: React.FC = () => {
 					<TaskCard
 						key={task.id}
 						task={task}
+						onOpen={(tid) =>
+							history.push(`/shelters/detail/${id}/tasks/${tid}`)
+						}
 						onComplete={(tid) =>
 							run(
 								complete({ variables: { id: tid } }),
