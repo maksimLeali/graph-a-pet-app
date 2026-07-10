@@ -35,8 +35,14 @@ export const Image2x: React.FC<props> = ({
             return;
         }
 
+        // quantizza a step di 8px: assorbe il jitter di sub-pixel del layout
+        // (es. scrollbar/dvh dentro modali) che altrimenti rigenera src ad ogni resize
+        // e fa oscillare all'infinito l'altezza del contenitore
+        const STEP = 8;
         const updateSize = () => {
-            const { offsetWidth: width, offsetHeight: height } = element;
+            const { offsetWidth, offsetHeight } = element;
+            const width = Math.ceil(offsetWidth / STEP) * STEP;
+            const height = Math.ceil(offsetHeight / STEP) * STEP;
             setDimensions((prev) =>
                 prev.width === width && prev.height === height
                     ? prev
@@ -72,9 +78,9 @@ export const Image2x: React.FC<props> = ({
         }`;
         setSrc(srcTemp);
         setSrc2x(
-            `${baseUrl}/${width * 2}x${height * 2}${fit ? "/fit" : ""}$
-				parameters.length > 0 ? "?" + parameters.join("&") : ""
-			}`,
+            `${baseUrl}/${width * 2}x${height * 2}${fit ? "/fit" : ""}${
+                parameters.length > 0 ? "?" + parameters.join("&") : ""
+            }`,
         );
     }, [dimensions.height, dimensions.width, fit, id, webpSupported]);
     return (

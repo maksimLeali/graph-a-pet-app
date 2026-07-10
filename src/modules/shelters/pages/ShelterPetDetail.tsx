@@ -6,9 +6,9 @@ import dayjs from "dayjs";
 
 import { IonContent } from "@ionic/react";
 import { useUserContext } from "@contexts";
-import { Icon } from "@components";
+import { Icon, WalkRatingsSummaryCard } from "@components";
 import { I18NKey } from "@i18n";
-import { BoxStatus } from "@types";
+import { BoxStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
 
 import { PetDetailBody } from "../../pets/pages/PetProfile";
@@ -21,6 +21,10 @@ import {
 	useGetCurrentBoxForPetLazyQuery,
 	GetCurrentBoxForPetQuery,
 } from "../operations/__generated__/getCurrentBoxForPet.generated";
+import { useListShelterWalksQuery } from "../operations/__generated__/listShelterWalks.generated";
+import { useGetLatestPetWeightQuery } from "../../pets/operations/__generated__/getLatestPetWeight.generated";
+
+type WalkRatingAvg = { type: WalkRatingType; rating: number };
 
 type FullPet = NonNullable<GetFullPetQuery["getPet"]["pet"]>;
 type CurrentBox = NonNullable<
@@ -83,6 +87,44 @@ export const ShelterPetDetail: React.FC = () => {
 			setBox(getCurrentBoxForPet?.box ?? null),
 	});
 
+	// media dei rating delle passeggiate del canile per questo shelter_pet
+	// (stesso calcolo/UI del pet personale in PetProfile.tsx)
+	const { data: walksData } = useListShelterWalksQuery({
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				filters: { fixed: [{ key: "shelter_pet_id", value: petId }] },
+			},
+		},
+	});
+	const walkRatings: WalkRatingAvg[] = (() => {
+		const items = (walksData?.listShelterWalks?.items ?? []).filter(
+			(w): w is NonNullable<typeof w> => !!w
+		);
+		const acc = new Map<WalkRatingType, { sum: number; count: number }>();
+		for (const w of items) {
+			for (const r of (w.ratings ?? []).filter(
+				(r): r is NonNullable<typeof r> => !!r
+			)) {
+				const cur = acc.get(r.type) ?? { sum: 0, count: 0 };
+				acc.set(r.type, { sum: cur.sum + r.rating, count: cur.count + 1 });
+			}
+		}
+		return Object.values(WalkRatingType)
+			.filter((type) => acc.has(type))
+			.map((type) => {
+				const { sum, count } = acc.get(type)!;
+				return { type, rating: Math.round((sum / count) * 10) / 10 };
+			});
+	})();
+
+	const { data: weightData } = useGetLatestPetWeightQuery({
+		skip: !pet?.id,
+		fetchPolicy: "cache-and-network",
+		variables: { pet_id: pet?.id as string },
+	});
+	const latestWeight = weightData?.getLatestPetWeight?.weight;
+
 	const load = () => {
 		getShelterPet({ variables: { id: petId } });
 		getCurrentBox({ variables: { shelter_pet_id: petId } });
@@ -131,6 +173,39 @@ export const ShelterPetDetail: React.FC = () => {
 				<Icon name="mapOutline" color="primary" />
 				<span>{t("shelters.placement.open_map")}</span>
 			</MapButton>
+
+			{walkRatings.length > 0 && (
+				<RatingsBlock>
+					<PlacementTitle>{t("events.walk")}</PlacementTitle>
+					<WalkRatingsSummaryCard ratings={walkRatings} />
+					<StatsLink
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${id}/pet/${petId}/walking-stats`)
+						}
+					>
+						{t("stats.view_link")}
+					</StatsLink>
+				</RatingsBlock>
+			)}
+
+			<RatingsBlock>
+				<PlacementTitle>{t("stats.weight")}</PlacementTitle>
+				<PlacementRow>
+					<PlacementLabel>{t("pets.weight")}</PlacementLabel>
+					<PlacementValue>
+						{latestWeight ? `${latestWeight.weight_kg} Kg` : "—"}
+					</PlacementValue>
+				</PlacementRow>
+				<StatsLink
+					type="button"
+					onClick={() =>
+						history.push(`/shelters/detail/${id}/pet/${petId}/weight-stats`)
+					}
+				>
+					{t("stats.weight_view_link")}
+				</StatsLink>
+			</RatingsBlock>
 		</Placement>
 	);
 
@@ -231,6 +306,28 @@ const StatusChip = styled.span<{ $c: string }>`
 	padding: ${$uw(0.4)} ${$uw(1)};
 	border-radius: 999px;
 	background: ${({ $c }) => $c};
+`;
+
+const RatingsBlock = styled.div`
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: ${$uw(1)};
+`;
+
+const StatsLink = styled.button`
+	width: 100%;
+	margin-top: ${$uw(0.75)};
+	padding: 0;
+	border: none;
+	background: none;
+	text-align: center;
+	color: ${$color("primary")};
+	text-decoration: underline;
+	font-size: 1.4rem;
+	font-weight: 600;
+	cursor: pointer;
 `;
 
 const PlacementEmpty = styled.div`

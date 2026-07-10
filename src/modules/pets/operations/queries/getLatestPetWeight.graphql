@@ -1,0 +1,14 @@
+query getLatestPetWeight($pet_id: ID!) {
+	getLatestPetWeight(pet_id: $pet_id) {
+		success
+		error {
+			code
+			message
+		}
+		weight {
+			id
+			created_at
+			weight_kg
+		}
+	}
+}

@@ -1,0 +1,13 @@
+query getPetWeightStats($pet_id: ID!, $period: StatsPeriod!) {
+	getPetWeightStats(pet_id: $pet_id, period: $period) {
+		success
+		error {
+			code
+			message
+		}
+		chart {
+			labels
+			data
+		}
+	}
+}

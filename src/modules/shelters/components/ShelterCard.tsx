@@ -17,26 +17,32 @@ export const ShelterCard: React.FC<Props> = ({ shelter, onClick }) => {
 		.filter(Boolean)
 		.join(", ");
 	const isPersonal = shelter.type === ShelterType.PersonalWorkspace;
+	const isPrivate = shelter.visibility === ShelterVisibility.Private;
+	const isVerified = shelter.verification_status === ShelterVerificationStatus.Verified;
 	return (
 		<Card role="button" tabIndex={0} onClick={onClick}>
 			<Info>
 				<Name>{shelter.name}</Name>
 				{address && <Address>{address}</Address>}
-				{(isPersonal ||
-					shelter.verification_status !== ShelterVerificationStatus.Verified ||
-					shelter.visibility === ShelterVisibility.Private) && (
-					<Badges>
-						{isPersonal && (
-							<Chip label={t("shelters.badges.personal_workspace")} color="medium" />
-						)}
-						{shelter.verification_status !== ShelterVerificationStatus.Verified && (
-							<Chip label={t("shelters.badges.unverified")} color="warning" />
-						)}
-						{shelter.visibility === ShelterVisibility.Private && (
-							<Chip label={t("shelters.badges.private")} color="dark" />
-						)}
-					</Badges>
-				)}
+				<Badges>
+					{isPersonal && (
+						<Chip className="chip" label={t("shelters.badges.personal_workspace")} color="medium" />
+					)}
+					<VisibilityBadge aria-label={isPrivate ? "private" : "public"} $private={isPrivate}>
+						<Icon
+							name={isPrivate ? "eyeOffOutline" : "eyeOutline"}
+							color={isPrivate ? "danger" : "white"}
+							size="16px"
+						/>
+					</VisibilityBadge>
+					<VerifiedBadge aria-label={isVerified ? "verified" : "unverified"} $verified={isVerified}>
+						<Icon
+							name={isVerified ? "checkmarkDoneCircle" : "checkmarkDoneCircleOutline"}
+							color={isVerified ? "success" : "medium"}
+							size="16px"
+						/>
+					</VerifiedBadge>
+				</Badges>
 			</Info>
 			<House>
 				<Paw name="paw" color="light" />
@@ -91,12 +97,13 @@ const Address = styled.span`
 const Badges = styled.div`
 	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
 	gap: ${$uw(0.5)};
 	margin-top: ${$uw(0.25)};
-	> div {
+	> .chip {
 		padding: 2px 12px;
 	}
-	> div span {
+	> .chip span {
 		font-size: 1.1rem;
 	}
 `;
@@ -117,4 +124,26 @@ const House = styled.div`
 const Paw = styled(Icon)`
 	width: ${$uw(1.9)};
 	height: ${$uw(1.9)};
+`;
+
+const VisibilityBadge = styled.div<{ $private: boolean }>`
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: ${({ $private }) => ($private ? $color("dark") : $color("primary"))};
+`;
+
+const VerifiedBadge = styled.div<{ $verified: boolean }>`
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: ${({ $verified }) => ($verified ? $color("success-tint") : $color("step-100"))};
 `;

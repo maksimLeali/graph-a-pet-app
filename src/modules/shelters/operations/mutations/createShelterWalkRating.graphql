@@ -1,0 +1,14 @@
+mutation createShelterWalkRating($data: ShelterWalkRatingCreate!) {
+	createShelterWalkRating(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		walk_rating {
+			id
+			type
+			rating
+		}
+	}
+}

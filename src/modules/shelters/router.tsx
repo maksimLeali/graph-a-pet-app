@@ -19,6 +19,8 @@ import {
 	ShelterAnimals,
 	ShelterBoxDetail,
 	ShelterPetDetail,
+	ShelterPetWalkingStats,
+	ShelterPetWeightStats,
 	ShelterPhotos,
 	ShelterOwnership,
 	ShelterVerification,
@@ -139,6 +141,16 @@ export const SheltersRouter = () => {
 			<Route exact path={`${path}/detail/:id/box/:boxId`}>
 				<RequireShelterMember>
 					<ShelterBoxDetail />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/pet/:petId/walking-stats`}>
+				<RequireShelterMember>
+					<ShelterPetWalkingStats />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/pet/:petId/weight-stats`}>
+				<RequireShelterMember>
+					<ShelterPetWeightStats />
 				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/pet/:petId`}>

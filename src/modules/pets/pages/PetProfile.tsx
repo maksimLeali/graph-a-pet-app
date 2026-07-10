@@ -31,6 +31,7 @@ import {
 	Option,
 	AppointmentsList,
 	MultiImageUploader,
+	WalkRatingsSummaryCard,
 } from "@components";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { BreedSeletor } from "../components";
@@ -104,14 +105,6 @@ type detailProps = {
 };
 
 type EditableField = "name" | "gender" | "birthday" | "weight_kg" | "coat_length";
-
-const walkRatingLabels: Record<WalkRatingType, string> = {
-	[WalkRatingType.Overall]: "Generale",
-	[WalkRatingType.Behavior]: "Comportamento",
-	[WalkRatingType.Calm]: "Calma",
-	[WalkRatingType.Aggression]: "Aggressività",
-	[WalkRatingType.LeashPulling]: "Tiro al guinzaglio",
-};
 
 type WalkRatingAvg = { type: WalkRatingType; rating: number };
 
@@ -491,6 +484,12 @@ export const PetDetailBody: React.FC<detailProps> = ({
 						)
 					}
 				/>
+				<StatsLink
+					type="button"
+					onClick={() => history.push(`/pets/detail/${pet.id}/weight-stats`)}
+				>
+					{t("stats.weight_view_link")}
+				</StatsLink>
 				<Row
 					full
 					label={t("pets.breed")}
@@ -542,17 +541,13 @@ export const PetDetailBody: React.FC<detailProps> = ({
 			{walkRatings.length > 0 && (
 				<RatingsSection>
 					<SectionTitle>{t("events.walk")}</SectionTitle>
-					<RatingsGrid>
-						{walkRatings.map((r) => (
-							<RatingItem key={r.type}>
-								<RatingName>{walkRatingLabels[r.type]}</RatingName>
-								<RatingValue>
-									<Icon name="star" color="primary" />
-									<span>{r.rating}</span>
-								</RatingValue>
-							</RatingItem>
-						))}
-					</RatingsGrid>
+					<WalkRatingsSummaryCard ratings={walkRatings} />
+					<StatsLink
+						type="button"
+						onClick={() => history.push(`/pets/detail/${pet.id}/walking-stats`)}
+					>
+						{t("stats.view_link")}
+					</StatsLink>
 				</RatingsSection>
 			)}
 
@@ -1084,42 +1079,18 @@ const RatingsSection = styled.div`
 	padding: 0 12px ${$uw(4)};
 `;
 
-const RatingsGrid = styled.div`
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: ${$uw(1)} ${$uw(2)};
-	padding: ${$uw(1.25)};
-	border-radius: 14px;
-	background: ${$color("background")};
-	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.2);
-`;
-
-const RatingItem = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: ${$uw(1)};
-	padding: ${$uw(0.5)} 0;
-	border-bottom: 1px solid rgba(var(--ion-color-primary-rgb), 0.12);
-`;
-
-const RatingName = styled.span`
-	font-size: 1.5rem;
-	color: ${$color("medium")};
-	word-break: break-word;
-`;
-
-const RatingValue = styled.span`
-	display: flex;
-	align-items: center;
-	gap: ${$uw(0.5)};
-	font-size: 1.8rem;
-	font-weight: 700;
-	white-space: nowrap;
-	> .icon {
-		width: ${$uw(1.75)};
-		height: ${$uw(1.75)};
-	}
+const StatsLink = styled.button`
+	width: 100%;
+	margin-top: ${$uw(0.75)};
+	padding: 0;
+	border: none;
+	background: none;
+	text-align: center;
+	color: ${$color("primary")};
+	text-decoration: underline;
+	font-size: 1.4rem;
+	font-weight: 600;
+	cursor: pointer;
 `;
 
 const EventsSection = styled.div`

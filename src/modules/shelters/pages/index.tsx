@@ -15,6 +15,8 @@ export { ShelterBoxes } from "./ShelterBoxes";
 export { ShelterAnimals } from "./ShelterAnimals";
 export { ShelterBoxDetail } from "./ShelterBoxDetail";
 export { ShelterPetDetail } from "./ShelterPetDetail";
+export { ShelterPetWalkingStats } from "./ShelterPetWalkingStats";
+export { ShelterPetWeightStats } from "./ShelterPetWeightStats";
 export { ShelterPhotos } from "./ShelterPhotos";
 export { ShelterOwnership } from "./ShelterOwnership";
 export { ShelterVerification } from "./ShelterVerification";

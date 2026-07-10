@@ -83,19 +83,21 @@ export const AssignPetsModal: React.FC<Props> = ({ pets, max, onChange }) => {
 								tabIndex={0}
 								onClick={() => toggle(p.id)}
 							>
-								<ImgWrap
-									$border={
-										useCustomColors
-											? p.borderColor ?? undefined
-											: undefined
-									}
-									className={isSel ? "sel" : ""}
-								>
-									{p.pictureId ? (
-										<Image2x id={p.pictureId} />
-									) : (
-										<Fill />
-									)}
+								<Thumb>
+									<ImgWrap
+										$border={
+											useCustomColors
+												? p.borderColor ?? undefined
+												: undefined
+										}
+										className={isSel ? "sel" : ""}
+									>
+										{p.pictureId ? (
+											<Image2x id={p.pictureId} />
+										) : (
+											<Fill />
+										)}
+									</ImgWrap>
 									{isSel && (
 										<Badge
 											onClick={(e) => {
@@ -106,7 +108,7 @@ export const AssignPetsModal: React.FC<Props> = ({ pets, max, onChange }) => {
 											<Icon name="close" color="light" />
 										</Badge>
 									)}
-								</ImgWrap>
+								</Thumb>
 								<Name>{p.name}</Name>
 							</Card>
 						);
@@ -188,14 +190,18 @@ const Card = styled.div`
 	}
 `;
 
-const ImgWrap = styled.div<{ $border?: string }>`
+const Thumb = styled.div`
 	position: relative;
+	width: 100%;
+`;
+
+const ImgWrap = styled.div<{ $border?: string }>`
 	width: 100%;
 	aspect-ratio: 1/1;
 	padding: 3px;
 	box-sizing: border-box;
 	border-radius: 999px;
-	overflow: visible;
+	overflow: hidden;
 	background: ${({ $border }) =>
 		$border ? $color($border) : $color("primary")};
 	> .img2x,

@@ -19,7 +19,7 @@ import { useCreateWalkRatingMutation } from "../operations/__generated__/createW
 import { useCreateCureMutation } from "../operations/__generated__/createCure.generated";
 
 import { useUserContext, useModal } from "@contexts";
-import { AppointmentsList, CustomCalendar } from "@components";
+import { AppointmentsList, CustomCalendar, Icon } from "@components";
 import { AddEventFormStep1, AddEventFormStep2 } from "../components/addEventForm";
 import {
 	FrequencyUnit,
@@ -27,7 +27,6 @@ import {
 	TreatmentType,
 	WalkRatingType,
 } from "@types";
-import { $color, $uw } from "@theme";
 
 export const CalendarEvents: React.FC = () => {
 	const { setPage, refetchDashboard} = useUserContext();
@@ -345,9 +344,14 @@ export const CalendarEvents: React.FC = () => {
 					);
 				}}
 			/>
-			<AddEventCta onClick={openAddCalendarModal}>
-				{t("events.add_event")}
-			</AddEventCta>
+			<AddEventCtaRow>
+				<AddEventCta onClick={openAddCalendarModal} type="button">
+					<AddEventIcon>
+						<Icon name="add" size="15px" color="#08251a" />
+					</AddEventIcon>
+					<AddEventLabel>{t("events.add_event")}</AddEventLabel>
+				</AddEventCta>
+			</AddEventCtaRow>
 			{events && (
 				<AppointmentsList
 					loading={loading}
@@ -358,10 +362,45 @@ export const CalendarEvents: React.FC = () => {
 	);
 };
 
-const AddEventCta = styled.div`
-	width: 100%;
-	color: ${$color("primary")};
-	text-decoration: underline;
-	text-align: end;
-	padding: 0 ${$uw(2)};
+const AddEventCtaRow = styled.div`
+	display: flex;
+	justify-content: flex-end;
+	padding: 4px 0 22px;
+`;
+
+const AddEventCta = styled.button`
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 18px 10px 14px;
+	border: none;
+	border-radius: 999px;
+	background: #22c55e;
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+	&:hover {
+		background: #1eaf51;
+	}
+	&:active {
+		background: #1a9a48;
+	}
+`;
+
+const AddEventIcon = styled.span`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: rgba(8, 37, 26, 0.15);
+	color: #08251a;
+	font-size: 15px;
+`;
+
+const AddEventLabel = styled.span`
+	font-size: 14px;
+	font-weight: 800;
+	color: #08251a;
+	letter-spacing: 0.2px;
 `;

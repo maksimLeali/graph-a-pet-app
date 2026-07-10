@@ -7,7 +7,7 @@ import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
 import { Icon } from "@components";
-import { RoleLevel, ShelterPersonStatus } from "@types";
+import { RoleLevel, ShelterPersonStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
 import { WalkCard } from "../components/WalkCard";
 import { Avatar } from "../components/Avatar";
@@ -16,8 +16,13 @@ import {
 	type PickableMember,
 	type WalkerSelection,
 } from "../components/SelectWalkerModal";
+import {
+	ShelterWalkRatingModal,
+	type ShelterWalkRatings,
+} from "../components/ShelterWalkRatingModal";
 import { useShelterWalks } from "../hooks/useShelterWalks";
 import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import { useWeightUpdatePrompt } from "../hooks/useWeightUpdatePrompt";
 import { useListPetsNeedingWalkQuery } from "../operations/__generated__/listPetsNeedingWalk.generated";
 import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
 import { useListShelterPeopleQuery } from "../operations/__generated__/listShelterPeople.generated";
@@ -26,6 +31,7 @@ import { useStartShelterWalkMutation } from "../operations/__generated__/startSh
 import { useCompleteShelterWalkMutation } from "../operations/__generated__/completeShelterWalk.generated";
 import { useCancelShelterWalkMutation } from "../operations/__generated__/cancelShelterWalk.generated";
 import { useDeleteShelterWalkMutation } from "../operations/__generated__/deleteShelterWalk.generated";
+import { useCreateShelterWalkRatingMutation } from "../operations/__generated__/createShelterWalkRating.generated";
 
 const CAN_ASSIGN_ROLES: RoleLevel[] = [
 	RoleLevel.Owner,
@@ -39,6 +45,7 @@ export const ShelterWalksList: React.FC = () => {
 	const history = useHistory();
 	const { setPage, user } = useUserContext();
 	const { openModal, closeModal } = useModal();
+	const { maybePromptWeightUpdate } = useWeightUpdatePrompt();
 	const { walks, loading, error, refetch } = useShelterWalks(id);
 	const { role } = useMyShelterRole(id);
 	const canAssign = !!role && CAN_ASSIGN_ROLES.includes(role);
@@ -100,6 +107,7 @@ export const ShelterWalksList: React.FC = () => {
 	const [createWalk] = useCreateShelterWalkMutation({ onError });
 	const [startWalk] = useStartShelterWalkMutation({ onError });
 	const [completeWalk] = useCompleteShelterWalkMutation({ onError });
+	const [createWalkRating] = useCreateShelterWalkRatingMutation({ onError });
 	const [cancelWalk] = useCancelShelterWalkMutation({ onError });
 	const [deleteWalk] = useDeleteShelterWalkMutation({ onError });
 
@@ -148,6 +156,48 @@ export const ShelterWalksList: React.FC = () => {
 					members={members}
 					defaultSelection={defaultSelection}
 					onChange={(selection) => (sel.current = selection)}
+				/>
+			),
+		});
+	};
+
+	// completa la walk + apre la modale di valutazione (stessi criteri delle
+	// passeggiate dei pet personali), poi salva i rating compilati e infine,
+	// se il peso del cane non è aggiornato da più di una settimana, chiede
+	// se aggiornarlo
+	const complete = (walkId: string) => {
+		const walk = walks.find((w) => w.id === walkId);
+		const petId = walk?.shelter_pet?.pet?.id;
+		const petName = walk?.shelter_pet?.pet?.name ?? "";
+		const ratings = { current: {} as ShelterWalkRatings };
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: async () => {
+				await completeWalk({ variables: { id: walkId } });
+				await Promise.all(
+					Object.entries(ratings.current)
+						.filter(([, rating]) => !!rating)
+						.map(([type, rating]) =>
+							createWalkRating({
+								variables: {
+									data: {
+										walk_id: walkId,
+										type: type as WalkRatingType,
+										rating: rating!,
+									},
+								},
+							})
+						)
+				);
+				toast.success(t("shelters.walks.completed_ok"));
+				closeModal();
+				reloadAll();
+				if (petId) maybePromptWeightUpdate(petId, petName);
+			},
+			children: (
+				<ShelterWalkRatingModal
+					onChange={(next) => (ratings.current = next)}
 				/>
 			),
 		});
@@ -202,12 +252,7 @@ export const ShelterWalksList: React.FC = () => {
 								"shelters.walks.started_ok"
 							)
 						}
-						onComplete={(wid) =>
-							run(
-								completeWalk({ variables: { id: wid } }),
-								"shelters.walks.completed_ok"
-							)
-						}
+						onComplete={(wid) => complete(wid)}
 						onCancel={(wid) =>
 							run(
 								cancelWalk({ variables: { id: wid } }),

@@ -120,6 +120,29 @@
       "shelters": "Tierheime",
       "shelters_dashboard": "Mein Dashboard"
     },
+    "stats": {
+      "title": "Walking stats",
+      "empty": "No ratings available",
+      "period": {
+        "weekly": "Week",
+        "monthly": "Month",
+        "yearly": "Year"
+      },
+      "period_range": {
+        "weekly": "Last 12 weeks",
+        "monthly": "Last 12 months",
+        "yearly": "Last 5 years"
+      },
+      "view_link": "View walking stats",
+      "weight": "Weight (kg)",
+      "weight_view_link": "View weight stats",
+      "add_weight": "Add weight",
+      "weight_updated_ok": "Weight updated",
+      "update_weight_title": "Update weight?",
+      "update_weight_msg": "You haven't logged {{name}}'s weight in over a week. Update it now?",
+      "update_weight_cta": "Update weight",
+      "skip": "Skip"
+    },
     "pets": {
       "accept_as": "Akzeptieren als:",
       "add_pet": "Haustier hinzufügen",
@@ -494,7 +517,17 @@
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
         "empty": "No walks",
-        "assign_to": "Zuweisen an"
+        "assign_to": "Zuweisen an",
+        "rate_walk": "Rate the walk",
+        "manual": "Manual",
+        "edit_duration": "Edit duration",
+        "quarter_hour": "Quarter hour",
+        "half_hour": "Half hour",
+        "three_quarter_hour": "Three quarters hour",
+        "full_hour": "One hour",
+        "custom_minutes": "Minutes",
+        "set_duration": "Set duration",
+        "duration_updated_ok": "Duration updated"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -741,6 +774,29 @@
       "pet_sharing": "Do you want me?",
       "shelters": "Shelters",
       "shelters_dashboard": "My dashboard"
+    },
+    "stats": {
+      "title": "Walking stats",
+      "empty": "No ratings available",
+      "period": {
+        "weekly": "Week",
+        "monthly": "Month",
+        "yearly": "Year"
+      },
+      "period_range": {
+        "weekly": "Last 12 weeks",
+        "monthly": "Last 12 months",
+        "yearly": "Last 5 years"
+      },
+      "view_link": "View walking stats",
+      "weight": "Weight (kg)",
+      "weight_view_link": "View weight stats",
+      "add_weight": "Add weight",
+      "weight_updated_ok": "Weight updated",
+      "update_weight_title": "Update weight?",
+      "update_weight_msg": "You haven't logged {{name}}'s weight in over a week. Update it now?",
+      "update_weight_cta": "Update weight",
+      "skip": "Skip"
     },
     "pets": {
       "accept_as": "Accept as:",
@@ -1124,7 +1180,17 @@
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
         "empty": "No walks",
-        "assign_to": "Assign to"
+        "assign_to": "Assign to",
+        "rate_walk": "Rate the walk",
+        "manual": "Manual",
+        "edit_duration": "Edit duration",
+        "quarter_hour": "Quarter hour",
+        "half_hour": "Half hour",
+        "three_quarter_hour": "Three quarters hour",
+        "full_hour": "One hour",
+        "custom_minutes": "Minutes",
+        "set_duration": "Set duration",
+        "duration_updated_ok": "Duration updated"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -1367,6 +1433,29 @@
       "pet_sharing": "¿Me quieres?",
       "shelters": "Refugios",
       "shelters_dashboard": "Mi panel"
+    },
+    "stats": {
+      "title": "Walking stats",
+      "empty": "No ratings available",
+      "period": {
+        "weekly": "Week",
+        "monthly": "Month",
+        "yearly": "Year"
+      },
+      "period_range": {
+        "weekly": "Last 12 weeks",
+        "monthly": "Last 12 months",
+        "yearly": "Last 5 years"
+      },
+      "view_link": "View walking stats",
+      "weight": "Weight (kg)",
+      "weight_view_link": "View weight stats",
+      "add_weight": "Add weight",
+      "weight_updated_ok": "Weight updated",
+      "update_weight_title": "Update weight?",
+      "update_weight_msg": "You haven't logged {{name}}'s weight in over a week. Update it now?",
+      "update_weight_cta": "Update weight",
+      "skip": "Skip"
     },
     "pets": {
       "accept_as": "Aceptar como:",
@@ -1742,7 +1831,17 @@
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
         "empty": "No walks",
-        "assign_to": "Asignar a"
+        "assign_to": "Asignar a",
+        "rate_walk": "Rate the walk",
+        "manual": "Manual",
+        "edit_duration": "Edit duration",
+        "quarter_hour": "Quarter hour",
+        "half_hour": "Half hour",
+        "three_quarter_hour": "Three quarters hour",
+        "full_hour": "One hour",
+        "custom_minutes": "Minutes",
+        "set_duration": "Set duration",
+        "duration_updated_ok": "Duration updated"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -1985,6 +2084,29 @@
       "pet_sharing": "Voulez-vous de moi?",
       "shelters": "Refuges",
       "shelters_dashboard": "Mon tableau de bord"
+    },
+    "stats": {
+      "title": "Walking stats",
+      "empty": "No ratings available",
+      "period": {
+        "weekly": "Week",
+        "monthly": "Month",
+        "yearly": "Year"
+      },
+      "period_range": {
+        "weekly": "Last 12 weeks",
+        "monthly": "Last 12 months",
+        "yearly": "Last 5 years"
+      },
+      "view_link": "View walking stats",
+      "weight": "Weight (kg)",
+      "weight_view_link": "View weight stats",
+      "add_weight": "Add weight",
+      "weight_updated_ok": "Weight updated",
+      "update_weight_title": "Update weight?",
+      "update_weight_msg": "You haven't logged {{name}}'s weight in over a week. Update it now?",
+      "update_weight_cta": "Update weight",
+      "skip": "Skip"
     },
     "pets": {
       "accept_as": "Accepter en tant que:",
@@ -2360,7 +2482,17 @@
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
         "empty": "No walks",
-        "assign_to": "Assigner à"
+        "assign_to": "Assigner à",
+        "rate_walk": "Rate the walk",
+        "manual": "Manual",
+        "edit_duration": "Edit duration",
+        "quarter_hour": "Quarter hour",
+        "half_hour": "Half hour",
+        "three_quarter_hour": "Three quarters hour",
+        "full_hour": "One hour",
+        "custom_minutes": "Minutes",
+        "set_duration": "Set duration",
+        "duration_updated_ok": "Duration updated"
       },
       "categories": {
         "food_dry": "Dry food",
@@ -2646,6 +2778,29 @@
       "pet_sharing": "Mi vuoi ?",
       "shelters": "Rifugi",
       "shelters_dashboard": "La mia dashboard"
+    },
+    "stats": {
+      "title": "Andamento passeggiate",
+      "empty": "Nessun rating disponibile",
+      "period": {
+        "weekly": "Settimana",
+        "monthly": "Mese",
+        "yearly": "Anno"
+      },
+      "period_range": {
+        "weekly": "Ultime 12 settimane",
+        "monthly": "Ultimi 12 mesi",
+        "yearly": "Ultimi 5 anni"
+      },
+      "view_link": "Vedi andamento passeggiate",
+      "weight": "Peso (kg)",
+      "weight_view_link": "Vedi andamento peso",
+      "add_weight": "Aggiungi peso",
+      "weight_updated_ok": "Peso aggiornato",
+      "update_weight_title": "Aggiornare il peso?",
+      "update_weight_msg": "Non aggiorni il peso di {{name}} da più di una settimana. Vuoi farlo ora?",
+      "update_weight_cta": "Aggiorna peso",
+      "skip": "Salta"
     },
     "pets": {
       "accept_as": "Accetta come:",
@@ -3012,7 +3167,17 @@
         "cancelled_ok": "Passeggiata annullata",
         "deleted_ok": "Passeggiata eliminata",
         "empty": "Nessuna passeggiata",
-        "assign_to": "Assegna a"
+        "assign_to": "Assegna a",
+        "rate_walk": "Valuta la passeggiata",
+        "manual": "Manuale",
+        "edit_duration": "Modifica durata",
+        "quarter_hour": "Un quarto d'ora",
+        "half_hour": "Mezz'ora",
+        "three_quarter_hour": "Tre quarti d'ora",
+        "full_hour": "Un'ora",
+        "custom_minutes": "Minuti",
+        "set_duration": "Imposta durata",
+        "duration_updated_ok": "Durata aggiornata"
       },
       "categories": {
         "food_dry": "Cibo secco",
@@ -3255,6 +3420,29 @@
       "pet_sharing": "Хочешь меня?",
       "shelters": "Приюты",
       "shelters_dashboard": "Моя панель"
+    },
+    "stats": {
+      "title": "Walking stats",
+      "empty": "No ratings available",
+      "period": {
+        "weekly": "Week",
+        "monthly": "Month",
+        "yearly": "Year"
+      },
+      "period_range": {
+        "weekly": "Last 12 weeks",
+        "monthly": "Last 12 months",
+        "yearly": "Last 5 years"
+      },
+      "view_link": "View walking stats",
+      "weight": "Weight (kg)",
+      "weight_view_link": "View weight stats",
+      "add_weight": "Add weight",
+      "weight_updated_ok": "Weight updated",
+      "update_weight_title": "Update weight?",
+      "update_weight_msg": "You haven't logged {{name}}'s weight in over a week. Update it now?",
+      "update_weight_cta": "Update weight",
+      "skip": "Skip"
     },
     "pets": {
       "accept_as": "Принять как:",
@@ -3638,7 +3826,17 @@
         "cancelled_ok": "Walk cancelled",
         "deleted_ok": "Walk deleted",
         "empty": "No walks",
-        "assign_to": "Назначить"
+        "assign_to": "Назначить",
+        "rate_walk": "Rate the walk",
+        "manual": "Manual",
+        "edit_duration": "Edit duration",
+        "quarter_hour": "Quarter hour",
+        "half_hour": "Half hour",
+        "three_quarter_hour": "Three quarters hour",
+        "full_hour": "One hour",
+        "custom_minutes": "Minutes",
+        "set_duration": "Set duration",
+        "duration_updated_ok": "Duration updated"
       },
       "categories": {
         "food_dry": "Dry food",

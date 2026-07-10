@@ -11,8 +11,9 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { PetItem } from "../components/PetItem";
+import { Icon } from "@components";
 import { useUserContext } from "@contexts";
-import { $color, $cssTRBL, $uw } from "@theme";
+import { $cssTRBL, $uw } from "@theme";
 import { useGetOrCreateLazyQuery } from "../../home/operations/__generated__/getOrCreateCode.generated";
 
 export const PetsList: React.FC = () => {
@@ -91,11 +92,16 @@ export const PetsList: React.FC = () => {
                         />
                     );
                 })}
-                <AddPetCta
-                    to={ownedPets.length == 0 ? "/pets/new" : "/pets/new/step1"}
-                >
-                    {t("pets.add_pet")}
-                </AddPetCta>
+                <AddPetCtaRow>
+                    <AddPetCta
+                        to={ownedPets.length == 0 ? "/pets/new" : "/pets/new/step1"}
+                    >
+                        <AddPetIcon>
+                            <Icon name="add" size="15px" color="#08251a" />
+                        </AddPetIcon>
+                        <AddPetLabel>{t("pets.add_pet")}</AddPetLabel>
+                    </AddPetCta>
+                </AddPetCtaRow>
                 <h2>{t("pets.pet_list_page.on_loan")}</h2>
                 {loanPets?.length > 0 ? (
                     loanPets.map((pet, i) => {
@@ -126,11 +132,46 @@ const List = styled.div`
     }
 `;
 
+const AddPetCtaRow = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    padding: 4px 0 22px;
+`;
+
 const AddPetCta = styled(Link)`
-    width: 100%;
-    display: block;
-    color: ${$color("primary")};
-    text-decoration: underline;
-    text-align: end;
-    padding: ${$cssTRBL(0, 2, 1, 2)};
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px 10px 14px;
+    border: none;
+    border-radius: 999px;
+    background: #22c55e;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+    &:hover {
+        background: #1eaf51;
+    }
+    &:active {
+        background: #1a9a48;
+    }
+`;
+
+const AddPetIcon = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(8, 37, 26, 0.15);
+    color: #08251a;
+    font-size: 15px;
+`;
+
+const AddPetLabel = styled.span`
+    font-size: 14px;
+    font-weight: 800;
+    color: #08251a;
+    letter-spacing: 0.2px;
 `;

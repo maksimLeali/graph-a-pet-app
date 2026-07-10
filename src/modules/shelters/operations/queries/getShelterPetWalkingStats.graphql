@@ -1,0 +1,16 @@
+query getShelterPetWalkingStats($shelter_pet_id: ID!, $period: StatsPeriod!) {
+	getShelterPetWalkingStats(shelter_pet_id: $shelter_pet_id, period: $period) {
+		success
+		error {
+			code
+			message
+		}
+		chart {
+			labels
+			series {
+				type
+				data
+			}
+		}
+	}
+}

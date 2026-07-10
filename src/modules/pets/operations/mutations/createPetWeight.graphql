@@ -1,0 +1,14 @@
+mutation createPetWeight($data: PetWeightCreate!) {
+	createPetWeight(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		weight {
+			id
+			created_at
+			weight_kg
+		}
+	}
+}

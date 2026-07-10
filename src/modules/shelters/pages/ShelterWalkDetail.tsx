@@ -6,16 +6,24 @@ import dayjs from "dayjs";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
-import { useUserContext } from "@contexts";
+import { useUserContext, useModal } from "@contexts";
 import { Icon, Chip } from "@components";
-import { ShelterWalkStatus } from "@types";
+import { ShelterWalkStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
 
+import {
+	ShelterWalkRatingModal,
+	type ShelterWalkRatings,
+} from "../components/ShelterWalkRatingModal";
+import { ManualDurationModal } from "../components/ManualDurationModal";
 import { useGetShelterWalkQuery } from "../operations/__generated__/getShelterWalk.generated";
 import { useStartShelterWalkMutation } from "../operations/__generated__/startShelterWalk.generated";
 import { useCompleteShelterWalkMutation } from "../operations/__generated__/completeShelterWalk.generated";
 import { useCancelShelterWalkMutation } from "../operations/__generated__/cancelShelterWalk.generated";
 import { useDeleteShelterWalkMutation } from "../operations/__generated__/deleteShelterWalk.generated";
+import { useCreateShelterWalkRatingMutation } from "../operations/__generated__/createShelterWalkRating.generated";
+import { useSetShelterWalkManualDurationMutation } from "../operations/__generated__/setShelterWalkManualDuration.generated";
+import { useWeightUpdatePrompt } from "../hooks/useWeightUpdatePrompt";
 
 const STATUS_COLOR: Record<ShelterWalkStatus, string> = {
 	[ShelterWalkStatus.Planned]: "medium",
@@ -24,11 +32,21 @@ const STATUS_COLOR: Record<ShelterWalkStatus, string> = {
 	[ShelterWalkStatus.Cancelled]: "danger",
 };
 
+const walkRatingLabels: Record<WalkRatingType, string> = {
+	[WalkRatingType.Overall]: "Generale",
+	[WalkRatingType.Behavior]: "Comportamento",
+	[WalkRatingType.Calm]: "Calma",
+	[WalkRatingType.Aggression]: "Aggressività",
+	[WalkRatingType.LeashPulling]: "Tiro al guinzaglio",
+};
+
 export const ShelterWalkDetail: React.FC = () => {
 	const { id, walkId } = useParams<{ id: string; walkId: string }>();
 	const { t } = useTranslation();
 	const history = useHistory();
 	const { setPage } = useUserContext();
+	const { openModal, closeModal } = useModal();
+	const { maybePromptWeightUpdate } = useWeightUpdatePrompt();
 
 	const { data, loading, refetch } = useGetShelterWalkQuery({
 		variables: { id: walkId },
@@ -45,11 +63,82 @@ export const ShelterWalkDetail: React.FC = () => {
 	const [complete, { loading: completing }] = useCompleteShelterWalkMutation({ onError });
 	const [cancel, { loading: cancelling }] = useCancelShelterWalkMutation({ onError });
 	const [remove, { loading: deleting }] = useDeleteShelterWalkMutation({ onError });
+	const [createWalkRating] = useCreateShelterWalkRatingMutation({ onError });
+	const [setManualDuration] = useSetShelterWalkManualDurationMutation({ onError });
 
 	const run = async (p: Promise<unknown>, ok: string) => {
 		await p;
 		toast.success(t(ok));
 		refetch();
+	};
+
+	// completa la walk + apre la modale di valutazione (stessi criteri delle
+	// passeggiate dei pet personali), poi salva i rating compilati e infine,
+	// se il peso del cane non è aggiornato da più di una settimana, chiede
+	// se aggiornarlo
+	const completeWithRating = (walkId: string) => {
+		const petId = walk?.shelter_pet?.pet?.id;
+		const petName = walk?.shelter_pet?.pet?.name ?? "";
+		const ratings = { current: {} as ShelterWalkRatings };
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: async () => {
+				await complete({ variables: { id: walkId } });
+				await Promise.all(
+					Object.entries(ratings.current)
+						.filter(([, rating]) => !!rating)
+						.map(([type, rating]) =>
+							createWalkRating({
+								variables: {
+									data: {
+										walk_id: walkId,
+										type: type as WalkRatingType,
+										rating: rating!,
+									},
+								},
+							})
+						)
+				);
+				toast.success(t("shelters.walks.completed_ok"));
+				closeModal();
+				refetch();
+				if (petId) maybePromptWeightUpdate(petId, petName);
+			},
+			children: (
+				<ShelterWalkRatingModal
+					onChange={(next) => (ratings.current = next)}
+				/>
+			),
+		});
+	};
+
+	// imposta una durata manuale: azzera start/end lato BE (la loro assenza
+	// è ciò che il resto della pagina legge come "manuale")
+	const editDuration = () => {
+		const value = { current: walk?.duration_minutes ?? undefined };
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: async () => {
+				if (!walk || value.current == null) {
+					closeModal();
+					return;
+				}
+				await setManualDuration({
+					variables: { id: walk.id, duration_minutes: value.current },
+				});
+				toast.success(t("shelters.walks.duration_updated_ok"));
+				closeModal();
+				refetch();
+			},
+			children: (
+				<ManualDurationModal
+					initialMinutes={walk?.duration_minutes}
+					onChange={(minutes) => (value.current = minutes)}
+				/>
+			),
+		});
 	};
 
 	if (loading && !walk) {
@@ -91,7 +180,6 @@ export const ShelterWalkDetail: React.FC = () => {
 				<IconBox>
 					<Icon name="walk" color="light" size="28px" />
 				</IconBox>
-				<h2>{petName}</h2>
 				<Chip
 					label={t(`shelters.walk_status.${walk.status.toLowerCase()}`)}
 					color={STATUS_COLOR[walk.status]}
@@ -100,11 +188,23 @@ export const ShelterWalkDetail: React.FC = () => {
 
 			<Section>
 				{walker && (
-					<Row>
+					<RowLink
+						type="button"
+						onClick={() => history.push(`/shelters/detail/${id}/people`)}
+					>
 						<Icon name="personOutline" color="primary" size="18px" />
 						<span>{walker}</span>
-					</Row>
+					</RowLink>
 				)}
+				<RowLink
+					type="button"
+					onClick={() =>
+						history.push(`/shelters/detail/${id}/pet/${walk.shelter_pet.id}`)
+					}
+				>
+					<Icon name="paw" color="primary" size="18px" />
+					<span>{petName}</span>
+				</RowLink>
 				{walk.scheduled_at && (
 					<Row>
 						<Icon name="timeOutline" color="primary" size="18px" />
@@ -123,20 +223,40 @@ export const ShelterWalkDetail: React.FC = () => {
 						<span>{dayjs(walk.ended_at).format("DD/MM/YYYY HH:mm")}</span>
 					</Row>
 				)}
-				{walk.duration_minutes != null && (
+				{!walk.started_at && !walk.ended_at && walk.duration_minutes != null && (
 					<Row>
-						<Icon name="hourglassOutline" color="primary" size="18px" />
-						<span>
-							{walk.duration_minutes} {t("shelters.walks.minutes")}
-						</span>
+						<Icon name="createOutline" color="primary" size="18px" />
+						<span>{t("shelters.walks.manual")}</span>
 					</Row>
 				)}
+				<RowLink type="button" onClick={editDuration}>
+					<Icon name="hourglassOutline" color="primary" size="18px" />
+					<span>
+						{walk.duration_minutes != null
+							? `${walk.duration_minutes} ${t("shelters.walks.minutes")}`
+							: t("shelters.walks.edit_duration")}
+					</span>
+				</RowLink>
 			</Section>
 
 			{walk.notes && (
 				<Section>
 					<SectionTitle>{t("shelters.tasks.notes")}</SectionTitle>
 					<Notes>{walk.notes}</Notes>
+				</Section>
+			)}
+
+			{!!walk.ratings?.length && (
+				<Section>
+					<SectionTitle>{t("shelters.walks.rate_walk")}</SectionTitle>
+					<RatingsGrid>
+						{walk.ratings.filter(Boolean).map((r) => (
+							<RatingItem key={r!.id}>
+								<RatingName>{walkRatingLabels[r!.type]}</RatingName>
+								<RatingValue>{"★".repeat(r!.rating)}</RatingValue>
+							</RatingItem>
+						))}
+					</RatingsGrid>
 				</Section>
 			)}
 
@@ -157,12 +277,7 @@ export const ShelterWalkDetail: React.FC = () => {
 					<ActionBtn
 						$c="success"
 						disabled={completing}
-						onClick={() =>
-							run(
-								complete({ variables: { id: walk.id } }),
-								"shelters.walks.completed_ok"
-							)
-						}
+						onClick={() => completeWithRating(walk.id)}
 					>
 						<Icon name="checkmark" color="light" size="18px" />
 						<span>{t("actions.complete")}</span>
@@ -215,6 +330,7 @@ const Header = styled.div`
 	}
 `;
 
+
 const IconBox = styled.div`
 	width: ${$uw(5)};
 	height: ${$uw(5)};
@@ -251,11 +367,46 @@ const Row = styled.div`
 	}
 `;
 
+const RowLink = styled(Row.withComponent("button"))`
+	width: 100%;
+	border: none;
+	background: none;
+	text-align: left;
+	color: inherit;
+	cursor: pointer;
+	> span {
+		color: ${$color("primary")};
+		text-decoration: underline;
+	}
+`;
+
 const Notes = styled.p`
 	margin: 0;
 	font-size: 1.5rem;
 	white-space: pre-wrap;
 	word-break: break-word;
+`;
+
+const RatingsGrid = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: ${$uw(0.5)};
+`;
+
+const RatingItem = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 1.4rem;
+`;
+
+const RatingName = styled.span`
+	color: ${$color("medium")};
+`;
+
+const RatingValue = styled.span`
+	color: ${$color("primary")};
+	letter-spacing: 1px;
 `;
 
 const Actions = styled.div`

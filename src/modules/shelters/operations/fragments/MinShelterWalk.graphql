@@ -6,6 +6,11 @@ fragment MinShelterWalk on ShelterWalk {
 	ended_at
 	duration_minutes
 	notes
+	ratings {
+		id
+		type
+		rating
+	}
 	walker {
 		id
 		first_name

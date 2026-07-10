@@ -1,4 +1,6 @@
 export { Sharing } from './Sharing'
 export { PetsList } from './PetsList'
 export { PetProfile } from './PetProfile'
+export { PetWalkingStats } from './PetWalkingStats'
+export { PetWeightStats } from './PetWeightStats'
 export { AddPetRoutes } from './addPet'

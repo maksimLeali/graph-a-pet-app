@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: oklch(12% 0.014 155); }
+    * { box-sizing: border-box; font-family: 'Manrope', sans-serif; }
+    ::selection { background: oklch(72% 0.19 152 / 0.35); }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; background: oklch(12% 0.014 155); display: flex; justify-content: center; padding: 40px 16px;">
+<div data-screen-label="Walking stats" style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 22px;">
+
+  <div style="display:flex; flex-direction:column; gap:6px;">
+    <div style="font-size: 26px; font-weight: 800; color: oklch(97% 0.01 150); letter-spacing: -0.02em;">Walking stats</div>
+    <div style="height:2px; width: 46px; background: oklch(72% 0.19 152); border-radius: 2px;"></div>
+  </div>
+
+  <div style="font-size: 15px; font-weight: 700; color: oklch(80% 0.02 150); text-transform: capitalize;">{{ periodLabel }}</div>
+
+  <div style="display:flex; gap:8px; background: oklch(16% 0.016 155); padding:4px; border-radius:14px; border:1px solid oklch(28% 0.03 152 / 0.5);">
+    <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="3">
+      <div
+        onClick="{{ tab.select }}"
+        style="{{ tab.style }}"
+        style-hover="{{ tab.hoverStyle }}"
+      >{{ tab.label }}</div>
+    </sc-for>
+  </div>
+
+    <div style="background: oklch(15.5% 0.016 155); border: 1px solid oklch(30% 0.035 152 / 0.45); border-radius: 20px; padding: 22px 18px 18px; display:flex; flex-direction:column; gap: 14px;">
+
+      <div style="position: relative; width: 100%;">
+        <sc-for list="{{ gridLines }}" as="gl" hint-placeholder-count="6">
+          <div style="position:absolute; left:0; top: {{ gl.topPct }}; transform: translateY(-50%); width: 34px; text-align:right; font-size: 12px; font-weight:600; color: oklch(60% 0.02 150);">{{ gl.value }}</div>
+        </sc-for>
+        <svg viewBox="0 0 1000 300" style="width: 100%; height: auto; display:block; overflow: visible;">
+          <sc-for list="{{ gridLines }}" as="gl" hint-placeholder-count="6">
+            <line x1="50" y1="{{ gl.y }}" x2="980" y2="{{ gl.y }}" stroke="oklch(30% 0.02 150 / 0.5)" stroke-width="1.5" stroke-dasharray="{{ gl.dash }}"></line>
+          </sc-for>
+
+          <sc-for list="{{ series }}" as="s" hint-placeholder-count="5">
+            <sc-if value="{{ s.visible }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ s.hasLine }}">
+                <path d="{{ s.pathD }}" fill="none" stroke="{{ s.color }}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+              </sc-if>
+              <sc-for list="{{ s.points }}" as="p" hint-placeholder-count="2">
+                <circle cx="{{ p.x }}" cy="{{ p.y }}" r="8" fill="{{ s.color }}" stroke="oklch(15.5% 0.016 155)" stroke-width="3"></circle>
+              </sc-for>
+            </sc-if>
+          </sc-for>
+        </svg>
+      </div>
+
+      <div style="display:flex; padding: 0 5% 0 5%; margin-top: 2px;">
+        <sc-for list="{{ xLabels }}" as="w" hint-placeholder-count="7">
+          <div style="flex:1; text-align:center; font-size: 13px; font-weight:700; color: oklch(58% 0.02 150);">{{ w }}</div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap: 10px; margin-top: 6px; padding-top: 14px; border-top: 1px solid oklch(26% 0.025 152 / 0.4);">
+        <sc-for list="{{ series }}" as="s" hint-placeholder-count="5">
+          <div
+            onClick="{{ s.toggle }}"
+            style="{{ s.chipStyle }}"
+            style-hover="{{ s.chipHoverStyle }}"
+          >
+            <span style="{{ s.dotStyle }}"></span>
+            <span>{{ s.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+  <div style="background: oklch(15.5% 0.016 155); border: 1px solid oklch(30% 0.035 152 / 0.45); border-radius: 20px; padding: 22px 20px; display:grid; grid-template-columns: 1fr 1fr; gap: 20px 24px;">
+    <sc-for list="{{ summary }}" as="stat" hint-placeholder-count="5">
+      <div style="display:flex; flex-direction:column; gap:8px; {{ stat.gridStyle }}">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap: 8px;">
+          <span style="font-size:14px; color: oklch(66% 0.02 150); font-weight:500;">{{ stat.label }}</span>
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span style="color: {{ stat.color }}; font-size:16px;">★</span>
+            <span style="font-size:17px; font-weight:800; color: oklch(97% 0.01 150);">{{ stat.value }}</span>
+          </span>
+        </div>
+        <div style="height:5px; width:100%; background: oklch(24% 0.02 150 / 0.6); border-radius:3px; overflow:hidden;">
+          <div style="height:100%; width: {{ stat.barPct }}; background: {{ stat.color }}; border-radius:3px;"></div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PALETTE = {
+  generale: 'oklch(72% 0.19 152)',
+  guinzaglio: 'oklch(66% 0.13 165)',
+  comportamento: 'oklch(83% 0.16 135)',
+  aggressivita: 'oklch(48% 0.14 155)',
+  calma: 'oklch(90% 0.07 150)',
+};
+
+const VIEW_CONFIGS = {
+  week: {
+    periodLabel: '6 – 12 luglio 2026',
+    xLabels: ['L', 'M', 'M', 'G', 'V', 'S', 'D'],
+    series: {
+      generale: [[5, 3], [6, 3.5]],
+      guinzaglio: [[6, 3]],
+      comportamento: [[6, 4]],
+      aggressivita: [[6, 1]],
+      calma: [],
+    },
+  },
+  month: {
+    periodLabel: 'Luglio 2026',
+    xLabels: ['1', '2', '3', '4'],
+    series: {
+      generale: [[2, 3], [3, 3.5]],
+      guinzaglio: [[3, 3]],
+      comportamento: [[3, 4]],
+      aggressivita: [[3, 1]],
+      calma: [],
+    },
+  },
+  year: {
+    periodLabel: '2026',
+    xLabels: ['G', 'F', 'M', 'A', 'M', 'G', 'L', 'A', 'S', 'O', 'N', 'D'],
+    series: {
+      generale: [[5, 3], [6, 3.5]],
+      guinzaglio: [[6, 3]],
+      comportamento: [[6, 4]],
+      aggressivita: [[6, 1]],
+      calma: [],
+    },
+  },
+};
+
+const SERIES_META = [
+  { key: 'generale', label: 'Generale' },
+  { key: 'guinzaglio', label: 'Tiro al guinzaglio' },
+  { key: 'comportamento', label: 'Comportamento' },
+  { key: 'aggressivita', label: 'Aggressività' },
+  { key: 'calma', label: 'Calma' },
+];
+
+const SUMMARY_RAW = [
+  { key: 'aggressivita', label: 'Aggressività', value: 1 },
+  { key: 'comportamento', label: 'Comportamento', value: 4 },
+  { key: 'calma', label: 'Calma', value: 4 },
+  { key: 'guinzaglio', label: 'Tiro al guinzaglio', value: 3 },
+  { key: 'generale', label: 'Generale', value: 3.3 },
+];
+
+const TAB_DEFS = [
+  { key: 'week', label: 'Settimana' },
+  { key: 'month', label: 'Mese' },
+  { key: 'year', label: 'Anno' },
+];
+
+function yFor(value) {
+  const topPad = 10, bottomPad = 10, plotH = 300 - topPad - bottomPad;
+  return 300 - bottomPad - (value / 5) * plotH;
+}
+function xFor(i, n) {
+  const leftPad = 50, rightPad = 20, plotW = 1000 - leftPad - rightPad;
+  return leftPad + (i / (n - 1)) * plotW;
+}
+
+class Component extends DCLogic {
+  state = {
+    activeTab: 'week',
+    visibility: { generale: true, guinzaglio: true, comportamento: true, aggressivita: true, calma: true },
+  };
+
+  setTab(key) {
+    this.setState({ activeTab: key });
+  }
+
+  toggleSeries(key) {
+    this.setState(s => ({ visibility: { ...s.visibility, [key]: !s.visibility[key] } }));
+  }
+
+  renderVals() {
+    const { activeTab, visibility } = this.state;
+    const config = VIEW_CONFIGS[activeTab];
+    const n = config.xLabels.length;
+
+    const tabs = TAB_DEFS.map(t => {
+      const active = t.key === activeTab;
+      return {
+        label: t.label,
+        select: () => this.setTab(t.key),
+        style: {
+          flex: 1,
+          textAlign: 'center',
+          padding: '10px 0',
+          borderRadius: '10px',
+          fontSize: '14px',
+          fontWeight: 700,
+          cursor: 'pointer',
+          userSelect: 'none',
+          transition: 'background 0.15s ease, color 0.15s ease',
+          background: active ? 'oklch(72% 0.19 152)' : 'transparent',
+          color: active ? 'oklch(14% 0.02 152)' : 'oklch(62% 0.02 150)',
+        },
+        hoverStyle: active ? {} : { background: 'oklch(22% 0.02 152 / 0.6)', color: 'oklch(85% 0.02 150)' },
+      };
+    });
+
+    const series = SERIES_META.map(s => {
+      const visible = visibility[s.key];
+      const data = config.series[s.key] || [];
+      const points = data.map(([i, v]) => ({ x: xFor(i, n), y: yFor(v) }));
+      const hasLine = points.length > 1;
+      let pathD = '';
+      if (hasLine) {
+        pathD = points.map((p, idx) => (idx === 0 ? 'M' : 'L') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
+      }
+      const color = PALETTE[s.key];
+      return {
+        label: s.label,
+        color,
+        visible,
+        hasLine,
+        pathD,
+        points,
+        toggle: () => this.toggleSeries(s.key),
+        dotStyle: {
+          width: '10px', height: '10px', borderRadius: '3px',
+          background: visible ? color : 'oklch(35% 0.01 150)',
+          display: 'inline-block',
+        },
+        chipStyle: {
+          display: 'flex', alignItems: 'center', gap: '7px',
+          padding: '7px 12px', borderRadius: '999px',
+          fontSize: '13px', fontWeight: 600,
+          cursor: 'pointer', userSelect: 'none',
+          background: visible ? 'oklch(24% 0.025 152 / 0.6)' : 'oklch(18% 0.01 150 / 0.5)',
+          color: visible ? 'oklch(90% 0.02 150)' : 'oklch(48% 0.015 150)',
+          border: '1px solid ' + (visible ? 'oklch(35% 0.04 152 / 0.6)' : 'oklch(24% 0.015 150 / 0.5)'),
+          transition: 'all 0.15s ease',
+        },
+        chipHoverStyle: { borderColor: color, color: 'oklch(95% 0.01 150)' },
+      };
+    });
+
+    const gridValues = [0, 1, 2, 3, 4, 5];
+    const gridLines = gridValues.map(v => ({
+      value: v,
+      y: yFor(v).toFixed(1),
+      topPct: ((yFor(v) / 300) * 100).toFixed(2) + '%',
+      dash: v === 0 ? '0' : '6 6',
+    }));
+
+    const summary = SUMMARY_RAW.map(st => ({
+      label: st.label,
+      value: st.value % 1 === 0 ? st.value : st.value.toFixed(1),
+      color: PALETTE[st.key],
+      barPct: Math.min(100, (st.value / 5) * 100) + '%',
+      gridStyle: st.key === 'generale' ? { gridColumn: '1 / -1' } : {},
+    }));
+
+    return {
+      tabs,
+      series,
+      gridLines,
+      xLabels: config.xLabels,
+      periodLabel: config.periodLabel,
+      summary,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

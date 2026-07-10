@@ -428,6 +428,7 @@ export type Mutation = {
   createMedia: MediaResult;
   createPersonalWorkspace: ShelterResult;
   createPet: PetResult;
+  createPetWeight: PetWeightResult;
   createReport: ReportResult;
   createShelter: ShelterResult;
   createShelterArea: ShelterAreaResult;
@@ -444,6 +445,7 @@ export type Mutation = {
   createShelterRole: ShelterRoleResult;
   createShelterTask: ShelterTaskResult;
   createShelterWalk: ShelterWalkResult;
+  createShelterWalkRating: ShelterWalkRatingResult;
   createShelterZone: ShelterZoneResult;
   createTreatment: TreatmentResult;
   createUser: UserResult;
@@ -491,6 +493,7 @@ export type Mutation = {
   restoreMemoriae: RestoredResult;
   saveShelterMapLayout: ShelterMapResult;
   setBoxOutOfService: ShelterBoxResult;
+  setShelterWalkManualDuration: ShelterWalkResult;
   signUp: UserResult;
   skipShelterTask: ShelterTaskResult;
   startShelterWalk: ShelterWalkResult;
@@ -643,6 +646,11 @@ export type MutationCreatePetArgs = {
 };
 
 
+export type MutationCreatePetWeightArgs = {
+  data: PetWeightCreate;
+};
+
+
 export type MutationCreateReportArgs = {
   data: ReportCreate;
 };
@@ -720,6 +728,11 @@ export type MutationCreateShelterTaskArgs = {
 
 export type MutationCreateShelterWalkArgs = {
   data: ShelterWalkCreate;
+};
+
+
+export type MutationCreateShelterWalkRatingArgs = {
+  data: ShelterWalkRatingCreate;
 };
 
 
@@ -957,6 +970,12 @@ export type MutationSaveShelterMapLayoutArgs = {
 export type MutationSetBoxOutOfServiceArgs = {
   box_id: Scalars['ID']['input'];
   out_of_service: Scalars['Boolean']['input'];
+};
+
+
+export type MutationSetShelterWalkManualDurationArgs = {
+  duration_minutes: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1616,6 +1635,39 @@ export type PetUpdate = {
   weight_kg?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type PetWeight = {
+  __typename?: 'PetWeight';
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  pet_id: Scalars['ID']['output'];
+  weight_kg: Scalars['Float']['output'];
+};
+
+export type PetWeightChartData = {
+  __typename?: 'PetWeightChartData';
+  data: Array<Maybe<Scalars['Float']['output']>>;
+  labels: Array<Scalars['String']['output']>;
+};
+
+export type PetWeightChartResult = {
+  __typename?: 'PetWeightChartResult';
+  chart?: Maybe<PetWeightChartData>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type PetWeightCreate = {
+  pet_id: Scalars['ID']['input'];
+  weight_kg: Scalars['Float']['input'];
+};
+
+export type PetWeightResult = {
+  __typename?: 'PetWeightResult';
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
+  weight?: Maybe<PetWeight>;
+};
+
 export type PetsResult = {
   __typename?: 'PetsResult';
   error?: Maybe<Error>;
@@ -1658,11 +1710,14 @@ export type Query = {
   getDashboard: DashboardResult;
   getGroupedStatistics: StatisticsResult;
   getHealthCard?: Maybe<HealthCardResult>;
+  getLatestPetWeight: PetWeightResult;
   getMedia: MediaResult;
   getMyShelterDashboard: MyShelterDashboardResult;
   getOrCreateCode?: Maybe<CodeResult>;
   getOwnership: OwnershipResult;
   getPet: PetResult;
+  getPetWalkingStats: WalkRatingChartResult;
+  getPetWeightStats: PetWeightChartResult;
   getPublicShelter?: Maybe<PublicShelter>;
   getRealTimeStatistic: RealTimeStatisticResult;
   getReport?: Maybe<ReportResult>;
@@ -1676,6 +1731,7 @@ export type Query = {
   getShelterOperationalDashboard: ShelterOperationalDashboardResult;
   getShelterPerson?: Maybe<ShelterPerson>;
   getShelterPet: ShelterPetResult;
+  getShelterPetWalkingStats: WalkRatingChartResult;
   getShelterRole: ShelterRoleResult;
   getShelterTask: ShelterTaskResult;
   getShelterWalk: ShelterWalkResult;
@@ -1765,6 +1821,11 @@ export type QueryGetHealthCardArgs = {
 };
 
 
+export type QueryGetLatestPetWeightArgs = {
+  pet_id: Scalars['ID']['input'];
+};
+
+
 export type QueryGetMediaArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1790,6 +1851,18 @@ export type QueryGetOwnershipArgs = {
 
 export type QueryGetPetArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetPetWalkingStatsArgs = {
+  period: StatsPeriod;
+  pet_id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetPetWeightStatsArgs = {
+  period: StatsPeriod;
+  pet_id: Scalars['ID']['input'];
 };
 
 
@@ -1850,6 +1923,12 @@ export type QueryGetShelterPersonArgs = {
 
 export type QueryGetShelterPetArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetShelterPetWalkingStatsArgs = {
+  period: StatsPeriod;
+  shelter_pet_id: Scalars['ID']['input'];
 };
 
 
@@ -3009,6 +3088,7 @@ export type ShelterWalk = {
   ended_at?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   notes?: Maybe<Scalars['String']['output']>;
+  ratings?: Maybe<Array<Maybe<ShelterWalkRating>>>;
   scheduled_at?: Maybe<Scalars['String']['output']>;
   shelter_pet: ShelterPet;
   started_at?: Maybe<Scalars['String']['output']>;
@@ -3023,6 +3103,28 @@ export type ShelterWalkCreate = {
   shelter_person_id?: InputMaybe<Scalars['ID']['input']>;
   shelter_pet_id: Scalars['ID']['input'];
   walker_id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type ShelterWalkRating = {
+  __typename?: 'ShelterWalkRating';
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  rating: Scalars['Int']['output'];
+  type: WalkRatingType;
+  walk: ShelterWalk;
+};
+
+export type ShelterWalkRatingCreate = {
+  rating: Scalars['Int']['input'];
+  type: WalkRatingType;
+  walk_id: Scalars['ID']['input'];
+};
+
+export type ShelterWalkRatingResult = {
+  __typename?: 'ShelterWalkRatingResult';
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
+  walk_rating?: Maybe<ShelterWalkRating>;
 };
 
 export type ShelterWalkResult = {
@@ -3127,6 +3229,12 @@ export type StatisticsResult = {
   statistics?: Maybe<Statistics>;
   success: Scalars['Boolean']['output'];
 };
+
+export enum StatsPeriod {
+  Monthly = 'MONTHLY',
+  Weekly = 'WEEKLY',
+  Yearly = 'YEARLY'
+}
 
 export type Tag = {
   __typename?: 'Tag';
@@ -3322,6 +3430,19 @@ export type WalkRating = {
   walk: Walk;
 };
 
+export type WalkRatingChartData = {
+  __typename?: 'WalkRatingChartData';
+  labels: Array<Scalars['String']['output']>;
+  series: Array<WalkRatingSeries>;
+};
+
+export type WalkRatingChartResult = {
+  __typename?: 'WalkRatingChartResult';
+  chart?: Maybe<WalkRatingChartData>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type WalkRatingCreate = {
   rating: Scalars['Int']['input'];
   type: WalkRatingType;
@@ -3333,6 +3454,12 @@ export type WalkRatingResult = {
   error?: Maybe<Error>;
   success: Scalars['Boolean']['output'];
   walk_rating?: Maybe<WalkRating>;
+};
+
+export type WalkRatingSeries = {
+  __typename?: 'WalkRatingSeries';
+  data: Array<Maybe<Scalars['Float']['output']>>;
+  type: WalkRatingType;
 };
 
 export enum WalkRatingType {
@@ -3652,6 +3779,13 @@ export type CheckCodeMutationVariables = Exact<{
 
 export type CheckCodeMutation = { __typename?: 'Mutation', checkCode: { __typename?: 'CodeValidationResult', success: boolean, is_valid?: boolean | null, error?: { __typename?: 'Error', code: string, message: string } | null, code?: { __typename?: 'Code', id: string, code: string, ref_id: string, ref_table: string } | null } };
 
+export type CreatePetWeightMutationVariables = Exact<{
+  data: PetWeightCreate;
+}>;
+
+
+export type CreatePetWeightMutation = { __typename?: 'Mutation', createPetWeight: { __typename?: 'PetWeightResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, weight?: { __typename?: 'PetWeight', id: string, created_at: string, weight_kg: number } | null } };
+
 export type DeleteOwnershipMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -3691,6 +3825,29 @@ export type GetFullPetQueryVariables = Exact<{
 
 export type GetFullPetQuery = { __typename?: 'Query', getPet: { __typename?: 'PetResult', success: boolean, pet?: { __typename?: 'Pet', name: string, id: string, weight_kg?: number | null, birthday?: string | null, gender?: Gender | null, neutered?: boolean | null, breed?: string | null, coat_length?: CoatLength | null, pictures?: { __typename?: 'PaginatedMedias', items: Array<{ __typename?: 'Media', id: string } | null> } | null, health_card?: { __typename?: 'HealthCard', id: string, treatments: { __typename?: 'PaginatedTreatments', items: Array<{ __typename?: 'Treatment', id: string, date: string, type: TreatmentType, name: string, duration?: TreatmentDuration | null, health_card?: { __typename?: 'HealthCard', pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string } | null } | null } } | null } | null> } } | null, main_picture?: { __typename?: 'Media', id: string, url: string, ref_id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null } | null, ownerships?: { __typename?: 'PaginatedOwnerships', items: Array<{ __typename?: 'Ownership', id: string, custody_level: CustodyLevel, user: { __typename?: 'User', id: string, first_name: string, email: string, last_name: string, profile_picture?: { __typename?: 'Media', id: string, scope: string, main_colors?: Array<{ __typename?: 'MainColor', color: string, contrast: string }> | null, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null> } | null } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
+export type GetLatestPetWeightQueryVariables = Exact<{
+  pet_id: Scalars['ID']['input'];
+}>;
+
+
+export type GetLatestPetWeightQuery = { __typename?: 'Query', getLatestPetWeight: { __typename?: 'PetWeightResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, weight?: { __typename?: 'PetWeight', id: string, created_at: string, weight_kg: number } | null } };
+
+export type GetPetWalkingStatsQueryVariables = Exact<{
+  pet_id: Scalars['ID']['input'];
+  period: StatsPeriod;
+}>;
+
+
+export type GetPetWalkingStatsQuery = { __typename?: 'Query', getPetWalkingStats: { __typename?: 'WalkRatingChartResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, chart?: { __typename?: 'WalkRatingChartData', labels: Array<string>, series: Array<{ __typename?: 'WalkRatingSeries', type: WalkRatingType, data: Array<number | null> }> } | null } };
+
+export type GetPetWeightStatsQueryVariables = Exact<{
+  pet_id: Scalars['ID']['input'];
+  period: StatsPeriod;
+}>;
+
+
+export type GetPetWeightStatsQuery = { __typename?: 'Query', getPetWeightStats: { __typename?: 'PetWeightChartResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, chart?: { __typename?: 'PetWeightChartData', labels: Array<string>, data: Array<number | null> } | null } };
+
 export type ListPetWalkRatingsQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
 }>;
@@ -3714,7 +3871,7 @@ export type MinShelterPersonFragment = { __typename?: 'ShelterPerson', id: strin
 
 export type MinShelterTaskFragment = { __typename?: 'ShelterTask', id: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, scheduled_at?: string | null, completed_at?: string | null, is_recurring: boolean, notes?: string | null, recurrence?: { __typename?: 'Recurrence', freq: RecurrenceFreq, interval: number, weekdays?: Array<Weekday> | null, week_ordinal?: number | null, time_of_day?: string | null, start_at?: string | null } | null, assignees: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assignee_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }>, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null };
 
-export type MinShelterWalkFragment = { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } };
+export type MinShelterWalkFragment = { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } };
 
 export type PublicShelterFragment = { __typename?: 'PublicShelter', id: string, name: string, city?: string | null, region?: string | null, public_description?: string | null, public_contact_email?: string | null, public_contact_phone?: string | null, logo_media_id?: string | null, accepts_volunteers: boolean, public_location_label?: string | null, public_lat?: number | null, public_lng?: number | null };
 
@@ -3733,7 +3890,7 @@ export type CancelShelterWalkMutationVariables = Exact<{
 }>;
 
 
-export type CancelShelterWalkMutation = { __typename?: 'Mutation', cancelShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
+export type CancelShelterWalkMutation = { __typename?: 'Mutation', cancelShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type CompleteShelterTaskMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3749,7 +3906,7 @@ export type CompleteShelterWalkMutationVariables = Exact<{
 }>;
 
 
-export type CompleteShelterWalkMutation = { __typename?: 'Mutation', completeShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
+export type CompleteShelterWalkMutation = { __typename?: 'Mutation', completeShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type CreatePersonalWorkspaceMutationVariables = Exact<{
   data: CreatePersonalWorkspaceInput;
@@ -3812,7 +3969,14 @@ export type CreateShelterWalkMutationVariables = Exact<{
 }>;
 
 
-export type CreateShelterWalkMutation = { __typename?: 'Mutation', createShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
+export type CreateShelterWalkMutation = { __typename?: 'Mutation', createShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
+
+export type CreateShelterWalkRatingMutationVariables = Exact<{
+  data: ShelterWalkRatingCreate;
+}>;
+
+
+export type CreateShelterWalkRatingMutation = { __typename?: 'Mutation', createShelterWalkRating: { __typename?: 'ShelterWalkRatingResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, walk_rating?: { __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null } };
 
 export type DeleteShelterInventoryItemMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3866,6 +4030,14 @@ export type SaveShelterMapLayoutMutationVariables = Exact<{
 
 
 export type SaveShelterMapLayoutMutation = { __typename?: 'Mutation', saveShelterMapLayout: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
+
+export type SetShelterWalkManualDurationMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  duration_minutes: Scalars['Int']['input'];
+}>;
+
+
+export type SetShelterWalkManualDurationMutation = { __typename?: 'Mutation', setShelterWalkManualDuration: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type RequestShelterClaimMutationVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
@@ -3941,7 +4113,7 @@ export type StartShelterWalkMutationVariables = Exact<{
 }>;
 
 
-export type StartShelterWalkMutation = { __typename?: 'Mutation', startShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
+export type StartShelterWalkMutation = { __typename?: 'Mutation', startShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type UpdateShelterInventoryItemMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -4032,6 +4204,14 @@ export type GetShelterPetQueryVariables = Exact<{
 
 export type GetShelterPetQuery = { __typename?: 'Query', getShelterPet: { __typename?: 'ShelterPetResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } };
 
+export type GetShelterPetWalkingStatsQueryVariables = Exact<{
+  shelter_pet_id: Scalars['ID']['input'];
+  period: StatsPeriod;
+}>;
+
+
+export type GetShelterPetWalkingStatsQuery = { __typename?: 'Query', getShelterPetWalkingStats: { __typename?: 'WalkRatingChartResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, chart?: { __typename?: 'WalkRatingChartData', labels: Array<string>, series: Array<{ __typename?: 'WalkRatingSeries', type: WalkRatingType, data: Array<number | null> }> } | null } };
+
 export type GetShelterPublicProfileQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -4051,7 +4231,7 @@ export type GetShelterWalkQueryVariables = Exact<{
 }>;
 
 
-export type GetShelterWalkQuery = { __typename?: 'Query', getShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
+export type GetShelterWalkQuery = { __typename?: 'Query', getShelterWalk: { __typename?: 'ShelterWalkResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_walk?: { __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null } };
 
 export type ListMyOwnershipTransfersQueryVariables = Exact<{
   search?: InputMaybe<CommonSearch>;
@@ -4072,7 +4252,7 @@ export type ListOperationalShelterWalksQueryVariables = Exact<{
 }>;
 
 
-export type ListOperationalShelterWalksQuery = { __typename?: 'Query', listOperationalShelterWalks: { __typename?: 'PaginatedShelterWalks', success?: boolean | null, items: Array<{ __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+export type ListOperationalShelterWalksQuery = { __typename?: 'Query', listOperationalShelterWalks: { __typename?: 'PaginatedShelterWalks', success?: boolean | null, items: Array<{ __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
 
 export type ListPetsNeedingWalkQueryVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
@@ -4153,7 +4333,7 @@ export type ListShelterWalksQueryVariables = Exact<{
 }>;
 
 
-export type ListShelterWalksQuery = { __typename?: 'Query', listShelterWalks: { __typename?: 'PaginatedShelterWalks', success?: boolean | null, items: Array<{ __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+export type ListShelterWalksQuery = { __typename?: 'Query', listShelterWalks: { __typename?: 'PaginatedShelterWalks', success?: boolean | null, items: Array<{ __typename?: 'ShelterWalk', id: string, status: ShelterWalkStatus, scheduled_at?: string | null, started_at?: string | null, ended_at?: string | null, duration_minutes?: number | null, notes?: string | null, ratings?: Array<{ __typename?: 'ShelterWalkRating', id: string, type: WalkRatingType, rating: number } | null> | null, walker?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null, walker_shelter_person?: { __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null } | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
 
 export type ListSheltersQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
@@ -4684,6 +4864,11 @@ export const MinShelterWalkFragmentDoc = gql`
   ended_at
   duration_minutes
   notes
+  ratings {
+    id
+    type
+    rating
+  }
   walker {
     id
     first_name
@@ -6241,6 +6426,48 @@ export function useCheckCodeMutation(baseOptions?: Apollo.MutationHookOptions<Ch
 export type CheckCodeMutationHookResult = ReturnType<typeof useCheckCodeMutation>;
 export type CheckCodeMutationResult = Apollo.MutationResult<CheckCodeMutation>;
 export type CheckCodeMutationOptions = Apollo.BaseMutationOptions<CheckCodeMutation, CheckCodeMutationVariables>;
+export const CreatePetWeightDocument = gql`
+    mutation createPetWeight($data: PetWeightCreate!) {
+  createPetWeight(data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    weight {
+      id
+      created_at
+      weight_kg
+    }
+  }
+}
+    `;
+export type CreatePetWeightMutationFn = Apollo.MutationFunction<CreatePetWeightMutation, CreatePetWeightMutationVariables>;
+
+/**
+ * __useCreatePetWeightMutation__
+ *
+ * To run a mutation, you first call `useCreatePetWeightMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePetWeightMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPetWeightMutation, { data, loading, error }] = useCreatePetWeightMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreatePetWeightMutation(baseOptions?: Apollo.MutationHookOptions<CreatePetWeightMutation, CreatePetWeightMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePetWeightMutation, CreatePetWeightMutationVariables>(CreatePetWeightDocument, options);
+      }
+export type CreatePetWeightMutationHookResult = ReturnType<typeof useCreatePetWeightMutation>;
+export type CreatePetWeightMutationResult = Apollo.MutationResult<CreatePetWeightMutation>;
+export type CreatePetWeightMutationOptions = Apollo.BaseMutationOptions<CreatePetWeightMutation, CreatePetWeightMutationVariables>;
 export const DeleteOwnershipDocument = gql`
     mutation deleteOwnership($id: ID!) {
   deleteOwnership(id: $id) {
@@ -6470,6 +6697,156 @@ export type GetFullPetQueryHookResult = ReturnType<typeof useGetFullPetQuery>;
 export type GetFullPetLazyQueryHookResult = ReturnType<typeof useGetFullPetLazyQuery>;
 export type GetFullPetSuspenseQueryHookResult = ReturnType<typeof useGetFullPetSuspenseQuery>;
 export type GetFullPetQueryResult = Apollo.QueryResult<GetFullPetQuery, GetFullPetQueryVariables>;
+export const GetLatestPetWeightDocument = gql`
+    query getLatestPetWeight($pet_id: ID!) {
+  getLatestPetWeight(pet_id: $pet_id) {
+    success
+    error {
+      code
+      message
+    }
+    weight {
+      id
+      created_at
+      weight_kg
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetLatestPetWeightQuery__
+ *
+ * To run a query within a React component, call `useGetLatestPetWeightQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLatestPetWeightQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLatestPetWeightQuery({
+ *   variables: {
+ *      pet_id: // value for 'pet_id'
+ *   },
+ * });
+ */
+export function useGetLatestPetWeightQuery(baseOptions: Apollo.QueryHookOptions<GetLatestPetWeightQuery, GetLatestPetWeightQueryVariables> & ({ variables: GetLatestPetWeightQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLatestPetWeightQuery, GetLatestPetWeightQueryVariables>(GetLatestPetWeightDocument, options);
+      }
+export function useGetLatestPetWeightLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLatestPetWeightQuery, GetLatestPetWeightQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLatestPetWeightQuery, GetLatestPetWeightQueryVariables>(GetLatestPetWeightDocument, options);
+        }
+export function useGetLatestPetWeightSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetLatestPetWeightQuery, GetLatestPetWeightQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetLatestPetWeightQuery, GetLatestPetWeightQueryVariables>(GetLatestPetWeightDocument, options);
+        }
+export type GetLatestPetWeightQueryHookResult = ReturnType<typeof useGetLatestPetWeightQuery>;
+export type GetLatestPetWeightLazyQueryHookResult = ReturnType<typeof useGetLatestPetWeightLazyQuery>;
+export type GetLatestPetWeightSuspenseQueryHookResult = ReturnType<typeof useGetLatestPetWeightSuspenseQuery>;
+export type GetLatestPetWeightQueryResult = Apollo.QueryResult<GetLatestPetWeightQuery, GetLatestPetWeightQueryVariables>;
+export const GetPetWalkingStatsDocument = gql`
+    query getPetWalkingStats($pet_id: ID!, $period: StatsPeriod!) {
+  getPetWalkingStats(pet_id: $pet_id, period: $period) {
+    success
+    error {
+      code
+      message
+    }
+    chart {
+      labels
+      series {
+        type
+        data
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPetWalkingStatsQuery__
+ *
+ * To run a query within a React component, call `useGetPetWalkingStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPetWalkingStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPetWalkingStatsQuery({
+ *   variables: {
+ *      pet_id: // value for 'pet_id'
+ *      period: // value for 'period'
+ *   },
+ * });
+ */
+export function useGetPetWalkingStatsQuery(baseOptions: Apollo.QueryHookOptions<GetPetWalkingStatsQuery, GetPetWalkingStatsQueryVariables> & ({ variables: GetPetWalkingStatsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPetWalkingStatsQuery, GetPetWalkingStatsQueryVariables>(GetPetWalkingStatsDocument, options);
+      }
+export function useGetPetWalkingStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPetWalkingStatsQuery, GetPetWalkingStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPetWalkingStatsQuery, GetPetWalkingStatsQueryVariables>(GetPetWalkingStatsDocument, options);
+        }
+export function useGetPetWalkingStatsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPetWalkingStatsQuery, GetPetWalkingStatsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPetWalkingStatsQuery, GetPetWalkingStatsQueryVariables>(GetPetWalkingStatsDocument, options);
+        }
+export type GetPetWalkingStatsQueryHookResult = ReturnType<typeof useGetPetWalkingStatsQuery>;
+export type GetPetWalkingStatsLazyQueryHookResult = ReturnType<typeof useGetPetWalkingStatsLazyQuery>;
+export type GetPetWalkingStatsSuspenseQueryHookResult = ReturnType<typeof useGetPetWalkingStatsSuspenseQuery>;
+export type GetPetWalkingStatsQueryResult = Apollo.QueryResult<GetPetWalkingStatsQuery, GetPetWalkingStatsQueryVariables>;
+export const GetPetWeightStatsDocument = gql`
+    query getPetWeightStats($pet_id: ID!, $period: StatsPeriod!) {
+  getPetWeightStats(pet_id: $pet_id, period: $period) {
+    success
+    error {
+      code
+      message
+    }
+    chart {
+      labels
+      data
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPetWeightStatsQuery__
+ *
+ * To run a query within a React component, call `useGetPetWeightStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPetWeightStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPetWeightStatsQuery({
+ *   variables: {
+ *      pet_id: // value for 'pet_id'
+ *      period: // value for 'period'
+ *   },
+ * });
+ */
+export function useGetPetWeightStatsQuery(baseOptions: Apollo.QueryHookOptions<GetPetWeightStatsQuery, GetPetWeightStatsQueryVariables> & ({ variables: GetPetWeightStatsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPetWeightStatsQuery, GetPetWeightStatsQueryVariables>(GetPetWeightStatsDocument, options);
+      }
+export function useGetPetWeightStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPetWeightStatsQuery, GetPetWeightStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPetWeightStatsQuery, GetPetWeightStatsQueryVariables>(GetPetWeightStatsDocument, options);
+        }
+export function useGetPetWeightStatsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPetWeightStatsQuery, GetPetWeightStatsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPetWeightStatsQuery, GetPetWeightStatsQueryVariables>(GetPetWeightStatsDocument, options);
+        }
+export type GetPetWeightStatsQueryHookResult = ReturnType<typeof useGetPetWeightStatsQuery>;
+export type GetPetWeightStatsLazyQueryHookResult = ReturnType<typeof useGetPetWeightStatsLazyQuery>;
+export type GetPetWeightStatsSuspenseQueryHookResult = ReturnType<typeof useGetPetWeightStatsSuspenseQuery>;
+export type GetPetWeightStatsQueryResult = Apollo.QueryResult<GetPetWeightStatsQuery, GetPetWeightStatsQueryVariables>;
 export const ListPetWalkRatingsDocument = gql`
     query listPetWalkRatings($commonSearch: CommonSearch) {
   listWalkRatings(commonSearch: $commonSearch) {
@@ -7056,6 +7433,48 @@ export function useCreateShelterWalkMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateShelterWalkMutationHookResult = ReturnType<typeof useCreateShelterWalkMutation>;
 export type CreateShelterWalkMutationResult = Apollo.MutationResult<CreateShelterWalkMutation>;
 export type CreateShelterWalkMutationOptions = Apollo.BaseMutationOptions<CreateShelterWalkMutation, CreateShelterWalkMutationVariables>;
+export const CreateShelterWalkRatingDocument = gql`
+    mutation createShelterWalkRating($data: ShelterWalkRatingCreate!) {
+  createShelterWalkRating(data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    walk_rating {
+      id
+      type
+      rating
+    }
+  }
+}
+    `;
+export type CreateShelterWalkRatingMutationFn = Apollo.MutationFunction<CreateShelterWalkRatingMutation, CreateShelterWalkRatingMutationVariables>;
+
+/**
+ * __useCreateShelterWalkRatingMutation__
+ *
+ * To run a mutation, you first call `useCreateShelterWalkRatingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateShelterWalkRatingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createShelterWalkRatingMutation, { data, loading, error }] = useCreateShelterWalkRatingMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateShelterWalkRatingMutation(baseOptions?: Apollo.MutationHookOptions<CreateShelterWalkRatingMutation, CreateShelterWalkRatingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateShelterWalkRatingMutation, CreateShelterWalkRatingMutationVariables>(CreateShelterWalkRatingDocument, options);
+      }
+export type CreateShelterWalkRatingMutationHookResult = ReturnType<typeof useCreateShelterWalkRatingMutation>;
+export type CreateShelterWalkRatingMutationResult = Apollo.MutationResult<CreateShelterWalkRatingMutation>;
+export type CreateShelterWalkRatingMutationOptions = Apollo.BaseMutationOptions<CreateShelterWalkRatingMutation, CreateShelterWalkRatingMutationVariables>;
 export const DeleteShelterInventoryItemDocument = gql`
     mutation deleteShelterInventoryItem($id: ID!) {
   deleteShelterInventoryItem(id: $id) {
@@ -7336,6 +7755,47 @@ export function useSaveShelterMapLayoutMutation(baseOptions?: Apollo.MutationHoo
 export type SaveShelterMapLayoutMutationHookResult = ReturnType<typeof useSaveShelterMapLayoutMutation>;
 export type SaveShelterMapLayoutMutationResult = Apollo.MutationResult<SaveShelterMapLayoutMutation>;
 export type SaveShelterMapLayoutMutationOptions = Apollo.BaseMutationOptions<SaveShelterMapLayoutMutation, SaveShelterMapLayoutMutationVariables>;
+export const SetShelterWalkManualDurationDocument = gql`
+    mutation setShelterWalkManualDuration($id: ID!, $duration_minutes: Int!) {
+  setShelterWalkManualDuration(id: $id, duration_minutes: $duration_minutes) {
+    success
+    error {
+      code
+      message
+    }
+    shelter_walk {
+      ...MinShelterWalk
+    }
+  }
+}
+    ${MinShelterWalkFragmentDoc}`;
+export type SetShelterWalkManualDurationMutationFn = Apollo.MutationFunction<SetShelterWalkManualDurationMutation, SetShelterWalkManualDurationMutationVariables>;
+
+/**
+ * __useSetShelterWalkManualDurationMutation__
+ *
+ * To run a mutation, you first call `useSetShelterWalkManualDurationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetShelterWalkManualDurationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setShelterWalkManualDurationMutation, { data, loading, error }] = useSetShelterWalkManualDurationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      duration_minutes: // value for 'duration_minutes'
+ *   },
+ * });
+ */
+export function useSetShelterWalkManualDurationMutation(baseOptions?: Apollo.MutationHookOptions<SetShelterWalkManualDurationMutation, SetShelterWalkManualDurationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetShelterWalkManualDurationMutation, SetShelterWalkManualDurationMutationVariables>(SetShelterWalkManualDurationDocument, options);
+      }
+export type SetShelterWalkManualDurationMutationHookResult = ReturnType<typeof useSetShelterWalkManualDurationMutation>;
+export type SetShelterWalkManualDurationMutationResult = Apollo.MutationResult<SetShelterWalkManualDurationMutation>;
+export type SetShelterWalkManualDurationMutationOptions = Apollo.BaseMutationOptions<SetShelterWalkManualDurationMutation, SetShelterWalkManualDurationMutationVariables>;
 export const RequestShelterClaimDocument = gql`
     mutation requestShelterClaim($shelter_id: ID!, $data: ShelterClaimInput!) {
   requestShelterClaim(shelter_id: $shelter_id, data: $data) {
@@ -8359,6 +8819,58 @@ export type GetShelterPetQueryHookResult = ReturnType<typeof useGetShelterPetQue
 export type GetShelterPetLazyQueryHookResult = ReturnType<typeof useGetShelterPetLazyQuery>;
 export type GetShelterPetSuspenseQueryHookResult = ReturnType<typeof useGetShelterPetSuspenseQuery>;
 export type GetShelterPetQueryResult = Apollo.QueryResult<GetShelterPetQuery, GetShelterPetQueryVariables>;
+export const GetShelterPetWalkingStatsDocument = gql`
+    query getShelterPetWalkingStats($shelter_pet_id: ID!, $period: StatsPeriod!) {
+  getShelterPetWalkingStats(shelter_pet_id: $shelter_pet_id, period: $period) {
+    success
+    error {
+      code
+      message
+    }
+    chart {
+      labels
+      series {
+        type
+        data
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetShelterPetWalkingStatsQuery__
+ *
+ * To run a query within a React component, call `useGetShelterPetWalkingStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShelterPetWalkingStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShelterPetWalkingStatsQuery({
+ *   variables: {
+ *      shelter_pet_id: // value for 'shelter_pet_id'
+ *      period: // value for 'period'
+ *   },
+ * });
+ */
+export function useGetShelterPetWalkingStatsQuery(baseOptions: Apollo.QueryHookOptions<GetShelterPetWalkingStatsQuery, GetShelterPetWalkingStatsQueryVariables> & ({ variables: GetShelterPetWalkingStatsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShelterPetWalkingStatsQuery, GetShelterPetWalkingStatsQueryVariables>(GetShelterPetWalkingStatsDocument, options);
+      }
+export function useGetShelterPetWalkingStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShelterPetWalkingStatsQuery, GetShelterPetWalkingStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShelterPetWalkingStatsQuery, GetShelterPetWalkingStatsQueryVariables>(GetShelterPetWalkingStatsDocument, options);
+        }
+export function useGetShelterPetWalkingStatsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetShelterPetWalkingStatsQuery, GetShelterPetWalkingStatsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShelterPetWalkingStatsQuery, GetShelterPetWalkingStatsQueryVariables>(GetShelterPetWalkingStatsDocument, options);
+        }
+export type GetShelterPetWalkingStatsQueryHookResult = ReturnType<typeof useGetShelterPetWalkingStatsQuery>;
+export type GetShelterPetWalkingStatsLazyQueryHookResult = ReturnType<typeof useGetShelterPetWalkingStatsLazyQuery>;
+export type GetShelterPetWalkingStatsSuspenseQueryHookResult = ReturnType<typeof useGetShelterPetWalkingStatsSuspenseQuery>;
+export type GetShelterPetWalkingStatsQueryResult = Apollo.QueryResult<GetShelterPetWalkingStatsQuery, GetShelterPetWalkingStatsQueryVariables>;
 export const GetShelterPublicProfileDocument = gql`
     query getShelterPublicProfile($id: ID!) {
   getShelter(id: $id) {

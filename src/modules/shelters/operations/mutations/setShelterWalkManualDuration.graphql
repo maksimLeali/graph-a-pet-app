@@ -1,0 +1,12 @@
+mutation setShelterWalkManualDuration($id: ID!, $duration_minutes: Int!) {
+	setShelterWalkManualDuration(id: $id, duration_minutes: $duration_minutes) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_walk {
+			...MinShelterWalk
+		}
+	}
+}
