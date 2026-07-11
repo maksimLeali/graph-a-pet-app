@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { WalkRatingType, StatsPeriod } from "@types";
 import { I18NKey } from "@i18n";
+import { $uw } from "@theme";
 import {
 	WalkRatingsSummaryCard,
 	walkRatingLabels,
@@ -140,11 +141,6 @@ export const WalkingStatsCard: React.FC<Props> = ({
 
 	return (
 		<Screen>
-			<TitleBlock>
-				<Title>{t("stats.title")}</Title>
-				<Underline />
-			</TitleBlock>
-
 			<PeriodLabel>{t(RANGE_LABEL_KEY[period])}</PeriodLabel>
 
 			<Tabs>
@@ -254,38 +250,15 @@ export const WalkingStatsCard: React.FC<Props> = ({
 
 const Screen = styled.div`
 	width: 100%;
-	max-width: 420px;
-	margin: 0 auto;
 	box-sizing: border-box;
-	background: #030704;
-	padding: 24px 16px 40px;
+	padding: ${$uw(1.5)} 12px ${$uw(4)};
 	display: flex;
 	flex-direction: column;
-	gap: 22px;
-`;
-
-const TitleBlock = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-`;
-
-const Title = styled.div`
-	font-size: 26px;
-	font-weight: 800;
-	color: #f1f7f2;
-	letter-spacing: -0.02em;
-`;
-
-const Underline = styled.div`
-	height: 2px;
-	width: 46px;
-	background: #00c565;
-	border-radius: 2px;
+	gap: ${$uw(1.5)};
 `;
 
 const PeriodLabel = styled.div`
-	font-size: 15px;
+	font-size: 1.5rem;
 	font-weight: 700;
 	color: #b5c2b7;
 	text-transform: capitalize;
@@ -293,9 +266,9 @@ const PeriodLabel = styled.div`
 
 const Tabs = styled.div`
 	display: flex;
-	gap: 8px;
+	gap: ${$uw(0.5)};
 	background: #080f0a;
-	padding: 4px;
+	padding: ${$uw(0.25)};
 	border-radius: 14px;
 	border: 1px solid #1e2d2280;
 `;
@@ -303,10 +276,10 @@ const Tabs = styled.div`
 const Tab = styled.button`
 	flex: 1;
 	text-align: center;
-	padding: 10px 0;
+	padding: ${$uw(0.6)} 0;
 	border: none;
 	border-radius: 10px;
-	font-size: 14px;
+	font-size: 1.4rem;
 	font-weight: 700;
 	cursor: pointer;
 	user-select: none;

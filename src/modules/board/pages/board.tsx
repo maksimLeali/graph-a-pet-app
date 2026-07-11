@@ -62,6 +62,7 @@ export const Board: React.FC = () => {
                 order_direction: "DESC",
                 page_size: PAGE_SIZE,
                 page: currentPage,
+                filters: null,
             },
         },
         onCompleted
