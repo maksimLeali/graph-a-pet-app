@@ -10,6 +10,7 @@ import { Icon } from "@components";
 import { $color, $uw } from "@theme";
 import { TaskCard } from "../components/TaskCard";
 import { useShelterTasks } from "../hooks/useShelterTasks";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 import { useCompleteShelterTaskMutation } from "../operations/__generated__/completeShelterTask.generated";
 import { useSkipShelterTaskMutation } from "../operations/__generated__/skipShelterTask.generated";
 import { useDeleteShelterTaskMutation } from "../operations/__generated__/deleteShelterTask.generated";
@@ -20,6 +21,7 @@ export const ShelterTasksList: React.FC = () => {
 	const { setPage } = useUserContext();
 	const history = useHistory();
 	const { tasks, loading, error, refetch } = useShelterTasks(id);
+	const { can } = useShelterAuthorization(id);
 
 	useEffect(() => {
 		setPage({ name: t("shelters.tabs.tasks") });
@@ -40,13 +42,15 @@ export const ShelterTasksList: React.FC = () => {
 		<IonContent>
 			<Header>
 				<h2>{t("shelters.tabs.tasks")}</h2>
-				<AddButton
-					type="button"
-					onClick={() => history.push(`/shelters/detail/${id}/tasks/new`)}
-				>
-					<Icon name="add" color="light" size="18px" />
-					<span>{t("shelters.tasks.add")}</span>
-				</AddButton>
+				{can("shelters.tasks.create") && (
+					<AddButton
+						type="button"
+						onClick={() => history.push(`/shelters/detail/${id}/tasks/new`)}
+					>
+						<Icon name="add" color="light" size="18px" />
+						<span>{t("shelters.tasks.add")}</span>
+					</AddButton>
+				)}
 			</Header>
 
 			<List>
@@ -54,6 +58,9 @@ export const ShelterTasksList: React.FC = () => {
 					<TaskCard
 						key={task.id}
 						task={task}
+						canExecute={can("shelters.tasks.execute")}
+						canEdit={can("shelters.tasks.update")}
+						canDelete={can("shelters.tasks.delete")}
 						onOpen={(tid) =>
 							history.push(`/shelters/detail/${id}/tasks/${tid}`)
 						}

@@ -27,6 +27,10 @@ type Props = {
     selectedKey?: string | null;
     editMode: boolean;
     onSelectShape: (key: string | null) => void;
+    // più elementi sovrapposti: lista ordinata top→bottom
+    onStackTap?: (shapes: CanvasShape[]) => void;
+    // centra + zooma su questa forma appena aggiunta
+    focusShape?: { x: number; y: number; width: number; height: number } | null;
     // notifica ingresso/uscita dalla modalità resize (long-press)
     onResizeModeChange?: (key: string | null) => void;
     onTapBox: (key: string) => void;
@@ -185,6 +189,8 @@ export const MapCanvas: React.FC<Props> = ({
     selectedKey,
     editMode,
     onSelectShape,
+    onStackTap,
+    focusShape,
     onResizeModeChange,
     onTapBox,
     onDragShape,
@@ -217,6 +223,27 @@ export const MapCanvas: React.FC<Props> = ({
     const [resizeKey, setResizeKey] = useState<string | null>(null);
     const resizeKeyRef = useRef<string | null>(null);
     resizeKeyRef.current = resizeKey;
+
+    // pan + zoom sull'elemento appena aggiunto
+    useEffect(() => {
+        if (!focusShape || size.w === 0 || size.h === 0) return;
+        const cx = focusShape.x + focusShape.width / 2;
+        const cy = focusShape.y + focusShape.height / 2;
+        const targetScale = Math.min(
+            MAX_SCALE,
+            Math.max(MIN_SCALE, Math.min(
+                size.w / (focusShape.width * 3),
+                size.h / (focusShape.height * 3),
+            )),
+        );
+        setView((v) => ({
+            scale: targetScale,
+            tx: size.w / 2 - cx * targetScale,
+            ty: size.h / 2 - cy * targetScale,
+            rot: v.rot,
+        }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [focusShape]);
 
     // notifica il parent quando entro/esco dalla modalità resize
     useEffect(() => {
@@ -383,6 +410,21 @@ export const MapCanvas: React.FC<Props> = ({
         [shapes],
     );
 
+    const hitTestAll = useCallback(
+        (sx: number, sy: number): CanvasShape[] => {
+            const p = toMap(sx, sy);
+            const order = [...shapes].reverse();
+            return order.filter(
+                (s) =>
+                    p.x >= s.x &&
+                    p.x <= s.x + s.width &&
+                    p.y >= s.y &&
+                    p.y <= s.y + s.height,
+            );
+        },
+        [shapes],
+    );
+
     const handleHitTest = useCallback(
         (
             sx: number,
@@ -447,7 +489,21 @@ export const MapCanvas: React.FC<Props> = ({
                 return;
             }
         }
-        const hit = hitTest(p.x, p.y);
+        // prefer dragging the currently selected shape even when buried under others
+        const hit: CanvasShape | null = (() => {
+            if (editMode && selectedKey) {
+                const sel = shapes.find((s) => s.key === selectedKey);
+                if (sel) {
+                    const mp = toMap(p.x, p.y);
+                    if (
+                        mp.x >= sel.x && mp.x <= sel.x + sel.width &&
+                        mp.y >= sel.y && mp.y <= sel.y + sel.height
+                    )
+                        return sel;
+                }
+            }
+            return hitTest(p.x, p.y);
+        })();
         if (editMode && hit && hit.key === selectedKey) {
             g.mode = "drag";
             g.dragKey = hit.key;
@@ -629,11 +685,24 @@ export const MapCanvas: React.FC<Props> = ({
                 g.mode !== "pinch" &&
                 g.mode !== "resize"
             ) {
-                const hit = hitTest(p.x, p.y);
-                if (hit && hit.kind === "box" && !editMode) onTapBox(hit.key);
-                else {
-                    onSelectShape(hit ? hit.key : null);
-                    if (!hit) setResizeKey(null);
+                const allHits = hitTestAll(p.x, p.y);
+                const hit = allHits[0] ?? null;
+                if (allHits.length > 1 && onStackTap) {
+                    // se la forma già selezionata è ancora tra i hit, mantieni la selezione
+                    // stabile: evita che ogni tap nell'area sovrapposta resetti la selezione
+                    if (selectedKey && allHits.some((s) => s.key === selectedKey)) {
+                        // no-op: selezione già corretta
+                    } else {
+                        onSelectShape(null);
+                        setResizeKey(null);
+                        onStackTap(allHits);
+                    }
+                } else {
+                    if (hit && hit.kind === "box" && !editMode) onTapBox(hit.key);
+                    else {
+                        onSelectShape(hit ? hit.key : null);
+                        if (!hit) setResizeKey(null);
+                    }
                 }
             }
             g.mode = "none";

@@ -1781,6 +1781,7 @@ export type Query = {
   listWalkRatings: PaginatedWalkRatings;
   listWalks: PaginatedWalks;
   me: UserResult;
+  myShelterAuthorization: ShelterAuthorizationResult;
 };
 
 
@@ -2166,6 +2167,11 @@ export type QueryListWalksArgs = {
   commonSearch?: InputMaybe<CommonSearch>;
 };
 
+
+export type QueryMyShelterAuthorizationArgs = {
+  shelter_id: Scalars['ID']['input'];
+};
+
 export type RangeFilter = {
   key: Scalars['String']['input'];
   value?: InputMaybe<RangeFilterValue>;
@@ -2386,6 +2392,20 @@ export type ShelterAreaUpsert = {
   x: Scalars['Float']['input'];
   y: Scalars['Float']['input'];
   zone_id: Scalars['ID']['input'];
+};
+
+export type ShelterAuthorization = {
+  __typename?: 'ShelterAuthorization';
+  membership_status?: Maybe<Scalars['String']['output']>;
+  permissions: Array<Scalars['String']['output']>;
+  shelter_id: Scalars['ID']['output'];
+};
+
+export type ShelterAuthorizationResult = {
+  __typename?: 'ShelterAuthorizationResult';
+  authorization?: Maybe<ShelterAuthorization>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type ShelterBox = {
@@ -4341,6 +4361,13 @@ export type ListSheltersQueryVariables = Exact<{
 
 
 export type ListSheltersQuery = { __typename?: 'Query', listShelters: { __typename?: 'PaginatedShelters', success?: boolean | null, items: Array<{ __typename?: 'Shelter', id: string, name: string, city: string, region?: string | null, street: string, street_number: string, postal_code: string, province_code: string, type: ShelterType, verification_status: ShelterVerificationStatus, visibility: ShelterVisibility, contacts?: Array<{ __typename?: 'ShelterContact', type?: string | null, value?: string | null } | null> | null } | null>, error?: { __typename?: 'Error', code: string, message: string } | null, pagination: { __typename?: 'Pagination', current_page?: number | null, page_size?: number | null, total_items?: number | null, total_pages?: number | null } } };
+
+export type MyShelterAuthorizationQueryVariables = Exact<{
+  shelter_id: Scalars['ID']['input'];
+}>;
+
+
+export type MyShelterAuthorizationQuery = { __typename?: 'Query', myShelterAuthorization: { __typename?: 'ShelterAuthorizationResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, authorization?: { __typename?: 'ShelterAuthorization', shelter_id: string, membership_status?: string | null, permissions: Array<string> } | null } };
 
 export const FullReportFragmentDoc = gql`
     fragment FullReport on Report {
@@ -9828,3 +9855,52 @@ export type ListSheltersQueryHookResult = ReturnType<typeof useListSheltersQuery
 export type ListSheltersLazyQueryHookResult = ReturnType<typeof useListSheltersLazyQuery>;
 export type ListSheltersSuspenseQueryHookResult = ReturnType<typeof useListSheltersSuspenseQuery>;
 export type ListSheltersQueryResult = Apollo.QueryResult<ListSheltersQuery, ListSheltersQueryVariables>;
+export const MyShelterAuthorizationDocument = gql`
+    query myShelterAuthorization($shelter_id: ID!) {
+  myShelterAuthorization(shelter_id: $shelter_id) {
+    success
+    error {
+      code
+      message
+    }
+    authorization {
+      shelter_id
+      membership_status
+      permissions
+    }
+  }
+}
+    `;
+
+/**
+ * __useMyShelterAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useMyShelterAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyShelterAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyShelterAuthorizationQuery({
+ *   variables: {
+ *      shelter_id: // value for 'shelter_id'
+ *   },
+ * });
+ */
+export function useMyShelterAuthorizationQuery(baseOptions: Apollo.QueryHookOptions<MyShelterAuthorizationQuery, MyShelterAuthorizationQueryVariables> & ({ variables: MyShelterAuthorizationQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyShelterAuthorizationQuery, MyShelterAuthorizationQueryVariables>(MyShelterAuthorizationDocument, options);
+      }
+export function useMyShelterAuthorizationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyShelterAuthorizationQuery, MyShelterAuthorizationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyShelterAuthorizationQuery, MyShelterAuthorizationQueryVariables>(MyShelterAuthorizationDocument, options);
+        }
+export function useMyShelterAuthorizationSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MyShelterAuthorizationQuery, MyShelterAuthorizationQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MyShelterAuthorizationQuery, MyShelterAuthorizationQueryVariables>(MyShelterAuthorizationDocument, options);
+        }
+export type MyShelterAuthorizationQueryHookResult = ReturnType<typeof useMyShelterAuthorizationQuery>;
+export type MyShelterAuthorizationLazyQueryHookResult = ReturnType<typeof useMyShelterAuthorizationLazyQuery>;
+export type MyShelterAuthorizationSuspenseQueryHookResult = ReturnType<typeof useMyShelterAuthorizationSuspenseQuery>;
+export type MyShelterAuthorizationQueryResult = Apollo.QueryResult<MyShelterAuthorizationQuery, MyShelterAuthorizationQueryVariables>;

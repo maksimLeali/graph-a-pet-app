@@ -1,0 +1,14 @@
+query myShelterAuthorization($shelter_id: ID!) {
+	myShelterAuthorization(shelter_id: $shelter_id) {
+		success
+		error {
+			code
+			message
+		}
+		authorization {
+			shelter_id
+			membership_status
+			permissions
+		}
+	}
+}

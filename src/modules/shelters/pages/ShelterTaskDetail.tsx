@@ -18,6 +18,7 @@ import { useGetShelterTaskQuery } from "../operations/__generated__/getShelterTa
 import { useCompleteShelterTaskMutation } from "../operations/__generated__/completeShelterTask.generated";
 import { useSkipShelterTaskMutation } from "../operations/__generated__/skipShelterTask.generated";
 import { useDeleteShelterTaskMutation } from "../operations/__generated__/deleteShelterTask.generated";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 
 const TYPE_ICON: Record<ShelterTaskType, IconName> = {
 	[ShelterTaskType.Cleaning]: "sparkles",
@@ -48,6 +49,7 @@ export const ShelterTaskDetail: React.FC = () => {
 		fetchPolicy: "cache-and-network",
 	});
 	const task = data?.getShelterTask?.shelter_task;
+	const { can } = useShelterAuthorization(id);
 
 	useEffect(() => {
 		setPage({
@@ -166,7 +168,7 @@ export const ShelterTaskDetail: React.FC = () => {
 			)}
 
 			<Actions>
-				{open && (
+				{open && can("shelters.tasks.execute") && (
 					<>
 						<ActionBtn
 							$variant="solid-success"
@@ -194,18 +196,20 @@ export const ShelterTaskDetail: React.FC = () => {
 							<Icon name="playSkipForward" color="medium" size="16px" />
 							<span>{t("actions.skip")}</span>
 						</ActionBtn>
-						<ActionBtn
-							$variant="outline-success"
-							onClick={() =>
-								history.push(`/shelters/detail/${id}/tasks/${task.id}/edit`)
-							}
-						>
-							<Icon name="pencil" color="success" size="14px" />
-							<span>{t("shelters.tasks.edit")}</span>
-						</ActionBtn>
 					</>
 				)}
-				{!open && (
+				{open && can("shelters.tasks.update") && (
+					<ActionBtn
+						$variant="outline-success"
+						onClick={() =>
+							history.push(`/shelters/detail/${id}/tasks/${task.id}/edit`)
+						}
+					>
+						<Icon name="pencil" color="success" size="14px" />
+						<span>{t("shelters.tasks.edit")}</span>
+					</ActionBtn>
+				)}
+				{!open && can("shelters.tasks.delete") && (
 					<ActionBtn
 						$variant="solid-danger"
 						disabled={deleting}

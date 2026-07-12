@@ -592,7 +592,8 @@
         "box_full": "Box is full",
         "find_pet": "Tier finden",
         "search_pet": "Tier suchen",
-        "pet_not_assigned": "Noch nicht zugewiesen, frage den Verantwortlichen"
+        "pet_not_assigned": "Noch nicht zugewiesen, frage den Verantwortlichen",
+        "overlapping": "Überlagerte Elemente"
       },
       "placement": {
         "title": "Placement",
@@ -1255,7 +1256,8 @@
         "box_full": "Box is full",
         "find_pet": "Find pet",
         "search_pet": "Search pet",
-        "pet_not_assigned": "Not assigned yet, ask the manager for info"
+        "pet_not_assigned": "Not assigned yet, ask the manager for info",
+        "overlapping": "Overlapping elements"
       },
       "placement": {
         "title": "Placement",
@@ -1906,7 +1908,8 @@
         "box_full": "Box is full",
         "find_pet": "Buscar animal",
         "search_pet": "Buscar animal",
-        "pet_not_assigned": "Aún no asignado, pide información al responsable"
+        "pet_not_assigned": "Aún no asignado, pide información al responsable",
+        "overlapping": "Elementos superpuestos"
       },
       "placement": {
         "title": "Placement",
@@ -2557,7 +2560,8 @@
         "box_full": "Box is full",
         "find_pet": "Trouver un animal",
         "search_pet": "Rechercher un animal",
-        "pet_not_assigned": "Pas encore attribué, demandez au responsable"
+        "pet_not_assigned": "Pas encore attribué, demandez au responsable",
+        "overlapping": "Éléments superposés"
       },
       "placement": {
         "title": "Placement",
@@ -3240,7 +3244,8 @@
         "box_full": "Box pieno",
         "find_pet": "Trova animale",
         "search_pet": "Cerca animale",
-        "pet_not_assigned": "Non ancora assegnato, chiedi informazioni al responsabile"
+        "pet_not_assigned": "Non ancora assegnato, chiedi informazioni al responsabile",
+        "overlapping": "Elementi sovrapposti"
       },
       "placement": {
         "title": "Collocazione",
@@ -3901,7 +3906,8 @@
         "box_full": "Box is full",
         "find_pet": "Найти питомца",
         "search_pet": "Поиск питомца",
-        "pet_not_assigned": "Ещё не назначен, обратитесь к ответственному"
+        "pet_not_assigned": "Ещё не назначен, обратитесь к ответственному",
+        "overlapping": "Перекрывающиеся элементы"
       },
       "placement": {
         "title": "Placement",

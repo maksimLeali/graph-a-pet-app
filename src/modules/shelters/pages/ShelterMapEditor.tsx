@@ -128,6 +128,8 @@ export const ShelterMapEditor: React.FC = () => {
     });
     const [editMode, setEditMode] = useState(false);
     const [selectedKey, setSelectedKey] = useState<string | null>(null);
+    const [tapStack, setTapStack] = useState<CanvasShape[]>([]);
+    const [focusShape, setFocusShape] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
     // zona attiva: box/area nuovi ci finiscono dentro (vincolo zone_id NOT NULL)
     const [activeZoneKey, setActiveZoneKey] = useState<string | null>(null);
     // "seleziona tutto" (default ON): spostando zona/area muove anche i contenuti;
@@ -497,7 +499,7 @@ export const ShelterMapEditor: React.FC = () => {
                 width: Math.max(1, b.width),
                 height: Math.max(1, b.height),
                 rotation: b.rotation,
-                fill: STATUS_FILL[status] || STATUS_FILL.FREE,
+                fill: STATUS_FILL[status] || STATUS_FILL.AVAILABLE,
                 stroke: "rgba(0,0,0,0.35)",
                 strokeWidth: 1,
                 label: b.label,
@@ -690,21 +692,20 @@ export const ShelterMapEditor: React.FC = () => {
 
     const addZone = () => {
         const zid = genId();
+        const bounds = { x: dims.width / 2 - 8, y: dims.height / 2 - 8, width: 16, height: 16 };
         setZones((z) => [
             ...z,
             {
                 key: zid,
                 id: zid,
                 name: nextName("Zona", z.map((x) => x.name)),
-                x: dims.width / 2 - 8,
-                y: dims.height / 2 - 8,
-                width: 16,
-                height: 16,
+                ...bounds,
                 color: "rgba(63,81,181,0.08)",
             },
         ]);
         setSelectedKey(zid);
         setActiveZoneKey(zid);
+        setFocusShape(bounds);
     };
 
     const addBox = () => {
@@ -715,15 +716,14 @@ export const ShelterMapEditor: React.FC = () => {
         }
         setActiveZoneKey(z.key);
         const k = tmpKey("box");
-        const cx = z.x + z.width / 2 - 3;
-        const cy = z.y + z.height / 2 - 3;
+        const bounds = clampToMap(z.x + z.width / 2 - 7.5, z.y + z.height / 2 - 7.5, 15, 15);
         setBoxes((b) => [
             ...b,
             {
                 key: k,
                 zone_id: z.id,
                 label: nextName("Box", b.map((x) => x.label)),
-                ...clampToMap(cx, cy, 6, 6),
+                ...bounds,
                 rotation: 0,
                 capacity: 1,
                 status: "FREE",
@@ -732,6 +732,7 @@ export const ShelterMapEditor: React.FC = () => {
             },
         ]);
         setSelectedKey(k);
+        setFocusShape(bounds);
     };
     const addArea = () => {
         const z = targetZone();
@@ -741,8 +742,7 @@ export const ShelterMapEditor: React.FC = () => {
         }
         setActiveZoneKey(z.key);
         const k = tmpKey("area");
-        const cx = z.x + z.width / 2 - 6;
-        const cy = z.y + z.height / 2 - 6;
+        const bounds = clampToMap(z.x + z.width / 2 - 15, z.y + z.height / 2 - 15, 30, 30);
         setAreas((a) => [
             ...a,
             {
@@ -750,28 +750,28 @@ export const ShelterMapEditor: React.FC = () => {
                 zone_id: z.id,
                 name: nextName("Area", a.map((x) => x.name)),
                 area_type: AreaType.Kennel,
-                ...clampToMap(cx, cy, 12, 12),
+                ...bounds,
                 color: "#4CAF5033",
             },
         ]);
         setSelectedKey(k);
+        setFocusShape(bounds);
     };
     const addElement = () => {
         const k = tmpKey("el");
+        const bounds = { x: dims.width / 2 - 4, y: dims.height / 2 - 0.5, width: 8, height: 1 };
         setElements((e) => [
             ...e,
             {
                 key: k,
                 element_type: MapElementType.Wall,
-                x: dims.width / 2 - 4,
-                y: dims.height / 2 - 0.5,
-                width: 8,
-                height: 1,
+                ...bounds,
                 rotation: 0,
                 color: "#5b5b5b",
             },
         ]);
         setSelectedKey(k);
+        setFocusShape(bounds);
     };
 
     const deleteSelected = () => {
@@ -781,22 +781,19 @@ export const ShelterMapEditor: React.FC = () => {
             if (id && !isTmp(key) && bucket) bucket.push(id);
         };
         const b = boxes.find((x) => x.key === key);
+        const a = areas.find((x) => x.key === key);
+        const e = elements.find((x) => x.key === key);
+        const z = zones.find((x) => x.key === key);
         if (b) {
             drop(b.id, deleted.current.boxes);
             setBoxes((arr) => arr.filter((x) => x.key !== key));
-        }
-        const a = areas.find((x) => x.key === key);
-        if (a) {
+        } else if (a) {
             drop(a.id, deleted.current.areas);
             setAreas((arr) => arr.filter((x) => x.key !== key));
-        }
-        const e = elements.find((x) => x.key === key);
-        if (e) {
+        } else if (e) {
             drop(e.id, deleted.current.elements);
             setElements((arr) => arr.filter((x) => x.key !== key));
-        }
-        const z = zones.find((x) => x.key === key);
-        if (z) {
+        } else if (z) {
             // cancellando la zona spariscono anche box/aree contenuti (CASCADE lato
             // DB). Locale: rimuovo i figli per contenimento e ne accodo gli id reali.
             const childOf = (s: {
@@ -1009,6 +1006,7 @@ export const ShelterMapEditor: React.FC = () => {
     };
 
     const handleSelectShape = (key: string | null) => {
+        setTapStack([]);
         if (!key) {
             setSelectedKey(null);
             setSheetOpen(false);
@@ -1029,6 +1027,20 @@ export const ShelterMapEditor: React.FC = () => {
             setSelectedKey(key);
             setSheetOpen(false);
             lastTapRef.current = { key, time: now };
+        }
+    };
+
+    const handleStackTap = (stack: CanvasShape[]) => setTapStack(stack);
+
+    const selectFromStack = (s: CanvasShape) => {
+        setTapStack([]);
+        if (!editMode && s.kind === "box") {
+            if (canAssign) setAssignBoxKey(s.key);
+        } else {
+            if (zones.some((z) => z.key === s.key)) setActiveZoneKey(s.key);
+            setSelectedKey(s.key);
+            setSheetOpen(true);
+            lastTapRef.current = null;
         }
     };
 
@@ -1380,6 +1392,8 @@ export const ShelterMapEditor: React.FC = () => {
                     selectedKey={selectedKey}
                     editMode={editMode}
                     onSelectShape={handleSelectShape}
+                    onStackTap={handleStackTap}
+                    focusShape={focusShape}
                     onResizeModeChange={(k) => {
                         setResizeModeKey(k);
                         setPropsPeekOpen(false);
@@ -1401,7 +1415,7 @@ export const ShelterMapEditor: React.FC = () => {
             )}
 
             <Legend>
-                <L $c={STATUS_FILL.FREE}>{t("shelters.map.free")}</L>
+                <L $c={STATUS_FILL.AVAILABLE}>{t("shelters.map.free")}</L>
                 <L $c={STATUS_FILL.OCCUPIED}>{t("shelters.map.occupied")}</L>
                 <L $c={STATUS_FILL.FULL}>{t("shelters.map.full")}</L>
                 <L $c={STATUS_FILL.OUT_OF_SERVICE}>{t("shelters.map.oos")}</L>
@@ -1476,6 +1490,31 @@ export const ShelterMapEditor: React.FC = () => {
                 </EditDock>
             )}
             {editMode && <DockSpacer />}
+
+            {/* stack picker: elementi sovrapposti */}
+            {tapStack.length > 1 && (
+                <Sheet>
+                    <SheetHead>
+                        <b>{t("shelters.map.overlapping")}</b>
+                        <Icon
+                            name="close"
+                            color="medium"
+                            onClick={() => setTapStack([])}
+                        />
+                    </SheetHead>
+                    {tapStack.map((s, i) => (
+                        <StackRow
+                            key={s.key}
+                            $active={s.key === selectedKey}
+                            onClick={() => selectFromStack(s)}
+                        >
+                            <StackDot $fill={s.fill} $stroke={s.stroke} />
+                            <span>{s.label || kindLabel(s.kind)}</span>
+                            {i === 0 && <StackTopBadge>↑</StackTopBadge>}
+                        </StackRow>
+                    ))}
+                </Sheet>
+            )}
 
             {/* props sheet: in resize (long-press) resta a linguetta finché non lo apro */}
             {editMode &&
@@ -1941,6 +1980,47 @@ const ToolBtn = styled.button`
         opacity: 0.5;
     }
 `;
+function kindLabel(kind: CanvasShape["kind"]): string {
+    switch (kind) {
+        case "zone": return "Zona";
+        case "area": return "Area";
+        case "box": return "Box";
+        case "element": return "Elemento";
+    }
+}
+
+const StackRow = styled.button<{ $active: boolean }>`
+    display: flex;
+    align-items: center;
+    gap: ${$uw(0.75)};
+    padding: ${$uw(0.75)} ${$uw(1)};
+    border-radius: 10px;
+    border: 1px solid ${({ $active }) => ($active ? $color("primary") : "transparent")};
+    background: rgba(var(--ion-color-primary-rgb), ${({ $active }) => ($active ? "0.10" : "0.05")});
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    > span {
+        flex: 1;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+`;
+
+const StackDot = styled.span<{ $fill: string; $stroke: string }>`
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    background: ${({ $fill }) => $fill};
+    border: 1.5px solid ${({ $stroke }) => $stroke};
+`;
+
+const StackTopBadge = styled.span`
+    font-size: 1.2rem;
+    color: ${$color("medium")};
+`;
+
 const Sheet = styled.div`
     position: fixed;
     left: 0;

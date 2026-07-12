@@ -17,6 +17,10 @@ type Props = {
 	onSkip: (id: string) => void;
 	onEdit: (id: string) => void;
 	onDelete: (id: string) => void;
+	/** RBAC gates from useShelterAuthorization; actions hide when false */
+	canExecute?: boolean;
+	canEdit?: boolean;
+	canDelete?: boolean;
 };
 
 const TYPE_ICON: Record<ShelterTaskType, IconName> = {
@@ -35,6 +39,9 @@ export const TaskCard: React.FC<Props> = ({
 	onSkip,
 	onEdit,
 	onDelete,
+	canExecute = true,
+	canEdit = true,
+	canDelete = true,
 }) => {
 	const { t } = useTranslation();
 	const open =
@@ -49,13 +56,23 @@ export const TaskCard: React.FC<Props> = ({
 
 	const menuItems: ActionMenuItem[] = open
 		? [
-				{ icon: "checkmark", label: t("actions.complete"), onClick: () => onComplete(task.id) },
-				{ icon: "playSkipForward", label: t("actions.skip"), onClick: () => onSkip(task.id) },
-				{ icon: "pencil", label: t("actions.edit"), onClick: () => onEdit(task.id) },
+				...(canExecute
+					? ([
+							{ icon: "checkmark", label: t("actions.complete"), onClick: () => onComplete(task.id) },
+							{ icon: "playSkipForward", label: t("actions.skip"), onClick: () => onSkip(task.id) },
+					  ] as ActionMenuItem[])
+					: []),
+				...(canEdit
+					? ([
+							{ icon: "pencil", label: t("actions.edit"), onClick: () => onEdit(task.id) },
+					  ] as ActionMenuItem[])
+					: []),
 		  ]
-		: [
+		: canDelete
+		? [
 				{ icon: "trashOutline", label: t("actions.delete"), tone: "danger", onClick: () => onDelete(task.id) },
-		  ];
+		  ]
+		: [];
 
 	return (
 		<Card role="button" tabIndex={0} onClick={() => onOpen(task.id)}>

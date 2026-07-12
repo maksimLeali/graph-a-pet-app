@@ -1,7 +1,7 @@
-# Graph-a-Pet — Sintesi aggiornata App + Backend
+# Graph-a-Pet — Sintesi aggiornata App + Back Office + Backend
 
-Data: 2026-07-09  
-Stato: documento di sintesi funzionale/architetturale aggiornato assumendo operative le ultime estensioni su Shelter, notifiche, persone, inviti, workspace personali, ownership, claim e discovery.
+Data: 2026-07-12  
+Stato: documento di sintesi funzionale/architetturale aggiornato assumendo operative le ultime estensioni su Shelter, notifiche, persone, inviti, workspace personali, ownership, claim e discovery. Aggiunto back office Next.js.
 
 ---
 
@@ -708,6 +708,18 @@ Regole:
 - massimo una istanza per template e giorno pianificato;
 - duplicate prevention tramite vincolo o controllo equivalente.
 
+### 15.1 Formato datetime backend (implementazione)
+
+Il repository `shelter_tasks` usa:
+
+```python
+DATE_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
+```
+
+Qualsiasi valore `scheduled_at` inviato al backend deve essere in questo formato esatto (ISO 8601 full UTC con milliseconds e Z finale). Input `datetime-local` HTML restituisce `YYYY-MM-DDTHH:MM` senza timezone — va convertito con `new Date(v).toISOString()` prima di inviare la mutation.
+
+`_parse_date` accetta anche date-only (`YYYY-MM-DD`) e le salva come `scheduled_date` (senza orario).
+
 ---
 
 ## 16. Shelter walks
@@ -1018,3 +1030,75 @@ Con queste estensioni, Graph-a-Pet non è solo una PWA per pet owner, ma una pia
    Rifugi ufficiali con ruoli, persone, box, task, walk, inventory, dashboard, discovery, candidature, notifiche e verifica.
 
 La direzione architetturale è coerente: il frontend rimane mobile-first e modulare, mentre il backend mantiene separazione tra GraphQL API, domain logic e repository. I nuovi flussi risolvono il problema centrale di collegare in modo naturale utenti, rifugi, persone offline, volontari e responsabili reali senza compromettere permessi, privacy o qualità dei dati.
+
+---
+
+## 24. Back Office — graph-a-pet-back-office-next
+
+### 24.1 Stack
+
+Web app di gestione separata dall'app mobile:
+
+- **Next.js 14+ (App Router)** per routing e rendering server-side;
+- **Apollo Client 3.13** — deve restare v3 (v4 rompe i file generati da codegen);
+- **GraphQL Code Generator** — versioni pinnate identiche a graph-a-pet-app: cli 5.0.7, typescript 4.1.6, operations 4.6.1, react-apollo 4.3.3, near-operation-file 3.1.0;
+- **styled-components v6 + @lemaks/grid_system** — mai Tailwind;
+- Tema: `$uw(n)` per spacing (1uw = 15px, griglia 32 col), `$color(nome)`, convenzione `html { font-size: 10px }` + `body { font-size: 1.4rem }` (1rem = 10px, baseline testo 14px);
+- **@lemaks/grid_system NON importabile da Server Components** (usa `createContext`) → le variabili CSS del tema sono iniettate dal registry client `src/lib/registry.tsx`.
+
+### 24.2 Ambiente e vincoli
+
+- Node di sistema 20.11.0 troppo vecchio per codegen CLI ≥5 e dipendenze transitive ESLint;
+- **Workaround attivo**: Node 22.23.1 portable in `C:\Users\Mario\projects\GAP\.tools\node-v22.23.1-win-x64` — da prependere al PATH per build e codegen;
+- Le operazioni GraphQL BO usano il suffisso `BO` nei nomi (es. `createShelterTaskBO`, `listOperationalShelterTasksBO`).
+
+### 24.3 Gestione shelter — tab
+
+La pagina principale di un shelter è tabbed:
+
+```text
+Mappa       → editor SVG interattivo per la pianta interna
+Box         → elenco box con stato (AVAILABLE/OCCUPIED/FULL/…)
+Inventario  → movimenti di magazzino
+Task        → task operativi: create / complete / skip / delete
+Passeggiate → walk: create / start / complete / cancel / delete
+Animali     → shelter pets collegati
+Persone     → ShelterPerson (contatti/visitatori senza account)
+Membri      → ShelterRole (utenti con ruolo operativo)
+```
+
+### 24.4 Shelter Map Editor (SVG canvas)
+
+Editor interattivo per la mappa planimetrica dello shelter.
+
+Tipi di forma:
+```text
+box     → rettangoli numerati che rappresentano gabbie/recinti
+area    → zone funzionali (es. area medica, ufficio)
+element → oggetti fissi (es. fontanelle, scale)
+zone    → macro-aree contenenti box/area/element
+```
+
+Funzionalità canvas:
+- pan/zoom, drag, resize con pointer events;
+- long-press per attivare modalità selezione/editing;
+- **stack picker**: tap su forme sovrapposte apre un selettore della forma da gestire;
+- selezione stabile: se la forma già selezionata è nel gruppo sovrapposto, il picker non viene riproposto;
+- `deleteSelected` usa catena `else if` per evitare cascade (eliminare un'area non elimina le zone che la contengono).
+
+### 24.5 Pattern tecnici rilevanti
+
+**datetime-local → ISO conversion**  
+L'input `type="datetime-local"` HTML restituisce `YYYY-MM-DDTHH:MM` senza timezone. Il backend (vedere §15.1) richiede ISO full con millisecondi e `Z`. Conversione obbligatoria:
+```ts
+scheduled_at: v.scheduled_at ? new Date(v.scheduled_at).toISOString() : undefined
+```
+
+**Apollo cache**  
+Tutte le query di lista shelter usano `fetchPolicy: "network-only"` per evitare dati stale dopo operazioni di create/update/delete.
+
+**Gestione errori applicativi**  
+Le response GraphQL shelter seguono `{ success, error { code, message }, items }`. Il frontend controlla sempre `success` prima di usare `items`. Il toast di errore va in `useEffect`, mai inline nel render (causa toast ripetuti a ogni re-render).
+
+**React Hook Form + Input component**  
+L'input è un `forwardRef` che wrappa un `styled.input`. Il `ref` da RHF viene intercettato correttamente da React come secondo argomento del `forwardRef` e passato al DOM. Il tracking del valore avviene tramite `onChange` di RHF. Nessun `Controller` necessario per input standard (text, datetime-local, select).
