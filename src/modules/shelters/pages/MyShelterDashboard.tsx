@@ -248,7 +248,7 @@ const OverviewCell = styled.div<{ $accent?: "red" | "yellow" }>`
 		font-size: 2rem;
 		font-weight: 800;
 		color: ${({ $accent }) =>
-			$accent === "red" ? "#f87171" : $accent === "yellow" ? "#f5c518" : $color("primary")};
+			$accent === "red" ? $color("danger") : $accent === "yellow" ? $color("warning") : $color("primary")};
 	}
 	> span {
 		font-size: 1.1rem;

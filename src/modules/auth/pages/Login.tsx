@@ -27,8 +27,8 @@ export const Login: React.FC = () => {
 				toast.error(t("messages.errors.login"));
 				return;
 			}
-			setCookie("jwt", login.token);
-			setCookie("user", JSON.stringify(login.user));
+			setCookie("jwt", login.token, { path: "/" });
+			setCookie("user", JSON.stringify(login.user), { path: "/" });
 			toast.success(t("messages.success.login"));
 			timeout = setTimeout(() => {
 				if (timeout) clearTimeout(timeout);
@@ -41,7 +41,7 @@ export const Login: React.FC = () => {
 	useEffect(() => {
 		Object.keys(cookies).forEach((cookieName) => {
 			if (cookieName.startsWith("user") || cookieName.startsWith("jwt")) {
-				removeCookies(cookieName as "user" | "jwt");
+				removeCookies(cookieName as "user" | "jwt", { path: "/" });
 			}
 		});
 	}, [])

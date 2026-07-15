@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import { WalkRatingType } from "@types";
+import { $color } from "@theme";
 
 export const walkRatingLabels: Record<WalkRatingType, string> = {
 	[WalkRatingType.Overall]: "Generale",
@@ -11,7 +12,9 @@ export const walkRatingLabels: Record<WalkRatingType, string> = {
 };
 
 // dataviz-derived monochromatic green family (design handoff OKLCH values,
-// converted to hex — fixed dark card, independent of app light/dark theme)
+// converted to hex): categorical series colors stay fixed across themes,
+// same convention as the other domain colors in theme/variables.css
+// (--vaccine, --walk, ecc.) — only the card chrome below follows light/dark
 export const WALK_RATING_COLOR: Record<WalkRatingType, string> = {
 	[WalkRatingType.Overall]: "#00c565",
 	[WalkRatingType.LeashPulling]: "#24ab7e",
@@ -81,8 +84,8 @@ export const WalkRatingsSummaryCard: React.FC<Props> = ({ ratings, className }) 
 const Card = styled.div`
 	width: 100%;
 	box-sizing: border-box;
-	background: #070e09;
-	border: 1px solid #20332573;
+	background: ${$color("card-background")};
+	border: 1px solid ${$color("step-200")};
 	border-radius: 20px;
 	padding: 22px 20px;
 `;
@@ -110,7 +113,7 @@ const TopRow = styled.div`
 const Label = styled.span`
 	font-size: 14px;
 	font-weight: 500;
-	color: #8a968c;
+	color: ${$color("medium")};
 `;
 
 const ValueRow = styled.span`
@@ -128,13 +131,13 @@ const Star = styled.span<{ $color: string }>`
 const Value = styled.span`
 	font-size: 17px;
 	font-weight: 800;
-	color: #f1f7f2;
+	color: ${$color("text-color")};
 `;
 
 const BarTrack = styled.div`
 	height: 5px;
 	width: 100%;
-	background: #19221a99;
+	background: ${$color("step-150")};
 	border-radius: 3px;
 	overflow: hidden;
 `;

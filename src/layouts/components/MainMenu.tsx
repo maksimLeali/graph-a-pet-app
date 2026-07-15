@@ -47,7 +47,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 		setTimeout(() => {
 			Object.keys(cookies).forEach((cookieName) => {
 				if (cookieName.startsWith("user") || cookieName.startsWith("jwt")) {
-					removeCookies(cookieName as "user" | "jwt");
+					removeCookies(cookieName as "user" | "jwt", { path: "/" });
 				}
 			});
 			console.log('exiting')
@@ -115,7 +115,7 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 						}
 					/>
 				</ToggleOption>
-				{cookies.user.role === UserRole.Admin && (
+				{cookies.user?.role === UserRole.Admin && (
 					<ToggleOption className="gridSelector">
 						<Toggle
 							value={gridVisible}

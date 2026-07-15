@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { WalkRatingType, StatsPeriod } from "@types";
 import { I18NKey } from "@i18n";
-import { $uw } from "@theme";
+import { $color, $uw } from "@theme";
 import {
 	WalkRatingsSummaryCard,
 	walkRatingLabels,
@@ -178,7 +178,7 @@ export const WalkingStatsCard: React.FC<Props> = ({
 										y1={yFor(v)}
 										x2={PLOT_W - RIGHT_PAD}
 										y2={yFor(v)}
-										stroke="#27312980"
+										stroke="var(--ion-color-step-200)"
 										strokeWidth={1.5}
 										strokeDasharray={v === 0 ? "0" : "6 6"}
 									/>
@@ -205,7 +205,7 @@ export const WalkingStatsCard: React.FC<Props> = ({
 														cy={p.y}
 														r={8}
 														fill={WALK_RATING_COLOR[s.type]}
-														stroke="#070e09"
+														stroke="var(--ion-card-background)"
 														strokeWidth={3}
 													/>
 												))}
@@ -235,7 +235,7 @@ export const WalkingStatsCard: React.FC<Props> = ({
 								$color={color}
 								onClick={() => toggle(s.type)}
 							>
-								<Dot style={{ background: visible ? color : "#373c38" }} />
+								<Dot style={{ background: visible ? color : "var(--ion-color-step-300)" }} />
 								<span>{walkRatingLabels[s.type]}</span>
 							</Chip>
 						);
@@ -260,17 +260,17 @@ const Screen = styled.div`
 const PeriodLabel = styled.div`
 	font-size: 1.5rem;
 	font-weight: 700;
-	color: #b5c2b7;
+	color: ${$color("medium")};
 	text-transform: capitalize;
 `;
 
 const Tabs = styled.div`
 	display: flex;
 	gap: ${$uw(0.5)};
-	background: #080f0a;
+	background: ${$color("step-100")};
 	padding: ${$uw(0.25)};
 	border-radius: 14px;
-	border: 1px solid #1e2d2280;
+	border: 1px solid ${$color("step-200")};
 `;
 
 const Tab = styled.button`
@@ -284,27 +284,27 @@ const Tab = styled.button`
 	cursor: pointer;
 	user-select: none;
 	background: transparent;
-	color: #7e8a80;
+	color: ${$color("medium")};
 	transition: background 0.15s ease, color 0.15s ease;
 	&:hover {
-		background: #141d1699;
-		color: #c5d2c7;
+		background: ${$color("step-150")};
+		color: ${$color("text-color")};
 	}
 	&.active {
-		background: #00c565;
-		color: #040b06;
+		background: ${$color("primary")};
+		color: ${$color("primary-contrast")};
 	}
 	&.active:hover {
-		background: #00c565;
-		color: #040b06;
+		background: ${$color("primary")};
+		color: ${$color("primary-contrast")};
 	}
 `;
 
 const ChartCard = styled.div`
 	width: 100%;
 	box-sizing: border-box;
-	background: #070e09;
-	border: 1px solid #20332573;
+	background: ${$color("card-background")};
+	border: 1px solid ${$color("step-200")};
 	border-radius: 20px;
 	padding: 22px 18px 18px;
 	display: flex;
@@ -331,7 +331,7 @@ const YLabel = styled.div`
 	text-align: right;
 	font-size: 12px;
 	font-weight: 600;
-	color: #78847a;
+	color: ${$color("medium")};
 `;
 
 const XLabels = styled.div`
@@ -345,7 +345,7 @@ const XLabel = styled.div`
 	text-align: center;
 	font-size: 13px;
 	font-weight: 700;
-	color: #727e74;
+	color: ${$color("medium")};
 `;
 
 const Legend = styled.div`
@@ -354,7 +354,7 @@ const Legend = styled.div`
 	gap: 10px;
 	margin-top: 6px;
 	padding-top: 14px;
-	border-top: 1px solid #1b281e66;
+	border-top: 1px solid ${$color("step-200")};
 `;
 
 const Chip = styled.button<{ $visible: boolean; $color: string }>`
@@ -367,13 +367,13 @@ const Chip = styled.button<{ $visible: boolean; $color: string }>`
 	font-weight: 600;
 	cursor: pointer;
 	user-select: none;
-	border: 1px solid ${({ $visible }) => ($visible ? "#2a413099" : "#1a211c80")};
-	background: ${({ $visible }) => ($visible ? "#16231999" : "#0f130f80")};
-	color: ${({ $visible }) => ($visible ? "#c5d2c7" : "#586059")};
+	border: 1px solid ${({ $visible }) => ($visible ? $color("step-300") : $color("step-150"))};
+	background: ${({ $visible }) => ($visible ? $color("step-100") : "transparent")};
+	color: ${({ $visible }) => ($visible ? $color("text-color") : $color("medium"))};
 	transition: all 0.15s ease;
 	&:hover {
-		color: #eaf0eb;
-		border-color: ${({ $color }) => $color};
+		color: ${$color("text-color")};
+		border-color: ${({ $color: chipColor }) => chipColor};
 	}
 `;
 

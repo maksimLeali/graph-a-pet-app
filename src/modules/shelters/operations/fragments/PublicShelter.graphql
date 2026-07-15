@@ -4,6 +4,7 @@ fragment PublicShelter on PublicShelter {
 	city
 	region
 	public_description
+	public_story_html
 	public_contact_email
 	public_contact_phone
 	logo_media_id

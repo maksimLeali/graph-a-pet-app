@@ -184,7 +184,7 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
         (patch: Partial<MinUserFragment>) => {
             setUser((prev) => {
                 const next = { ...(prev ?? {}), ...patch } as MinUserFragment;
-                setCookie("user", JSON.stringify(next));
+                setCookie("user", JSON.stringify(next), { path: "/" });
                 return next;
             });
         },

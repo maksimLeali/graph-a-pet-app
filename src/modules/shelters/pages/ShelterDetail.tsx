@@ -12,10 +12,12 @@ import { RoleLevel, UserRole, ShelterType, ShelterVerificationStatus } from "@ty
 import { $color, $uw } from "@theme";
 
 import { useGetShelterLazyQuery } from "../operations/__generated__/getShelter.generated";
+import { useGetPublicShelterQuery } from "../operations/__generated__/getPublicShelter.generated";
 import { useGetShelterOperationalDashboardQuery } from "../operations/__generated__/getShelterOperationalDashboard.generated";
 import { FullShelterFragment } from "../operations/__generated__/FullShelter.generated";
 import { useListShelterMediasQuery } from "../operations/__generated__/listShelterMedias.generated";
 import { useListShelterPetsMinQuery } from "../operations/__generated__/listShelterPetsMin.generated";
+import { DonateCard } from "../../donations/components/DonateCard";
 
 const PET_IMAGE_SCOPES = ["pet_main_picture", "pet_picture"];
 
@@ -83,6 +85,13 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 		fetchPolicy: "cache-and-network",
 	});
 	const dash = dashData?.getShelterOperationalDashboard?.dashboard;
+
+	// profilo pubblico (logo/descrizione/story) — non presente su FullShelter
+	const { data: pubData } = useGetPublicShelterQuery({
+		variables: { id: shelter.id },
+		fetchPolicy: "cache-and-network",
+	});
+	const pub = pubData?.getPublicShelter ?? undefined;
 
 	const roles = (shelter.roles?.items ?? []).filter(
 		(r): r is Role => !!r
@@ -235,6 +244,88 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 				)}
 			</TabNav>
 
+			{pub?.public_description && (
+				<Section>
+					<Description>{pub.public_description}</Description>
+				</Section>
+			)}
+
+			{pub?.public_story_html && (
+				<Section>
+					{/* HTML sanitizzato lato backend su write → sicuro */}
+					<Story
+						dangerouslySetInnerHTML={{ __html: pub.public_story_html }}
+					/>
+				</Section>
+			)}
+
+			<Section>
+				<SectionTitle>
+					{t("shelters.pets")}
+					<Count>{pets.length}</Count>
+					<AddPetButton
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${shelter.id}/animals`)
+						}
+					>
+						<Icon name="albumsOutline" color="light" size="16px" />
+						<span>{t("shelters.animals.title")}</span>
+					</AddPetButton>
+				</SectionTitle>
+				{pets.length === 0 ? (
+					<Empty>{t("shelters.no_pets")}</Empty>
+				) : (
+					<PetGrid>
+						{pets.map((sp) => (
+							<PetCard
+								key={sp.id}
+								type="button"
+								onClick={() =>
+									history.push(
+										`/shelters/detail/${shelter.id}/pet/${sp.id}`
+									)
+								}
+							>
+								<PetPic>
+									{sp.pet.main_picture?.id ? (
+										<Image2x id={sp.pet.main_picture.id} />
+									) : (
+										<Icon name="paw" color="medium" />
+									)}
+								</PetPic>
+								<PetName>{sp.pet.name}</PetName>
+							</PetCard>
+						))}
+					</PetGrid>
+				)}
+			</Section>
+
+			<Section>
+				<SectionTitle>
+					{t("shelters.photos.title")}
+					<AddPetButton
+						type="button"
+						onClick={() =>
+							history.push(`/shelters/detail/${shelter.id}/photos`)
+						}
+					>
+						<Icon name="imagesOutline" color="light" size="16px" />
+						<span>{t("shelters.photos.manage")}</span>
+					</AddPetButton>
+				</SectionTitle>
+				<GalleryPreview
+					shelterId={shelter.id}
+					onManage={() =>
+						history.push(`/shelters/detail/${shelter.id}/photos`)
+					}
+				/>
+			</Section>
+
+			<Section>
+				<DonateCard shelterId={shelter.id} />
+			</Section>
+
 			{dash && (
 				<Dashboard>
 					<Tile $accent={dash.low_stock_count > 0 ? "warning" : undefined}>
@@ -337,58 +428,6 @@ const Detail: React.FC<detailProps> = ({ shelter }) => {
 						))}
 					</RoleSummary>
 				)}
-			</Section>
-
-			<Section>
-				<SectionTitle>
-					{t("shelters.pets")}
-					<AddPetButton
-						type="button"
-						onClick={() =>
-							history.push(`/shelters/detail/${shelter.id}/animals`)
-						}
-					>
-						<Icon name="albumsOutline" color="light" size="16px" />
-						<span>{t("shelters.animals.title")}</span>
-					</AddPetButton>
-				</SectionTitle>
-				<Dashboard>
-					<Tile>
-						<b>{dash?.pets_total ?? pets.length}</b>
-						<span>{t("shelters.dash.pets_total")}</span>
-					</Tile>
-					<Tile
-						$accent={
-							(dash?.pets_needing_walk ?? 0) > 0 ? "warning" : undefined
-						}
-					>
-						<b>{dash?.pets_needing_walk ?? 0}</b>
-						<span>{t("shelters.dash.pets_needing_walk")}</span>
-					</Tile>
-					<Tile
-						$accent={
-							(dash?.pets_without_box ?? 0) > 0 ? "warning" : undefined
-						}
-					>
-						<b>{dash?.pets_without_box ?? 0}</b>
-						<span>{t("shelters.dash.pets_without_box")}</span>
-					</Tile>
-				</Dashboard>
-			</Section>
-				<Section>
-				<SectionTitle>
-					{t("shelters.photos.title")}
-					<AddPetButton
-						type="button"
-						onClick={() =>
-							history.push(`/shelters/detail/${shelter.id}/photos`)
-						}
-					>
-						<Icon name="imagesOutline" color="light" size="16px" />
-						<span>{t("shelters.photos.manage")}</span>
-					</AddPetButton>
-				</SectionTitle>
-				<GalleryPreview shelterId={shelter.id} onManage={() => history.push(`/shelters/detail/${shelter.id}/photos`)} />
 			</Section>
 
 		</>
@@ -643,6 +682,94 @@ const AddPetButton = styled.button`
 	&:active {
 		opacity: 0.7;
 	}
+`;
+
+const Description = styled.p`
+	margin: 0;
+	font-size: 1.5rem;
+	line-height: 1.5;
+	color: ${$color("dark")};
+`;
+
+const Story = styled.div`
+	font-size: 1.5rem;
+	line-height: 1.55;
+	color: ${$color("dark")};
+	word-break: break-word;
+
+	h2 {
+		font-size: 2rem;
+		margin: ${$uw(1)} 0 ${$uw(0.5)};
+	}
+	h3,
+	h4 {
+		font-size: 1.7rem;
+		margin: ${$uw(0.75)} 0 ${$uw(0.5)};
+	}
+	p {
+		margin: 0 0 ${$uw(1)};
+	}
+	ul,
+	ol {
+		margin: 0 0 ${$uw(1)};
+		padding-left: ${$uw(2.5)};
+	}
+	li {
+		margin-bottom: ${$uw(0.25)};
+	}
+	a {
+		color: ${$color("primary")};
+		text-decoration: underline;
+		word-break: break-all;
+	}
+`;
+
+const PetGrid = styled.div`
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: ${$uw(1)};
+`;
+
+const PetCard = styled.button`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: ${$uw(0.5)};
+	padding: 0;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	&:active {
+		opacity: 0.7;
+	}
+`;
+
+const PetPic = styled.div`
+	width: 100%;
+	aspect-ratio: 1;
+	border-radius: 16px;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(var(--ion-color-primary-rgb), 0.08);
+	> .img2x {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	> .icon {
+		width: ${$uw(2.5)};
+		height: ${$uw(2.5)};
+	}
+`;
+
+const PetName = styled.span`
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: ${$color("dark")};
+	text-align: center;
+	word-break: break-word;
 `;
 
 const PhotoStrip = styled.div`

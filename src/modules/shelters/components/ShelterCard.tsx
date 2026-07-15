@@ -35,9 +35,9 @@ export const ShelterCard: React.FC<Props> = ({ shelter, onClick }) => {
 							size="16px"
 						/>
 					</VisibilityBadge>
-					<VerifiedBadge aria-label={isVerified ? "verified" : "unverified"} $verified={isVerified}>
+					<VerifiedBadge aria-label={isVerified ? "verified" : "unverified"}>
 						<Icon
-							name={isVerified ? "checkmarkDoneCircle" : "checkmarkDoneCircleOutline"}
+							name="checkmarkDoneCircleOutline"
 							color={isVerified ? "success" : "medium"}
 							size="16px"
 						/>
@@ -137,13 +137,11 @@ const VisibilityBadge = styled.div<{ $private: boolean }>`
 	background: ${({ $private }) => ($private ? $color("dark") : $color("primary"))};
 `;
 
-const VerifiedBadge = styled.div<{ $verified: boolean }>`
+const VerifiedBadge = styled.div`
 	flex: 0 0 auto;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 22px;
 	height: 22px;
-	border-radius: 50%;
-	background: ${({ $verified }) => ($verified ? $color("success-tint") : $color("step-100"))};
 `;

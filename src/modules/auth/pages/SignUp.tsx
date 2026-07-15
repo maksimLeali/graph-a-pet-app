@@ -29,7 +29,7 @@ export const SignUp = () => {
 			toast.success(t("messages.success.signup"));
 			timeout = setTimeout(() => {
 				if (timeout) clearTimeout(timeout);
-				setCookie("user", JSON.stringify(signUp.user));
+				setCookie("user", JSON.stringify(signUp.user), { path: "/" });
 				return history.push("/auth/verify");
 			}, 500);
 		},

@@ -1,0 +1,19 @@
+query listPublicShelterPets($shelter_id: ID!) {
+	listPublicShelterPets(shelter_id: $shelter_id) {
+		success
+		error {
+			code
+			message
+		}
+		items {
+			id
+			shelter_pet_id
+			name
+			breed
+			gender
+			main_picture {
+				id
+			}
+		}
+	}
+}

@@ -1,226 +1,172 @@
-# Graph-a-Pet — Sintesi aggiornata App + Back Office + Backend
+# Graph-a-Pet — Project Context
 
-Data: 2026-07-12  
-Stato: documento di sintesi funzionale/architetturale aggiornato assumendo operative le ultime estensioni su Shelter, notifiche, persone, inviti, workspace personali, ownership, claim e discovery. Aggiunto back office Next.js.
+## 1. Product
 
----
+**Graph-a-Pet** is a modular pet and shelter management platform.
 
-## 1. Visione generale
+Main product layers:
 
-**Graph-a-Pet** è una piattaforma mobile-first per la gestione di animali domestici, proprietari, custodie condivise, attività, trattamenti, segnalazioni e rifugi.
+1. **Pet Owner App**
 
-L'applicazione nasce come **PWA Ionic/React**, ma l'architettura è già compatibile con una futura evoluzione mobile tramite **Capacitor**. Il backend è un server **GraphQL schema-first** in Python, basato su Flask, Ariadne, SQLAlchemy e PostgreSQL.
+   * Pets
+   * Shared custody/ownership
+   * Health data
+   * Treatments and reminders
+   * Events
+   * Reports
+   * Internal notifications
 
-La parte più evoluta del prodotto è il modulo **Shelter Management**, che trasforma l'app in uno strumento operativo per rifugi/canili/gattili: ruoli, pet ospitati, box, mappe, task, passeggiate, inventario, dashboard, notifiche e flussi di onboarding persone.
+2. **Personal Workspace**
 
----
+   * Private shelter-like workspace
+   * Volunteer/small-team coordination
+   * Pets, tasks, walks, notes
+   * No official or public representation
 
-## 2. Frontend app
+3. **Shelter OS**
 
-### 2.1 Stack principale
-
-Il frontend è una PWA/mobile web app basata su:
-
-- **Ionic Framework + React** per UI mobile-first;
-- **TypeScript** per tipizzazione statica;
-- **Vite** come bundler/dev server;
-- **Apollo Client** per GraphQL;
-- **GraphQL Code Generator** per generare tipi e hook;
-- **Capacitor** come base per packaging mobile futuro;
-- **i18next** per internazionalizzazione;
-- **styled-components** e tema custom per design system;
-- **Leaflet/react-leaflet** per funzionalità mappa.
-
-L'app segue un pattern **feature-based**: ogni area funzionale ha router, pagine, componenti e operazioni GraphQL proprie.
-
-### 2.2 Struttura funzionale
-
-Le sezioni principali sono:
-
-- **Auth**: login, registrazione, verifica utente;
-- **Home**: dashboard utente;
-- **Pets**: gestione animali, dettaglio, creazione, ownership/custodia;
-- **Events**: calendario e dettagli evento;
-- **Board**: segnalazioni/smarrimenti/ritrovamenti;
-- **Settings**: profilo e impostazioni;
-- **Shelters**: gestione rifugi, workspace personali, persone, ruoli, task, walk, inventory, mappe, dashboard;
-- **Notifications**: inbox notifiche interna all'app.
-
-### 2.3 Routing
-
-Le rotte private sono protette da autenticazione. L'utente autenticato accede alle sezioni principali tramite router Ionic/React.
-
-Le rotte shelter rilevanti sono:
-
-```text
-/shelters
-/shelters/discover
-/shelters/public/:id
-/shelters/detail/:id
-/shelters/detail/:id/people
-/shelters/detail/:id/invites
-/shelters/detail/:id/ownership
-/shelters/detail/:id/verification
-/shelters/detail/:id/tasks
-/shelters/detail/:id/tasks/new
-/shelters/detail/:id/walks
-/shelters/detail/:id/inventory
-/shelters/detail/:id/inventory/new
-/shelters/detail/:id/map
-/shelters/add-pet/:id
-/notifications
-```
-
-### 2.4 Data layer
-
-Il frontend comunica con il backend esclusivamente tramite **GraphQL**.
-
-Apollo Client:
-
-- invia il JWT come Bearer token;
-- intercetta errori `401/403`;
-- gestisce logout automatico in caso di sessione non valida;
-- usa i tipi generati da GraphQL Codegen.
-
-Le operazioni GraphQL sono co-locate dentro i moduli frontend, in particolare nel modulo `shelters`.
-
-### 2.5 Context principali
-
-- **AppContext**: stato globale UI minimo;
-- **UserContext**: utente autenticato, dashboard, pets, reports, preferenze UI, refresh dati;
-- **ModalContext**: gestione overlay/modali condivisi;
-- **Notification integration**: conteggio notifiche non lette e accesso alla inbox.
-
-### 2.6 Design e UX
-
-L'app è progettata mobile-first:
-
-- layout ottimizzato per viewport strette;
-- interazioni touch;
-- pagine dedicate invece di modali per flussi complessi;
-- stile flat coerente con il tema;
-- CTA essenziali e contestuali;
-- permessi gestiti lato backend, ma azioni non autorizzate nascoste/disabilitate lato frontend.
+   * Official shelter operations
+   * Members and external people
+   * Pets and boxes
+   * Tasks and walks
+   * Inventory
+   * Internal maps
+   * Operational dashboard
+   * Applications, invitations, claims and ownership transfers
 
 ---
 
-## 3. Backend
+## 2. Applications
 
-### 3.1 Stack principale
+### Mobile App
 
-Il backend è un server GraphQL in Python basato su:
+**Stack**
 
-- **Flask** come web framework;
-- **Ariadne** per GraphQL schema-first;
-- **PostgreSQL** come database;
-- **SQLAlchemy** come ORM;
-- **Alembic** per migrazioni;
-- **APScheduler** per cron job;
-- **Redis** opzionale per lock distribuito dei job;
-- **JWT** per autenticazione;
-- **Gunicorn/Docker** per deploy.
+* Ionic + React
+* TypeScript
+* Vite
+* Apollo Client
+* GraphQL Codegen
+* Capacitor-ready
+* i18next
+* styled-components
+* Leaflet
 
-Endpoint principali:
+**Architecture**
+
+* Mobile-first PWA
+* Feature-based modules
+* JWT authentication
+* GraphQL-only data layer
+* Backend-driven permissions
+* Protected routes
+* Internal notification inbox
+
+### Back Office
+
+**Stack**
+
+* Next.js 14+ App Router
+* Apollo Client 3.x
+* GraphQL Codegen
+* styled-components v6
+* `@lemaks/grid_system`
+* `@tanstack/react-table` (data tables)
+* Node 22 portable environment
+
+**Main shelter sections**
+
+* Map
+* Boxes
+* Inventory
+* Tasks
+* Walks
+* Pets
+* People
+* Members
+
+The map is an interactive SVG editor supporting zones, areas, boxes and fixed elements.
+
+**Pets**
+
+* Create/edit forms allow assigning a pet to an owner and/or a shelter; neither is mandatory.
+* Pet detail page has a dedicated "Rifugio" tab to assign/remove a shelter link independently of ownership.
+
+**Theming**
+
+* Light/dark theme via CSS custom properties, toggled through a `data-theme` attribute on `<html>`.
+* Dark is the original/default palette; light is a parallel token set (same keys).
+* Toggle lives in the topbar (left of the user name); choice persists in `localStorage`, with an inline no-flash script applying it before hydration.
+* All components read colors through the shared `$color()` token helper — no hardcoded per-component colors.
+
+**Layout**
+
+* Sidebar is fixed (`position: fixed`, `height: 100dvh`) and does not scroll with the page.
+* Only the main content area scrolls; the shell is clipped to the viewport height to avoid duplicated scrollbars.
+
+**Data tables**
+
+* Built on TanStack Table (`useReactTable`): manual sorting/pagination (backend stays authoritative), plus client-side column resizing and column visibility toggling.
+
+### Backend
+
+**Stack**
+
+* Python
+* Flask
+* Ariadne
+* GraphQL schema-first
+* SQLAlchemy
+* PostgreSQL
+* Alembic
+* APScheduler
+* Redis optional
+* JWT
+* Gunicorn/Docker
+
+**Layering**
 
 ```text
-POST /graphql
-GET  /graphql
-REST media endpoints
-REST translations endpoints
+API → Domain → Repository
 ```
 
-### 3.2 Architettura a tre layer
+* `API`: GraphQL resolvers, validation, auth
+* `Domain`: business logic
+* `Repository`: DB models and queries
 
-Il backend segue una separazione chiara:
-
-```text
-api/         → resolver GraphQL, validazione input/output, permessi
-domain/      → business logic
-repository/  → accesso dati, modelli SQLAlchemy, query builder
-```
-
-La direzione delle dipendenze è:
-
-```text
-api → domain → repository
-```
-
-Questo riduce accoppiamento e rende più semplice intervenire su business logic, storage o protocollo API.
-
-### 3.3 GraphQL schema-first
-
-`schema.graphql` è la fonte canonica delle API.
-
-Include:
-
-- tipi dominio;
-- enum;
-- input;
-- paginazioni;
-- result payload;
-- errori strutturati;
-- query;
-- mutation.
-
-Le mutation seguono il pattern:
-
-```graphql
-Result {
-  success
-  error
-  payload
-}
-```
-
-Dove possibile, gli errori sono strutturati con codice prevedibile.
-
-### 3.4 Autenticazione e autorizzazione
-
-L'autenticazione avviene tramite JWT.
-
-Il backend usa middleware/decorator per:
-
-- validare utente autenticato;
-- verificare ruoli globali;
-- verificare ruoli specifici shelter.
-
-Per il modulo shelter sono previsti ruoli specifici:
-
-```text
-VOLUNTEER → lettura
-STAFF     → operazioni quotidiane
-MANAGER   → task, box, inventory, persone
-OWNER     → info shelter, ruoli, ownership
-ADMIN     → azioni di sistema
-```
-
-Il ruolo `ADMIN` globale può bypassare le verifiche shelter.
+`schema.graphql` is the API source of truth.
 
 ---
 
-## 4. Dominio principale Graph-a-Pet
+## 3. Core Domain
 
-Il dominio base gestisce:
+Main entities:
 
-- utenti;
-- pet;
-- ownership/custodia condivisa;
-- health card;
-- treatment;
-- cure;
-- walk;
-- report;
-- media;
-- codici/inviti;
-- statistiche;
-- notifiche interne;
-- rifugi e workspace.
+* User
+* Pet
+* Ownership
+* Health Card
+* Treatment
+* Cure
+* Walk
+* Report
+* Media
+* Shelter
+* Shelter Role
+* Shelter Membership
+* Shelter Person
+* Shelter Task
+* Shelter Walk
+* Shelter Box
+* Box Occupancy
+* Inventory Item
+* Inventory Movement
+* Notification
+* Join Request
+* Ownership Transfer
+* Claim Request
 
-### 4.1 Pets e ownership
-
-Un pet può essere collegato a uno o più utenti tramite ownership/custodia.
-
-I ruoli principali includono:
+Pet relationship roles:
 
 ```text
 OWNER
@@ -228,64 +174,18 @@ SUB_OWNER
 PET_SITTER
 ```
 
-Sono supportati inviti a prendere possesso/custodia di un pet. Questi inviti generano notifiche interne e devono essere accettati/rifiutati dall'utente destinatario.
-
-### 4.2 Treatments e reminder
-
-I trattamenti sono usati anche per generare notifiche interne.
-
-I reminder automatici sono limitati a:
-
-```text
-VACCINE
-OPERATION
-ANTIPARASITIC
-```
-
-L'obiettivo è evitare rumore notifiche e mantenere solo eventi realmente importanti.
-
 ---
 
-## 5. Modulo Shelter Management
+## 4. Shelter Model
 
-Il modulo Shelter è una piattaforma operativa per rifugi.
-
-Gestisce:
-
-- rifugi ufficiali;
-- workspace personali;
-- ruoli;
-- persone con o senza account;
-- pet ospitati;
-- box e occupazioni;
-- mappa 2D;
-- task ricorrenti;
-- passeggiate;
-- inventario;
-- dashboard operativa;
-- notifiche;
-- inviti;
-- candidature;
-- trasferimenti ownership;
-- claim/verifica ufficiale.
-
----
-
-## 6. Shelter: tipologia, visibilità e verifica
-
-Ogni shelter/workspace ha tre dimensioni principali.
-
-### 6.1 ShelterType
+### Types
 
 ```text
 OFFICIAL_SHELTER
 PERSONAL_WORKSPACE
 ```
 
-- `OFFICIAL_SHELTER`: rifugio/canile/gattile reale, potenzialmente verificato;
-- `PERSONAL_WORKSPACE`: spazio privato creato da un utente per organizzare attività anche se il rifugio reale non usa l'app.
-
-### 6.2 ShelterVerificationStatus
+### Verification
 
 ```text
 UNVERIFIED
@@ -294,9 +194,7 @@ VERIFIED
 REJECTED
 ```
 
-Serve a distinguere spazi personali o rifugi non verificati da rifugi ufficialmente riconosciuti.
-
-### 6.3 ShelterVisibility
+### Visibility
 
 ```text
 PRIVATE
@@ -304,377 +202,146 @@ UNLISTED
 PUBLIC
 ```
 
-- `PRIVATE`: visibile solo ai membri collegati;
-- `UNLISTED`: accessibile solo tramite link/codice;
-- `PUBLIC`: visibile nella discovery pubblica.
+Rules:
 
-Regola chiave:
+* Personal workspaces default to private and unverified.
+* Unverified personal workspaces cannot enter public discovery.
+* Public shelter pages expose only public profile data.
+* Operational data remains private.
+
+---
+
+## 5. People and Access
+
+### User
+
+A real application account.
+
+### ShelterPerson
+
+A known person without requiring an account.
+
+Possible uses:
+
+* Visitor
+* Volunteer candidate
+* Adopter candidate
+* Donor
+* Offline collaborator
+* Pending invitee
+
+No fake users must be created.
+
+### ShelterMembership
+
+Defines the user's shelter relationship lifecycle.
+
+Statuses:
 
 ```text
-Uno spazio personale non verificato non deve apparire nella discovery pubblica.
+INVITED
+PENDING_ONBOARDING
+ACTIVE
+SUSPENDED
+LEFT
+REVOKED
+```
+
+### ShelterRole
+
+Defines operational access within a shelter.
+
+Legacy hierarchy:
+
+```text
+VOLUNTEER < STAFF < MANAGER < OWNER
 ```
 
 ---
 
-## 7. Personal workspace
+## 6. RBAC
 
-Un utente può creare uno spazio personale quando collabora con un canile che non usa ancora l'app.
+The system is migrating from role hierarchy to permission-based RBAC.
 
-Alla creazione:
+**Rule:** new authorization decisions must use permission keys, not role names.
+
+### Scopes
 
 ```text
-type = PERSONAL_WORKSPACE
-verification_status = UNVERIFIED
-visibility = PRIVATE
-creator = OWNER tecnico
+PLATFORM
+SHELTER
 ```
 
-Il workspace personale consente:
+### Permission format
 
-- creare pet seguiti personalmente;
-- assegnare task;
-- registrare passeggiate;
-- gestire note e promemoria;
-- invitare collaboratori privati;
-- organizzarsi senza coinvolgere ufficialmente il canile.
+```text
+platform.<domain>.<action>
+shelters.<domain>.<action>
+```
 
-Non consente:
+Main shelter permission domains:
 
-- apparire pubblicamente come rifugio ufficiale;
-- ricevere candidature pubbliche;
-- dichiararsi verificato;
-- esporre dati operativi a utenti esterni.
+* Shelter info
+* Members
+* Roles
+* People
+* Pets
+* Medical data
+* Tasks
+* Walks
+* Inventory
+* Boxes
+* Map
+* Ownership
+* Claims
+
+Main system roles:
+
+```text
+PLATFORM_USER
+SHELTER_VOLUNTEER
+SHELTER_STAFF
+SHELTER_MANAGER
+SHELTER_ADMIN
+PLATFORM_ADMIN
+```
+
+Authorization rules:
+
+* Deny by default.
+* Shelter permissions require a shelter scope.
+* Platform permissions cannot use shelter scope.
+* Assignments must be active and valid.
+* Shelter permissions require active membership.
+* Platform admins receive all permissions.
+* High-risk denials are audited.
+* Permission results are cached per request.
+* Tenant/entity consistency remains a domain responsibility.
+
+Frontend rules:
+
+* Fetch effective permissions from the backend.
+* Never infer access from role names.
+* Hide unauthorized UI actions.
+* Always enforce permissions again on the backend.
+* Refetch permissions after role or membership changes.
 
 ---
 
-## 8. Public shelter discovery
+## 7. Shelter Operations
 
-La discovery pubblica è separata da `/shelters`.
+### Pets and Boxes
 
-- `/shelters`: mostra solo i rifugi/workspace dell'utente;
-- `/shelters/discover`: ricerca pubblica controllata;
-- `/shelters/public/:id`: scheda pubblica limitata.
+Rules:
 
-La discovery mostra solo shelter con:
+* One active box occupancy per pet.
+* Box capacity cannot be exceeded.
+* Out-of-service boxes reject assignments.
+* Boxes with active occupants cannot be deleted.
+* Moves must be transactional.
+* Movements store actor, reason and timestamp.
 
-```text
-visibility = PUBLIC
-verification_status valido
-```
-
-La scheda pubblica può mostrare:
-
-- nome;
-- città/zona;
-- descrizione pubblica;
-- logo/immagine;
-- contatti pubblici se abilitati;
-- indicazione se accetta volontari;
-- posizione approssimata se configurata.
-
-Non deve mostrare:
-
-- task;
-- inventory;
-- mappa interna;
-- box;
-- occupazioni;
-- persone/staff;
-- dashboard operativa;
-- pet interni, salvo scelta esplicita futura.
-
----
-
-## 9. Shelter people e members
-
-La gestione persone è consolidata nella pagina:
-
-```text
-/shelters/detail/:id/people
-```
-
-La pagina distingue due concetti.
-
-### 9.1 Members
-
-Sono utenti reali dell'app collegati tramite `ShelterRole`.
-
-Contengono:
-
-- utente;
-- ruolo;
-- eventuali azioni di gestione ruolo;
-- rimozione/declassamento se permesso.
-
-Sono il vero perimetro operativo dei permessi shelter.
-
-### 9.2 Contacts / Visitors
-
-Sono persone esterne o offline gestite tramite `ShelterPerson`.
-
-Possono essere:
-
-- visitatori;
-- potenziali volontari;
-- potenziali adottanti;
-- donatori;
-- persone invitate ma non ancora registrate;
-- persone che hanno svolto attività registrate da uno staff member.
-
-### 9.3 ShelterPerson
-
-Campi principali:
-
-```text
-id
-shelter_id
-user_id nullable
-first_name
-last_name
-email nullable
-phone nullable
-status
-source
-notes
-created_by
-archived_at
-archived_by
-created_at
-updated_at
-```
-
-Stati:
-
-```text
-VISITOR
-PENDING_INVITE
-ACTIVE_USER
-ARCHIVED
-```
-
-Fonti:
-
-```text
-MANUAL
-INVITE
-VISIT
-VOLUNTEER_REQUEST
-IMPORT
-```
-
-Regole:
-
-- non crea account fittizi;
-- email opzionale;
-- almeno un identificatore utile richiesto;
-- se collegato a un `User`, diventa `ACTIVE_USER`;
-- archiviazione soft.
-
----
-
-## 10. Inviti
-
-Il sistema distingue inviti e ruoli effettivi.
-
-### 10.1 Invito pet
-
-Un utente può essere invitato a prendere custodia/ownership di un pet.
-
-La notifica generata contiene:
-
-```text
-type = PET_OWNERSHIP_INVITE
-entity_type = OWNERSHIP
-pet_id
-actor_user_id
-payload.role
-payload.pet_name
-action_url
-dedupe_key
-```
-
-L'accesso reale viene assegnato solo dopo accettazione backend-side.
-
-### 10.2 Invito shelter
-
-Un utente può essere invitato a entrare in uno shelter con un ruolo.
-
-La notifica generata contiene:
-
-```text
-type = SHELTER_INVITE
-entity_type = SHELTER_INVITE
-shelter_id
-actor_user_id
-payload.role
-payload.shelter_name
-action_url
-dedupe_key
-```
-
-Anche qui il ruolo effettivo viene creato solo tramite flusso autorizzato lato backend.
-
----
-
-## 11. Richieste di volontariato
-
-Le richieste di volontariato sono gestite tramite `ShelterJoinRequest`.
-
-Campi principali:
-
-```text
-id
-shelter_id
-user_id
-requested_role
-message
-status
-reviewed_by
-reviewed_at
-decision_note
-created_at
-updated_at
-```
-
-Stati:
-
-```text
-PENDING
-APPROVED
-REJECTED
-CANCELLED
-```
-
-Regole:
-
-- l'utente può candidarsi solo a shelter che accettano volontari;
-- ruolo di default: `VOLUNTEER`;
-- vietate richieste pendenti duplicate per stesso utente/shelter;
-- l'utente può annullare la propria richiesta pendente;
-- `MANAGER` o `OWNER` possono approvare/rifiutare;
-- l'approvazione crea `ShelterRole`;
-- creazione, approvazione e rifiuto generano notifiche interne.
-
----
-
-## 12. Ownership transfer
-
-Il trasferimento ownership permette di passare il controllo tecnico di uno shelter/workspace a un altro utente.
-
-Entità:
-
-```text
-ShelterOwnershipTransfer
-```
-
-Campi principali:
-
-```text
-id
-shelter_id
-from_user_id
-to_user_id
-new_role_for_previous_owner
-status
-created_at
-accepted_at
-rejected_at
-cancelled_at
-expires_at
-```
-
-Stati:
-
-```text
-PENDING
-ACCEPTED
-REJECTED
-CANCELLED
-EXPIRED
-```
-
-Regole:
-
-- solo un `OWNER` può richiedere il trasferimento;
-- il destinatario deve esistere;
-- il destinatario deve accettare;
-- uno shelter deve sempre avere almeno un `OWNER`;
-- all'accettazione, il destinatario diventa `OWNER`;
-- il precedente owner viene declassato o rimosso secondo opzione;
-- viene generata notifica;
-- viene scritto audit log se disponibile.
-
----
-
-## 13. Claim e verifica ufficiale
-
-Il claim permette a un responsabile reale di rivendicare uno spazio personale o uno shelter non verificato.
-
-Entità:
-
-```text
-ShelterClaimRequest
-```
-
-Campi principali:
-
-```text
-id
-shelter_id
-requester_user_id
-status
-proof_data
-message
-reviewed_by
-reviewed_at
-decision_note
-created_at
-updated_at
-```
-
-Stati:
-
-```text
-PENDING
-APPROVED
-REJECTED
-CANCELLED
-```
-
-Regole:
-
-- l'utente può rivendicare `PERSONAL_WORKSPACE` o `OFFICIAL_SHELTER` non verificato;
-- vietati claim pendenti duplicati dello stesso utente sullo stesso shelter;
-- solo admin approva/rifiuta;
-- approvazione:
-  - imposta `type = OFFICIAL_SHELTER`;
-  - imposta `verification_status = VERIFIED`;
-  - assegna requester come `OWNER`;
-  - regola eventuale owner tecnico precedente;
-  - notifica gli utenti coinvolti;
-  - registra audit log se disponibile;
-- rifiuto:
-  - mantiene invariati ruoli e stato shelter;
-  - notifica il requester.
-
----
-
-## 14. Box e occupazioni
-
-Il modulo shelter gestisce box e occupazioni pet.
-
-Regole principali:
-
-- un pet non può avere due occupazioni attive;
-- un box non può superare la capacità;
-- un box `OUT_OF_SERVICE` non può ricevere pet;
-- un box con pet attivi non può essere eliminato;
-- `assignPetToBox` fallisce se il pet è già assegnato;
-- `movePetBetweenBoxes` chiude la vecchia occupazione e crea la nuova in una transazione;
-- `releasePetFromBox` chiude l'occupazione;
-- ogni movimento deve salvare actor, reason e timestamp.
-
-Stati box:
+Box states:
 
 ```text
 AVAILABLE
@@ -684,13 +351,9 @@ OUT_OF_SERVICE
 NEEDS_CLEANING
 ```
 
----
+### Tasks
 
-## 15. Shelter task
-
-I task shelter supportano ricorrenze e istanze operative.
-
-Stati task:
+States:
 
 ```text
 PENDING
@@ -700,31 +363,22 @@ CANCELLED
 OVERDUE
 ```
 
-Regole:
+Rules:
 
-- i task ricorrenti hanno template e istanze, oppure modello unico con parent/template;
-- `completeShelterTask` e `skipShelterTask` lavorano sulle istanze, non sui template;
-- il cron delle 2:00 è idempotente;
-- massimo una istanza per template e giorno pianificato;
-- duplicate prevention tramite vincolo o controllo equivalente.
+* Recurring tasks generate operational instances.
+* Completion/skip applies to instances.
+* Scheduled generation must be idempotent.
+* Max one instance per template and scheduled day.
 
-### 15.1 Formato datetime backend (implementazione)
+Backend datetime format:
 
-Il repository `shelter_tasks` usa:
-
-```python
-DATE_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
+```text
+YYYY-MM-DDTHH:mm:ss.sssZ
 ```
 
-Qualsiasi valore `scheduled_at` inviato al backend deve essere in questo formato esatto (ISO 8601 full UTC con milliseconds e Z finale). Input `datetime-local` HTML restituisce `YYYY-MM-DDTHH:MM` senza timezone — va convertito con `new Date(v).toISOString()` prima di inviare la mutation.
+### Walks
 
-`_parse_date` accetta anche date-only (`YYYY-MM-DD`) e le salva come `scheduled_date` (senza orario).
-
----
-
-## 16. Shelter walks
-
-Le passeggiate shelter hanno stati:
+States:
 
 ```text
 PLANNED
@@ -733,22 +387,16 @@ COMPLETED
 CANCELLED
 ```
 
-Flusso:
+Flow:
 
-1. walk pianificata;
-2. start → `IN_PROGRESS`;
-3. complete → `COMPLETED`, con durata calcolata;
-4. cancel → `CANCELLED`.
+```text
+Plan → Start → Complete
+Plan/In progress → Cancel
+```
 
-La dashboard può calcolare pet che necessitano passeggiata in base all'ultima walk completata e alla soglia temporale.
+### Inventory
 
----
-
-## 17. Inventory
-
-L'inventario shelter è movement-based.
-
-Tipi movimento:
+Movement types:
 
 ```text
 RESTOCK
@@ -758,85 +406,80 @@ WASTE
 ADJUSTMENT
 ```
 
-Regole:
+Rules:
 
-- quantità corrente = somma movimenti;
-- niente delete fisico se l'item ha movimenti;
-- item archiviabili con:
-  - `is_active`;
-  - `archived_at`;
-  - `archived_by`;
-- i movimenti storici non si cancellano;
-- le correzioni usano movimenti compensativi;
-- stock sotto zero bloccato salvo override autorizzato;
-- low stock calcolato tramite soglia minima.
+* Stock is derived from movements.
+* Historical movements are immutable.
+* Corrections use compensating movements.
+* Items with history are archived, not deleted.
+* Negative stock requires authorized override.
+* Low stock is threshold-based.
 
----
+### Dashboard
 
-## 18. Shelter operational dashboard
+Main metrics:
 
-La dashboard operativa dello shelter aggrega metriche leggibili.
+* Task status
+* Walk status
+* Pets requiring walks
+* Box availability and occupancy
+* Cleaning requirements
+* Low stock
+* Daily operational activity
 
-Metriche previste:
-
-```text
-pending tasks
-completed tasks today
-skipped tasks today
-overdue tasks
-planned walks
-in-progress walks
-completed walks today
-pets needing walk
-total boxes
-available boxes
-full boxes
-out-of-service boxes
-boxes needing cleaning
-occupancy rate
-low stock count
-low stock list
-```
-
-La dashboard deve usare il timezone dello shelter quando disponibile.
+Shelter timezone should be used where available.
 
 ---
 
-## 19. Internal notification inbox
+## 8. Shelter Lifecycle Flows
 
-Le notifiche sono interne all'app e persistenti nel database.
-
-Non sono push native, email o Firebase push.
-
-### 19.1 Notification
-
-Campi principali:
+### Personal Workspace
 
 ```text
-id
-user_id
-type
-status
-priority
-title
-message
-entity_type
-entity_id
-action_url
-actor_user_id
-shelter_id
-pet_id
-payload
-dedupe_key
-scheduled_at
-read_at
-dismissed_at
-expires_at
-created_at
-updated_at
+User → Create workspace → PRIVATE + UNVERIFIED → Creator becomes technical owner
 ```
 
-### 19.2 Tipi notifica
+### Shelter Invitation
+
+```text
+Invite → User acceptance → Membership/role activation
+```
+
+### Volunteer Application
+
+```text
+Application → Manager/owner review → Approval → Active volunteer role
+```
+
+### Ownership Transfer
+
+```text
+Current owner request → Target acceptance → New owner → Previous owner downgraded/removed
+```
+
+A shelter must always retain at least one owner.
+
+### Official Claim
+
+```text
+Claim request → Platform admin review → Approval → OFFICIAL_SHELTER + VERIFIED
+```
+
+### Offline Person Onboarding
+
+```text
+ShelterPerson → Optional invite → User registration → Account link
+```
+
+---
+
+## 9. Notifications
+
+Notifications are internal, persistent DB records.
+
+No native push, email or Firebase dependency is required.
+
+Types:
 
 ```text
 TREATMENT_REMINDER
@@ -847,7 +490,7 @@ SHELTER_JOIN_REQUEST
 PET_BIRTHDAY
 ```
 
-### 19.3 Stati
+Statuses:
 
 ```text
 UNREAD
@@ -856,7 +499,7 @@ DISMISSED
 EXPIRED
 ```
 
-### 19.4 Priorità
+Priorities:
 
 ```text
 LOW
@@ -865,55 +508,36 @@ HIGH
 URGENT
 ```
 
-### 19.5 Entity type
+Rules:
 
-```text
-PET
-TREATMENT
-OWNERSHIP
-SHELTER
-SHELTER_INVITE
-SHELTER_TASK
-SHELTER_JOIN_REQUEST
-```
-
-### 19.6 Regole
-
-- la notifica non è la fonte dati;
-- punta sempre all'entità reale;
-- `payload` contiene solo dati display;
-- `dedupe_key` evita duplicati;
-- niente delete fisico utente: si usa `DISMISSED`;
-- cron idempotente per reminder e compleanni.
-
-### 19.7 Frontend notifiche
-
-La UI include:
-
-- `/notifications`;
-- campanella nel layout autenticato;
-- badge non lette;
-- lista notifiche newest first;
-- tap → mark as read + navigazione a `action_url`;
-- mark as read;
-- mark all as read;
-- dismiss;
-- dismissed nascoste dalla lista default;
-- lette ancora visibili finché non dismissate.
+* Notification is not the domain source of truth.
+* It references the real domain entity.
+* Payload is display-only.
+* `dedupe_key` prevents duplicates.
+* User deletion is replaced by dismissal.
+* Automated generation must be idempotent.
 
 ---
 
-## 20. Errori GraphQL strutturati
+## 10. API Conventions
 
-Gli errori GraphQL devono essere prevedibili e consumabili dal frontend.
+Mutation result pattern:
 
-Codici rilevanti:
+```text
+success
+error
+payload/items
+```
+
+Main error codes:
 
 ```text
 UNAUTHORIZED
 FORBIDDEN
 NOT_FOUND
 VALIDATION_ERROR
+MEMBERSHIP_NOT_ACTIVE
+INVALID_AUTHORIZATION_SCOPE
 BOX_FULL
 BOX_OUT_OF_SERVICE
 PET_ALREADY_ASSIGNED
@@ -925,180 +549,41 @@ CANNOT_DELETE_WITH_ACTIVE_OCCUPANCY
 CANNOT_DELETE_WITH_HISTORY
 ```
 
-Il frontend deve mostrare messaggi backend quando presenti, senza sostituire la logica autorizzativa.
+Frontend requirements:
+
+* Check `success` before reading payload.
+* Display backend error messages when available.
+* Handle forbidden responses even when UI actions are hidden.
+* Use network refresh for mutable shelter lists.
+* Avoid side effects during render.
 
 ---
 
-## 21. Flussi utente principali
-
-### 21.1 Utente senza rifugi
-
-L'empty state propone:
+## 11. Key Boundaries
 
 ```text
-Cerca rifugio
-Inserisci codice invito
-Crea spazio personale
-```
-
-Solo le azioni supportate dal backend devono essere wired. Le altre possono essere disabilitate o nascoste finché non operative.
-
-### 21.2 Utente crea workspace personale
-
-```text
-User → createPersonalWorkspace → Shelter PERSONAL_WORKSPACE PRIVATE UNVERIFIED → creator OWNER tecnico
-```
-
-### 21.3 Responsabile prende ownership
-
-```text
-Owner tecnico → request ownership transfer → destinatario accetta → nuovo OWNER → precedente owner declassato/rimosso
-```
-
-### 21.4 Responsabile rivendica ufficialità
-
-```text
-Requester → ShelterClaimRequest → admin review → approvazione → OFFICIAL_SHELTER VERIFIED
-```
-
-### 21.5 Utente si candida come volontario
-
-```text
-User → ShelterJoinRequest → notifica manager/owner → approvazione → ShelterRole VOLUNTEER
-```
-
-### 21.6 Persona senza app entra nel rifugio
-
-```text
-Staff/Manager → create ShelterPerson → eventuale invito → registrazione futura → link a User
+Notification ≠ Domain entity
+ShelterPerson ≠ User
+ShelterMembership ≠ Permission
+ShelterRole ≠ Authorization source
+Personal workspace ≠ Official shelter
+Public discovery ≠ User shelter list
+Frontend visibility ≠ Security
 ```
 
 ---
 
-## 22. Confini concettuali importanti
+## 12. Current Direction
 
-### Notification vs domain entity
+The target architecture is:
 
-```text
-Notification = evento da mostrare all'utente
-Domain entity = verità operativa
-```
-
-La notifica non deve sostituire invite, task, treatment, join request o claim.
-
-### ShelterPerson vs User
-
-```text
-ShelterPerson = persona conosciuta dallo shelter, anche offline
-User = account app reale
-ShelterRole = accesso operativo reale
-```
-
-Non creare utenti fittizi per persone senza app.
-
-### Personal workspace vs official shelter
-
-```text
-PERSONAL_WORKSPACE = spazio privato organizzativo
-OFFICIAL_SHELTER = rifugio ufficiale/verificabile
-```
-
-Il workspace personale non deve apparire come rappresentanza ufficiale.
-
-### Discovery vs My shelters
-
-```text
-/shelters = solo rifugi/workspace dell'utente
-/shelters/discover = directory pubblica controllata
-```
-
-La discovery non deve esporre dati operativi.
-
----
-
-## 23. Stato prodotto risultante
-
-Con queste estensioni, Graph-a-Pet non è solo una PWA per pet owner, ma una piattaforma modulare con tre livelli di valore:
-
-1. **Pet owner app**  
-   Gestione pet, trattamenti, custodia, promemoria, compleanni, segnalazioni.
-
-2. **Volunteer/workspace tool**  
-   Spazi personali per volontari o piccoli gruppi che vogliono organizzarsi anche senza onboarding ufficiale del rifugio.
-
-3. **Shelter operating system**  
-   Rifugi ufficiali con ruoli, persone, box, task, walk, inventory, dashboard, discovery, candidature, notifiche e verifica.
-
-La direzione architetturale è coerente: il frontend rimane mobile-first e modulare, mentre il backend mantiene separazione tra GraphQL API, domain logic e repository. I nuovi flussi risolvono il problema centrale di collegare in modo naturale utenti, rifugi, persone offline, volontari e responsabili reali senza compromettere permessi, privacy o qualità dei dati.
-
----
-
-## 24. Back Office — graph-a-pet-back-office-next
-
-### 24.1 Stack
-
-Web app di gestione separata dall'app mobile:
-
-- **Next.js 14+ (App Router)** per routing e rendering server-side;
-- **Apollo Client 3.13** — deve restare v3 (v4 rompe i file generati da codegen);
-- **GraphQL Code Generator** — versioni pinnate identiche a graph-a-pet-app: cli 5.0.7, typescript 4.1.6, operations 4.6.1, react-apollo 4.3.3, near-operation-file 3.1.0;
-- **styled-components v6 + @lemaks/grid_system** — mai Tailwind;
-- Tema: `$uw(n)` per spacing (1uw = 15px, griglia 32 col), `$color(nome)`, convenzione `html { font-size: 10px }` + `body { font-size: 1.4rem }` (1rem = 10px, baseline testo 14px);
-- **@lemaks/grid_system NON importabile da Server Components** (usa `createContext`) → le variabili CSS del tema sono iniettate dal registry client `src/lib/registry.tsx`.
-
-### 24.2 Ambiente e vincoli
-
-- Node di sistema 20.11.0 troppo vecchio per codegen CLI ≥5 e dipendenze transitive ESLint;
-- **Workaround attivo**: Node 22.23.1 portable in `C:\Users\Mario\projects\GAP\.tools\node-v22.23.1-win-x64` — da prependere al PATH per build e codegen;
-- Le operazioni GraphQL BO usano il suffisso `BO` nei nomi (es. `createShelterTaskBO`, `listOperationalShelterTasksBO`).
-
-### 24.3 Gestione shelter — tab
-
-La pagina principale di un shelter è tabbed:
-
-```text
-Mappa       → editor SVG interattivo per la pianta interna
-Box         → elenco box con stato (AVAILABLE/OCCUPIED/FULL/…)
-Inventario  → movimenti di magazzino
-Task        → task operativi: create / complete / skip / delete
-Passeggiate → walk: create / start / complete / cancel / delete
-Animali     → shelter pets collegati
-Persone     → ShelterPerson (contatti/visitatori senza account)
-Membri      → ShelterRole (utenti con ruolo operativo)
-```
-
-### 24.4 Shelter Map Editor (SVG canvas)
-
-Editor interattivo per la mappa planimetrica dello shelter.
-
-Tipi di forma:
-```text
-box     → rettangoli numerati che rappresentano gabbie/recinti
-area    → zone funzionali (es. area medica, ufficio)
-element → oggetti fissi (es. fontanelle, scale)
-zone    → macro-aree contenenti box/area/element
-```
-
-Funzionalità canvas:
-- pan/zoom, drag, resize con pointer events;
-- long-press per attivare modalità selezione/editing;
-- **stack picker**: tap su forme sovrapposte apre un selettore della forma da gestire;
-- selezione stabile: se la forma già selezionata è nel gruppo sovrapposto, il picker non viene riproposto;
-- `deleteSelected` usa catena `else if` per evitare cascade (eliminare un'area non elimina le zone che la contengono).
-
-### 24.5 Pattern tecnici rilevanti
-
-**datetime-local → ISO conversion**  
-L'input `type="datetime-local"` HTML restituisce `YYYY-MM-DDTHH:MM` senza timezone. Il backend (vedere §15.1) richiede ISO full con millisecondi e `Z`. Conversione obbligatoria:
-```ts
-scheduled_at: v.scheduled_at ? new Date(v.scheduled_at).toISOString() : undefined
-```
-
-**Apollo cache**  
-Tutte le query di lista shelter usano `fetchPolicy: "network-only"` per evitare dati stale dopo operazioni di create/update/delete.
-
-**Gestione errori applicativi**  
-Le response GraphQL shelter seguono `{ success, error { code, message }, items }`. Il frontend controlla sempre `success` prima di usare `items`. Il toast di errore va in `useEffect`, mai inline nel render (causa toast ripetuti a ogni re-render).
-
-**React Hook Form + Input component**  
-L'input è un `forwardRef` che wrappa un `styled.input`. Il `ref` da RHF viene intercettato correttamente da React come secondo argomento del `forwardRef` e passato al DOM. Il tracking del valore avviene tramite `onChange` di RHF. Nessun `Controller` necessario per input standard (text, datetime-local, select).
+* Mobile-first and modular frontend
+* Separate operational back office
+* Schema-first GraphQL API
+* Explicit domain boundaries
+* Permission-based RBAC
+* Strict shelter tenant isolation
+* Persistent internal notifications
+* Idempotent scheduled processes
+* Auditability for sensitive actions
+* Clear separation between private workspaces and verified shelters

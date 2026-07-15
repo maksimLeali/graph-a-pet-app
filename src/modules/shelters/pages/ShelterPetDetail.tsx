@@ -23,6 +23,7 @@ import {
 } from "../operations/__generated__/getCurrentBoxForPet.generated";
 import { useListShelterWalksQuery } from "../operations/__generated__/listShelterWalks.generated";
 import { useGetLatestPetWeightQuery } from "../../pets/operations/__generated__/getLatestPetWeight.generated";
+import { DonateCard } from "../../donations/components/DonateCard";
 
 type WalkRatingAvg = { type: WalkRatingType; rating: number };
 
@@ -205,6 +206,11 @@ export const ShelterPetDetail: React.FC = () => {
 				>
 					{t("stats.weight_view_link")}
 				</StatsLink>
+			</RatingsBlock>
+
+			<RatingsBlock>
+				<PlacementTitle>{t("donations.pet_cta_title")}</PlacementTitle>
+				<DonateCard shelterId={id} petId={pet?.id} />
 			</RatingsBlock>
 		</Placement>
 	);

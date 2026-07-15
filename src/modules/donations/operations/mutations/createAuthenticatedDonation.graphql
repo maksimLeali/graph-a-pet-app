@@ -1,0 +1,14 @@
+mutation createAuthenticatedDonation($data: AuthenticatedDonationInput!) {
+	createAuthenticatedDonation(data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		donation {
+			id
+			status
+		}
+		checkout_url
+	}
+}

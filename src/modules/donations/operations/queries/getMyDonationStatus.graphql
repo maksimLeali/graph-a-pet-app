@@ -1,0 +1,15 @@
+query getMyDonationStatus($donation_id: ID!) {
+	getMyDonationStatus(donation_id: $donation_id) {
+		success
+		error {
+			code
+			message
+		}
+		donation {
+			id
+			status
+			gross_amount_cents
+			currency
+		}
+	}
+}

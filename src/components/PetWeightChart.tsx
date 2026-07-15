@@ -20,15 +20,19 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip)
 // dataviz skill categorical slot 1 (blue) — single series, no legend needed
 const COLOR = { light: "#2a78d6", dark: "#3987e5" };
 
+// il tema attivo è deciso dal toggle in MainMenu (document.body.classList
+// "dark", non la preferenza di sistema): va osservato lì, non via matchMedia,
+// altrimenti il grafico non segue lo switch manuale dell'utente in-app
 const useIsDark = () => {
 	const [isDark, setIsDark] = useState(
-		() => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false
+		() => document.body.classList.contains("dark")
 	);
 	useEffect(() => {
-		const mq = window.matchMedia("(prefers-color-scheme: dark)");
-		const onChange = () => setIsDark(mq.matches);
-		mq.addEventListener("change", onChange);
-		return () => mq.removeEventListener("change", onChange);
+		const observer = new MutationObserver(() => {
+			setIsDark(document.body.classList.contains("dark"));
+		});
+		observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+		return () => observer.disconnect();
 	}, []);
 	return isDark;
 };

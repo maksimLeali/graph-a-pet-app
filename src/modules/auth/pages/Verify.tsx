@@ -34,8 +34,8 @@ export const Verify: React.FC = () => {
 				toast.error(t("messages.errors.code"));
 				return;
 			}
-			setCookie("jwt", verifyUser.token);
-			setCookie("user", JSON.stringify(verifyUser.user));
+			setCookie("jwt", verifyUser.token, { path: "/" });
+			setCookie("user", JSON.stringify(verifyUser.user), { path: "/" });
 			toast.success(t("messages.success.login"));
 			timeout = setTimeout(() => {
 				if (timeout) clearTimeout(timeout);

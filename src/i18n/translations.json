@@ -649,6 +649,41 @@
         "discover": "Entdecken",
         "team": "Team"
       }
+    },
+    "donations": {
+      "cta": "Spenden",
+      "shelter_cta_title": "Dieses Tierheim unterstützen",
+      "pet_cta_title": "Dieses Tier unterstützen",
+      "amount_label": "Betrag wählen",
+      "custom_amount_placeholder": "Anderer Betrag",
+      "min_amount_error": "Mindestbetrag ist 1",
+      "test_mode_badge": "Testmodus",
+      "unavailable_title": "Spenden nicht verfügbar",
+      "opening_checkout": "Bezahlvorgang wird geöffnet...",
+      "returned_from_checkout": "Willkommen zurück! Wir prüfen Ihre Spende.",
+      "reasons": {
+        "SHELTER_NOT_AVAILABLE": "Dieses Tierheim ist derzeit nicht öffentlich sichtbar.",
+        "CONNECTED_ACCOUNT_MISSING": "Dieses Tierheim hat Zahlungen noch nicht eingerichtet.",
+        "SHELTER_DONATIONS_DISABLED": "Spenden sind für dieses Tierheim deaktiviert.",
+        "STRIPE_CHARGES_NOT_ENABLED": "Zahlungen für dieses Tierheim sind noch nicht aktiv.",
+        "PET_NOT_PUBLISHED": "Dieses Tier ist noch nicht veröffentlicht.",
+        "PET_LIMIT_REACHED": "Monatliches Spendenlimit für dieses Tier erreicht.",
+        "FUNDING_NEED_NOT_ACTIVE": "Diese Spendenaktion ist nicht aktiv.",
+        "generic": "Spenden sind derzeit nicht verfügbar."
+      },
+      "pet_cta_subtitle": "Hilf mit bei Pflege und Futter diesen Monat.",
+      "shelter_cta_subtitle": "Jeder Beitrag hilft den Tieren des Tierheims.",
+      "pet_progress_raised": "{{amount}} gesammelt",
+      "pet_progress_goal": "Ziel {{amount}}",
+      "goal_reached_title": "Monatsziel erreicht!",
+      "goal_reached_subtitle": "Dieser Liebling hat diesen Monat alle Unterstützung erhalten.",
+      "pending": {
+        "waiting_title": "Zahlung wird geprüft…",
+        "waiting_subtitle": "Du kannst diesen Bildschirm schließen, wir benachrichtigen dich bei Bestätigung.",
+        "succeeded_title": "Spende bestätigt!",
+        "failed_title": "Zahlung fehlgeschlagen",
+        "failed_subtitle": "Es wurde nichts abgebucht. Versuche es gerne erneut."
+      }
     }
   },
   "en": {
@@ -1313,6 +1348,41 @@
         "discover": "Explore",
         "team": "Team"
       }
+    },
+    "donations": {
+      "cta": "Donate",
+      "shelter_cta_title": "Support this shelter",
+      "pet_cta_title": "Support this animal",
+      "amount_label": "Choose an amount",
+      "custom_amount_placeholder": "Custom amount",
+      "min_amount_error": "Minimum amount is 1",
+      "test_mode_badge": "Test mode",
+      "unavailable_title": "Donations unavailable",
+      "opening_checkout": "Opening checkout...",
+      "returned_from_checkout": "Welcome back! Checking your donation.",
+      "reasons": {
+        "SHELTER_NOT_AVAILABLE": "This shelter isn't publicly visible right now.",
+        "CONNECTED_ACCOUNT_MISSING": "This shelter hasn't set up payments yet.",
+        "SHELTER_DONATIONS_DISABLED": "Donations are disabled for this shelter.",
+        "STRIPE_CHARGES_NOT_ENABLED": "Payments for this shelter aren't active yet.",
+        "PET_NOT_PUBLISHED": "This pet isn't published yet.",
+        "PET_LIMIT_REACHED": "Monthly donation limit reached for this pet.",
+        "FUNDING_NEED_NOT_ACTIVE": "This funding need isn't active.",
+        "generic": "Donations aren't available right now."
+      },
+      "pet_cta_subtitle": "Help cover this month's care and food.",
+      "shelter_cta_subtitle": "Every contribution helps the shelter's animals.",
+      "pet_progress_raised": "{{amount}} raised",
+      "pet_progress_goal": "{{amount}} goal",
+      "goal_reached_title": "This month's goal reached!",
+      "goal_reached_subtitle": "This little one got all the support it needed this month.",
+      "pending": {
+        "waiting_title": "Verifying your payment…",
+        "waiting_subtitle": "You can close this screen, we'll let you know once it's confirmed.",
+        "succeeded_title": "Donation confirmed!",
+        "failed_title": "Payment failed",
+        "failed_subtitle": "No charge was made. Feel free to try again."
+      }
     }
   },
   "es": {
@@ -1965,6 +2035,41 @@
         "discover": "Explorar",
         "team": "Equipo"
       }
+    },
+    "donations": {
+      "cta": "Donar",
+      "shelter_cta_title": "Apoya a este refugio",
+      "pet_cta_title": "Apoya a este animal",
+      "amount_label": "Elige un importe",
+      "custom_amount_placeholder": "Otro importe",
+      "min_amount_error": "El importe mínimo es 1",
+      "test_mode_badge": "Modo de prueba",
+      "unavailable_title": "Donaciones no disponibles",
+      "opening_checkout": "Abriendo el pago...",
+      "returned_from_checkout": "¡Bienvenido de nuevo! Comprobando tu donación.",
+      "reasons": {
+        "SHELTER_NOT_AVAILABLE": "Este refugio no es visible públicamente ahora.",
+        "CONNECTED_ACCOUNT_MISSING": "Este refugio aún no ha activado los pagos.",
+        "SHELTER_DONATIONS_DISABLED": "Las donaciones están desactivadas para este refugio.",
+        "STRIPE_CHARGES_NOT_ENABLED": "Los pagos de este refugio aún no están activos.",
+        "PET_NOT_PUBLISHED": "Esta mascota aún no está publicada.",
+        "PET_LIMIT_REACHED": "Límite mensual de donaciones alcanzado para esta mascota.",
+        "FUNDING_NEED_NOT_ACTIVE": "Esta recaudación no está activa.",
+        "generic": "Las donaciones no están disponibles ahora."
+      },
+      "pet_cta_subtitle": "Ayuda con los cuidados y la comida de este mes.",
+      "shelter_cta_subtitle": "Cada aportación ayuda a los animales del refugio.",
+      "pet_progress_raised": "{{amount}} recaudados",
+      "pet_progress_goal": "Meta {{amount}}",
+      "goal_reached_title": "¡Meta del mes alcanzada!",
+      "goal_reached_subtitle": "Este pequeño recibió todo el apoyo de este mes.",
+      "pending": {
+        "waiting_title": "Verificando tu pago…",
+        "waiting_subtitle": "Puedes cerrar esta pantalla, te avisaremos cuando se confirme.",
+        "succeeded_title": "¡Donación confirmada!",
+        "failed_title": "Pago fallido",
+        "failed_subtitle": "No se realizó ningún cargo. Puedes intentarlo de nuevo."
+      }
     }
   },
   "fr": {
@@ -2616,6 +2721,41 @@
         "search": "Rechercher",
         "discover": "Explorer",
         "team": "Équipe"
+      }
+    },
+    "donations": {
+      "cta": "Faire un don",
+      "shelter_cta_title": "Soutenez ce refuge",
+      "pet_cta_title": "Soutenez cet animal",
+      "amount_label": "Choisissez un montant",
+      "custom_amount_placeholder": "Autre montant",
+      "min_amount_error": "Le montant minimum est 1",
+      "test_mode_badge": "Mode test",
+      "unavailable_title": "Dons indisponibles",
+      "opening_checkout": "Ouverture du paiement...",
+      "returned_from_checkout": "Bon retour ! Vérification de votre don.",
+      "reasons": {
+        "SHELTER_NOT_AVAILABLE": "Ce refuge n'est pas visible publiquement pour le moment.",
+        "CONNECTED_ACCOUNT_MISSING": "Ce refuge n'a pas encore activé les paiements.",
+        "SHELTER_DONATIONS_DISABLED": "Les dons sont désactivés pour ce refuge.",
+        "STRIPE_CHARGES_NOT_ENABLED": "Les paiements pour ce refuge ne sont pas encore actifs.",
+        "PET_NOT_PUBLISHED": "Cet animal n'est pas encore publié.",
+        "PET_LIMIT_REACHED": "Limite mensuelle de dons atteinte pour cet animal.",
+        "FUNDING_NEED_NOT_ACTIVE": "Cette collecte n'est pas active.",
+        "generic": "Les dons ne sont pas disponibles pour le moment."
+      },
+      "pet_cta_subtitle": "Aidez à couvrir les soins et la nourriture de ce mois.",
+      "shelter_cta_subtitle": "Chaque contribution aide les animaux du refuge.",
+      "pet_progress_raised": "{{amount}} récoltés",
+      "pet_progress_goal": "Objectif {{amount}}",
+      "goal_reached_title": "Objectif du mois atteint !",
+      "goal_reached_subtitle": "Ce petit a reçu tout le soutien nécessaire ce mois-ci.",
+      "pending": {
+        "waiting_title": "Vérification du paiement…",
+        "waiting_subtitle": "Vous pouvez fermer cet écran, nous vous préviendrons une fois confirmé.",
+        "succeeded_title": "Don confirmé !",
+        "failed_title": "Paiement échoué",
+        "failed_subtitle": "Aucun débit n'a été effectué. N'hésitez pas à réessayer."
       }
     }
   },
@@ -3301,6 +3441,41 @@
         "discover": "Esplora",
         "team": "Team"
       }
+    },
+    "donations": {
+      "cta": "Dona",
+      "shelter_cta_title": "Sostieni questo rifugio",
+      "pet_cta_title": "Sostieni questo animale",
+      "amount_label": "Scegli un importo",
+      "custom_amount_placeholder": "Altro importo",
+      "min_amount_error": "L'importo minimo è 1",
+      "test_mode_badge": "Modalità test",
+      "unavailable_title": "Donazioni non disponibili",
+      "opening_checkout": "Apertura pagamento...",
+      "returned_from_checkout": "Bentornato! Verifichiamo la tua donazione.",
+      "reasons": {
+        "SHELTER_NOT_AVAILABLE": "Questo canile non è al momento visibile pubblicamente.",
+        "CONNECTED_ACCOUNT_MISSING": "Questo canile non ha ancora attivato i pagamenti.",
+        "SHELTER_DONATIONS_DISABLED": "Le donazioni sono disattivate per questo canile.",
+        "STRIPE_CHARGES_NOT_ENABLED": "I pagamenti per questo canile non sono ancora attivi.",
+        "PET_NOT_PUBLISHED": "Questo animale non è ancora pubblicato.",
+        "PET_LIMIT_REACHED": "Limite mensile di donazioni raggiunto per questo animale.",
+        "FUNDING_NEED_NOT_ACTIVE": "Questa raccolta fondi non è attiva.",
+        "generic": "Le donazioni non sono disponibili al momento."
+      },
+      "pet_cta_subtitle": "Aiuta le cure e il cibo di questo mese.",
+      "shelter_cta_subtitle": "Ogni contributo aiuta gli animali del rifugio.",
+      "pet_progress_raised": "{{amount}} raccolti",
+      "pet_progress_goal": "Obiettivo {{amount}}",
+      "goal_reached_title": "Obiettivo del mese raggiunto!",
+      "goal_reached_subtitle": "Questo cucciolo ha ricevuto tutto il sostegno di questo mese.",
+      "pending": {
+        "waiting_title": "Verifica del pagamento in corso…",
+        "waiting_subtitle": "Puoi chiudere questa schermata, ti avviseremo appena confermato.",
+        "succeeded_title": "Donazione confermata!",
+        "failed_title": "Pagamento non riuscito",
+        "failed_subtitle": "Nessun addebito è stato effettuato. Riprova pure."
+      }
     }
   },
   "ru": {
@@ -3962,6 +4137,41 @@
         "search": "Поиск",
         "discover": "Обзор",
         "team": "Команда"
+      }
+    },
+    "donations": {
+      "cta": "Пожертвовать",
+      "shelter_cta_title": "Поддержать этот приют",
+      "pet_cta_title": "Поддержать это животное",
+      "amount_label": "Выберите сумму",
+      "custom_amount_placeholder": "Другая сумма",
+      "min_amount_error": "Минимальная сумма — 1",
+      "test_mode_badge": "Тестовый режим",
+      "unavailable_title": "Пожертвования недоступны",
+      "opening_checkout": "Открываем оплату...",
+      "returned_from_checkout": "С возвращением! Проверяем ваше пожертвование.",
+      "reasons": {
+        "SHELTER_NOT_AVAILABLE": "Этот приют сейчас не отображается публично.",
+        "CONNECTED_ACCOUNT_MISSING": "Этот приют ещё не настроил приём платежей.",
+        "SHELTER_DONATIONS_DISABLED": "Пожертвования отключены для этого приюта.",
+        "STRIPE_CHARGES_NOT_ENABLED": "Платежи для этого приюта пока не активны.",
+        "PET_NOT_PUBLISHED": "Это животное ещё не опубликовано.",
+        "PET_LIMIT_REACHED": "Достигнут месячный лимит пожертвований для этого животного.",
+        "FUNDING_NEED_NOT_ACTIVE": "Этот сбор средств сейчас не активен.",
+        "generic": "Пожертвования сейчас недоступны."
+      },
+      "pet_cta_subtitle": "Помогите с уходом и кормом в этом месяце.",
+      "shelter_cta_subtitle": "Каждый вклад помогает животным приюта.",
+      "pet_progress_raised": "Собрано {{amount}}",
+      "pet_progress_goal": "Цель {{amount}}",
+      "goal_reached_title": "Цель месяца достигнута!",
+      "goal_reached_subtitle": "Этот малыш получил всю поддержку в этом месяце.",
+      "pending": {
+        "waiting_title": "Проверяем ваш платёж…",
+        "waiting_subtitle": "Можете закрыть этот экран, мы сообщим, как только подтвердим.",
+        "succeeded_title": "Пожертвование подтверждено!",
+        "failed_title": "Платёж не прошёл",
+        "failed_subtitle": "Средства не списаны. Попробуйте ещё раз."
       }
     }
   }

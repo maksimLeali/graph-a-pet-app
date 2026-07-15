@@ -1,0 +1,16 @@
+query getPublicDonationAvailability($shelter_id: ID!, $pet_id: ID) {
+	getPublicDonationAvailability(shelter_id: $shelter_id, pet_id: $pet_id) {
+		success
+		error {
+			code
+			message
+		}
+		availability {
+			available
+			reasons
+			remaining_pet_allowance_cents
+			pet_monthly_limit_cents
+			is_test_mode
+		}
+	}
+}
