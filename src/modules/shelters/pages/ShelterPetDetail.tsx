@@ -3,12 +3,13 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useParams, useHistory, useLocation } from "react-router";
 import dayjs from "dayjs";
+import toast from "react-hot-toast";
 
 import { IonContent } from "@ionic/react";
-import { useUserContext } from "@contexts";
+import { useUserContext, useModal } from "@contexts";
 import { Icon, WalkRatingsSummaryCard, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
-import { BoxStatus, WalkRatingType } from "@types";
+import { BoxStatus, RoleLevel, ShelterPersonStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
 
 import { PetDetailBody } from "../../pets/pages/PetProfile";
@@ -16,16 +17,38 @@ import {
 	useGetFullPetLazyQuery,
 	GetFullPetQuery,
 } from "../../pets/operations/__generated__/getFullPet.generated";
-import { useGetShelterPetLazyQuery } from "../operations/__generated__/getShelterPet.generated";
+import {
+	useGetShelterPetLazyQuery,
+	GetShelterPetQuery,
+} from "../operations/__generated__/getShelterPet.generated";
 import {
 	useGetCurrentBoxForPetLazyQuery,
 	GetCurrentBoxForPetQuery,
 } from "../operations/__generated__/getCurrentBoxForPet.generated";
 import { useListShelterWalksQuery } from "../operations/__generated__/listShelterWalks.generated";
 import { useGetLatestPetWeightQuery } from "../../pets/operations/__generated__/getLatestPetWeight.generated";
+import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
+import { useListShelterPeopleQuery } from "../operations/__generated__/listShelterPeople.generated";
+import { useSetShelterPetAssigneesMutation } from "../operations/__generated__/setShelterPetAssignees.generated";
+import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import {
+	SelectWalkerModal,
+	type PickableMember,
+	type WalkerSelection,
+} from "../components/SelectWalkerModal";
 import { DonateCard } from "../../donations/components/DonateCard";
 
 type WalkRatingAvg = { type: WalkRatingType; rating: number };
+
+type ShelterPetInfo = NonNullable<
+	GetShelterPetQuery["getShelterPet"]["shelter_pet"]
+>;
+
+const CAN_ASSIGN_ROLES: RoleLevel[] = [
+	RoleLevel.Owner,
+	RoleLevel.Manager,
+	RoleLevel.Staff,
+];
 
 type FullPet = NonNullable<GetFullPetQuery["getPet"]["pet"]>;
 type CurrentBox = NonNullable<
@@ -55,9 +78,14 @@ export const ShelterPetDetail: React.FC = () => {
 	const { t } = useTranslation();
 	const history = useHistory();
 	const location = useLocation();
+	const { openModal, closeModal } = useModal();
 
 	const [pet, setPet] = useState<FullPet>();
 	const [box, setBox] = useState<CurrentBox | null>(null);
+	const [shelterPet, setShelterPet] = useState<ShelterPetInfo | null>(null);
+
+	const { role } = useMyShelterRole(id);
+	const canAssign = !!role && CAN_ASSIGN_ROLES.includes(role);
 
 	const [getFullPet, { loading }] = useGetFullPetLazyQuery({
 		fetchPolicy: "no-cache",
@@ -72,6 +100,7 @@ export const ShelterPetDetail: React.FC = () => {
 		onCompleted: ({ getShelterPet }) => {
 			const sp = getShelterPet?.shelter_pet;
 			if (!sp?.pet?.id) return;
+			setShelterPet(sp);
 			getFullPet({
 				variables: {
 					id: sp.pet.id,
@@ -81,6 +110,100 @@ export const ShelterPetDetail: React.FC = () => {
 			});
 		},
 	});
+
+	// membri assegnabili come referente del pet (stesse liste della modale walk)
+	const { data: rolesData } = useListShelterRolesMinQuery({
+		skip: !id || !canAssign,
+		fetchPolicy: "cache-and-network",
+		variables: {
+			commonSearch: {
+				page: 0,
+				page_size: 200,
+				filters: { fixed: [{ key: "shelter_id", value: id }] },
+			},
+		},
+	});
+	const teamMembers: PickableMember[] = (rolesData?.listShelterRoles?.items ?? [])
+		.filter((r): r is NonNullable<typeof r> => !!r?.user)
+		.map((r) => ({
+			id: r.user.id,
+			name:
+				[r.user.first_name, r.user.last_name].filter(Boolean).join(" ") ||
+				r.user.id,
+			kind: "user" as const,
+		}))
+		.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
+
+	const { data: peopleData } = useListShelterPeopleQuery({
+		skip: !id || !canAssign,
+		fetchPolicy: "cache-and-network",
+		variables: { shelter_id: id, search: { page: 0, page_size: 200 } },
+	});
+	const volunteers: PickableMember[] = (peopleData?.listShelterPeople?.items ?? [])
+		.filter(
+			(p): p is NonNullable<typeof p> =>
+				!!p && p.status === ShelterPersonStatus.Volunteer
+		)
+		.map((p) => ({
+			id: p.id,
+			name: [p.first_name, p.last_name].filter(Boolean).join(" ") || p.id,
+			kind: "person" as const,
+		}));
+	const members: PickableMember[] = [...teamMembers, ...volunteers];
+
+	const [setAssignees] = useSetShelterPetAssigneesMutation({
+		onError: () => toast.error(t("messages.errors.fetch")),
+	});
+
+	const saveAssignee = async (selection: WalkerSelection | null) => {
+		const { data } = await setAssignees({
+			variables: {
+				shelter_pet_id: petId,
+				user_ids: selection?.kind === "user" ? [selection.id] : [],
+				shelter_person_ids: selection?.kind === "person" ? [selection.id] : [],
+			},
+		});
+		const sp = data?.setShelterPetAssignees?.shelter_pet;
+		if (sp) {
+			setShelterPet((prev) => (prev ? { ...prev, ...sp } : prev));
+			toast.success(t("shelters.assignee.saved_ok"));
+		}
+	};
+
+	const assignedUser = shelterPet?.assigned_members?.[0];
+	const assignedPerson = shelterPet?.assigned_shelter_people?.[0];
+	const assignedName = assignedUser
+		? [assignedUser.first_name, assignedUser.last_name].filter(Boolean).join(" ") ||
+		  assignedUser.id
+		: assignedPerson
+		? [assignedPerson.first_name, assignedPerson.last_name]
+				.filter(Boolean)
+				.join(" ") || assignedPerson.id
+		: null;
+
+	const pickAssignee = () => {
+		const defaultSelection: WalkerSelection | undefined = assignedUser
+			? { id: assignedUser.id, kind: "user" }
+			: assignedPerson
+			? { id: assignedPerson.id, kind: "person" }
+			: undefined;
+		const sel = { current: defaultSelection ?? null };
+		openModal({
+			onClose: closeModal,
+			onCancel: closeModal,
+			onConfirm: () => {
+				saveAssignee(sel.current);
+				closeModal();
+			},
+			children: (
+				<SelectWalkerModal
+					members={members}
+					defaultSelection={defaultSelection}
+					onChange={(selection) => (sel.current = selection)}
+				/>
+			),
+		});
+	};
 
 	const [getCurrentBox] = useGetCurrentBoxForPetLazyQuery({
 		fetchPolicy: "no-cache",
@@ -174,6 +297,37 @@ export const ShelterPetDetail: React.FC = () => {
 				<Icon name="mapOutline" color="primary" />
 				<span>{t("shelters.placement.open_map")}</span>
 			</MapButton>
+
+			<RatingsBlock>
+				<PlacementTitle>{t("shelters.assignee.title")}</PlacementTitle>
+				{assignedName ? (
+					<PlacementBody>
+						<PlacementRow>
+							<PlacementLabel>
+								{t("shelters.assignee.title")}
+							</PlacementLabel>
+							<PlacementValue>{assignedName}</PlacementValue>
+						</PlacementRow>
+					</PlacementBody>
+				) : (
+					<PlacementEmpty>
+						<span>{t("shelters.assignee.none")}</span>
+					</PlacementEmpty>
+				)}
+				{canAssign && (
+					<>
+						<MapButton type="button" onClick={pickAssignee}>
+							<Icon name="personAddOutline" color="primary" />
+							<span>{t("shelters.assignee.assign")}</span>
+						</MapButton>
+						{assignedName && (
+							<StatsLink type="button" onClick={() => saveAssignee(null)}>
+								{t("shelters.assignee.clear")}
+							</StatsLink>
+						)}
+					</>
+				)}
+			</RatingsBlock>
 
 			{walkRatings.length > 0 && (
 				<RatingsBlock>

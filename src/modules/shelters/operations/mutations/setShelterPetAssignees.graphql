@@ -1,0 +1,30 @@
+mutation setShelterPetAssignees(
+	$shelter_pet_id: ID!
+	$user_ids: [ID!]
+	$shelter_person_ids: [ID!]
+) {
+	setShelterPetAssignees(
+		shelter_pet_id: $shelter_pet_id
+		user_ids: $user_ids
+		shelter_person_ids: $shelter_person_ids
+	) {
+		success
+		shelter_pet {
+			id
+			assigned_members {
+				id
+				first_name
+				last_name
+			}
+			assigned_shelter_people {
+				id
+				first_name
+				last_name
+			}
+		}
+		error {
+			code
+			message
+		}
+	}
+}

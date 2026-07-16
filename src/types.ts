@@ -622,6 +622,7 @@ export type Mutation = {
   archiveShelterInventoryItem: ShelterInventoryItemResult;
   archiveShelterPerson: ShelterPersonResult;
   assignPetToBox: ShelterBoxOccupancyResult;
+  assignRbacRoleToUser: UserRbacAssignmentResult;
   cancelShelterClaim: ShelterClaimRequestResult;
   cancelShelterOwnershipTransfer: ShelterOwnershipTransferResult;
   cancelShelterWalk: ShelterWalkResult;
@@ -714,9 +715,12 @@ export type Mutation = {
   respondToReport: ReportResult;
   restoreMemoriae: RestoredResult;
   retryStripeWebhookEvent: StripeWebhookEventResult;
+  revokeRbacRoleAssignment: UserRbacAssignmentResult;
   saveShelterMapLayout: ShelterMapResult;
   setBoxOutOfService: ShelterBoxResult;
   setDefaultPaymentMethod: UserPaymentMethodResult;
+  setShelterPetAssignees: ShelterPetResult;
+  setShelterPetPublished: ShelterPetResult;
   setShelterWalkManualDuration: ShelterWalkResult;
   signUp: UserResult;
   skipShelterTask: ShelterTaskResult;
@@ -829,6 +833,13 @@ export type MutationAssignPetToBoxArgs = {
   box_id: Scalars['ID']['input'];
   reason?: InputMaybe<Scalars['String']['input']>;
   shelter_pet_id: Scalars['ID']['input'];
+};
+
+
+export type MutationAssignRbacRoleToUserArgs = {
+  role_id: Scalars['ID']['input'];
+  shelter_id?: InputMaybe<Scalars['ID']['input']>;
+  user_id: Scalars['ID']['input'];
 };
 
 
@@ -1299,6 +1310,11 @@ export type MutationRetryStripeWebhookEventArgs = {
 };
 
 
+export type MutationRevokeRbacRoleAssignmentArgs = {
+  assignment_id: Scalars['ID']['input'];
+};
+
+
 export type MutationSaveShelterMapLayoutArgs = {
   data: ShelterMapLayoutInput;
   map_id: Scalars['ID']['input'];
@@ -1313,6 +1329,19 @@ export type MutationSetBoxOutOfServiceArgs = {
 
 export type MutationSetDefaultPaymentMethodArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationSetShelterPetAssigneesArgs = {
+  shelter_person_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+  shelter_pet_id: Scalars['ID']['input'];
+  user_ids?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
+
+export type MutationSetShelterPetPublishedArgs = {
+  is_published: Scalars['Boolean']['input'];
+  shelter_pet_id: Scalars['ID']['input'];
 };
 
 
@@ -3813,9 +3842,12 @@ export enum ShelterPersonStatus {
 
 export type ShelterPet = {
   __typename?: 'ShelterPet';
+  assigned_members: Array<User>;
+  assigned_shelter_people: Array<ShelterPerson>;
   created_at: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   is_active: Scalars['Boolean']['output'];
+  is_published: Scalars['Boolean']['output'];
   left_at?: Maybe<Scalars['String']['output']>;
   pet: Pet;
   shelter: Shelter;
@@ -4320,6 +4352,7 @@ export type User = {
   profile_picture?: Maybe<Media>;
   reports?: Maybe<PaginatedReports>;
   role: UserRole;
+  verified: Scalars['Boolean']['output'];
 };
 
 
@@ -4391,13 +4424,22 @@ export type UserPaymentMethodsResult = {
 export type UserRbacAssignment = {
   __typename?: 'UserRbacAssignment';
   assigned_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
   role_code: Scalars['String']['output'];
+  role_id: Scalars['ID']['output'];
   role_name: Scalars['String']['output'];
   scope_type: Scalars['String']['output'];
   shelter_id?: Maybe<Scalars['ID']['output']>;
   status: Scalars['String']['output'];
   valid_from?: Maybe<Scalars['String']['output']>;
   valid_until?: Maybe<Scalars['String']['output']>;
+};
+
+export type UserRbacAssignmentResult = {
+  __typename?: 'UserRbacAssignmentResult';
+  assignment?: Maybe<UserRbacAssignment>;
+  error?: Maybe<Error>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type UserRbacResult = {
@@ -4425,6 +4467,7 @@ export type UserUpdate = {
   first_name?: InputMaybe<Scalars['String']['input']>;
   last_activity?: InputMaybe<Scalars['String']['input']>;
   last_name?: InputMaybe<Scalars['String']['input']>;
+  verified?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UsersResult = {
@@ -5121,6 +5164,15 @@ export type SaveShelterMapLayoutMutationVariables = Exact<{
 
 export type SaveShelterMapLayoutMutation = { __typename?: 'Mutation', saveShelterMapLayout: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
 
+export type SetShelterPetAssigneesMutationVariables = Exact<{
+  shelter_pet_id: Scalars['ID']['input'];
+  user_ids?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
+  shelter_person_ids?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
+}>;
+
+
+export type SetShelterPetAssigneesMutation = { __typename?: 'Mutation', setShelterPetAssignees: { __typename?: 'ShelterPetResult', success: boolean, shelter_pet?: { __typename?: 'ShelterPet', id: string, assigned_members: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assigned_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }> } | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
 export type SetShelterWalkManualDurationMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   duration_minutes: Scalars['Int']['input'];
@@ -5299,7 +5351,7 @@ export type GetShelterPetQueryVariables = Exact<{
 }>;
 
 
-export type GetShelterPetQuery = { __typename?: 'Query', getShelterPet: { __typename?: 'ShelterPetResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } | null } };
+export type GetShelterPetQuery = { __typename?: 'Query', getShelterPet: { __typename?: 'ShelterPetResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_pet?: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string }, assigned_members: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assigned_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }> } | null } };
 
 export type GetShelterPetWalkingStatsQueryVariables = Exact<{
   shelter_pet_id: Scalars['ID']['input'];
@@ -5357,7 +5409,7 @@ export type ListPetsNeedingWalkQueryVariables = Exact<{
 }>;
 
 
-export type ListPetsNeedingWalkQuery = { __typename?: 'Query', listPetsNeedingWalk: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type ListPetsNeedingWalkQuery = { __typename?: 'Query', listPetsNeedingWalk: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string } | null }, assigned_members: Array<{ __typename?: 'User', id: string, first_name: string, last_name: string }>, assigned_shelter_people: Array<{ __typename?: 'ShelterPerson', id: string, first_name?: string | null, last_name?: string | null }> } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export type ListPublicShelterPetsQueryVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
@@ -9150,6 +9202,62 @@ export function useSaveShelterMapLayoutMutation(baseOptions?: Apollo.MutationHoo
 export type SaveShelterMapLayoutMutationHookResult = ReturnType<typeof useSaveShelterMapLayoutMutation>;
 export type SaveShelterMapLayoutMutationResult = Apollo.MutationResult<SaveShelterMapLayoutMutation>;
 export type SaveShelterMapLayoutMutationOptions = Apollo.BaseMutationOptions<SaveShelterMapLayoutMutation, SaveShelterMapLayoutMutationVariables>;
+export const SetShelterPetAssigneesDocument = gql`
+    mutation setShelterPetAssignees($shelter_pet_id: ID!, $user_ids: [ID!], $shelter_person_ids: [ID!]) {
+  setShelterPetAssignees(
+    shelter_pet_id: $shelter_pet_id
+    user_ids: $user_ids
+    shelter_person_ids: $shelter_person_ids
+  ) {
+    success
+    shelter_pet {
+      id
+      assigned_members {
+        id
+        first_name
+        last_name
+      }
+      assigned_shelter_people {
+        id
+        first_name
+        last_name
+      }
+    }
+    error {
+      code
+      message
+    }
+  }
+}
+    `;
+export type SetShelterPetAssigneesMutationFn = Apollo.MutationFunction<SetShelterPetAssigneesMutation, SetShelterPetAssigneesMutationVariables>;
+
+/**
+ * __useSetShelterPetAssigneesMutation__
+ *
+ * To run a mutation, you first call `useSetShelterPetAssigneesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetShelterPetAssigneesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setShelterPetAssigneesMutation, { data, loading, error }] = useSetShelterPetAssigneesMutation({
+ *   variables: {
+ *      shelter_pet_id: // value for 'shelter_pet_id'
+ *      user_ids: // value for 'user_ids'
+ *      shelter_person_ids: // value for 'shelter_person_ids'
+ *   },
+ * });
+ */
+export function useSetShelterPetAssigneesMutation(baseOptions?: Apollo.MutationHookOptions<SetShelterPetAssigneesMutation, SetShelterPetAssigneesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetShelterPetAssigneesMutation, SetShelterPetAssigneesMutationVariables>(SetShelterPetAssigneesDocument, options);
+      }
+export type SetShelterPetAssigneesMutationHookResult = ReturnType<typeof useSetShelterPetAssigneesMutation>;
+export type SetShelterPetAssigneesMutationResult = Apollo.MutationResult<SetShelterPetAssigneesMutation>;
+export type SetShelterPetAssigneesMutationOptions = Apollo.BaseMutationOptions<SetShelterPetAssigneesMutation, SetShelterPetAssigneesMutationVariables>;
 export const SetShelterWalkManualDurationDocument = gql`
     mutation setShelterWalkManualDuration($id: ID!, $duration_minutes: Int!) {
   setShelterWalkManualDuration(id: $id, duration_minutes: $duration_minutes) {
@@ -10224,6 +10332,16 @@ export const GetShelterPetDocument = gql`
         id
         name
       }
+      assigned_members {
+        id
+        first_name
+        last_name
+      }
+      assigned_shelter_people {
+        id
+        first_name
+        last_name
+      }
     }
   }
 }
@@ -10632,6 +10750,16 @@ export const ListPetsNeedingWalkDocument = gql`
         main_picture {
           id
         }
+      }
+      assigned_members {
+        id
+        first_name
+        last_name
+      }
+      assigned_shelter_people {
+        id
+        first_name
+        last_name
       }
     }
     success

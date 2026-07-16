@@ -11,6 +11,16 @@ query getShelterPet($id: ID!) {
 				id
 				name
 			}
+			assigned_members {
+				id
+				first_name
+				last_name
+			}
+			assigned_shelter_people {
+				id
+				first_name
+				last_name
+			}
 		}
 	}
 }

@@ -116,8 +116,19 @@ export const ShelterWalksList: React.FC = () => {
 		refetchNeed();
 	};
 
-	const run = async (p: Promise<unknown>, ok: string) => {
-		await p;
+	// i resolver walk rispondono success:false senza GraphQL error: va letto
+	// il payload, altrimenti mostreremmo successo su un'operazione negata
+	const run = async (p: Promise<{ data?: unknown } | unknown>, ok: string) => {
+		const res = (await p) as { data?: Record<string, unknown> } | undefined;
+		const payload = res?.data
+			? (Object.values(res.data)[0] as
+					| { success?: boolean; error?: { message?: string } | null }
+					| undefined)
+			: undefined;
+		if (payload && payload.success === false) {
+			toast.error(payload.error?.message ?? t("messages.errors.fetch"));
+			return;
+		}
 		toast.success(t(ok));
 		reloadAll();
 	};
@@ -142,7 +153,15 @@ export const ShelterWalksList: React.FC = () => {
 			doPlan(shelterPetId);
 			return;
 		}
-		const defaultSelection: WalkerSelection = { id: user.id, kind: "user" };
+		// preseleziona il membro collegato al pet (se c'è), altrimenti me stesso
+		const needPet = needing.find((p) => p.id === shelterPetId);
+		const assignedUser = needPet?.assigned_members?.[0];
+		const assignedPerson = needPet?.assigned_shelter_people?.[0];
+		const defaultSelection: WalkerSelection = assignedUser
+			? { id: assignedUser.id, kind: "user" }
+			: assignedPerson
+			? { id: assignedPerson.id, kind: "person" }
+			: { id: user.id, kind: "user" };
 		const sel = { current: defaultSelection };
 		openModal({
 			onClose: closeModal,

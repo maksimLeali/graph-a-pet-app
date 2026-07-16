@@ -653,6 +653,13 @@
         "search": "Suchen",
         "discover": "Entdecken",
         "team": "Team"
+      },
+      "assignee": {
+        "title": "Zugewiesenes Mitglied",
+        "none": "Kein zugewiesenes Mitglied",
+        "assign": "Mitglied zuweisen",
+        "saved_ok": "Zugewiesenes Mitglied aktualisiert",
+        "clear": "Entfernen"
       }
     },
     "donations": {
@@ -1357,6 +1364,13 @@
         "search": "Search",
         "discover": "Explore",
         "team": "Team"
+      },
+      "assignee": {
+        "title": "Assigned member",
+        "none": "No assigned member",
+        "assign": "Assign member",
+        "saved_ok": "Assigned member updated",
+        "clear": "Remove"
       }
     },
     "donations": {
@@ -2049,6 +2063,13 @@
         "search": "Buscar",
         "discover": "Explorar",
         "team": "Equipo"
+      },
+      "assignee": {
+        "title": "Miembro asignado",
+        "none": "Sin miembro asignado",
+        "assign": "Asignar miembro",
+        "saved_ok": "Miembro asignado actualizado",
+        "clear": "Quitar"
       }
     },
     "donations": {
@@ -2741,6 +2762,13 @@
         "search": "Rechercher",
         "discover": "Explorer",
         "team": "Équipe"
+      },
+      "assignee": {
+        "title": "Membre assigné",
+        "none": "Aucun membre assigné",
+        "assign": "Assigner un membre",
+        "saved_ok": "Membre assigné mis à jour",
+        "clear": "Retirer"
       }
     },
     "donations": {
@@ -3465,6 +3493,13 @@
         "search": "Cerca",
         "discover": "Esplora",
         "team": "Team"
+      },
+      "assignee": {
+        "title": "Referente",
+        "none": "Nessun referente",
+        "assign": "Assegna referente",
+        "saved_ok": "Referente aggiornato",
+        "clear": "Rimuovi"
       }
     },
     "donations": {
@@ -4167,6 +4202,13 @@
         "search": "Поиск",
         "discover": "Обзор",
         "team": "Команда"
+      },
+      "assignee": {
+        "title": "Ответственный",
+        "none": "Ответственный не назначен",
+        "assign": "Назначить ответственного",
+        "saved_ok": "Ответственный обновлён",
+        "clear": "Убрать"
       }
     },
     "donations": {

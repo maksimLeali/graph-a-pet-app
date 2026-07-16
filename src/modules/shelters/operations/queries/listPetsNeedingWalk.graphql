@@ -9,6 +9,16 @@ query listPetsNeedingWalk($shelter_id: ID!, $hours: Int) {
 					id
 				}
 			}
+			assigned_members {
+				id
+				first_name
+				last_name
+			}
+			assigned_shelter_people {
+				id
+				first_name
+				last_name
+			}
 		}
 		success
 		error {
