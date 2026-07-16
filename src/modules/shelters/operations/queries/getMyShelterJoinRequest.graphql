@@ -1,0 +1,12 @@
+query getMyShelterJoinRequest($shelter_id: ID!) {
+	getMyShelterJoinRequest(shelter_id: $shelter_id) {
+		success
+		error {
+			message
+			code
+		}
+		shelter_join_request {
+			...ShelterJoinRequest
+		}
+	}
+}

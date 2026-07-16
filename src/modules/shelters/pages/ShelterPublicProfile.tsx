@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { TextInput, Toggle } from "@components";
+import { TextInput, Toggle, PullToRefresh } from "@components";
 import { RoleLevel } from "@types";
 import { $color, $uw } from "@theme";
 
@@ -78,6 +78,7 @@ export const ShelterPublicProfile: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2 className={loading ? "skeleton" : ""}>
 					{shelter ? t("shelters.public_profile.title") : ""}

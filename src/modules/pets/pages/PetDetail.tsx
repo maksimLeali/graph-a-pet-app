@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IonContent } from "@ionic/react";
 import { useParams, useLocation } from "react-router-dom";
 import _ from "lodash";
 import { useCookies } from "react-cookie";
@@ -13,7 +14,7 @@ import { MinPetFragment } from "@graphql_generated/minPet.generated";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
 
 import { ShareBox } from "../components";
-import { Image2x, SubOwnerList, SubOwnerListItem, Icon } from "@components";
+import { Image2x, SubOwnerList, SubOwnerListItem, Icon, PullToRefresh } from "@components";
 import { useUserContext } from "@contexts";
 import { CustodyLevel, Gender } from "@types";
 import { gendersColor } from "@utils";
@@ -75,99 +76,102 @@ export const PetDetails: React.FC = () => {
     }, []);
 
     return (
-        <Container>
-            {getPetLoading || checkLoading || pet ? (
-                <PetInfoBox>
-                    <MainPetContainer>
-                        <ImageWrapper
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {!(getPetLoading || checkLoading) &&
-                            pet?.main_picture ? (
-                                <Image2x id={pet?.main_picture.id} />
-                            ) : (
-                                <FillBox></FillBox>
-                            )}
-                        </ImageWrapper>
-                        <NameBox
-                            $bg={pet?.main_picture?.main_color?.color}
-                            $fg={pet?.main_picture?.main_color?.contrast}
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {pet && (
-                                <>
-                                    <IconContainer>
-                                        <Icon
-                                            size="100%"
-                                            color={gendersColor[pet.gender ?? Gender.NotSaid].color}
-                                            name={gendersColor[pet.gender ?? Gender.NotSaid].iconName}
-                                        />
-                                    </IconContainer>
-                                    <span className="mainInfo">{pet.name}</span>
-                                </>
-                            )}
-                        </NameBox>
-                    </MainPetContainer>                   
-                    <InfoBox className="info2">
-                        <span>{t("pets.gender")}</span>
-                        <InfoChip
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {pet && <span>{pet.gender}</span>}
-                        </InfoChip>
-                    </InfoBox>
-                    <InfoBox className="info3">
-                        <span>{t("pets.weight")}</span>
-                        <InfoChip
-                            className={`${
-                                getPetLoading || checkLoading ? "skeleton" : ""
-                            }`}
-                        >
-                            {pet && <span>{pet.weight_kg} Kg</span>}
-                        </InfoChip>
-                    </InfoBox>
-                </PetInfoBox>
-            ) : (
-                <Empty>
-                    <h1>{t("messages.errors.no_pet_found")}</h1>
-                </Empty>
-            )}
-            {!checkLoading && !getPetLoading && (
-                <>
-                    {pet &&
-                    owner != cookies.user.id &&
-                    !loaners.includes(cookies.user.id) ? (
-                        <ShareBox onConfirm={(v) => linkPetToMe({variables: {petId: pet.id , custodyLevel: v}})} />
-                    ) : owner == cookies.user.id ? (
-                        <>
-                        <h3 className="sharing-title">{t('pets.shared_with')}</h3>
-                        <SubOwnerList
-                            gradient={false}
-                            ownerships={
-                                (pet!.ownerships?.items.filter(
-                                    (item) => item && item.custody_level!= CustodyLevel.Owner
-                                ) as PetMinSubOwnerFragment[]) ?? [] 
-                            }
-                            onSelected={(v)=> {}}
-                        />
-                        </>
-                    ) : (
-                        <>
-                        <h3 className="sharing-title">{t('pets.shared_from')} </h3>
-                       {pet?.ownerships?.items && <SubOwnerListItem ownership={ pet!.ownerships?.items?.find(
-                                    (item) => item && item.custody_level == CustodyLevel.Owner
-                                ) as PetMinSubOwnerFragment} onSelected={(v)=> console.log(v)}/>}
-                        </>
-                    )}
-                </>
-            )}
-        </Container>
+        <IonContent>
+            <PullToRefresh />
+            <Container>
+                {getPetLoading || checkLoading || pet ? (
+                    <PetInfoBox>
+                        <MainPetContainer>
+                            <ImageWrapper
+                                className={`${
+                                    getPetLoading || checkLoading ? "skeleton" : ""
+                                }`}
+                            >
+                                {!(getPetLoading || checkLoading) &&
+                                pet?.main_picture ? (
+                                    <Image2x id={pet?.main_picture.id} />
+                                ) : (
+                                    <FillBox></FillBox>
+                                )}
+                            </ImageWrapper>
+                            <NameBox
+                                $bg={pet?.main_picture?.main_color?.color}
+                                $fg={pet?.main_picture?.main_color?.contrast}
+                                className={`${
+                                    getPetLoading || checkLoading ? "skeleton" : ""
+                                }`}
+                            >
+                                {pet && (
+                                    <>
+                                        <IconContainer>
+                                            <Icon
+                                                size="100%"
+                                                color={gendersColor[pet.gender ?? Gender.NotSaid].color}
+                                                name={gendersColor[pet.gender ?? Gender.NotSaid].iconName}
+                                            />
+                                        </IconContainer>
+                                        <span className="mainInfo">{pet.name}</span>
+                                    </>
+                                )}
+                            </NameBox>
+                        </MainPetContainer>                   
+                        <InfoBox className="info2">
+                            <span>{t("pets.gender")}</span>
+                            <InfoChip
+                                className={`${
+                                    getPetLoading || checkLoading ? "skeleton" : ""
+                                }`}
+                            >
+                                {pet && <span>{pet.gender}</span>}
+                            </InfoChip>
+                        </InfoBox>
+                        <InfoBox className="info3">
+                            <span>{t("pets.weight")}</span>
+                            <InfoChip
+                                className={`${
+                                    getPetLoading || checkLoading ? "skeleton" : ""
+                                }`}
+                            >
+                                {pet && <span>{pet.weight_kg} Kg</span>}
+                            </InfoChip>
+                        </InfoBox>
+                    </PetInfoBox>
+                ) : (
+                    <Empty>
+                        <h1>{t("messages.errors.no_pet_found")}</h1>
+                    </Empty>
+                )}
+                {!checkLoading && !getPetLoading && (
+                    <>
+                        {pet &&
+                        owner != cookies.user.id &&
+                        !loaners.includes(cookies.user.id) ? (
+                            <ShareBox onConfirm={(v) => linkPetToMe({variables: {petId: pet.id , custodyLevel: v}})} />
+                        ) : owner == cookies.user.id ? (
+                            <>
+                            <h3 className="sharing-title">{t('pets.shared_with')}</h3>
+                            <SubOwnerList
+                                gradient={false}
+                                ownerships={
+                                    (pet!.ownerships?.items.filter(
+                                        (item) => item && item.custody_level!= CustodyLevel.Owner
+                                    ) as PetMinSubOwnerFragment[]) ?? [] 
+                                }
+                                onSelected={(v)=> {}}
+                            />
+                            </>
+                        ) : (
+                            <>
+                            <h3 className="sharing-title">{t('pets.shared_from')} </h3>
+                           {pet?.ownerships?.items && <SubOwnerListItem ownership={ pet!.ownerships?.items?.find(
+                                        (item) => item && item.custody_level == CustodyLevel.Owner
+                                    ) as PetMinSubOwnerFragment} onSelected={(v)=> console.log(v)}/>}
+                            </>
+                        )}
+                    </>
+                )}
+            </Container>
+        </IonContent>
     );
 };
 

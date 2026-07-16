@@ -6,12 +6,14 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Chip, Icon, Image2x } from "@components";
+import { Chip, Icon, Image2x, PullToRefresh } from "@components";
 import { $color, $uw } from "@theme";
 
 import { useGetPublicShelterQuery } from "../operations/__generated__/getPublicShelter.generated";
 import { useListPublicShelterPetsQuery } from "../operations/__generated__/listPublicShelterPets.generated";
 import { useListShelterMediasQuery } from "../operations/__generated__/listShelterMedias.generated";
+import { useGetMyShelterJoinRequestQuery } from "../operations/__generated__/getMyShelterJoinRequest.generated";
+import { useApplyToShelterAsVolunteerMutation } from "../operations/__generated__/applyToShelterAsVolunteer.generated";
 import { useMyShelterRole } from "../hooks/useMyShelterRole";
 import { DonateCard } from "../../donations/components/DonateCard";
 
@@ -35,17 +37,48 @@ export const ShelterPublic: React.FC = () => {
 
 	const { isMember } = useMyShelterRole(id);
 
+	// internal application flow: the button creates a join request that
+	// notifies the shelter's OWNER/MANAGER for approval — the public email
+	// stays available as a secondary "contact by message" action
+	const { data: myRequestData, refetch: refetchMyRequest } =
+		useGetMyShelterJoinRequestQuery({
+			skip: !id,
+			fetchPolicy: "cache-and-network",
+			variables: { shelter_id: id },
+		});
+	const pendingRequest =
+		myRequestData?.getMyShelterJoinRequest?.shelter_join_request;
+
+	const [applyToShelter, { loading: applying }] =
+		useApplyToShelterAsVolunteerMutation({
+			onCompleted: (res) => {
+				if (!res.applyToShelterAsVolunteer?.success) {
+					toast.error(
+						res.applyToShelterAsVolunteer?.error?.message ??
+							t("messages.errors.generic")
+					);
+					return;
+				}
+				toast.success(t("shelters.discover.apply_volunteer_sent") ?? "");
+				refetchMyRequest();
+			},
+			onError: () => toast.error(t("messages.errors.generic")),
+		});
+
 	const onApplyVolunteer = () => {
-		if (!shelter) return;
-		if (shelter.public_contact_email) {
+		if (!shelter || applying || pendingRequest) return;
+		applyToShelter({ variables: { shelter_id: shelter.id } });
+	};
+
+	const onContactByEmail = () => {
+		if (shelter?.public_contact_email) {
 			window.location.href = `mailto:${shelter.public_contact_email}`;
-			return;
 		}
-		toast(t("shelters.discover.volunteer_no_contact") ?? "");
 	};
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			{!loading && (fetchError || !shelter) && (
 				<Message>{fetchError ?? t("shelters.discover.not_found")}</Message>
 			)}
@@ -122,9 +155,24 @@ export const ShelterPublic: React.FC = () => {
 
 					{shelter?.accepts_volunteers && !isMember && (
 						<Section>
-							<VolunteerBtn type="button" onClick={onApplyVolunteer}>
-								{t("shelters.discover.apply_volunteer")}
-							</VolunteerBtn>
+							{pendingRequest ? (
+								<PendingNote>
+									{t("shelters.discover.apply_volunteer_pending")}
+								</PendingNote>
+							) : (
+								<VolunteerBtn
+									type="button"
+									disabled={applying}
+									onClick={onApplyVolunteer}
+								>
+									{t("shelters.discover.apply_volunteer")}
+								</VolunteerBtn>
+							)}
+							{shelter.public_contact_email && (
+								<ContactLink type="button" onClick={onContactByEmail}>
+									{t("shelters.discover.contact_by_email")}
+								</ContactLink>
+							)}
 						</Section>
 					)}
 
@@ -421,6 +469,28 @@ const VolunteerBtn = styled.button`
 	color: ${$color("light")};
 	font-weight: 700;
 	font-size: 1.4rem;
+	cursor: pointer;
+`;
+
+const PendingNote = styled.p`
+	margin: 0;
+	padding: ${$uw(1.25)};
+	text-align: center;
+	border-radius: 999px;
+	background: ${$color("light")};
+	color: ${$color("medium")};
+	font-weight: 700;
+	font-size: 1.4rem;
+`;
+
+const ContactLink = styled.button`
+	width: 100%;
+	margin-top: ${$uw(0.75)};
+	border: none;
+	background: none;
+	color: ${$color("medium")};
+	font-size: 1.3rem;
+	text-decoration: underline;
 	cursor: pointer;
 `;
 

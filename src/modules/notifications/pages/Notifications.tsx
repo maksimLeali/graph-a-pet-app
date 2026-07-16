@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Icon, IconName, Chip } from "@components";
+import { Icon, IconName, Chip, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { NotificationPriority, NotificationStatus, NotificationType } from "@types";
@@ -27,6 +27,10 @@ import {
 	useAcceptShelterOwnershipTransferMutation,
 	useRejectShelterOwnershipTransferMutation,
 } from "../operations/__generated__/respondShelterOwnershipTransfer.generated";
+import {
+	useApproveShelterJoinRequestMutation,
+	useRejectShelterJoinRequestMutation,
+} from "../../shelters/operations/__generated__/resolveShelterJoinRequest.generated";
 import { MinNotificationFragment } from "../operations/__generated__/MinNotification.generated";
 
 const PRIORITY_COLOR: Record<NotificationPriority, string> = {
@@ -44,6 +48,8 @@ const TYPE_ICON: Record<NotificationType, IconName> = {
 	[NotificationType.ShelterJoinRequest]: "peopleOutline",
 	[NotificationType.PetBirthday]: "giftOutline",
 	[NotificationType.ShelterOwnershipTransfer]: "swapHorizontal",
+	[NotificationType.ShelterClaimRequest]: "shieldCheckmarkOutline",
+	[NotificationType.DonationReceived]: "heartOutline",
 };
 
 const TYPE_LABEL_KEY: Record<NotificationType, I18NKey> = {
@@ -54,6 +60,8 @@ const TYPE_LABEL_KEY: Record<NotificationType, I18NKey> = {
 	[NotificationType.ShelterJoinRequest]: "notifications.types.volunteer_request",
 	[NotificationType.PetBirthday]: "notifications.types.pet_birthday",
 	[NotificationType.ShelterOwnershipTransfer]: "notifications.types.ownership_transfer",
+	[NotificationType.ShelterClaimRequest]: "notifications.types.claim_request",
+	[NotificationType.DonationReceived]: "notifications.types.donation_received",
 };
 
 // keep the unread badge in sync after every mutation
@@ -82,6 +90,8 @@ export const Notifications: React.FC = () => {
 	const [rejectShelter] = useRejectShelterInviteMutation({ refetchQueries: REFETCH });
 	const [acceptTransfer] = useAcceptShelterOwnershipTransferMutation({ refetchQueries: REFETCH });
 	const [rejectTransfer] = useRejectShelterOwnershipTransferMutation({ refetchQueries: REFETCH });
+	const [approveJoin] = useApproveShelterJoinRequestMutation({ refetchQueries: REFETCH });
+	const [rejectJoin] = useRejectShelterJoinRequestMutation({ refetchQueries: REFETCH });
 
 	const items = (data?.listMyNotifications?.items ?? []).filter(
 		(n): n is MinNotificationFragment => !!n
@@ -124,6 +134,10 @@ export const Notifications: React.FC = () => {
 				accept
 					? await acceptTransfer({ variables: { id: inviteId } })
 					: await rejectTransfer({ variables: { id: inviteId } });
+			} else if (n.type === NotificationType.ShelterJoinRequest) {
+				accept
+					? await approveJoin({ variables: { id: inviteId } })
+					: await rejectJoin({ variables: { id: inviteId } });
 			}
 			await dismiss({ variables: { id: n.id } });
 			toast.success(
@@ -137,6 +151,7 @@ export const Notifications: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Wrapper>
 				<Header>
 					<h3>{t("notifications.title")}</h3>
@@ -176,7 +191,11 @@ export const Notifications: React.FC = () => {
 										{n.message && <Msg>{n.message}</Msg>}
 										{(n.type === NotificationType.PetOwnershipInvite ||
 											n.type === NotificationType.ShelterInvite ||
-											n.type === NotificationType.ShelterOwnershipTransfer) && (
+											n.type === NotificationType.ShelterOwnershipTransfer ||
+											// join request: actionable only for the reviewer copy —
+											// the applicant's decision copy carries payload.approved
+											(n.type === NotificationType.ShelterJoinRequest &&
+												n.payload?.approved === undefined)) && (
 											<Cta onClick={(e) => e.stopPropagation()}>
 												<CtaBtn
 													type="button"

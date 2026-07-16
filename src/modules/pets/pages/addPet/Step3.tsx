@@ -13,8 +13,7 @@ import {
     SubmitInput,
     NumberInput,
     Toggle,
-    DateTimePicker,
-} from "@components";
+    DateTimePicker, PullToRefresh } from "@components";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { BreedSeletor } from "../../components";
@@ -111,6 +110,7 @@ export const Step3
 
     return (
         <IonContent fullscreen>
+            <PullToRefresh />
             <Modal
                 open={openBreedSelector}
                 onClose={() => {

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { useUserContext } from "@contexts";
 import { $cssTRBL, $uw } from "@theme";
+import { PullToRefresh } from "@components";
 
 export const IntroPage = React.memo(({}) => {
 	const { setPage, user } = useUserContext();
@@ -17,6 +18,7 @@ export const IntroPage = React.memo(({}) => {
 
 	return (
 		<IonContent fullscreen>
+		    <PullToRefresh />
 			<Container>
 				<Title
 					dangerouslySetInnerHTML={{

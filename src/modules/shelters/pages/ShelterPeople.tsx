@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
-import { Icon, Chip, TextInput } from "@components";
+import { Icon, Chip, TextInput, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { $color, $uw } from "@theme";
 import { ShelterPersonStatus, RoleLevel } from "@types";
@@ -222,6 +222,7 @@ export const ShelterPeople: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("shelters.tabs.people")}</h2>
 				{canManage && (

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { IonContent } from "@ionic/react";
 import { useTranslation } from "react-i18next";
 import { FormProvider, useForm } from "react-hook-form";
 import styled from "styled-components";
@@ -6,7 +7,7 @@ import toast from "react-hot-toast";
 
 import { MinUserFragment } from "@graphql_generated/minUser.generated";
 import { useUpdateUserMutation } from "../../../components/operations/__generated__/updateUser.generated";
-import { Image2x, TextInput, Icon } from "@components";
+import { Image2x, TextInput, Icon, PullToRefresh } from "@components";
 import { UserPlaceholder } from "@components";
 import { useUserContext, useModal } from "@contexts";
 import { UserUpdate } from "@types";
@@ -98,60 +99,63 @@ export const Profile: React.FC<Props> = React.memo(({}) => {
 	};
 
 	return (
-		<Container>
-			<Top>
-				<Avatar
-					role="button"
-					tabIndex={0}
-					onClick={() => setImgOpen(true)}
-				>
-					{user.profile_picture ? (
-						<Image2x id={user.profile_picture.id} />
-					) : (
-						<UserPlaceholder />
-					)}
-				</Avatar>
-				<NameCol>
-					<Row
-						label={t("auth.first_name")}
-						value={user.first_name || "—"}
-						onEdit={() =>
-							openFieldEdit("first_name", "auth.first_name", () => ({
-								first_name: methods.getValues("first_name"),
-							}))
-						}
-					/>
-					<Row
-						label={t("auth.last_name")}
-						value={user.last_name || "—"}
-						onEdit={() =>
-							openFieldEdit("last_name", "auth.last_name", () => ({
-								last_name: methods.getValues("last_name"),
-							}))
-						}
-					/>
-				</NameCol>
-			</Top>
+		<IonContent>
+			<PullToRefresh />
+			<Container>
+				<Top>
+					<Avatar
+						role="button"
+						tabIndex={0}
+						onClick={() => setImgOpen(true)}
+					>
+						{user.profile_picture ? (
+							<Image2x id={user.profile_picture.id} />
+						) : (
+							<UserPlaceholder />
+						)}
+					</Avatar>
+					<NameCol>
+						<Row
+							label={t("auth.first_name")}
+							value={user.first_name || "—"}
+							onEdit={() =>
+								openFieldEdit("first_name", "auth.first_name", () => ({
+									first_name: methods.getValues("first_name"),
+								}))
+							}
+						/>
+						<Row
+							label={t("auth.last_name")}
+							value={user.last_name || "—"}
+							onEdit={() =>
+								openFieldEdit("last_name", "auth.last_name", () => ({
+									last_name: methods.getValues("last_name"),
+								}))
+							}
+						/>
+					</NameCol>
+				</Top>
 
-			<Fields>
-				<ReadOnlyCard className="full">
-					<CardLabel>{t("auth.email")}</CardLabel>
-					<CardValueRow>
-						<CardValue>{user.email || "—"}</CardValue>
-					</CardValueRow>
-				</ReadOnlyCard>
-			</Fields>
+				<Fields>
+					<ReadOnlyCard className="full">
+						<CardLabel>{t("auth.email")}</CardLabel>
+						<CardValueRow>
+							<CardValue>{user.email || "—"}</CardValue>
+						</CardValueRow>
+					</ReadOnlyCard>
+				</Fields>
 
-			<ProfileImageEditor
-				open={imgOpen}
-				onClose={() => setImgOpen(false)}
-				userId={user.id}
-				mediaId={user.profile_picture?.id}
-				onSaved={(newMediaId) =>
-					updateUserData({ profile_picture: { id: newMediaId } })
-				}
-			/>
-		</Container>
+				<ProfileImageEditor
+					open={imgOpen}
+					onClose={() => setImgOpen(false)}
+					userId={user.id}
+					mediaId={user.profile_picture?.id}
+					onSaved={(newMediaId) =>
+						updateUserData({ profile_picture: { id: newMediaId } })
+					}
+				/>
+			</Container>
+		</IonContent>
 	);
 });
 

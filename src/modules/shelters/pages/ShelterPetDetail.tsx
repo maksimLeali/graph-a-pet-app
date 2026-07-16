@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 
 import { IonContent } from "@ionic/react";
 import { useUserContext } from "@contexts";
-import { Icon, WalkRatingsSummaryCard } from "@components";
+import { Icon, WalkRatingsSummaryCard, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { BoxStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
@@ -217,6 +217,7 @@ export const ShelterPetDetail: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			{pet ? (
 				<PetDetailBody
 					pet={pet}

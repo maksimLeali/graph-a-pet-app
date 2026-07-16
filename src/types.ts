@@ -614,8 +614,10 @@ export type Mutation = {
   addPet: PetResult;
   addPetToMe: PetAddedResult;
   addPetToUser: PetAddedResult;
+  applyToShelterAsVolunteer: ShelterJoinRequestResult;
   approveShelterClaim: ShelterClaimRequestResult;
   approveShelterExpense: ShelterExpenseResult;
+  approveShelterJoinRequest: ShelterJoinRequestResult;
   archiveRbacRole: RbacRoleMutationResult;
   archiveShelterInventoryItem: ShelterInventoryItemResult;
   archiveShelterPerson: ShelterPersonResult;
@@ -702,6 +704,7 @@ export type Mutation = {
   rejectShelterClaim: ShelterClaimRequestResult;
   rejectShelterExpense: ShelterExpenseResult;
   rejectShelterInvite: ShelterInviteResult;
+  rejectShelterJoinRequest: ShelterJoinRequestResult;
   rejectShelterOwnershipTransfer: ShelterOwnershipTransferResult;
   releasePetFromBox: ShelterBoxOccupancyResult;
   removeSavedPaymentMethod: GenericResult;
@@ -785,6 +788,12 @@ export type MutationAddPetToUserArgs = {
 };
 
 
+export type MutationApplyToShelterAsVolunteerArgs = {
+  message?: InputMaybe<Scalars['String']['input']>;
+  shelter_id: Scalars['ID']['input'];
+};
+
+
 export type MutationApproveShelterClaimArgs = {
   decision_note?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
@@ -792,6 +801,11 @@ export type MutationApproveShelterClaimArgs = {
 
 
 export type MutationApproveShelterExpenseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationApproveShelterJoinRequestArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1230,6 +1244,11 @@ export type MutationRejectShelterInviteArgs = {
 };
 
 
+export type MutationRejectShelterJoinRequestArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationRejectShelterOwnershipTransferArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1596,9 +1615,11 @@ export type Notification = {
 };
 
 export enum NotificationEntityType {
+  Donation = 'DONATION',
   Ownership = 'OWNERSHIP',
   Pet = 'PET',
   Shelter = 'SHELTER',
+  ShelterClaimRequest = 'SHELTER_CLAIM_REQUEST',
   ShelterInvite = 'SHELTER_INVITE',
   ShelterJoinRequest = 'SHELTER_JOIN_REQUEST',
   ShelterOwnershipTransfer = 'SHELTER_OWNERSHIP_TRANSFER',
@@ -1628,8 +1649,10 @@ export enum NotificationStatus {
 }
 
 export enum NotificationType {
+  DonationReceived = 'DONATION_RECEIVED',
   PetBirthday = 'PET_BIRTHDAY',
   PetOwnershipInvite = 'PET_OWNERSHIP_INVITE',
+  ShelterClaimRequest = 'SHELTER_CLAIM_REQUEST',
   ShelterInvite = 'SHELTER_INVITE',
   ShelterJoinRequest = 'SHELTER_JOIN_REQUEST',
   ShelterOwnershipTransfer = 'SHELTER_OWNERSHIP_TRANSFER',
@@ -2225,6 +2248,7 @@ export type Query = {
   getMedia: MediaResult;
   getMyDonationStatus: DonationResult;
   getMyShelterDashboard: MyShelterDashboardResult;
+  getMyShelterJoinRequest: ShelterJoinRequestResult;
   getOrCreateCode?: Maybe<CodeResult>;
   getOwnership: OwnershipResult;
   getPet: PetResult;
@@ -2299,6 +2323,7 @@ export type Query = {
   listShelterExpenses: ShelterExpensesResult;
   listShelterInventoryItems: PaginatedInventoryItems;
   listShelterInventoryMovements: PaginatedInventoryMovements;
+  listShelterJoinRequests: ShelterJoinRequestListResult;
   listShelterKpiHistory: ShelterKpiHistoryResult;
   listShelterMapElements: PaginatedMapElements;
   listShelterMaps: PaginatedShelterMaps;
@@ -2380,6 +2405,11 @@ export type QueryGetMyDonationStatusArgs = {
 export type QueryGetMyShelterDashboardArgs = {
   date_from: Scalars['String']['input'];
   date_to: Scalars['String']['input'];
+};
+
+
+export type QueryGetMyShelterJoinRequestArgs = {
+  shelter_id: Scalars['ID']['input'];
 };
 
 
@@ -2743,6 +2773,12 @@ export type QueryListShelterInventoryMovementsArgs = {
 };
 
 
+export type QueryListShelterJoinRequestsArgs = {
+  shelter_id: Scalars['ID']['input'];
+  status?: InputMaybe<ShelterJoinRequestStatus>;
+};
+
+
 export type QueryListShelterKpiHistoryArgs = {
   days?: InputMaybe<Scalars['Int']['input']>;
   shelter_id: Scalars['ID']['input'];
@@ -3024,6 +3060,7 @@ export type Shelter = {
   public_lat?: Maybe<Scalars['Float']['output']>;
   public_lng?: Maybe<Scalars['Float']['output']>;
   public_location_label?: Maybe<Scalars['String']['output']>;
+  public_story_html?: Maybe<Scalars['String']['output']>;
   region?: Maybe<Scalars['String']['output']>;
   roles?: Maybe<PaginatedShelterRoles>;
   street: Scalars['String']['output'];
@@ -3472,6 +3509,40 @@ export enum ShelterInviteStatus {
   Rejected = 'REJECTED'
 }
 
+export type ShelterJoinRequest = {
+  __typename?: 'ShelterJoinRequest';
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  reviewed_at?: Maybe<Scalars['String']['output']>;
+  reviewed_by?: Maybe<User>;
+  shelter: Shelter;
+  status: ShelterJoinRequestStatus;
+  updated_at?: Maybe<Scalars['String']['output']>;
+  user: User;
+};
+
+export type ShelterJoinRequestListResult = {
+  __typename?: 'ShelterJoinRequestListResult';
+  error?: Maybe<Error>;
+  items: Array<Maybe<ShelterJoinRequest>>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type ShelterJoinRequestResult = {
+  __typename?: 'ShelterJoinRequestResult';
+  error?: Maybe<Error>;
+  shelter_join_request?: Maybe<ShelterJoinRequest>;
+  success: Scalars['Boolean']['output'];
+};
+
+export enum ShelterJoinRequestStatus {
+  Approved = 'APPROVED',
+  Cancelled = 'CANCELLED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
+
 export type ShelterKpiHistoryResult = {
   __typename?: 'ShelterKpiHistoryResult';
   error?: Maybe<Error>;
@@ -3906,6 +3977,7 @@ export type ShelterUpdate = {
   public_lat?: InputMaybe<Scalars['Float']['input']>;
   public_lng?: InputMaybe<Scalars['Float']['input']>;
   public_location_label?: InputMaybe<Scalars['String']['input']>;
+  public_story_html?: InputMaybe<Scalars['String']['input']>;
   region?: InputMaybe<Scalars['String']['input']>;
   street?: InputMaybe<Scalars['String']['input']>;
   street_number?: InputMaybe<Scalars['String']['input']>;
@@ -4869,6 +4941,16 @@ export type MinShelterWalkFragment = { __typename?: 'ShelterWalk', id: string, s
 
 export type PublicShelterFragment = { __typename?: 'PublicShelter', id: string, name: string, city?: string | null, region?: string | null, public_description?: string | null, public_story_html?: string | null, public_contact_email?: string | null, public_contact_phone?: string | null, logo_media_id?: string | null, accepts_volunteers: boolean, public_location_label?: string | null, public_lat?: number | null, public_lng?: number | null };
 
+export type ShelterJoinRequestFragment = { __typename?: 'ShelterJoinRequest', id: string, created_at: string, status: ShelterJoinRequestStatus, message?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, user: { __typename?: 'User', id: string, first_name: string, last_name: string, email: string } };
+
+export type ApplyToShelterAsVolunteerMutationVariables = Exact<{
+  shelter_id: Scalars['ID']['input'];
+  message?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ApplyToShelterAsVolunteerMutation = { __typename?: 'Mutation', applyToShelterAsVolunteer: { __typename?: 'ShelterJoinRequestResult', success: boolean, error?: { __typename?: 'Error', message: string, code: string } | null, shelter_join_request?: { __typename?: 'ShelterJoinRequest', id: string, created_at: string, status: ShelterJoinRequestStatus, message?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, user: { __typename?: 'User', id: string, first_name: string, last_name: string, email: string } } | null } };
+
 export type AssignPetToBoxMutationVariables = Exact<{
   box_id: Scalars['ID']['input'];
   shelter_pet_id: Scalars['ID']['input'];
@@ -5017,6 +5099,20 @@ export type ReleasePetFromBoxMutationVariables = Exact<{
 
 export type ReleasePetFromBoxMutation = { __typename?: 'Mutation', releasePetFromBox: { __typename?: 'ShelterBoxOccupancyResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, occupancy?: { __typename?: 'ShelterBoxOccupancy', id: string } | null } };
 
+export type ApproveShelterJoinRequestMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type ApproveShelterJoinRequestMutation = { __typename?: 'Mutation', approveShelterJoinRequest: { __typename?: 'ShelterJoinRequestResult', success: boolean, error?: { __typename?: 'Error', message: string, code: string } | null, shelter_join_request?: { __typename?: 'ShelterJoinRequest', id: string, created_at: string, status: ShelterJoinRequestStatus, message?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, user: { __typename?: 'User', id: string, first_name: string, last_name: string, email: string } } | null } };
+
+export type RejectShelterJoinRequestMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type RejectShelterJoinRequestMutation = { __typename?: 'Mutation', rejectShelterJoinRequest: { __typename?: 'ShelterJoinRequestResult', success: boolean, error?: { __typename?: 'Error', message: string, code: string } | null, shelter_join_request?: { __typename?: 'ShelterJoinRequest', id: string, created_at: string, status: ShelterJoinRequestStatus, message?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, user: { __typename?: 'User', id: string, first_name: string, last_name: string, email: string } } | null } };
+
 export type SaveShelterMapLayoutMutationVariables = Exact<{
   map_id: Scalars['ID']['input'];
   data: ShelterMapLayoutInput;
@@ -5162,6 +5258,13 @@ export type GetMyShelterDashboardQueryVariables = Exact<{
 
 
 export type GetMyShelterDashboardQuery = { __typename?: 'Query', getMyShelterDashboard: { __typename?: 'MyShelterDashboardResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, dashboard?: { __typename?: 'MyShelterDashboard', task_count: number, overdue_task_count: number, walk_count: number, in_progress_walk_count: number, low_stock_count: number, out_of_stock_count: number, tasks: Array<{ __typename?: 'MyShelterDashboardTask', id: string, shelter_id: string, shelter_name: string, task_type: ShelterTaskType, area?: string | null, status: TaskStatus, is_overdue: boolean, scheduled_at?: string | null, action_url: string }>, walks: Array<{ __typename?: 'MyShelterDashboardWalk', id: string, shelter_id: string, shelter_name: string, pet_name: string, status: ShelterWalkStatus, scheduled_at?: string | null, action_url: string }>, inventory_alerts: Array<{ __typename?: 'MyShelterDashboardInventoryAlert', id: string, shelter_id: string, shelter_name: string, name: string, current_quantity: number, minimum_threshold?: number | null, status: ShelterInventoryAlertStatus, action_url: string }> } | null } };
+
+export type GetMyShelterJoinRequestQueryVariables = Exact<{
+  shelter_id: Scalars['ID']['input'];
+}>;
+
+
+export type GetMyShelterJoinRequestQuery = { __typename?: 'Query', getMyShelterJoinRequest: { __typename?: 'ShelterJoinRequestResult', success: boolean, error?: { __typename?: 'Error', message: string, code: string } | null, shelter_join_request?: { __typename?: 'ShelterJoinRequest', id: string, created_at: string, status: ShelterJoinRequestStatus, message?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, user: { __typename?: 'User', id: string, first_name: string, last_name: string, email: string } } | null } };
 
 export type GetPublicShelterQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -5914,6 +6017,24 @@ export const PublicShelterFragmentDoc = gql`
   public_location_label
   public_lat
   public_lng
+}
+    `;
+export const ShelterJoinRequestFragmentDoc = gql`
+    fragment ShelterJoinRequest on ShelterJoinRequest {
+  id
+  created_at
+  status
+  message
+  shelter {
+    id
+    name
+  }
+  user {
+    id
+    first_name
+    last_name
+    email
+  }
 }
     `;
 export const CreateMediaDocument = gql`
@@ -8048,6 +8169,47 @@ export type ListPetWalkRatingsQueryHookResult = ReturnType<typeof useListPetWalk
 export type ListPetWalkRatingsLazyQueryHookResult = ReturnType<typeof useListPetWalkRatingsLazyQuery>;
 export type ListPetWalkRatingsSuspenseQueryHookResult = ReturnType<typeof useListPetWalkRatingsSuspenseQuery>;
 export type ListPetWalkRatingsQueryResult = Apollo.QueryResult<ListPetWalkRatingsQuery, ListPetWalkRatingsQueryVariables>;
+export const ApplyToShelterAsVolunteerDocument = gql`
+    mutation applyToShelterAsVolunteer($shelter_id: ID!, $message: String) {
+  applyToShelterAsVolunteer(shelter_id: $shelter_id, message: $message) {
+    success
+    error {
+      message
+      code
+    }
+    shelter_join_request {
+      ...ShelterJoinRequest
+    }
+  }
+}
+    ${ShelterJoinRequestFragmentDoc}`;
+export type ApplyToShelterAsVolunteerMutationFn = Apollo.MutationFunction<ApplyToShelterAsVolunteerMutation, ApplyToShelterAsVolunteerMutationVariables>;
+
+/**
+ * __useApplyToShelterAsVolunteerMutation__
+ *
+ * To run a mutation, you first call `useApplyToShelterAsVolunteerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApplyToShelterAsVolunteerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [applyToShelterAsVolunteerMutation, { data, loading, error }] = useApplyToShelterAsVolunteerMutation({
+ *   variables: {
+ *      shelter_id: // value for 'shelter_id'
+ *      message: // value for 'message'
+ *   },
+ * });
+ */
+export function useApplyToShelterAsVolunteerMutation(baseOptions?: Apollo.MutationHookOptions<ApplyToShelterAsVolunteerMutation, ApplyToShelterAsVolunteerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ApplyToShelterAsVolunteerMutation, ApplyToShelterAsVolunteerMutationVariables>(ApplyToShelterAsVolunteerDocument, options);
+      }
+export type ApplyToShelterAsVolunteerMutationHookResult = ReturnType<typeof useApplyToShelterAsVolunteerMutation>;
+export type ApplyToShelterAsVolunteerMutationResult = Apollo.MutationResult<ApplyToShelterAsVolunteerMutation>;
+export type ApplyToShelterAsVolunteerMutationOptions = Apollo.BaseMutationOptions<ApplyToShelterAsVolunteerMutation, ApplyToShelterAsVolunteerMutationVariables>;
 export const AssignPetToBoxDocument = gql`
     mutation assignPetToBox($box_id: ID!, $shelter_pet_id: ID!, $reason: String) {
   assignPetToBox(
@@ -8867,6 +9029,86 @@ export function useReleasePetFromBoxMutation(baseOptions?: Apollo.MutationHookOp
 export type ReleasePetFromBoxMutationHookResult = ReturnType<typeof useReleasePetFromBoxMutation>;
 export type ReleasePetFromBoxMutationResult = Apollo.MutationResult<ReleasePetFromBoxMutation>;
 export type ReleasePetFromBoxMutationOptions = Apollo.BaseMutationOptions<ReleasePetFromBoxMutation, ReleasePetFromBoxMutationVariables>;
+export const ApproveShelterJoinRequestDocument = gql`
+    mutation approveShelterJoinRequest($id: ID!) {
+  approveShelterJoinRequest(id: $id) {
+    success
+    error {
+      message
+      code
+    }
+    shelter_join_request {
+      ...ShelterJoinRequest
+    }
+  }
+}
+    ${ShelterJoinRequestFragmentDoc}`;
+export type ApproveShelterJoinRequestMutationFn = Apollo.MutationFunction<ApproveShelterJoinRequestMutation, ApproveShelterJoinRequestMutationVariables>;
+
+/**
+ * __useApproveShelterJoinRequestMutation__
+ *
+ * To run a mutation, you first call `useApproveShelterJoinRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApproveShelterJoinRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [approveShelterJoinRequestMutation, { data, loading, error }] = useApproveShelterJoinRequestMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useApproveShelterJoinRequestMutation(baseOptions?: Apollo.MutationHookOptions<ApproveShelterJoinRequestMutation, ApproveShelterJoinRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ApproveShelterJoinRequestMutation, ApproveShelterJoinRequestMutationVariables>(ApproveShelterJoinRequestDocument, options);
+      }
+export type ApproveShelterJoinRequestMutationHookResult = ReturnType<typeof useApproveShelterJoinRequestMutation>;
+export type ApproveShelterJoinRequestMutationResult = Apollo.MutationResult<ApproveShelterJoinRequestMutation>;
+export type ApproveShelterJoinRequestMutationOptions = Apollo.BaseMutationOptions<ApproveShelterJoinRequestMutation, ApproveShelterJoinRequestMutationVariables>;
+export const RejectShelterJoinRequestDocument = gql`
+    mutation rejectShelterJoinRequest($id: ID!) {
+  rejectShelterJoinRequest(id: $id) {
+    success
+    error {
+      message
+      code
+    }
+    shelter_join_request {
+      ...ShelterJoinRequest
+    }
+  }
+}
+    ${ShelterJoinRequestFragmentDoc}`;
+export type RejectShelterJoinRequestMutationFn = Apollo.MutationFunction<RejectShelterJoinRequestMutation, RejectShelterJoinRequestMutationVariables>;
+
+/**
+ * __useRejectShelterJoinRequestMutation__
+ *
+ * To run a mutation, you first call `useRejectShelterJoinRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectShelterJoinRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectShelterJoinRequestMutation, { data, loading, error }] = useRejectShelterJoinRequestMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRejectShelterJoinRequestMutation(baseOptions?: Apollo.MutationHookOptions<RejectShelterJoinRequestMutation, RejectShelterJoinRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RejectShelterJoinRequestMutation, RejectShelterJoinRequestMutationVariables>(RejectShelterJoinRequestDocument, options);
+      }
+export type RejectShelterJoinRequestMutationHookResult = ReturnType<typeof useRejectShelterJoinRequestMutation>;
+export type RejectShelterJoinRequestMutationResult = Apollo.MutationResult<RejectShelterJoinRequestMutation>;
+export type RejectShelterJoinRequestMutationOptions = Apollo.BaseMutationOptions<RejectShelterJoinRequestMutation, RejectShelterJoinRequestMutationVariables>;
 export const SaveShelterMapLayoutDocument = gql`
     mutation saveShelterMapLayout($map_id: ID!, $data: ShelterMapLayoutInput!) {
   saveShelterMapLayout(map_id: $map_id, data: $data) {
@@ -9723,6 +9965,53 @@ export type GetMyShelterDashboardQueryHookResult = ReturnType<typeof useGetMyShe
 export type GetMyShelterDashboardLazyQueryHookResult = ReturnType<typeof useGetMyShelterDashboardLazyQuery>;
 export type GetMyShelterDashboardSuspenseQueryHookResult = ReturnType<typeof useGetMyShelterDashboardSuspenseQuery>;
 export type GetMyShelterDashboardQueryResult = Apollo.QueryResult<GetMyShelterDashboardQuery, GetMyShelterDashboardQueryVariables>;
+export const GetMyShelterJoinRequestDocument = gql`
+    query getMyShelterJoinRequest($shelter_id: ID!) {
+  getMyShelterJoinRequest(shelter_id: $shelter_id) {
+    success
+    error {
+      message
+      code
+    }
+    shelter_join_request {
+      ...ShelterJoinRequest
+    }
+  }
+}
+    ${ShelterJoinRequestFragmentDoc}`;
+
+/**
+ * __useGetMyShelterJoinRequestQuery__
+ *
+ * To run a query within a React component, call `useGetMyShelterJoinRequestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyShelterJoinRequestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyShelterJoinRequestQuery({
+ *   variables: {
+ *      shelter_id: // value for 'shelter_id'
+ *   },
+ * });
+ */
+export function useGetMyShelterJoinRequestQuery(baseOptions: Apollo.QueryHookOptions<GetMyShelterJoinRequestQuery, GetMyShelterJoinRequestQueryVariables> & ({ variables: GetMyShelterJoinRequestQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyShelterJoinRequestQuery, GetMyShelterJoinRequestQueryVariables>(GetMyShelterJoinRequestDocument, options);
+      }
+export function useGetMyShelterJoinRequestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyShelterJoinRequestQuery, GetMyShelterJoinRequestQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyShelterJoinRequestQuery, GetMyShelterJoinRequestQueryVariables>(GetMyShelterJoinRequestDocument, options);
+        }
+export function useGetMyShelterJoinRequestSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMyShelterJoinRequestQuery, GetMyShelterJoinRequestQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMyShelterJoinRequestQuery, GetMyShelterJoinRequestQueryVariables>(GetMyShelterJoinRequestDocument, options);
+        }
+export type GetMyShelterJoinRequestQueryHookResult = ReturnType<typeof useGetMyShelterJoinRequestQuery>;
+export type GetMyShelterJoinRequestLazyQueryHookResult = ReturnType<typeof useGetMyShelterJoinRequestLazyQuery>;
+export type GetMyShelterJoinRequestSuspenseQueryHookResult = ReturnType<typeof useGetMyShelterJoinRequestSuspenseQuery>;
+export type GetMyShelterJoinRequestQueryResult = Apollo.QueryResult<GetMyShelterJoinRequestQuery, GetMyShelterJoinRequestQueryVariables>;
 export const GetPublicShelterDocument = gql`
     query getPublicShelter($id: ID!) {
   getPublicShelter(id: $id) {

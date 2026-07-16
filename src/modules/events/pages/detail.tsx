@@ -21,8 +21,7 @@ import {
 	TextInput,
 	DateTimePicker,
 	Icon,
-	Option,
-} from "@components";
+	Option, PullToRefresh } from "@components";
 import { PetItem } from "../../pets/components/PetItem";
 import { EventOption } from "../components/EventOption";
 import { treatmentsColors } from "@utils";
@@ -55,6 +54,7 @@ export const EventDetails: React.FC<props> = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			{event ? (
 				<Detail event={event} onSaved={setEvent} />
 			) : (

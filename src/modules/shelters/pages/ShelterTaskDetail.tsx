@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Icon } from "@components";
+import { Icon, PullToRefresh } from "@components";
 import { TaskStatus, ShelterTaskType } from "@types";
 import { IconName } from "../../../components/icons/iconName";
 import { $color, $uw } from "@theme";
@@ -73,6 +73,7 @@ export const ShelterTaskDetail: React.FC = () => {
 	if (loading && !task) {
 		return (
 			<IonContent>
+			    <PullToRefresh />
 				<Header>
 					<h2 className="skeleton" />
 				</Header>

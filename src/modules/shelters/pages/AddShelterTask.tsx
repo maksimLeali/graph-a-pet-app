@@ -14,8 +14,7 @@ import {
 	SubmitInput,
 	Toggle,
 	Icon,
-	Option,
-} from "@components";
+	Option, PullToRefresh } from "@components";
 import { ShelterTaskType, RecurrenceFreq, Weekday, ShelterPersonStatus } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { AssignPetsModal, PickablePet } from "../components/AssignPetsModal";
@@ -343,6 +342,7 @@ export const AddShelterTask: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<FormProvider {...methods}>
 				<Form onSubmit={onSubmit}>
 					<h3>

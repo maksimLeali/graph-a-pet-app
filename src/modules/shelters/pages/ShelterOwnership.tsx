@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { SelectInput, Option } from "@components";
+import { SelectInput, Option, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { RoleLevel } from "@types";
 import { $color, $uw } from "@theme";
@@ -106,6 +106,7 @@ export const ShelterOwnership: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2 className={loading ? "skeleton" : ""}>
 					{shelter ? t("shelters.ownership.title") : ""}

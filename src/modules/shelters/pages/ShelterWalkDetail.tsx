@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
-import { Icon, Chip } from "@components";
+import { Icon, Chip, PullToRefresh } from "@components";
 import { ShelterWalkStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
 
@@ -144,6 +144,7 @@ export const ShelterWalkDetail: React.FC = () => {
 	if (loading && !walk) {
 		return (
 			<IonContent>
+			    <PullToRefresh />
 				<Header>
 					<h2 className="skeleton" />
 				</Header>

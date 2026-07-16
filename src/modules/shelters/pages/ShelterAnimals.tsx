@@ -5,7 +5,7 @@ import { useParams, useHistory } from "react-router";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Icon, Image2x } from "@components";
+import { Icon, Image2x, PullToRefresh } from "@components";
 import { $color, $uw } from "@theme";
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
 import { useGetShelterMapQuery } from "../operations/__generated__/getShelterMap.generated";
@@ -110,6 +110,7 @@ export const ShelterAnimals: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("shelters.animals.title")}</h2>
 				<AddButton

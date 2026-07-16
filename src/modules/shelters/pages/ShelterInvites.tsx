@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { TextInput, SelectInput, Option } from "@components";
+import { TextInput, SelectInput, Option, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { RoleLevel } from "@types";
 import { $color, $uw } from "@theme";
@@ -49,6 +49,7 @@ export const ShelterInvites: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("shelters.invites.title")}</h2>
 			</Header>

@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Image2x, Chip, Icon } from "@components";
+import { Image2x, Chip, Icon, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { RoleLevel, UserRole, ShelterType, ShelterVerificationStatus } from "@types";
 import { $color, $uw } from "@theme";
@@ -60,6 +60,7 @@ export const ShelterDetail: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			{shelter ? (
 				<Detail shelter={shelter} />
 			) : (

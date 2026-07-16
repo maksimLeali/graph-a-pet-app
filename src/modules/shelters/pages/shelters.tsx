@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
-import { Icon, TextInput } from "@components";
+import { Icon, TextInput, PullToRefresh } from "@components";
 import { ShelterType } from "@types";
 import { $color, $uw } from "@theme";
 import { ShelterCard } from "../components";
@@ -71,6 +71,7 @@ export const Shelters: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			{personalOnly && shelters.length > 0 && (
 				<TopBar>
 					<AddBtn type="button" onClick={openCreateModal}>

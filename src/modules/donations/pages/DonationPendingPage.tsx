@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { $color, $uw } from "@theme";
 
 import { DonationStatusView } from "../components/DonationStatusView";
+import { PullToRefresh } from "@components";
 
 // Pagina su cui Stripe reindirizza al termine del checkout (vedi
 // success_url costruito in DonateCard + donation_id iniettato dal backend
@@ -19,6 +20,7 @@ export const DonationPendingPage: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Wrap>
 				{donationId ? (
 					<DonationStatusView donationId={donationId} />

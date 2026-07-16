@@ -5,7 +5,7 @@ import { useParams, useHistory } from "react-router";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
-import { Icon } from "@components";
+import { Icon, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { $color, $uw } from "@theme";
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
@@ -151,6 +151,7 @@ export const ShelterBoxes: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("shelters.boxes.title")}</h2>
 				<EditLink

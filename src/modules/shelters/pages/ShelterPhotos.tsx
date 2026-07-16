@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal, useAppContext } from "@contexts";
-import { Icon, Image2x, MultiImageUploader, Picture } from "@components";
+import { Icon, Image2x, MultiImageUploader, Picture, PullToRefresh } from "@components";
 import { config } from "@config";
 import { $color, $uw } from "@theme";
 
@@ -123,6 +123,7 @@ export const ShelterPhotos: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("shelters.photos.title")}</h2>
 				<AddButton

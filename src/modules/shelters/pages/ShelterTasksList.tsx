@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Icon } from "@components";
+import { Icon, PullToRefresh } from "@components";
 import { $color, $uw } from "@theme";
 import { TaskCard } from "../components/TaskCard";
 import { useShelterTasks } from "../hooks/useShelterTasks";
@@ -40,6 +40,7 @@ export const ShelterTasksList: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("shelters.tabs.tasks")}</h2>
 				{can("shelters.tasks.create") && (

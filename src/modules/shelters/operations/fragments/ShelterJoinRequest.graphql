@@ -1,0 +1,16 @@
+fragment ShelterJoinRequest on ShelterJoinRequest {
+	id
+	created_at
+	status
+	message
+	shelter {
+		id
+		name
+	}
+	user {
+		id
+		first_name
+		last_name
+		email
+	}
+}

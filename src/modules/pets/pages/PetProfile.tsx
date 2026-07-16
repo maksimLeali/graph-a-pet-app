@@ -31,8 +31,7 @@ import {
 	Option,
 	AppointmentsList,
 	MultiImageUploader,
-	WalkRatingsSummaryCard,
-} from "@components";
+	WalkRatingsSummaryCard, PullToRefresh } from "@components";
 import { AppointmentFragment } from "@graphql_generated/appointment.generated";
 import { BreedSeletor } from "../components";
 import { PetImageEditor } from "../components/PetImageEditor";
@@ -76,6 +75,7 @@ export const PetProfile: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			{pet ? (
 				<PetDetailBody
 					pet={pet}

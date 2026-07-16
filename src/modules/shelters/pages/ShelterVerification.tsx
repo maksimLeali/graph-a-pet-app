@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Chip, TextInput } from "@components";
+import { Chip, TextInput, PullToRefresh } from "@components";
 import { ShelterVerificationStatus } from "@types";
 import { $color, $uw } from "@theme";
 
@@ -99,6 +99,7 @@ export const ShelterVerification: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2 className={loading ? "skeleton" : ""}>
 					{shelter ? t("shelters.claim.title") : ""}

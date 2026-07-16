@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
-import { Icon } from "@components";
+import { Icon, PullToRefresh } from "@components";
 import { RoleLevel, ShelterPersonStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
 import { WalkCard } from "../components/WalkCard";
@@ -205,6 +205,7 @@ export const ShelterWalksList: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("shelters.tabs.walks")}</h2>
 			</Header>

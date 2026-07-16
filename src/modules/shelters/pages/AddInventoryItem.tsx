@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { TextInput, SelectInput, NumberInput, SubmitInput, Option } from "@components";
+import { TextInput, SelectInput, NumberInput, SubmitInput, Option, PullToRefresh } from "@components";
 import { InventoryCategory } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { useShelterInventory } from "../hooks/useShelterInventory";
@@ -115,6 +115,7 @@ export const AddInventoryItem: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<FormProvider {...methods}>
 				<Form onSubmit={onSubmit}>
 					<h3>

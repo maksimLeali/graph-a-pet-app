@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { WalkingStatsCard } from "@components";
+import { WalkingStatsCard, PullToRefresh } from "@components";
 import { StatsPeriod } from "@types";
 
 import { useGetShelterPetWalkingStatsQuery } from "../operations/__generated__/getShelterPetWalkingStats.generated";
@@ -27,6 +27,7 @@ export const ShelterPetWalkingStats: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<WalkingStatsCard
 				loading={loading && !chart}
 				labels={chart?.labels ?? []}

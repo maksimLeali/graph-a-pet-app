@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { PullToRefresh } from "@components";
+import { IonContent } from "@ionic/react";
 import styled from "styled-components";
 import { LanguageSelector, PetsColor } from "../components";
 import { useUserContext } from "@contexts";
@@ -15,19 +17,22 @@ export const Generals = React.memo(() => {
 	}, []);
 
 	return (
-		<Container>
-			<Section>
-				<h2>{t("settings.general.system")}</h2>
-				<LanguageSelector />
-			</Section>
-			<Section>
-				<h2>{t("settings.general.customization")}</h2>
-				<PetsColor />
-			</Section>
-			<Section>
-				<h2>{t("settings.general.privacy")}</h2>
-			</Section>
-		</Container>
+		<IonContent>
+			<PullToRefresh />
+			<Container>
+				<Section>
+					<h2>{t("settings.general.system")}</h2>
+					<LanguageSelector />
+				</Section>
+				<Section>
+					<h2>{t("settings.general.customization")}</h2>
+					<PetsColor />
+				</Section>
+				<Section>
+					<h2>{t("settings.general.privacy")}</h2>
+				</Section>
+			</Container>
+		</IonContent>
 	);
 });
 

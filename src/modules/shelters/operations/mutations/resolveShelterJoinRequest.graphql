@@ -1,0 +1,25 @@
+mutation approveShelterJoinRequest($id: ID!) {
+	approveShelterJoinRequest(id: $id) {
+		success
+		error {
+			message
+			code
+		}
+		shelter_join_request {
+			...ShelterJoinRequest
+		}
+	}
+}
+
+mutation rejectShelterJoinRequest($id: ID!) {
+	rejectShelterJoinRequest(id: $id) {
+		success
+		error {
+			message
+			code
+		}
+		shelter_join_request {
+			...ShelterJoinRequest
+		}
+	}
+}

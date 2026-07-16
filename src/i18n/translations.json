@@ -288,7 +288,9 @@
         "shelter_task": "Shelter task",
         "volunteer_request": "Volunteer request",
         "pet_birthday": "Pet birthday",
-        "ownership_transfer": "Ownership transfer"
+        "ownership_transfer": "Ownership transfer",
+        "donation_received": "Spende erhalten",
+        "claim_request": "Verifizierungsanfrage"
       }
     },
     "shelters": {
@@ -343,7 +345,10 @@
         "empty": "No public shelters found",
         "not_found": "Shelter not found",
         "private": "This shelter is private",
-        "open": "Open"
+        "open": "Open",
+        "apply_volunteer_sent": "Bewerbung gesendet! Das Tierheim wird sie prüfen.",
+        "apply_volunteer_pending": "Bewerbung ausstehend",
+        "contact_by_email": "Per E-Mail kontaktieren"
       },
       "invites": {
         "title": "Invite",
@@ -987,7 +992,9 @@
         "shelter_task": "Shelter task",
         "volunteer_request": "Volunteer request",
         "pet_birthday": "Pet birthday",
-        "ownership_transfer": "Ownership transfer"
+        "ownership_transfer": "Ownership transfer",
+        "donation_received": "Donation received",
+        "claim_request": "Claim request"
       }
     },
     "shelters": {
@@ -1042,7 +1049,10 @@
         "empty": "No public shelters found",
         "not_found": "Shelter not found",
         "private": "This shelter is private",
-        "open": "Open"
+        "open": "Open",
+        "apply_volunteer_sent": "Application sent! The shelter will review it.",
+        "apply_volunteer_pending": "Application pending review",
+        "contact_by_email": "Contact by email"
       },
       "invites": {
         "title": "Invite",
@@ -1674,7 +1684,9 @@
         "shelter_task": "Shelter task",
         "volunteer_request": "Volunteer request",
         "pet_birthday": "Pet birthday",
-        "ownership_transfer": "Ownership transfer"
+        "ownership_transfer": "Ownership transfer",
+        "donation_received": "Donación recibida",
+        "claim_request": "Solicitud de verificación"
       }
     },
     "shelters": {
@@ -1729,7 +1741,10 @@
         "empty": "No public shelters found",
         "not_found": "Shelter not found",
         "private": "This shelter is private",
-        "open": "Open"
+        "open": "Open",
+        "apply_volunteer_sent": "¡Solicitud enviada! El refugio la revisará.",
+        "apply_volunteer_pending": "Solicitud pendiente de revisión",
+        "contact_by_email": "Contactar por correo"
       },
       "invites": {
         "title": "Invite",
@@ -2361,7 +2376,9 @@
         "shelter_task": "Shelter task",
         "volunteer_request": "Volunteer request",
         "pet_birthday": "Pet birthday",
-        "ownership_transfer": "Ownership transfer"
+        "ownership_transfer": "Ownership transfer",
+        "donation_received": "Don reçu",
+        "claim_request": "Demande de vérification"
       }
     },
     "shelters": {
@@ -2416,7 +2433,10 @@
         "empty": "No public shelters found",
         "not_found": "Shelter not found",
         "private": "This shelter is private",
-        "open": "Open"
+        "open": "Open",
+        "apply_volunteer_sent": "Candidature envoyée ! Le refuge va l'examiner.",
+        "apply_volunteer_pending": "Candidature en attente",
+        "contact_by_email": "Contacter par e-mail"
       },
       "invites": {
         "title": "Invite",
@@ -3113,7 +3133,9 @@
         "shelter_task": "Shelter task",
         "volunteer_request": "Volunteer request",
         "pet_birthday": "Pet birthday",
-        "ownership_transfer": "Ownership transfer"
+        "ownership_transfer": "Ownership transfer",
+        "donation_received": "Donazione ricevuta",
+        "claim_request": "Richiesta di verifica"
       }
     },
     "shelters": {
@@ -3168,7 +3190,10 @@
         "empty": "Nessun rifugio pubblico trovato",
         "not_found": "Rifugio non trovato",
         "private": "Questo rifugio è privato",
-        "open": "Apri"
+        "open": "Apri",
+        "apply_volunteer_sent": "Candidatura inviata! Il rifugio la esaminerà.",
+        "apply_volunteer_pending": "Candidatura in attesa di revisione",
+        "contact_by_email": "Contatta via email"
       },
       "invites": {
         "title": "Invita",
@@ -3777,7 +3802,9 @@
         "shelter_task": "Shelter task",
         "volunteer_request": "Volunteer request",
         "pet_birthday": "Pet birthday",
-        "ownership_transfer": "Ownership transfer"
+        "ownership_transfer": "Ownership transfer",
+        "donation_received": "Donation received",
+        "claim_request": "Claim request"
       }
     },
     "shelters": {
@@ -3832,7 +3859,10 @@
         "empty": "No public shelters found",
         "not_found": "Shelter not found",
         "private": "This shelter is private",
-        "open": "Open"
+        "open": "Open",
+        "apply_volunteer_sent": "Application sent! The shelter will review it.",
+        "apply_volunteer_pending": "Application pending review",
+        "contact_by_email": "Contact by email"
       },
       "invites": {
         "title": "Invite",

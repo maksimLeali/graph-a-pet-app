@@ -12,8 +12,7 @@ import {
 	SelectInput,
 	DateTimePicker,
 	SubmitInput,
-	Option,
-} from "@components";
+	Option, PullToRefresh } from "@components";
 import { Gender } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { PetImageEditor } from "../../pets/components/PetImageEditor";
@@ -89,6 +88,7 @@ export const AddShelterPet: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<FormProvider {...methods}>
 				<Form onSubmit={onSubmit}>
 					<Intro>

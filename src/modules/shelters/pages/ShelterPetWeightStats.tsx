@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { PetWeightChart } from "@components";
+import { PetWeightChart, PullToRefresh } from "@components";
 import { StatsPeriod } from "@types";
 import { $color, $uw } from "@theme";
 
@@ -66,6 +66,7 @@ export const ShelterPetWeightStats: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{t("stats.weight_view_link")}</h2>
 			</Header>

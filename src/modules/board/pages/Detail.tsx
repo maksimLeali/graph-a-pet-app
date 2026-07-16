@@ -7,7 +7,7 @@ import { useParams } from "react-router";
 import { FullTreatmentFragment } from "@graphql_generated/fullTreatment.generated";
 
 import { useModal, useUserContext } from "@contexts";
-import { Icon, Image2x } from "@components";
+import { Icon, Image2x, PullToRefresh } from "@components";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { FullReportFragment, Gender, useGetReportLazyQuery } from "@types";
 import dayjs from "dayjs";
@@ -97,6 +97,7 @@ export const ReportDetails: React.FC<props> = () => {
 
     return (
         <CustomIonContent fullscreen>
+            <PullToRefresh />
             <Container>
                 <MainPicture>
                     {mainPicture && <Image2x id={mainPicture} />}

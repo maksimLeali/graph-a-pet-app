@@ -18,8 +18,7 @@ import {
     SubmitInput,
     TextAreaInput,
     TextInput,
-    Toggle,
-} from "@components";
+    Toggle, PullToRefresh } from "@components";
 import { FormProvider, useForm } from "react-hook-form";
 import {
     DashboardPetFragment,
@@ -229,6 +228,7 @@ export const NewReport: React.FC<props> = () => {
 
     return (
         <IonContent fullscreen>
+            <PullToRefresh />
             {openLocationSelector && (
                 <Modal
                     open={openLocationSelector}

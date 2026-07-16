@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { Icon, Chip, Image2x, TextInput, Toggle } from "@components";
+import { Icon, Chip, Image2x, TextInput, Toggle, PullToRefresh } from "@components";
 import { $color, $uw } from "@theme";
 import { useDiscoverSheltersQuery } from "../operations/__generated__/discoverShelters.generated";
 import { PublicShelterFragment } from "../operations/__generated__/PublicShelter.generated";
@@ -49,6 +49,7 @@ export const ShelterDiscover: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<SearchSection>
 				<TextInput
 					icon="search"

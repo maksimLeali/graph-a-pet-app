@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
-import { Icon } from "@components";
+import { Icon, PullToRefresh } from "@components";
 import { I18NKey } from "@i18n";
 import { $color, $uw } from "@theme";
 import { AssignPetsModal, PickablePet } from "../components/AssignPetsModal";
@@ -215,6 +215,7 @@ export const ShelterBoxDetail: React.FC = () => {
 	if (!current) {
 		return (
 			<IonContent>
+			    <PullToRefresh />
 				<Empty>{t("shelters.boxes.empty")}</Empty>
 			</IonContent>
 		);

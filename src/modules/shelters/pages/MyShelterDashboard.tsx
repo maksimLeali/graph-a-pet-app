@@ -13,6 +13,7 @@ import { Avatar } from "../components/Avatar";
 
 import { useGetMyShelterDashboardQuery } from "../operations/__generated__/getMyShelterDashboard.generated";
 import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
+import { PullToRefresh } from "@components";
 
 const MANAGER_LEVEL_ROLES = [RoleLevel.Manager, RoleLevel.Owner];
 
@@ -77,6 +78,7 @@ export const MyShelterDashboard: React.FC = () => {
 
 	return (
 		<IonContent>
+		    <PullToRefresh />
 			<Header>
 				<h2>{dayjs(dateFrom).format("D MMM")} – {dayjs(dateTo).subtract(1, "day").format("D MMM")}</h2>
 				<Subtitle>

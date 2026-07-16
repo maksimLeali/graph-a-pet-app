@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import { CustodyLevel, Gender, PetCreate, PetFamily, useAddPetToMeMutation } from "@types";
-import { SelectInput, TextInput, Option, SubmitInput, DateTimePicker, Toggle } from "@components";
+import { SelectInput, TextInput, Option, SubmitInput, DateTimePicker, Toggle, PullToRefresh } from "@components";
 import { $cssTRBL, $uw } from "@theme";
 import { useUserContext } from "@contexts";
 
@@ -49,6 +49,7 @@ export const Step1 =() => {
 
 	return (
 		<IonContent fullscreen>
+		    <PullToRefresh />
 			<FormProvider {...methods}>
 				<Form
 					onSubmit={methods.handleSubmit((data) => {		

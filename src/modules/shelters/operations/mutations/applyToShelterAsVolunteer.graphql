@@ -1,0 +1,12 @@
+mutation applyToShelterAsVolunteer($shelter_id: ID!, $message: String) {
+	applyToShelterAsVolunteer(shelter_id: $shelter_id, message: $message) {
+		success
+		error {
+			message
+			code
+		}
+		shelter_join_request {
+			...ShelterJoinRequest
+		}
+	}
+}

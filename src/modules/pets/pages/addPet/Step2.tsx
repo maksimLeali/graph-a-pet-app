@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useCookies } from "react-cookie";
 import { useHistory } from "react-router";
-import { Chip, Modal } from "@components";
+import { Chip, Modal, PullToRefresh } from "@components";
 import { useUserContext } from "@contexts";
 import { $color, $cssTRBL, $uw } from "@theme";
 import { ImageCanvas } from "../../components/ImageCanvas";
@@ -175,6 +175,7 @@ export const Step2 = React.memo(() => {
 
     return (
         <IonContent fullscreen>
+            <PullToRefresh />
             <Modal
                 open={openEditImage}
                 onClose={() => {

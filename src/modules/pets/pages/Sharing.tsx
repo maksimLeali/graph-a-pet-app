@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IonContent } from "@ionic/react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
@@ -12,7 +13,7 @@ import { useLinkPetToMeMutation } from "../operations/__generated__/linkPetToMe.
 import { MinPetFragment } from "@graphql_generated/minPet.generated";
 import { PetMinSubOwnerFragment } from "@graphql_generated/petMinSubOwner.generated";
 
-import { Image2x, SubOwnerList, SubOwnerListItem } from "@components";
+import { Image2x, SubOwnerList, SubOwnerListItem, PullToRefresh } from "@components";
 import { CustodyLevel } from "@types";
 import { ShareBox } from "../components";
 import { useUserContext } from "@contexts";
@@ -78,78 +79,81 @@ export const Sharing: React.FC = () => {
     const loadingPet = getPetLoading || checkLoading;
 
     return (
-        <Container>
-            {loadingPet || pet ? (
-                <>
-                    <Header>
-                        <PetImage className={loadingPet ? "skeleton" : ""}>
-                            {!loadingPet && pet?.main_picture ? (
-                                <Image2x id={pet?.main_picture.id} />
-                            ) : (
-                                <Fill />
-                            )}
-                        </PetImage>
-                        <NameRow className={loadingPet ? "skeleton" : ""}>
-                            {pet && <h2>{pet.name}</h2>}
-                        </NameRow>
-                    </Header>
+        <IonContent>
+            <PullToRefresh />
+            <Container>
+                {loadingPet || pet ? (
+                    <>
+                        <Header>
+                            <PetImage className={loadingPet ? "skeleton" : ""}>
+                                {!loadingPet && pet?.main_picture ? (
+                                    <Image2x id={pet?.main_picture.id} />
+                                ) : (
+                                    <Fill />
+                                )}
+                            </PetImage>
+                            <NameRow className={loadingPet ? "skeleton" : ""}>
+                                {pet && <h2>{pet.name}</h2>}
+                            </NameRow>
+                        </Header>
 
-                    <Fields>
-                        <Card>
-                            <CardLabel>{t("pets.gender")}</CardLabel>
-                            <CardValue>
-                                {pet?.gender
-                                    ? t(
-                                          `pets.gender_${pet.gender.toLowerCase()}` as any
-                                      )
-                                    : "—"}
-                            </CardValue>
-                        </Card>
-                        <Card>
-                            <CardLabel>{t("pets.weight")}</CardLabel>
-                            <CardValue>
-                                {pet?.weight_kg != null
-                                    ? `${pet.weight_kg} Kg`
-                                    : "—"}
-                            </CardValue>
-                        </Card>
-                    </Fields>
-                </>
-            ) : (
-                <Empty>
-                    <h1>{t("messages.errors.no_pet_found")}</h1>
-                </Empty>
-            )}
-            {!checkLoading && !getPetLoading && (
-                <>
-                    {pet &&
-                    owner != cookies.user.id &&
-                    !loaners.includes(cookies.user.id) ? (
-                        <ShareBox onConfirm={(v) => linkPetToMe({variables: {petId: pet.id , custodyLevel: v}})} />
-                    ) : owner == cookies.user.id ? (
-                        <>
-                        <h3 className="sharing-title">{t('pets.shared_with')}</h3>
-                        <SubOwnerList
-                            gradient={false}
-                            ownerships={
-                                (pet!.ownerships?.items.filter(
-                                    (item) => item && item.custody_level!= CustodyLevel.Owner
-                                ) as PetMinSubOwnerFragment[]) ?? [] 
-                            }
-                            onSelected={(v)=> {}}
-                        />
-                        </>
-                    ) : (
-                        <>
-                        <h3 className="sharing-title">{t('pets.shared_from')} </h3>
-                       {pet?.ownerships?.items && <SubOwnerListItem ownership={ pet!.ownerships?.items?.find(
-                                    (item) => item && item.custody_level == CustodyLevel.Owner
-                                ) as PetMinSubOwnerFragment} onSelected={(v)=> console.log(v)}/>}
-                        </>
-                    )}
-                </>
-            )}
-        </Container>
+                        <Fields>
+                            <Card>
+                                <CardLabel>{t("pets.gender")}</CardLabel>
+                                <CardValue>
+                                    {pet?.gender
+                                        ? t(
+                                              `pets.gender_${pet.gender.toLowerCase()}` as any
+                                          )
+                                        : "—"}
+                                </CardValue>
+                            </Card>
+                            <Card>
+                                <CardLabel>{t("pets.weight")}</CardLabel>
+                                <CardValue>
+                                    {pet?.weight_kg != null
+                                        ? `${pet.weight_kg} Kg`
+                                        : "—"}
+                                </CardValue>
+                            </Card>
+                        </Fields>
+                    </>
+                ) : (
+                    <Empty>
+                        <h1>{t("messages.errors.no_pet_found")}</h1>
+                    </Empty>
+                )}
+                {!checkLoading && !getPetLoading && (
+                    <>
+                        {pet &&
+                        owner != cookies.user.id &&
+                        !loaners.includes(cookies.user.id) ? (
+                            <ShareBox onConfirm={(v) => linkPetToMe({variables: {petId: pet.id , custodyLevel: v}})} />
+                        ) : owner == cookies.user.id ? (
+                            <>
+                            <h3 className="sharing-title">{t('pets.shared_with')}</h3>
+                            <SubOwnerList
+                                gradient={false}
+                                ownerships={
+                                    (pet!.ownerships?.items.filter(
+                                        (item) => item && item.custody_level!= CustodyLevel.Owner
+                                    ) as PetMinSubOwnerFragment[]) ?? [] 
+                                }
+                                onSelected={(v)=> {}}
+                            />
+                            </>
+                        ) : (
+                            <>
+                            <h3 className="sharing-title">{t('pets.shared_from')} </h3>
+                           {pet?.ownerships?.items && <SubOwnerListItem ownership={ pet!.ownerships?.items?.find(
+                                        (item) => item && item.custody_level == CustodyLevel.Owner
+                                    ) as PetMinSubOwnerFragment} onSelected={(v)=> console.log(v)}/>}
+                            </>
+                        )}
+                    </>
+                )}
+            </Container>
+        </IonContent>
     );
 };
 
