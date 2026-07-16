@@ -100,11 +100,31 @@ export const UserContextProvider: React.FC<Props & Record<string, unknown>> = ({
     const inShelterSection = location.pathname.startsWith("/shelters");
 
     // unread badge; poll so the count stays fresh while navigating
-    const { data: unreadData } = useGetUnreadNotificationCountQuery({
-        fetchPolicy: "cache-and-network",
-        pollInterval: 60000,
-    });
+    const { data: unreadData, startPolling, stopPolling } =
+        useGetUnreadNotificationCountQuery({
+            fetchPolicy: "cache-and-network",
+            pollInterval: 60000,
+        });
     const unread = unreadData?.getUnreadNotificationCount ?? 0;
+
+    // Pause the 60s poll while the tab is hidden (no wasted requests in the
+    // background), resume when it becomes visible again. Apollo owns the
+    // timer, so there is no manual setInterval to leak; we only add/remove a
+    // single visibilitychange listener and tear it down on unmount.
+    useEffect(() => {
+        const syncPolling = () => {
+            if (document.hidden) {
+                stopPolling();
+            } else {
+                startPolling(60000);
+            }
+        };
+        syncPolling(); // align with current visibility on mount
+        document.addEventListener("visibilitychange", syncPolling);
+        return () => {
+            document.removeEventListener("visibilitychange", syncPolling);
+        };
+    }, [startPolling, stopPolling]);
 
     const refetchDashboard = () => {
         // getUserDashboardQuery();
