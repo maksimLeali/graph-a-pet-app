@@ -1,0 +1,15 @@
+mutation updateFundingNeed($id: ID!, $data: FundingNeedUpdateInput!) {
+	updateFundingNeed(id: $id, data: $data) {
+		success
+		error {
+			code
+			message
+		}
+		funding_need {
+			id
+			pet_id
+			status
+			urgency
+		}
+	}
+}

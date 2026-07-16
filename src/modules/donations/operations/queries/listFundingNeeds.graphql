@@ -1,0 +1,22 @@
+query listFundingNeeds($shelter_id: ID!, $status: FundingNeedStatus) {
+	listFundingNeeds(shelter_id: $shelter_id, status: $status) {
+		success
+		error {
+			code
+			message
+		}
+		items {
+			id
+			shelter_id
+			pet_id
+			title
+			category
+			currency
+			target_amount_cents
+			collected_amount_cents
+			remaining_amount_cents
+			status
+			urgency
+		}
+	}
+}

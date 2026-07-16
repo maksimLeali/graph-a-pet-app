@@ -1,25 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useTranslation } from "react-i18next";
-import toast from "react-hot-toast";
 import { Browser } from "@capacitor/browser";
 
-import { useModal } from "@contexts";
 import { Icon, Chip } from "@components";
-import { I18NKey } from "@i18n";
-import { DonationTargetType } from "@types";
 import { $color, $uw } from "@theme";
 
 import { useGetPublicDonationAvailabilityQuery } from "../operations/__generated__/getPublicDonationAvailability.generated";
-import { useCreateAuthenticatedDonationMutation } from "../operations/__generated__/createAuthenticatedDonation.generated";
-import { DonationAmountModal } from "./DonationAmountModal";
-import { DonationStatusView } from "./DonationStatusView";
-import { DONATION_SUCCESS_URL } from "../utils/donationSuccessUrl";
+import { useDonateFlow, CURRENCY } from "../hooks/useDonateFlow";
 import { donationReasonI18NKey } from "../utils/donationAvailabilityReasons";
 import { formatCents } from "../utils/formatCurrency";
-
-const CURRENCY = "usd";
-const MIN_CENTS = 100;
 
 // festive palette for the goal-reached confetti — flat theme colors, no
 // gradients (see [[flat-style-preference]]); one square per entry, cycled
@@ -32,15 +22,17 @@ type Props = {
 
 export const DonateCard: React.FC<Props> = ({ shelterId, petId }) => {
 	const { t } = useTranslation();
-	const { openModal, closeModal } = useModal();
 
 	const { data, loading, refetch } = useGetPublicDonationAvailabilityQuery({
 		variables: { shelter_id: shelterId, pet_id: petId },
 		fetchPolicy: "cache-and-network",
 		skip: !shelterId,
 	});
-	const [createDonation, { loading: creating }] =
-		useCreateAuthenticatedDonationMutation();
+	const { donate, creating } = useDonateFlow({
+		shelterId,
+		petId,
+		onSettled: () => refetch(),
+	});
 
 	// il ritorno dal checkout Stripe hosted (chiuso dall'utente o redirect
 	// automatico su alcune piattaforme) non conferma nulla di per sé — la
@@ -81,60 +73,6 @@ export const DonateCard: React.FC<Props> = ({ shelterId, petId }) => {
 
 	if (!shelterId || loading) return null;
 	if (!availability) return null;
-
-	const donate = () => {
-		const amount = { current: 1000 };
-		openModal({
-			onClose: closeModal,
-			onCancel: closeModal,
-			onConfirm: async () => {
-				if (amount.current < MIN_CENTS) return;
-				const res = await createDonation({
-					variables: {
-						data: {
-							shelter_id: shelterId,
-							target_type: petId
-								? DonationTargetType.Pet
-								: DonationTargetType.Shelter,
-							pet_id: petId,
-							amount_cents: amount.current,
-							currency: CURRENCY,
-							success_url: DONATION_SUCCESS_URL,
-						},
-					},
-				});
-				const result = res.data?.createAuthenticatedDonation;
-				if (!result?.success || !result.checkout_url || !result.donation) {
-					toast.error(
-						result?.error?.message
-							? t(result.error.message as I18NKey)
-							: t("messages.errors.fetch")
-					);
-					return;
-				}
-				// mostra subito la schermata di attesa (poll ogni 20s, vedi
-				// DonationStatusView) e apre Stripe sopra: la conferma non
-				// dipende dal contenuto della pagina di redirect di Stripe
-				const donationId = result.donation.id;
-				openModal({
-					onClose: closeModal,
-					children: (
-						<DonationStatusView
-							donationId={donationId}
-							onSettled={() => refetch()}
-						/>
-					),
-				});
-				await Browser.open({ url: result.checkout_url });
-			},
-			children: (
-				<DonationAmountModal
-					currency={CURRENCY}
-					onChange={(cents) => (amount.current = cents)}
-				/>
-			),
-		});
-	};
 
 	// obiettivo del mese raggiunto → stato "missione compiuta", non un box grigio
 	if (goalReached) {

@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { useParams, useHistory } from "react-router";
+import { useParams, useHistory, useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
@@ -19,7 +19,21 @@ export const ShelterInventory: React.FC = () => {
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
 	const history = useHistory();
+	const location = useLocation();
 	const { items, loading, error, refetch } = useShelterInventory(id);
+
+	// filtro arrivando dalla riga "scorte sotto soglia" della pagina rifugio
+	const [lowStockOnly, setLowStockOnly] = useState(
+		() => new URLSearchParams(location.search).get("filter") === "low_stock"
+	);
+
+	const shownItems = useMemo(
+		() =>
+			lowStockOnly
+				? items.filter((item) => item.is_below_threshold)
+				: items,
+		[items, lowStockOnly]
+	);
 
 	useEffect(() => {
 		setPage({ name: t("shelters.tabs.inventory") });
@@ -56,8 +70,20 @@ export const ShelterInventory: React.FC = () => {
 				</AddButton>
 			</Header>
 
+			{lowStockOnly && (
+				<FilterBanner>
+					<span>{t("shelters.overview.filter_low_stock")}</span>
+					<ClearFilter
+						type="button"
+						onClick={() => setLowStockOnly(false)}
+					>
+						{t("shelters.overview.filter_clear")}
+					</ClearFilter>
+				</FilterBanner>
+			)}
+
 			<List>
-				{items.map((item) => (
+				{shownItems.map((item) => (
 					<InventoryItemRow
 						key={item.id}
 						item={item}
@@ -72,7 +98,7 @@ export const ShelterInventory: React.FC = () => {
 				))}
 			</List>
 
-			{!loading && !error && items.length === 0 && (
+			{!loading && !error && shownItems.length === 0 && (
 				<Message>{t("shelters.inventory.empty")}</Message>
 			)}
 			{!loading && error && <Message>{error}</Message>}
@@ -108,6 +134,33 @@ const AddButton = styled.button`
 	&:active {
 		opacity: 0.7;
 	}
+`;
+
+const FilterBanner = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${$uw(1)};
+	margin: 0 12px;
+	padding: ${$uw(0.5)} ${$uw(1)};
+	border-radius: 10px;
+	background: ${$color("status.warningBg")};
+	> span {
+		font-size: 1.2rem;
+		font-weight: 700;
+		color: ${$color("status.warning")};
+	}
+`;
+
+const ClearFilter = styled.button`
+	border: none;
+	background: transparent;
+	padding: ${$uw(0.5)};
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: ${$color("status.warning")};
+	text-decoration: underline;
+	cursor: pointer;
 `;
 
 const List = styled.div`

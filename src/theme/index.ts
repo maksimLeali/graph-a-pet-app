@@ -83,6 +83,14 @@ const userColors = {
     "light-contrast": "var(--ion-color-light-contrast)",
     "light-shade": "var(--ion-color-light-shade)",
     "light-tint": "var(--ion-color-light-tint)",
+    "status.danger": "var(--gap-status-danger)",
+    "status.dangerBg": "var(--gap-status-danger-bg)",
+    "status.warning": "var(--gap-status-warning)",
+    "status.warningBg": "var(--gap-status-warning-bg)",
+    "status.ok": "var(--gap-status-ok)",
+    "status.okBg": "var(--gap-status-ok-bg)",
+    "donation.cardBg": "var(--gap-donation-card-bg)",
+    "donation.cardBorder": "var(--gap-donation-card-border)",
   };
   
 

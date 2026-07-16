@@ -1,0 +1,19 @@
+query getShelterMapBoxesLean($id: ID!) {
+	getShelterMap(id: $id) {
+		success
+		error {
+			code
+			message
+		}
+		map {
+			id
+			boxes {
+				id
+				label
+				current_occupants {
+					id
+				}
+			}
+		}
+	}
+}

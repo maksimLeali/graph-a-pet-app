@@ -37,6 +37,7 @@ import {
 	type WalkerSelection,
 } from "../components/SelectWalkerModal";
 import { DonateCard } from "../../donations/components/DonateCard";
+import { PetFundingUrgencyControl } from "../components/detail/PetFundingUrgencyControl";
 
 type WalkRatingAvg = { type: WalkRatingType; rating: number };
 
@@ -365,6 +366,7 @@ export const ShelterPetDetail: React.FC = () => {
 			<RatingsBlock>
 				<PlacementTitle>{t("donations.pet_cta_title")}</PlacementTitle>
 				<DonateCard shelterId={id} petId={pet?.id} />
+				<PetFundingUrgencyControl shelterId={id} petId={pet?.id} />
 			</RatingsBlock>
 		</Placement>
 	);

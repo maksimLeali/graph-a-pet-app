@@ -24,3 +24,4 @@ export { ShelterInvites } from "./ShelterInvites";
 export { ShelterDiscover } from "./ShelterDiscover";
 export { ShelterPublic } from "./ShelterPublic";
 export { ShelterPublicProfile } from "./ShelterPublicProfile";
+export { ShelterSettings } from "./ShelterSettings";

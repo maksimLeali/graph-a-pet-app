@@ -434,11 +434,13 @@ export type FundingNeedCreateInput = {
   currency?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   ends_at?: InputMaybe<Scalars['String']['input']>;
+  is_recurring_monthly?: InputMaybe<Scalars['Boolean']['input']>;
   pet_id?: InputMaybe<Scalars['ID']['input']>;
   shelter_id: Scalars['ID']['input'];
   starts_at?: InputMaybe<Scalars['String']['input']>;
   target_amount_cents: Scalars['Int']['input'];
   title: Scalars['String']['input'];
+  urgency?: InputMaybe<FundingNeedUrgency>;
 };
 
 export enum FundingNeedStatus {
@@ -450,10 +452,17 @@ export type FundingNeedUpdateInput = {
   category?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   ends_at?: InputMaybe<Scalars['String']['input']>;
+  is_recurring_monthly?: InputMaybe<Scalars['Boolean']['input']>;
   starts_at?: InputMaybe<Scalars['String']['input']>;
   target_amount_cents?: InputMaybe<Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
+  urgency?: InputMaybe<FundingNeedUrgency>;
 };
+
+export enum FundingNeedUrgency {
+  Normal = 'NORMAL',
+  Urgent = 'URGENT'
+}
 
 export enum Gender {
   Female = 'FEMALE',
@@ -2123,6 +2132,8 @@ export type PetFundingNeed = {
   description?: Maybe<Scalars['String']['output']>;
   ends_at?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  is_recurring_monthly: Scalars['Boolean']['output'];
+  last_reset_at?: Maybe<Scalars['String']['output']>;
   pet_id?: Maybe<Scalars['ID']['output']>;
   remaining_amount_cents: Scalars['Int']['output'];
   shelter_id: Scalars['ID']['output'];
@@ -2131,6 +2142,7 @@ export type PetFundingNeed = {
   target_amount_cents: Scalars['Int']['output'];
   title: Scalars['String']['output'];
   updated_at?: Maybe<Scalars['String']['output']>;
+  urgency: FundingNeedUrgency;
 };
 
 export type PetFundingNeedResult = {
@@ -4695,6 +4707,14 @@ export type CreateAuthenticatedDonationMutationVariables = Exact<{
 
 export type CreateAuthenticatedDonationMutation = { __typename?: 'Mutation', createAuthenticatedDonation: { __typename?: 'DonationCheckoutResult', success: boolean, checkout_url?: string | null, error?: { __typename?: 'Error', code: string, message: string } | null, donation?: { __typename?: 'Donation', id: string, status: DonationStatus } | null } };
 
+export type UpdateFundingNeedMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  data: FundingNeedUpdateInput;
+}>;
+
+
+export type UpdateFundingNeedMutation = { __typename?: 'Mutation', updateFundingNeed: { __typename?: 'PetFundingNeedResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, funding_need?: { __typename?: 'PetFundingNeed', id: string, pet_id?: string | null, status: FundingNeedStatus, urgency: FundingNeedUrgency } | null } };
+
 export type GetMyDonationStatusQueryVariables = Exact<{
   donation_id: Scalars['ID']['input'];
 }>;
@@ -4709,6 +4729,14 @@ export type GetPublicDonationAvailabilityQueryVariables = Exact<{
 
 
 export type GetPublicDonationAvailabilityQuery = { __typename?: 'Query', getPublicDonationAvailability: { __typename?: 'DonationAvailabilityResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, availability?: { __typename?: 'DonationAvailability', available: boolean, reasons: Array<string>, remaining_pet_allowance_cents?: number | null, pet_monthly_limit_cents?: number | null, is_test_mode: boolean } | null } };
+
+export type ListFundingNeedsQueryVariables = Exact<{
+  shelter_id: Scalars['ID']['input'];
+  status?: InputMaybe<FundingNeedStatus>;
+}>;
+
+
+export type ListFundingNeedsQuery = { __typename?: 'Query', listFundingNeeds: { __typename?: 'PetFundingNeedsResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, items: Array<{ __typename?: 'PetFundingNeed', id: string, shelter_id: string, pet_id?: string | null, title: string, category?: string | null, currency: string, target_amount_cents: number, collected_amount_cents: number, remaining_amount_cents: number, status: FundingNeedStatus, urgency: FundingNeedUrgency } | null> } };
 
 export type CreateCureMutationVariables = Exact<{
   cure: CureCreate;
@@ -5339,6 +5367,13 @@ export type GetShelterMapQueryVariables = Exact<{
 
 export type GetShelterMapQuery = { __typename?: 'Query', getShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, name: string, width: number, height: number, unit: MapUnit, zones: Array<{ __typename?: 'ShelterZone', id: string, name: string, x: number, y: number, width: number, height: number, color?: string | null }>, areas: Array<{ __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, x: number, y: number, width: number, height: number, color?: string | null, zone?: { __typename?: 'ShelterZone', id: string } | null }>, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, x: number, y: number, width: number, height: number, rotation: number, capacity: number, status: BoxStatus, is_out_of_service: boolean, area?: { __typename?: 'ShelterArea', id: string } | null, zone?: { __typename?: 'ShelterZone', id: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } }>, occupancy_history?: { __typename?: 'PaginatedBoxOccupancies', items: Array<{ __typename?: 'ShelterBoxOccupancy', id: string, exited_at?: string | null, shelter_pet: { __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string } } } | null> } | null }>, elements: Array<{ __typename?: 'ShelterMapElement', id: string, element_type: MapElementType, x: number, y: number, width: number, height: number, rotation: number, color?: string | null, label?: string | null }> } | null } };
 
+export type GetShelterMapBoxesLeanQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetShelterMapBoxesLeanQuery = { __typename?: 'Query', getShelterMap: { __typename?: 'ShelterMapResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, map?: { __typename?: 'ShelterMap', id: string, boxes: Array<{ __typename?: 'ShelterBox', id: string, label: string, current_occupants: Array<{ __typename?: 'ShelterPet', id: string }> }> } | null } };
+
 export type GetShelterOperationalDashboardQueryVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
 }>;
@@ -5468,7 +5503,7 @@ export type ListShelterPetsMinQueryVariables = Exact<{
 }>;
 
 
-export type ListShelterPetsMinQuery = { __typename?: 'Query', listShelterPets: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, gender?: Gender | null, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
+export type ListShelterPetsMinQuery = { __typename?: 'Query', listShelterPets: { __typename?: 'PaginatedShelterPets', success?: boolean | null, items: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, gender?: Gender | null, years?: number | null, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } } | null>, error?: { __typename?: 'Error', code: string, message: string } | null } };
 
 export type ListShelterRolesMinQueryVariables = Exact<{
   commonSearch?: InputMaybe<CommonSearch>;
@@ -6566,6 +6601,50 @@ export function useCreateAuthenticatedDonationMutation(baseOptions?: Apollo.Muta
 export type CreateAuthenticatedDonationMutationHookResult = ReturnType<typeof useCreateAuthenticatedDonationMutation>;
 export type CreateAuthenticatedDonationMutationResult = Apollo.MutationResult<CreateAuthenticatedDonationMutation>;
 export type CreateAuthenticatedDonationMutationOptions = Apollo.BaseMutationOptions<CreateAuthenticatedDonationMutation, CreateAuthenticatedDonationMutationVariables>;
+export const UpdateFundingNeedDocument = gql`
+    mutation updateFundingNeed($id: ID!, $data: FundingNeedUpdateInput!) {
+  updateFundingNeed(id: $id, data: $data) {
+    success
+    error {
+      code
+      message
+    }
+    funding_need {
+      id
+      pet_id
+      status
+      urgency
+    }
+  }
+}
+    `;
+export type UpdateFundingNeedMutationFn = Apollo.MutationFunction<UpdateFundingNeedMutation, UpdateFundingNeedMutationVariables>;
+
+/**
+ * __useUpdateFundingNeedMutation__
+ *
+ * To run a mutation, you first call `useUpdateFundingNeedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFundingNeedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFundingNeedMutation, { data, loading, error }] = useUpdateFundingNeedMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateFundingNeedMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFundingNeedMutation, UpdateFundingNeedMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFundingNeedMutation, UpdateFundingNeedMutationVariables>(UpdateFundingNeedDocument, options);
+      }
+export type UpdateFundingNeedMutationHookResult = ReturnType<typeof useUpdateFundingNeedMutation>;
+export type UpdateFundingNeedMutationResult = Apollo.MutationResult<UpdateFundingNeedMutation>;
+export type UpdateFundingNeedMutationOptions = Apollo.BaseMutationOptions<UpdateFundingNeedMutation, UpdateFundingNeedMutationVariables>;
 export const GetMyDonationStatusDocument = gql`
     query getMyDonationStatus($donation_id: ID!) {
   getMyDonationStatus(donation_id: $donation_id) {
@@ -6668,6 +6747,64 @@ export type GetPublicDonationAvailabilityQueryHookResult = ReturnType<typeof use
 export type GetPublicDonationAvailabilityLazyQueryHookResult = ReturnType<typeof useGetPublicDonationAvailabilityLazyQuery>;
 export type GetPublicDonationAvailabilitySuspenseQueryHookResult = ReturnType<typeof useGetPublicDonationAvailabilitySuspenseQuery>;
 export type GetPublicDonationAvailabilityQueryResult = Apollo.QueryResult<GetPublicDonationAvailabilityQuery, GetPublicDonationAvailabilityQueryVariables>;
+export const ListFundingNeedsDocument = gql`
+    query listFundingNeeds($shelter_id: ID!, $status: FundingNeedStatus) {
+  listFundingNeeds(shelter_id: $shelter_id, status: $status) {
+    success
+    error {
+      code
+      message
+    }
+    items {
+      id
+      shelter_id
+      pet_id
+      title
+      category
+      currency
+      target_amount_cents
+      collected_amount_cents
+      remaining_amount_cents
+      status
+      urgency
+    }
+  }
+}
+    `;
+
+/**
+ * __useListFundingNeedsQuery__
+ *
+ * To run a query within a React component, call `useListFundingNeedsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListFundingNeedsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListFundingNeedsQuery({
+ *   variables: {
+ *      shelter_id: // value for 'shelter_id'
+ *      status: // value for 'status'
+ *   },
+ * });
+ */
+export function useListFundingNeedsQuery(baseOptions: Apollo.QueryHookOptions<ListFundingNeedsQuery, ListFundingNeedsQueryVariables> & ({ variables: ListFundingNeedsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListFundingNeedsQuery, ListFundingNeedsQueryVariables>(ListFundingNeedsDocument, options);
+      }
+export function useListFundingNeedsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListFundingNeedsQuery, ListFundingNeedsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListFundingNeedsQuery, ListFundingNeedsQueryVariables>(ListFundingNeedsDocument, options);
+        }
+export function useListFundingNeedsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListFundingNeedsQuery, ListFundingNeedsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListFundingNeedsQuery, ListFundingNeedsQueryVariables>(ListFundingNeedsDocument, options);
+        }
+export type ListFundingNeedsQueryHookResult = ReturnType<typeof useListFundingNeedsQuery>;
+export type ListFundingNeedsLazyQueryHookResult = ReturnType<typeof useListFundingNeedsLazyQuery>;
+export type ListFundingNeedsSuspenseQueryHookResult = ReturnType<typeof useListFundingNeedsSuspenseQuery>;
+export type ListFundingNeedsQueryResult = Apollo.QueryResult<ListFundingNeedsQuery, ListFundingNeedsQueryVariables>;
 export const CreateCureDocument = gql`
     mutation CreateCure($cure: CureCreate!) {
   createCure(data: $cure) {
@@ -10254,6 +10391,60 @@ export type GetShelterMapQueryHookResult = ReturnType<typeof useGetShelterMapQue
 export type GetShelterMapLazyQueryHookResult = ReturnType<typeof useGetShelterMapLazyQuery>;
 export type GetShelterMapSuspenseQueryHookResult = ReturnType<typeof useGetShelterMapSuspenseQuery>;
 export type GetShelterMapQueryResult = Apollo.QueryResult<GetShelterMapQuery, GetShelterMapQueryVariables>;
+export const GetShelterMapBoxesLeanDocument = gql`
+    query getShelterMapBoxesLean($id: ID!) {
+  getShelterMap(id: $id) {
+    success
+    error {
+      code
+      message
+    }
+    map {
+      id
+      boxes {
+        id
+        label
+        current_occupants {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetShelterMapBoxesLeanQuery__
+ *
+ * To run a query within a React component, call `useGetShelterMapBoxesLeanQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetShelterMapBoxesLeanQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetShelterMapBoxesLeanQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetShelterMapBoxesLeanQuery(baseOptions: Apollo.QueryHookOptions<GetShelterMapBoxesLeanQuery, GetShelterMapBoxesLeanQueryVariables> & ({ variables: GetShelterMapBoxesLeanQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetShelterMapBoxesLeanQuery, GetShelterMapBoxesLeanQueryVariables>(GetShelterMapBoxesLeanDocument, options);
+      }
+export function useGetShelterMapBoxesLeanLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetShelterMapBoxesLeanQuery, GetShelterMapBoxesLeanQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetShelterMapBoxesLeanQuery, GetShelterMapBoxesLeanQueryVariables>(GetShelterMapBoxesLeanDocument, options);
+        }
+export function useGetShelterMapBoxesLeanSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetShelterMapBoxesLeanQuery, GetShelterMapBoxesLeanQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetShelterMapBoxesLeanQuery, GetShelterMapBoxesLeanQueryVariables>(GetShelterMapBoxesLeanDocument, options);
+        }
+export type GetShelterMapBoxesLeanQueryHookResult = ReturnType<typeof useGetShelterMapBoxesLeanQuery>;
+export type GetShelterMapBoxesLeanLazyQueryHookResult = ReturnType<typeof useGetShelterMapBoxesLeanLazyQuery>;
+export type GetShelterMapBoxesLeanSuspenseQueryHookResult = ReturnType<typeof useGetShelterMapBoxesLeanSuspenseQuery>;
+export type GetShelterMapBoxesLeanQueryResult = Apollo.QueryResult<GetShelterMapBoxesLeanQuery, GetShelterMapBoxesLeanQueryVariables>;
 export const GetShelterOperationalDashboardDocument = gql`
     query getShelterOperationalDashboard($shelter_id: ID!) {
   getShelterOperationalDashboard(shelter_id: $shelter_id) {
@@ -11190,6 +11381,7 @@ export const ListShelterPetsMinDocument = gql`
         id
         name
         gender
+        years
         main_picture {
           id
           main_color {

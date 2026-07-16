@@ -28,6 +28,7 @@ import {
 	ShelterDiscover,
 	ShelterPublic,
 	ShelterPublicProfile,
+	ShelterSettings,
 } from ".";
 
 export const SheltersRouter = () => {
@@ -86,6 +87,11 @@ export const SheltersRouter = () => {
 			<Route exact path={`${path}/detail/:id/verification`}>
 				<RequireShelterMember>
 					<ShelterVerification />
+				</RequireShelterMember>
+			</Route>
+			<Route exact path={`${path}/detail/:id/settings`}>
+				<RequireShelterMember>
+					<ShelterSettings />
 				</RequireShelterMember>
 			</Route>
 			<Route exact path={`${path}/detail/:id/public-profile`}>

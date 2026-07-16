@@ -6,6 +6,7 @@ query listShelterPetsMin($commonSearch: CommonSearch) {
 				id
 				name
 				gender
+				years
 				main_picture {
 					id
 					main_color {

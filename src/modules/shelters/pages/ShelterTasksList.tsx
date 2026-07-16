@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { useParams, useHistory } from "react-router";
+import { useParams, useHistory, useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
 import { Icon, PullToRefresh } from "@components";
+import { TaskStatus } from "@types";
 import { $color, $uw } from "@theme";
 import { TaskCard } from "../components/TaskCard";
 import { useShelterTasks } from "../hooks/useShelterTasks";
@@ -20,8 +21,28 @@ export const ShelterTasksList: React.FC = () => {
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
 	const history = useHistory();
+	const location = useLocation();
 	const { tasks, loading, error, refetch } = useShelterTasks(id);
 	const { can } = useShelterAuthorization(id);
+
+	// filtro arrivando dalla riga "attività in ritardo" della pagina rifugio
+	const [overdueOnly, setOverdueOnly] = useState(
+		() => new URLSearchParams(location.search).get("status") === "OVERDUE"
+	);
+
+	const shownTasks = useMemo(
+		() =>
+			overdueOnly
+				? tasks.filter(
+						(task) =>
+							task.status === TaskStatus.Overdue ||
+							(task.status === TaskStatus.Pending &&
+								!!task.scheduled_at &&
+								new Date(task.scheduled_at) < new Date())
+					)
+				: tasks,
+		[tasks, overdueOnly]
+	);
 
 	useEffect(() => {
 		setPage({ name: t("shelters.tabs.tasks") });
@@ -54,8 +75,20 @@ export const ShelterTasksList: React.FC = () => {
 				)}
 			</Header>
 
+			{overdueOnly && (
+				<FilterBanner>
+					<span>{t("shelters.overview.filter_overdue")}</span>
+					<ClearFilter
+						type="button"
+						onClick={() => setOverdueOnly(false)}
+					>
+						{t("shelters.overview.filter_clear")}
+					</ClearFilter>
+				</FilterBanner>
+			)}
+
 			<List>
-				{tasks.map((task) => (
+				{shownTasks.map((task) => (
 					<TaskCard
 						key={task.id}
 						task={task}
@@ -92,7 +125,7 @@ export const ShelterTasksList: React.FC = () => {
 				))}
 			</List>
 
-			{!loading && !error && tasks.length === 0 && (
+			{!loading && !error && shownTasks.length === 0 && (
 				<Message>{t("shelters.tasks.empty")}</Message>
 			)}
 			{!loading && error && <Message>{error}</Message>}
@@ -128,6 +161,33 @@ const AddButton = styled.button`
 	&:active {
 		opacity: 0.7;
 	}
+`;
+
+const FilterBanner = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${$uw(1)};
+	margin: 0 12px;
+	padding: ${$uw(0.5)} ${$uw(1)};
+	border-radius: 10px;
+	background: ${$color("status.dangerBg")};
+	> span {
+		font-size: 1.2rem;
+		font-weight: 700;
+		color: ${$color("status.danger")};
+	}
+`;
+
+const ClearFilter = styled.button`
+	border: none;
+	background: transparent;
+	padding: ${$uw(0.5)};
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: ${$color("status.danger")};
+	text-decoration: underline;
+	cursor: pointer;
 `;
 
 const List = styled.div`
