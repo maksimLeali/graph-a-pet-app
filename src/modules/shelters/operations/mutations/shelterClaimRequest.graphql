@@ -23,3 +23,16 @@ mutation cancelShelterClaim($id: ID!) {
 		}
 	}
 }
+
+mutation updateShelterClaimDocuments($id: ID!, $documents: JSON!) {
+	updateShelterClaimDocuments(id: $id, documents: $documents) {
+		success
+		error {
+			code
+			message
+		}
+		shelter_claim_request {
+			...MinShelterClaimRequest
+		}
+	}
+}

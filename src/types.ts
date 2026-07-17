@@ -677,6 +677,7 @@ export type Mutation = {
   createWalk: WalkResult;
   createWalkRating: WalkRatingResult;
   deleteCure: DeleteResult;
+  deleteMedia: DeleteResult;
   deleteOwnership: DeleteResult;
   deletePet: DeleteResult;
   deleteShelter: DeleteResult;
@@ -719,6 +720,7 @@ export type Mutation = {
   releasePetFromBox: ShelterBoxOccupancyResult;
   removeSavedPaymentMethod: GenericResult;
   requestShelterClaim: ShelterClaimRequestResult;
+  requestShelterClaimDocumentChange: ShelterClaimRequestResult;
   requestShelterOwnershipTransfer: ShelterOwnershipTransferResult;
   resendCode: GenericResult;
   respondToReport: ReportResult;
@@ -750,6 +752,7 @@ export type Mutation = {
   updateShelter: ShelterResult;
   updateShelterArea: ShelterAreaResult;
   updateShelterBox: ShelterBoxResult;
+  updateShelterClaimDocuments: ShelterClaimRequestResult;
   updateShelterDonationSettings: ShelterDonationSettingsResult;
   updateShelterExpense: ShelterExpenseResult;
   updateShelterInventoryItem: ShelterInventoryItemResult;
@@ -1080,6 +1083,11 @@ export type MutationDeleteCureArgs = {
 };
 
 
+export type MutationDeleteMediaArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationDeleteOwnershipArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1291,6 +1299,13 @@ export type MutationRequestShelterClaimArgs = {
 };
 
 
+export type MutationRequestShelterClaimDocumentChangeArgs = {
+  document_id: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type MutationRequestShelterOwnershipTransferArgs = {
   new_role_for_previous_owner?: InputMaybe<RoleLevel>;
   shelter_id: Scalars['ID']['input'];
@@ -1464,6 +1479,12 @@ export type MutationUpdateShelterAreaArgs = {
 
 export type MutationUpdateShelterBoxArgs = {
   data: ShelterBoxUpdate;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateShelterClaimDocumentsArgs = {
+  documents: Scalars['JSON']['input'];
   id: Scalars['ID']['input'];
 };
 
@@ -3182,8 +3203,10 @@ export type ShelterAreaUpsert = {
 
 export type ShelterAuthorization = {
   __typename?: 'ShelterAuthorization';
+  is_technical_owner: Scalars['Boolean']['output'];
   membership_status?: Maybe<Scalars['String']['output']>;
   permissions: Array<Scalars['String']['output']>;
+  roles: Array<Scalars['String']['output']>;
   shelter_id: Scalars['ID']['output'];
 };
 
@@ -4633,6 +4656,13 @@ export type CreateMediaMutationVariables = Exact<{
 
 export type CreateMediaMutation = { __typename?: 'Mutation', createMedia: { __typename?: 'MediaResult', media?: { __typename?: 'Media', id: string, ref_id: string, type: string, scope: string } | null } };
 
+export type DeleteMediaMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteMediaMutation = { __typename?: 'Mutation', deleteMedia: { __typename?: 'DeleteResult', success?: boolean | null, id?: string | null, error?: { __typename?: 'Error', code: string, message: string } | null } };
+
 export type UpdateMediaMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   data: MediaUpdate;
@@ -5224,6 +5254,14 @@ export type CancelShelterClaimMutationVariables = Exact<{
 
 export type CancelShelterClaimMutation = { __typename?: 'Mutation', cancelShelterClaim: { __typename?: 'ShelterClaimRequestResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_claim_request?: { __typename?: 'ShelterClaimRequest', id: string, status: ShelterClaimRequestStatus, message?: string | null, proof_data?: any | null, decision_note?: string | null, created_at: string, reviewed_at?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, requester: { __typename?: 'User', id: string, first_name: string, last_name: string }, reviewed_by?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null } | null } };
 
+export type UpdateShelterClaimDocumentsMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  documents: Scalars['JSON']['input'];
+}>;
+
+
+export type UpdateShelterClaimDocumentsMutation = { __typename?: 'Mutation', updateShelterClaimDocuments: { __typename?: 'ShelterClaimRequestResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, shelter_claim_request?: { __typename?: 'ShelterClaimRequest', id: string, status: ShelterClaimRequestStatus, message?: string | null, proof_data?: any | null, decision_note?: string | null, created_at: string, reviewed_at?: string | null, shelter: { __typename?: 'Shelter', id: string, name: string }, requester: { __typename?: 'User', id: string, first_name: string, last_name: string }, reviewed_by?: { __typename?: 'User', id: string, first_name: string, last_name: string } | null } | null } };
+
 export type RequestShelterOwnershipTransferMutationVariables = Exact<{
   shelter_id: Scalars['ID']['input'];
   to_user_id: Scalars['ID']['input'];
@@ -5329,7 +5367,7 @@ export type GetCurrentBoxForPetQueryVariables = Exact<{
 }>;
 
 
-export type GetCurrentBoxForPetQuery = { __typename?: 'Query', getCurrentBoxForPet: { __typename?: 'ShelterBoxResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, box?: { __typename?: 'ShelterBox', id: string, label: string, capacity: number, status: BoxStatus, map_id: string, area?: { __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, color?: string | null } | null } | null } };
+export type GetCurrentBoxForPetQuery = { __typename?: 'Query', getCurrentBoxForPet: { __typename?: 'ShelterBoxResult', success: boolean, error?: { __typename?: 'Error', code: string, message: string } | null, box?: { __typename?: 'ShelterBox', id: string, label: string, capacity: number, status: BoxStatus, map_id: string, area?: { __typename?: 'ShelterArea', id: string, name: string, area_type: AreaType, color?: string | null } | null, zone?: { __typename?: 'ShelterZone', id: string, name: string } | null, current_occupants: Array<{ __typename?: 'ShelterPet', id: string, pet: { __typename?: 'Pet', id: string, name: string, main_picture?: { __typename?: 'Media', id: string, main_color?: { __typename?: 'MainColor', color: string, contrast: string } | null } | null } }> } | null } };
 
 export type GetMyShelterDashboardQueryVariables = Exact<{
   date_from: Scalars['String']['input'];
@@ -6162,6 +6200,44 @@ export function useCreateMediaMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateMediaMutationHookResult = ReturnType<typeof useCreateMediaMutation>;
 export type CreateMediaMutationResult = Apollo.MutationResult<CreateMediaMutation>;
 export type CreateMediaMutationOptions = Apollo.BaseMutationOptions<CreateMediaMutation, CreateMediaMutationVariables>;
+export const DeleteMediaDocument = gql`
+    mutation deleteMedia($id: ID!) {
+  deleteMedia(id: $id) {
+    error {
+      code
+      message
+    }
+    success
+    id
+  }
+}
+    `;
+export type DeleteMediaMutationFn = Apollo.MutationFunction<DeleteMediaMutation, DeleteMediaMutationVariables>;
+
+/**
+ * __useDeleteMediaMutation__
+ *
+ * To run a mutation, you first call `useDeleteMediaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMediaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMediaMutation, { data, loading, error }] = useDeleteMediaMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteMediaMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMediaMutation, DeleteMediaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMediaMutation, DeleteMediaMutationVariables>(DeleteMediaDocument, options);
+      }
+export type DeleteMediaMutationHookResult = ReturnType<typeof useDeleteMediaMutation>;
+export type DeleteMediaMutationResult = Apollo.MutationResult<DeleteMediaMutation>;
+export type DeleteMediaMutationOptions = Apollo.BaseMutationOptions<DeleteMediaMutation, DeleteMediaMutationVariables>;
 export const UpdateMediaDocument = gql`
     mutation updateMedia($id: ID!, $data: MediaUpdate!) {
   updateMedia(id: $id, data: $data) {
@@ -9517,6 +9593,47 @@ export function useCancelShelterClaimMutation(baseOptions?: Apollo.MutationHookO
 export type CancelShelterClaimMutationHookResult = ReturnType<typeof useCancelShelterClaimMutation>;
 export type CancelShelterClaimMutationResult = Apollo.MutationResult<CancelShelterClaimMutation>;
 export type CancelShelterClaimMutationOptions = Apollo.BaseMutationOptions<CancelShelterClaimMutation, CancelShelterClaimMutationVariables>;
+export const UpdateShelterClaimDocumentsDocument = gql`
+    mutation updateShelterClaimDocuments($id: ID!, $documents: JSON!) {
+  updateShelterClaimDocuments(id: $id, documents: $documents) {
+    success
+    error {
+      code
+      message
+    }
+    shelter_claim_request {
+      ...MinShelterClaimRequest
+    }
+  }
+}
+    ${MinShelterClaimRequestFragmentDoc}`;
+export type UpdateShelterClaimDocumentsMutationFn = Apollo.MutationFunction<UpdateShelterClaimDocumentsMutation, UpdateShelterClaimDocumentsMutationVariables>;
+
+/**
+ * __useUpdateShelterClaimDocumentsMutation__
+ *
+ * To run a mutation, you first call `useUpdateShelterClaimDocumentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShelterClaimDocumentsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShelterClaimDocumentsMutation, { data, loading, error }] = useUpdateShelterClaimDocumentsMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      documents: // value for 'documents'
+ *   },
+ * });
+ */
+export function useUpdateShelterClaimDocumentsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShelterClaimDocumentsMutation, UpdateShelterClaimDocumentsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateShelterClaimDocumentsMutation, UpdateShelterClaimDocumentsMutationVariables>(UpdateShelterClaimDocumentsDocument, options);
+      }
+export type UpdateShelterClaimDocumentsMutationHookResult = ReturnType<typeof useUpdateShelterClaimDocumentsMutation>;
+export type UpdateShelterClaimDocumentsMutationResult = Apollo.MutationResult<UpdateShelterClaimDocumentsMutation>;
+export type UpdateShelterClaimDocumentsMutationOptions = Apollo.BaseMutationOptions<UpdateShelterClaimDocumentsMutation, UpdateShelterClaimDocumentsMutationVariables>;
 export const RequestShelterOwnershipTransferDocument = gql`
     mutation requestShelterOwnershipTransfer($shelter_id: ID!, $to_user_id: ID!, $new_role_for_previous_owner: RoleLevel) {
   requestShelterOwnershipTransfer(
@@ -10089,6 +10206,24 @@ export const GetCurrentBoxForPetDocument = gql`
         name
         area_type
         color
+      }
+      zone {
+        id
+        name
+      }
+      current_occupants {
+        id
+        pet {
+          id
+          name
+          main_picture {
+            id
+            main_color {
+              color
+              contrast
+            }
+          }
+        }
       }
     }
   }

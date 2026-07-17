@@ -7,7 +7,7 @@ import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
 import { Icon, PullToRefresh } from "@components";
-import { RoleLevel, ShelterPersonStatus, WalkRatingType } from "@types";
+import { ShelterPersonStatus, WalkRatingType } from "@types";
 import { $color, $uw } from "@theme";
 import { WalkCard } from "../components/WalkCard";
 import { Avatar } from "../components/Avatar";
@@ -21,7 +21,7 @@ import {
 	type ShelterWalkRatings,
 } from "../components/ShelterWalkRatingModal";
 import { useShelterWalks } from "../hooks/useShelterWalks";
-import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 import { useWeightUpdatePrompt } from "../hooks/useWeightUpdatePrompt";
 import { useListPetsNeedingWalkQuery } from "../operations/__generated__/listPetsNeedingWalk.generated";
 import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
@@ -33,11 +33,7 @@ import { useCancelShelterWalkMutation } from "../operations/__generated__/cancel
 import { useDeleteShelterWalkMutation } from "../operations/__generated__/deleteShelterWalk.generated";
 import { useCreateShelterWalkRatingMutation } from "../operations/__generated__/createShelterWalkRating.generated";
 
-const CAN_ASSIGN_ROLES: RoleLevel[] = [
-	RoleLevel.Owner,
-	RoleLevel.Manager,
-	RoleLevel.Staff,
-];
+
 
 export const ShelterWalksList: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -47,8 +43,8 @@ export const ShelterWalksList: React.FC = () => {
 	const { openModal, closeModal } = useModal();
 	const { maybePromptWeightUpdate } = useWeightUpdatePrompt();
 	const { walks, loading, error, refetch } = useShelterWalks(id);
-	const { role } = useMyShelterRole(id);
-	const canAssign = !!role && CAN_ASSIGN_ROLES.includes(role);
+	const { can } = useShelterAuthorization(id);
+	const canAssign = can("shelters.walks.create");
 
 	const { data: needData, refetch: refetchNeed } = useListPetsNeedingWalkQuery({
 		skip: !id,

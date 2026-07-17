@@ -7,19 +7,19 @@ import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
 import { TextInput, Toggle, PullToRefresh } from "@components";
-import { RoleLevel } from "@types";
+
 import { $color, $uw } from "@theme";
 
 import { useGetShelterPublicProfileQuery } from "../operations/__generated__/getShelterPublicProfile.generated";
 import { useUpdateShelterPublicProfileMutation } from "../operations/__generated__/updateShelterPublicProfile.generated";
-import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 
 export const ShelterPublicProfile: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
-	const { role: myRole } = useMyShelterRole(id);
-	const canManage = myRole === RoleLevel.Owner || myRole === RoleLevel.Manager;
+	const { can } = useShelterAuthorization(id);
+	const canManage = can("shelters.public_profile.manage");
 
 	useEffect(() => {
 		setPage({ name: t("shelters.public_profile.title") });

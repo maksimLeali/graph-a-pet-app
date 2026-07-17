@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router";
 import { IonContent } from "@ionic/react";
 
 import { $uw } from "@theme";
-import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 
 type Props = {
 	children: React.ReactNode;
@@ -16,7 +16,9 @@ type Props = {
 export const RequireShelterMember: React.FC<Props> = ({ children }) => {
 	const { id } = useParams<{ id: string }>();
 	const history = useHistory();
-	const { isMember, loading } = useMyShelterRole(id);
+	const { can, loading } = useShelterAuthorization(id);
+	// membro = può leggere lo shelter (i platform admin passano via grants_all)
+	const isMember = can("shelters.read");
 
 	useEffect(() => {
 		if (!loading && !isMember) {

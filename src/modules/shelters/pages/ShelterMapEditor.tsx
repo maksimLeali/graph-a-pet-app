@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { useParams, useHistory } from "react-router";
+import { useParams, useHistory, useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext, useModal } from "@contexts";
 import { Icon } from "@components";
 import { $color, $uw } from "@theme";
-import { AreaType, MapElementType, RoleLevel, UserRole } from "@types";
+import { AreaType, MapElementType } from "@types";
 import { MapCanvas, CanvasShape } from "../components/MapCanvas";
 import { AssignPetsModal, PickablePet } from "../components/AssignPetsModal";
 import { FindPetModal, LocatablePet } from "../components/FindPetModal";
-import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 import { useListShelterMapsQuery } from "../operations/__generated__/listShelterMaps.generated";
 import { useGetShelterMapLazyQuery } from "../operations/__generated__/getShelterMap.generated";
 import { useCreateShelterMapMutation } from "../operations/__generated__/createShelterMap.generated";
@@ -110,6 +110,7 @@ const nextName = (name: string, existing: string[]): string => {
 export const ShelterMapEditor: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const history = useHistory();
+    const location = useLocation();
     const { t } = useTranslation();
     const { setPage, user } = useUserContext();
 
@@ -140,9 +141,11 @@ export const ShelterMapEditor: React.FC = () => {
     const snapshotRef = useRef("");
     const rebaselineRef = useRef(false);
     const [assignBoxKey, setAssignBoxKey] = useState<string | null>(null);
-    // box da far lampeggiare quando localizzo un pet dalla ricerca
-    const [pulseKey, setPulseKey] = useState<string | null>(null);
-    const [pulsePicId, setPulsePicId] = useState<string | null>(null);
+    // pin persistente sul box del pet localizzato (ricerca o ?pet= in URL);
+    // resta finché non lo tolgo dal sheet del box
+    const [pinKey, setPinKey] = useState<string | null>(null);
+    const [pinPicId, setPinPicId] = useState<string | null>(null);
+    const [hydratedMapId, setHydratedMapId] = useState<string | null>(null);
     const [sheetOpen, setSheetOpen] = useState(false);
     const lastTapRef = useRef<{ key: string; time: number } | null>(null);
     // resize mode (long-press): il props sheet resta a linguetta finché non lo apro
@@ -194,27 +197,10 @@ export const ShelterMapEditor: React.FC = () => {
         (p): p is NonNullable<typeof p> => !!p,
     );
 
-    // ruolo dell'utente su questo shelter → permessi
-    const { data: rolesData } = useListShelterRolesMinQuery({
-        skip: !id,
-        fetchPolicy: "cache-and-network",
-        variables: {
-            commonSearch: {
-                page: 0,
-                page_size: 200,
-                filters: { fixed: [{ key: "shelter_id", value: id }] },
-            },
-        },
-    });
-    const myRole = (rolesData?.listShelterRoles?.items ?? []).find(
-        (r) => r?.user?.id === user.id,
-    )?.role;
-    const isAdmin = user.role === UserRole.Admin;
-    // edit mappa: solo owner/manager (+admin)
-    const canEdit =
-        isAdmin || myRole === RoleLevel.Owner || myRole === RoleLevel.Manager;
-    // assegnazione cani: owner/manager/staff (+admin)
-    const canAssign = canEdit || myRole === RoleLevel.Staff;
+    // permission RBAC effettive sullo shelter (mai derivate dai nomi ruolo)
+    const { can } = useShelterAuthorization(id);
+    const canEdit = can("shelters.map.update");
+    const canAssign = canEdit || can("shelters.boxes.assign_pet");
 
     useEffect(() => {
         setPage({ name: t("shelters.tabs.map") });
@@ -324,6 +310,8 @@ export const ShelterMapEditor: React.FC = () => {
         deleted.current = { zones: [], areas: [], boxes: [], elements: [] };
         // prossimo passaggio dell'effetto dirty ricalcola la baseline (stato pulito)
         rebaselineRef.current = true;
+        // segnala (nel render successivo, a boxes già committati) che la mappa è idratata
+        setHydratedMapId(m.id);
     };
 
     // firma serializzata del layout: confronto con la baseline per stato dirty.
@@ -385,6 +373,37 @@ export const ShelterMapEditor: React.FC = () => {
             hydrate(fetchedMap);
         }
     }, [fetchedMap]);
+
+    // ?pet=<shelter_pet_id> in URL (arrivo da "vedi mappa" del dettaglio pet):
+    // come una ricerca già fatta — pinno il box del pet e ci centro la vista.
+    // una sola volta per mount, così togliere il pin non lo fa ricomparire.
+    const locatedFromUrl = useRef(false);
+    useEffect(() => {
+        if (locatedFromUrl.current) return;
+        const petParam = new URLSearchParams(location.search).get("pet");
+        if (!petParam || !petsData) return;
+        // aspetto l'hydrate della mappa (boxes con occupanti già committati)
+        if (!hydratedMapId) return;
+        locatedFromUrl.current = true;
+        const box = boxes.find((b) =>
+            b.occupants.some((o) => o.shelterPetId === petParam),
+        );
+        if (!box) {
+            toast(t("shelters.map.pet_not_assigned"), { icon: "⚠️" });
+            return;
+        }
+        setPinKey(box.key);
+        setPinPicId(
+            shelterPets.find((sp) => sp.id === petParam)?.pet?.main_picture
+                ?.id ?? null,
+        );
+        setFocusShape({
+            x: box.x,
+            y: box.y,
+            width: box.width,
+            height: box.height,
+        });
+    }, [boxes, petsData, location.search, hydratedMapId]);
 
     // stato dirty: confronto la firma corrente con la baseline (post load/save).
     // il primo giro dopo hydrate ribasa senza segnare dirty (evita falsi positivi
@@ -1294,12 +1313,16 @@ export const ShelterMapEditor: React.FC = () => {
                     onPick={(p) => {
                         closeModal();
                         if (p.boxKey) {
-                            setPulseKey(p.boxKey);
-                            setPulsePicId(p.pictureId ?? null);
-                            setTimeout(() => {
-                                setPulseKey(null);
-                                setPulsePicId(null);
-                            }, 1600);
+                            setPinKey(p.boxKey);
+                            setPinPicId(p.pictureId ?? null);
+                            const bx = boxes.find((b) => b.key === p.boxKey);
+                            if (bx)
+                                setFocusShape({
+                                    x: bx.x,
+                                    y: bx.y,
+                                    width: bx.width,
+                                    height: bx.height,
+                                });
                         } else {
                             toast(t("shelters.map.pet_not_assigned"), {
                                 icon: "⚠️",
@@ -1398,7 +1421,9 @@ export const ShelterMapEditor: React.FC = () => {
                         setResizeModeKey(k);
                         setPropsPeekOpen(false);
                     }}
-                    onTapBox={(k) => canAssign && setAssignBoxKey(k)}
+                    onTapBox={(k) =>
+                        (canAssign || k === pinKey) && setAssignBoxKey(k)
+                    }
                     onDragShape={dragShape}
                     onMoveShape={moveShape}
                     onResizeShape={resizeShape}
@@ -1409,8 +1434,8 @@ export const ShelterMapEditor: React.FC = () => {
                     selectAll={selectAll}
                     onToggleSelectAll={() => setSelectAll((v) => !v)}
                     onFindPet={openFindModal}
-                    pulseKey={pulseKey}
-                    pulsePictureId={pulsePicId}
+                    pinKey={pinKey}
+                    pinPictureId={pinPicId}
                 />
             )}
 
@@ -1771,27 +1796,46 @@ export const ShelterMapEditor: React.FC = () => {
                             {assignBox.occupants.map((o) => (
                                 <OccRow key={o.occId}>
                                     <span>{o.name}</span>
-                                    <SmallBtn
-                                        $c="danger"
-                                        onClick={() => doRelease(o.occId)}
-                                    >
-                                        {t("shelters.map.release")}
-                                    </SmallBtn>
+                                    {canAssign && (
+                                        <SmallBtn
+                                            $c="danger"
+                                            onClick={() => doRelease(o.occId)}
+                                        >
+                                            {t("shelters.map.release")}
+                                        </SmallBtn>
+                                    )}
                                 </OccRow>
                             ))}
                         </OccList>
                     )}
 
-                    {isTmp(assignBox.key) ? (
-                        <Hint>{t("shelters.map.save_first")}</Hint>
-                    ) : assignBox.occupants.length >= assignBox.capacity ? (
-                        <Hint>{t("shelters.map.box_full")}</Hint>
-                    ) : (
-                        <AssignBtn onClick={() => openAssignModal(assignBox)}>
-                            <Icon name="add" color="light" />
-                            <span>{t("shelters.map.assign_pet")}</span>
-                        </AssignBtn>
+                    {assignBox.key === pinKey && (
+                        <RemovePinBtn
+                            onClick={() => {
+                                setPinKey(null);
+                                setPinPicId(null);
+                                setAssignBoxKey(null);
+                            }}
+                        >
+                            <Icon name="close" color="primary" />
+                            <span>{t("shelters.map.remove_pin")}</span>
+                        </RemovePinBtn>
                     )}
+
+                    {canAssign &&
+                        (isTmp(assignBox.key) ? (
+                            <Hint>{t("shelters.map.save_first")}</Hint>
+                        ) : assignBox.occupants.length >=
+                          assignBox.capacity ? (
+                            <Hint>{t("shelters.map.box_full")}</Hint>
+                        ) : (
+                            <AssignBtn
+                                onClick={() => openAssignModal(assignBox)}
+                            >
+                                <Icon name="add" color="light" />
+                                <span>{t("shelters.map.assign_pet")}</span>
+                            </AssignBtn>
+                        ))}
                 </Sheet>
             )}
         </IonContent>
@@ -2145,6 +2189,25 @@ const SmallBtn = styled.button<{ $c: string }>`
     font-size: 1.2rem;
     font-weight: 700;
     cursor: pointer;
+`;
+const RemovePinBtn = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: ${$uw(0.75)};
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid rgba(var(--ion-color-primary-rgb), 0.3);
+    border-radius: 999px;
+    background: ${$color("background")};
+    color: ${$color("primary")};
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    > .icon {
+        width: ${$uw(1.75)};
+        height: ${$uw(1.75)};
+    }
 `;
 const AssignBtn = styled.button`
     display: flex;

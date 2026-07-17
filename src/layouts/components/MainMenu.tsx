@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import { useOnClickOutside } from "@hooks";
 import { useUserContext } from "@contexts";
 import { Icon, Toggle, Modal, ModalProps } from "@components";
-import { UserRole } from "@types";
 import { $color, $cssTRBL, $uw } from "@theme";
 
 type props = {
@@ -115,22 +114,20 @@ export const MainMenu: React.FC<props> = ({ open, onClose }) => {
 						}
 					/>
 				</ToggleOption>
-				{cookies.user?.role === UserRole.Admin && (
-					<ToggleOption className="gridSelector">
-						<Toggle
-							value={gridVisible}
-							onChange={(val) => {
-								handleGridVisibility(val);
-							}}
-							rigthElement={
-								<Icon size="18px" name="eyeOff" color="dark" />
-							}
-							leftElement={
-								<Icon size="18px" name="eye" color="dark" />
-							}
-						/>
-					</ToggleOption>
-				)}
+				<ToggleOption className="gridSelector">
+					<Toggle
+						value={gridVisible}
+						onChange={(val) => {
+							handleGridVisibility(val);
+						}}
+						rigthElement={
+							<Icon size="18px" name="eyeOff" color="dark" />
+						}
+						leftElement={
+							<Icon size="18px" name="eye" color="dark" />
+						}
+					/>
+				</ToggleOption>
 			</Container>
 		</MenuBackground>
 	);

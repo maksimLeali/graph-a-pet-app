@@ -167,7 +167,7 @@ const LabelRow = styled.div`
 `;
 
 const Label = styled.span`
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 1px;
@@ -175,7 +175,7 @@ const Label = styled.span`
 `;
 
 const Today = styled.span`
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	color: ${$color("medium")};
 `;
 
@@ -225,14 +225,14 @@ const IconBubble = styled.div<{ $bg: string }>`
 const RowText = styled.span`
 	flex: 1 1 auto;
 	min-width: 0;
-	font-size: 1.3rem;
+	font-size: 1.45rem;
 	font-weight: 500;
 	color: ${$color("dark")};
 `;
 
 const Cta = styled.span<{ $tone: string }>`
 	flex: 0 0 auto;
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	font-weight: 700;
 	color: ${({ $tone }) => $color($tone)};
 `;

@@ -12,14 +12,14 @@ import { RoleLevel } from "@types";
 import { $color, $uw } from "@theme";
 
 import { useCreateShelterInviteMutation } from "../operations/__generated__/createShelterInvite.generated";
-import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 
 export const ShelterInvites: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
 	const { setPage } = useUserContext();
-	const { role: myRole } = useMyShelterRole(id);
-	const canManage = myRole === RoleLevel.Owner || myRole === RoleLevel.Manager;
+	const { can } = useShelterAuthorization(id);
+	const canManage = can("shelters.members.invite");
 
 	useEffect(() => {
 		setPage({ name: t("shelters.invites.title") });

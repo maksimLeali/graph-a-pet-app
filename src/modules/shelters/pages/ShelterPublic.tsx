@@ -14,7 +14,7 @@ import { useListPublicShelterPetsQuery } from "../operations/__generated__/listP
 import { useListShelterMediasQuery } from "../operations/__generated__/listShelterMedias.generated";
 import { useGetMyShelterJoinRequestQuery } from "../operations/__generated__/getMyShelterJoinRequest.generated";
 import { useApplyToShelterAsVolunteerMutation } from "../operations/__generated__/applyToShelterAsVolunteer.generated";
-import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 import { DonateCard } from "../../donations/components/DonateCard";
 
 export const ShelterPublic: React.FC = () => {
@@ -35,7 +35,8 @@ export const ShelterPublic: React.FC = () => {
 	const shelter = data?.getPublicShelter ?? undefined;
 	const fetchError = error?.message;
 
-	const { isMember } = useMyShelterRole(id);
+	const { can } = useShelterAuthorization(id);
+	const isMember = can("shelters.read");
 
 	// internal application flow: the button creates a join request that
 	// notifies the shelter's OWNER/MANAGER for approval — the public email

@@ -678,7 +678,7 @@ type GalleryPreviewProps = {
 	startIndex: number;
 };
 
-const GalleryPreview: React.FC<GalleryPreviewProps> = ({
+export const GalleryPreview: React.FC<GalleryPreviewProps> = ({
 	medias,
 	startIndex,
 }) => {

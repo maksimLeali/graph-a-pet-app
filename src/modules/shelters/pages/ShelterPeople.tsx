@@ -20,7 +20,7 @@ import {
 import { MinShelterPersonFragment } from "../operations/__generated__/MinShelterPerson.generated";
 import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
 import { useDeleteShelterRoleMutation } from "../operations/__generated__/deleteShelterRole.generated";
-import { useMyShelterRole } from "../hooks/useMyShelterRole";
+import { useShelterAuthorization } from "../hooks/useShelterAuthorization";
 
 type Person = MinShelterPersonFragment;
 
@@ -45,8 +45,9 @@ export const ShelterPeople: React.FC = () => {
 	const { setPage } = useUserContext();
 	const history = useHistory();
 	const { openModal, closeModal } = useModal();
-	const { role: myRole } = useMyShelterRole(id);
-	const canManage = myRole === RoleLevel.Owner || myRole === RoleLevel.Manager;
+	const { can } = useShelterAuthorization(id);
+	const canManage = can("shelters.people.update");
+	const canRemoveMember = can("shelters.members.remove");
 
 	useEffect(() => {
 		setPage({ name: t("shelters.tabs.people") });
@@ -259,7 +260,7 @@ export const ShelterPeople: React.FC = () => {
 						</Info>
 						<Actions>
 							<Chip color={roleColors[m.role]} label={t(`shelters.roles.${m.role.toLowerCase()}` as I18NKey)} />
-							{canManage && m.role !== RoleLevel.Owner && (
+							{canRemoveMember && m.role !== RoleLevel.Owner && (
 								<RoundBtn
 									$c="danger"
 									aria-label={t("shelters.remove_member") ?? ""}

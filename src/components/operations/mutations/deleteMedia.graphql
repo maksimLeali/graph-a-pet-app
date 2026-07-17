@@ -1,0 +1,10 @@
+mutation deleteMedia($id: ID!) {
+    deleteMedia(id: $id) {
+        error {
+            code
+            message
+        }
+        success
+        id
+    }
+}

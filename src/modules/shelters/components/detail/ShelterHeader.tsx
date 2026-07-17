@@ -118,7 +118,7 @@ const NameRow = styled.div`
 	min-width: 0;
 	> h2 {
 		margin: 0;
-		font-size: 1.7rem;
+		font-size: 1.85rem;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -131,14 +131,14 @@ const Verified = styled.span`
 	align-items: center;
 	gap: ${$uw(0.25)};
 	> span {
-		font-size: 1.1rem;
+		font-size: 1.2rem;
 		font-weight: 700;
 		color: ${$color("primary")};
 	}
 `;
 
 const Address = styled.span`
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	color: ${$color("medium")};
 	white-space: nowrap;
 	overflow: hidden;

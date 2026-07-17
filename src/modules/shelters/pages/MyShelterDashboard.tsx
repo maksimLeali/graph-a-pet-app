@@ -6,16 +6,14 @@ import dayjs from "dayjs";
 import { IonContent } from "@ionic/react";
 
 import { useUserContext } from "@contexts";
-import { RoleLevel, UserRole, TaskStatus, ShelterWalkStatus } from "@types";
+import { TaskStatus, ShelterWalkStatus } from "@types";
 import { $color, $uw } from "@theme";
 import { StatusPill, taskStatusTone, walkStatusTone } from "../components/StatusPill";
 import { Avatar } from "../components/Avatar";
 
 import { useGetMyShelterDashboardQuery } from "../operations/__generated__/getMyShelterDashboard.generated";
-import { useListShelterRolesMinQuery } from "../operations/__generated__/listShelterRolesMin.generated";
 import { PullToRefresh } from "@components";
 
-const MANAGER_LEVEL_ROLES = [RoleLevel.Manager, RoleLevel.Owner];
 
 const isOpenTask = (status: TaskStatus) =>
 	status === TaskStatus.Pending || status === TaskStatus.InProgress;
@@ -38,28 +36,12 @@ export const MyShelterDashboard: React.FC = () => {
 	});
 	const dash = data?.getMyShelterDashboard?.dashboard;
 
-	// visibilita' sezione inventory: solo se manager-level in almeno uno shelter
-	const isAdmin = user.role === UserRole.Admin;
-	const { data: rolesData } = useListShelterRolesMinQuery({
-		skip: !user.id || isAdmin,
-		fetchPolicy: "cache-and-network",
-		variables: {
-			commonSearch: {
-				page: 0,
-				page_size: 50,
-				filters: { fixed: [{ key: "user_id", value: user.id }] },
-			},
-		},
-	});
-	const canSeeInventory =
-		isAdmin ||
-		(rolesData?.listShelterRoles?.items ?? []).some(
-			(r) => !!r && MANAGER_LEVEL_ROLES.includes(r.role)
-		);
-
+	// il backend restituisce inventory_alerts solo per gli shelter dove
+	// l'utente ha shelters.inventory.read: la sezione segue i dati, non i ruoli
 	const tasks = dash?.tasks ?? [];
 	const walks = dash?.walks ?? [];
 	const alerts = dash?.inventory_alerts ?? [];
+	const canSeeInventory = alerts.length > 0;
 
 	const openTaskCount = tasks.filter((tk) => isOpenTask(tk.status)).length;
 	const openWalkCount = walks.filter(

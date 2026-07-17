@@ -17,6 +17,24 @@ query getCurrentBoxForPet($shelter_pet_id: ID!) {
 				area_type
 				color
 			}
+			zone {
+				id
+				name
+			}
+			current_occupants {
+				id
+				pet {
+					id
+					name
+					main_picture {
+						id
+						main_color {
+							color
+							contrast
+						}
+					}
+				}
+			}
 		}
 	}
 }

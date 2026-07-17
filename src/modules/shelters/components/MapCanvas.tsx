@@ -2,7 +2,7 @@ import { Icon } from "@components";
 import { config } from "@config";
 import { $uw } from "@theme";
 import { useEffect, useRef, useState, useCallback } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
 export type CanvasShape = {
     key: string;
@@ -48,10 +48,10 @@ type Props = {
     onToggleSelectAll?: () => void;
     // view mode: apre la modale ricerca/localizzazione pet
     onFindPet?: () => void;
-    // box da far lampeggiare per un attimo (localizzazione pet)
-    pulseKey?: string | null;
-    // immagine del pet localizzato per il pin (null => pin verde)
-    pulsePictureId?: string | null;
+    // box con pin persistente (localizzazione pet): pallino al centro
+    pinKey?: string | null;
+    // immagine del pet localizzato per il pallino (null => pallino verde)
+    pinPictureId?: string | null;
 };
 
 type View = { scale: number; tx: number; ty: number; rot: number };
@@ -203,8 +203,8 @@ export const MapCanvas: React.FC<Props> = ({
     selectAll,
     onToggleSelectAll,
     onFindPet,
-    pulseKey,
-    pulsePictureId,
+    pinKey,
+    pinPictureId,
 }) => {
     const wrapRef = useRef<HTMLDivElement>(null);
     const [view, setView] = useState<View>({ scale: 1, tx: 0, ty: 0, rot: 0 });
@@ -722,12 +722,12 @@ export const MapCanvas: React.FC<Props> = ({
         ? shapes.find((s) => s.key === resizeKey)
         : null;
 
-    const pulseShapeObj = pulseKey
-        ? shapes.find((s) => s.key === pulseKey)
+    const pinShapeObj = pinKey
+        ? shapes.find((s) => s.key === pinKey)
         : null;
-    // url immagine pet per il pin (null => pin verde)
-    const pinPicUrl = pulsePictureId
-        ? `${config.baseUrl?.replace("graphql", "media")}/${pulsePictureId}/80x80/fit`
+    // url immagine pet per il pallino (null => pallino verde)
+    const pinPicUrl = pinPictureId
+        ? `${config.baseUrl?.replace("graphql", "media")}/${pinPictureId}/80x80/fit`
         : null;
 
     return (
@@ -820,60 +820,38 @@ export const MapCanvas: React.FC<Props> = ({
                             </g>
                         );
                     })}
-                    {pulseShapeObj && (
-                        <PulseRect
-                            key={`pulse-${pulseShapeObj.key}`}
-                            x={pulseShapeObj.x}
-                            y={pulseShapeObj.y}
-                            width={pulseShapeObj.width}
-                            height={pulseShapeObj.height}
-                            rx={2}
-                            transform={
-                                pulseShapeObj.rotation
-                                    ? `rotate(${pulseShapeObj.rotation} ${
-                                          pulseShapeObj.x +
-                                          pulseShapeObj.width / 2
-                                      } ${pulseShapeObj.y + pulseShapeObj.height / 2})`
-                                    : undefined
-                            }
-                            fill="#ffd60a"
-                            stroke="#ff9f0a"
-                            strokeWidth={3 / view.scale}
-                            pointerEvents="none"
-                        />
-                    )}
-                    {pulseShapeObj && (
+                    {pinShapeObj && (
                         <g
                             transform={
-                                `translate(${pulseShapeObj.x + pulseShapeObj.width / 2} ` +
-                                `${pulseShapeObj.y + pulseShapeObj.height / 2}) ` +
+                                `translate(${pinShapeObj.x + pinShapeObj.width / 2} ` +
+                                `${pinShapeObj.y + pinShapeObj.height / 2}) ` +
                                 `scale(${1 / view.scale}) rotate(${-view.rot})`
                             }
                             pointerEvents="none"
                         >
-                            <path
-                                d="M0 0 L-14 -30 A16 16 0 1 1 14 -30 Z"
+                            <circle
+                                cx={0}
+                                cy={0}
+                                r={13}
                                 fill="#2ecc71"
                                 stroke="#fff"
-                                strokeWidth={2}
+                                strokeWidth={2.5}
                             />
-                            {pinPicUrl ? (
+                            {pinPicUrl && (
                                 <>
                                     <clipPath id="mapPinClip">
-                                        <circle cx={0} cy={-42} r={13} />
+                                        <circle cx={0} cy={0} r={11} />
                                     </clipPath>
                                     <image
                                         href={pinPicUrl}
-                                        x={-13}
-                                        y={-55}
-                                        width={26}
-                                        height={26}
+                                        x={-11}
+                                        y={-11}
+                                        width={22}
+                                        height={22}
                                         clipPath="url(#mapPinClip)"
                                         preserveAspectRatio="xMidYMid slice"
                                     />
                                 </>
-                            ) : (
-                                <circle cx={0} cy={-42} r={7} fill="#fff" />
                             )}
                         </g>
                     )}
@@ -1155,16 +1133,6 @@ const FindBtn = styled.button`
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     padding: 0;
-`;
-
-const blink = keyframes`
-    0%, 100% { opacity: 0; }
-    50% { opacity: 0.55; }
-`;
-
-const PulseRect = styled.rect`
-    animation: ${blink} 0.45s ease-in-out 3;
-    pointer-events: none;
 `;
 
 const RotBtn = styled.button`

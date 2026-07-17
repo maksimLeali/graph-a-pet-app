@@ -243,7 +243,7 @@ const LabelRow = styled.div`
 `;
 
 const Label = styled.span`
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 1px;
@@ -254,7 +254,7 @@ const ViewAll = styled.button`
 	border: none;
 	background: transparent;
 	padding: 0;
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	font-weight: 700;
 	color: ${$color("primary")};
 	cursor: pointer;
@@ -305,13 +305,13 @@ const HeartBadge = styled.div`
 const MainTitle = styled.b`
 	flex: 1 1 auto;
 	min-width: 0;
-	font-size: 1.5rem;
+	font-size: 1.65rem;
 	color: ${$color("dark")};
 `;
 
 const Percent = styled.b`
 	flex: 0 0 auto;
-	font-size: 1.5rem;
+	font-size: 1.65rem;
 	color: ${$color("primary")};
 `;
 
@@ -335,7 +335,7 @@ const Fill = styled.div`
 `;
 
 const RaisedText = styled.span`
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	color: ${$color("dark")};
 	opacity: 0.75;
 `;
@@ -389,7 +389,7 @@ const NeedTitles = styled.div`
 `;
 
 const NeedName = styled.b`
-	font-size: 1.3rem;
+	font-size: 1.45rem;
 	color: ${$color("dark")};
 	white-space: nowrap;
 	overflow: hidden;
@@ -397,7 +397,7 @@ const NeedName = styled.b`
 `;
 
 const NeedLabel = styled.span<{ $tone: string }>`
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	font-weight: 700;
 	color: ${({ $tone }) => $color($tone)};
 	white-space: nowrap;
@@ -409,7 +409,7 @@ const DonateButton = styled.button`
 	width: 100%;
 	min-height: ${$uw(2.5)};
 	border-radius: 10px;
-	font-size: 1.3rem;
+	font-size: 1.45rem;
 	font-weight: 700;
 	cursor: pointer;
 	&.filled {

@@ -183,7 +183,7 @@ const Label = styled.span`
 	display: inline-flex;
 	align-items: baseline;
 	gap: ${$uw(0.4)};
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 1px;
@@ -210,7 +210,7 @@ const FilterButton = styled.button`
 	background: rgba(var(--ion-color-primary-rgb), 0.1);
 	cursor: pointer;
 	> span {
-		font-size: 1.2rem;
+		font-size: 1.3rem;
 		font-weight: 700;
 		color: ${$color("primary")};
 	}
@@ -231,7 +231,7 @@ const FilterChip = styled.button`
 	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.3);
 	border-radius: 999px;
 	background: transparent;
-	font-size: 1.2rem;
+	font-size: 1.3rem;
 	font-weight: 700;
 	color: ${$color("primary")};
 	cursor: pointer;
@@ -300,7 +300,7 @@ const Texts = styled.div`
 `;
 
 const Name = styled.span`
-	font-size: 1.3rem;
+	font-size: 1.45rem;
 	font-weight: 500;
 	color: ${$color("dark")};
 	white-space: nowrap;
@@ -309,7 +309,7 @@ const Name = styled.span`
 `;
 
 const Meta = styled.span`
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	color: ${$color("medium")};
 	white-space: nowrap;
 	overflow: hidden;
@@ -320,7 +320,7 @@ const StatusChip = styled.span<{ $text: string; $bg: string }>`
 	flex: 0 0 auto;
 	padding: ${$uw(0.25)} ${$uw(0.6)};
 	border-radius: 999px;
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	font-weight: 700;
 	color: ${({ $text }) => $color($text)};
 	background: ${({ $bg }) => $color($bg)};
@@ -331,7 +331,7 @@ const Empty = styled.p`
 	padding: ${$uw(2)} 0;
 	text-align: center;
 	color: ${$color("medium")};
-	font-size: 1.4rem;
+	font-size: 1.55rem;
 `;
 
 const ShowMore = styled.button`
@@ -341,7 +341,7 @@ const ShowMore = styled.button`
 	border: 1px solid rgba(var(--ion-color-primary-rgb), 0.3);
 	border-radius: 12px;
 	background: transparent;
-	font-size: 1.3rem;
+	font-size: 1.45rem;
 	font-weight: 700;
 	color: ${$color("primary")};
 	cursor: pointer;

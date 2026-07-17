@@ -135,7 +135,7 @@ const Section = styled.div`
 
 const Label = styled.span`
 	display: block;
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 1px;
@@ -163,7 +163,7 @@ const TileButton = styled.button`
 	background: ${$color("background")};
 	cursor: pointer;
 	> span {
-		font-size: 1.1rem;
+		font-size: 1.2rem;
 		font-weight: 500;
 		color: ${$color("dark")};
 		white-space: nowrap;
@@ -187,7 +187,7 @@ const Badge = styled.span<{ $tone: "primary" | "danger" }>`
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	font-size: 0.9rem;
+	font-size: 1rem;
 	font-weight: 700;
 	background: ${({ $tone }) => $color($tone)};
 	color: ${({ $tone }) => $color(`${$tone}-contrast`)};
